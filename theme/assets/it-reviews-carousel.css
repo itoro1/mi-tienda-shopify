@@ -1,18 +1,20 @@
-/* Carrusel de valoraciones (Wallapop). Lo usa sections/it-wallapop-reviews.liquid */
+/* Carrusel de valoraciones. Lo usan it-wallapop-reviews e it-google-reviews. */
 .it-rev{padding:60px 20px;max-width:1140px;margin:0 auto;text-align:center}
 .it-rev__badge{display:inline-flex;align-items:center;gap:6px;background:#f0fdfb;border:1px solid #13c1ac33;border-radius:20px;padding:6px 14px;margin-top:12px}
 .it-rev__score{font-size:13px;font-weight:500;color:#0d9488}
 .it-rev__vp{position:relative;margin-top:32px}
 .it-rev__track{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;
   -webkit-overflow-scrolling:touch;scrollbar-width:none;text-align:left;
-  padding:4px 2px 16px;margin:0 -20px;padding-left:20px;padding-right:20px}
+  padding:4px 20px 16px;margin:0 -20px}
 .it-rev__track::-webkit-scrollbar{display:none}
 .it-rev__card{flex:0 0 300px;scroll-snap-align:center;background:var(--it-surface,#fff);
   border:.5px solid var(--it-border,#e8e8e4);border-radius:14px;padding:20px;
   display:flex;flex-direction:column;gap:10px}
-.it-rev__top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.it-rev__top{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .it-rev__stars{display:flex;gap:2px;flex-shrink:0}
 .it-rev__thumb{width:56px;height:56px;border-radius:8px;object-fit:cover;display:block;flex-shrink:0;
+  border:.5px solid var(--it-border,#e8e8e4);background:var(--it-surface2,#f5f5f3)}
+.it-rev__shot{width:100%;height:200px;border-radius:10px;object-fit:cover;display:block;
   border:.5px solid var(--it-border,#e8e8e4);background:var(--it-surface2,#f5f5f3)}
 .it-rev__text{font-size:14px;color:var(--it-text,#1a1a1a);line-height:1.6;margin:0;flex:1}
 .it-rev__foot{display:flex;align-items:center;justify-content:space-between;gap:8px}
@@ -22,9 +24,9 @@
 .it-rev__avph{width:34px;height:34px;border-radius:50%;flex-shrink:0;background:#13c1ac1a;color:#0d9488;
   display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600}
 .it-rev__name{font-size:13px;font-weight:600;color:var(--it-text,#1a1a1a);white-space:nowrap;
-  overflow:hidden;text-overflow:ellipsis}
+  overflow:hidden;text-overflow:ellipsis;display:block;max-width:210px}
 .it-rev__when{font-size:11px;color:var(--it-muted,#6b7280)}
-.it-rev__src{display:flex;align-items:center;gap:3px;font-size:11px;color:#0d9488;font-weight:500;flex-shrink:0}
+.it-rev__src{display:flex;align-items:center;gap:4px;font-size:11px;color:#0d9488;font-weight:500;flex-shrink:0}
 .it-rev__nav{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;
   border:.5px solid var(--it-border,#e8e8e4);background:var(--it-surface,#fff);color:var(--it-text,#1a1a1a);
   cursor:pointer;display:none;align-items:center;justify-content:center;z-index:2;
@@ -37,7 +39,17 @@
 .it-rev__dot{width:7px;height:7px;border-radius:50%;border:0;padding:0;cursor:pointer;
   background:var(--it-border,#d8d8d4);transition:background .2s,width .2s}
 .it-rev__dot[aria-current="true"]{background:#13c1ac;width:18px;border-radius:4px}
-.it-rev__cta{margin-top:28px}
+.it-rev__cta{margin-top:28px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.it-rev__leave{font-size:13px;color:var(--it-muted,#6b7280);text-decoration:underline}
+
+/* Variante Google: azul en vez del verde de Wallapop */
+.it-rev--google .it-rev__badge{background:#f1f5fe;border-color:#4285f433}
+.it-rev--google .it-rev__score{color:#1a56c4;font-weight:600}
+.it-rev--google .it-rev__src{color:#5f6368}
+.it-rev--google .it-rev__avph{background:#4285f41a;color:#1a56c4}
+.it-rev--google .it-rev__dot[aria-current="true"]{background:#4285f4}
+.it-rev--google .it-rev__card{gap:12px}
+
 @media(min-width:900px){
   .it-rev__nav{display:flex}
   .it-rev__track{margin:0;padding-left:2px;padding-right:2px}

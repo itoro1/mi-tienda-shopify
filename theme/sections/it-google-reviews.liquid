@@ -1,0 +1,91 @@
+{%- if section.settings.show_section -%}
+{{ 'it-reviews-carousel.css' | asset_url | stylesheet_tag }}
+{%- comment -%} include y no render: render aisla el ambito y las gg_* no llegarian aqui. {%- endcomment -%}
+{% include 'it-google-data' %}
+{%- assign sid = section.id -%}
+<section class="it-section it-rev it-rev--google">
+  {%- if section.settings.eyebrow != blank -%}
+    <p class="it-eyebrow">{{ section.settings.eyebrow }}</p>
+  {%- endif -%}
+  <h2 class="it-section-title">{{ section.settings.title }}</h2>
+  <div class="it-rev__badge">
+    <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#4285F4" d="M45.1 24.5c0-1.6-.1-2.8-.4-4H24v7.3h12.1c-.2 2-1.6 5-4.5 7l-.1.3 6.5 5 .5.1c4.2-3.8 6.6-9.5 6.6-15.7"/><path fill="#34A853" d="M24 46c5.9 0 10.9-2 14.5-5.3l-6.9-5.4c-1.8 1.3-4.3 2.2-7.6 2.2-5.8 0-10.7-3.8-12.5-9.1l-.3.1-6.8 5.2-.1.3C7.9 40.9 15.4 46 24 46"/><path fill="#FBBC05" d="M11.5 28.4c-.5-1.4-.8-2.9-.8-4.4s.3-3.1.7-4.4v-.4l-6.9-5.3-.2.1a22 22 0 0 0 0 20l7.2-5.6"/><path fill="#EA4335" d="M24 10.1c4.1 0 6.9 1.8 8.5 3.3l6.2-6C34.9 3.9 29.9 2 24 2 15.4 2 7.9 7.1 4.3 14.4l7.2 5.6C13.3 14.7 18.2 10.1 24 10.1"/></svg>
+    <span class="it-rev__score">{{ gg_avg }} sobre 5 &mdash; {{ gg_count }} rese&ntilde;as en Google</span>
+  </div>
+
+  <div class="it-rev__vp" data-it-rev>
+    <button class="it-rev__nav it-rev__nav--prev" type="button" data-it-prev aria-label="Rese&ntilde;as anteriores" aria-controls="itgg-{{ sid }}">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+
+    <div class="it-rev__track" id="itgg-{{ sid }}" tabindex="0" role="group" aria-roledescription="carrusel" aria-label="Rese&ntilde;as de clientes en Google" data-it-track>
+      {%- for t in gg_text -%}
+        {%- assign i = forloop.index0 -%}
+        {%- assign nm = gg_name[i] -%}
+        {%- assign st = gg_stars[i] | plus: 0 -%}
+        {%- assign av = gg_av[i] -%}
+        {%- assign pic = gg_pic[i] -%}
+        <article class="it-rev__card" aria-roledescription="rese&ntilde;a" aria-label="{{ forloop.index }} de {{ gg_total }}">
+          <div class="it-rev__who">
+            {%- if av != blank -%}
+              <img class="it-rev__av" src="{{ av }}" alt="" width="34" height="34" loading="lazy" decoding="async">
+            {%- else -%}
+              <span class="it-rev__avph" aria-hidden="true">{{ nm | slice: 0 | upcase }}</span>
+            {%- endif -%}
+            <span>
+              <span class="it-rev__name">{{ nm }}</span><br>
+              <span class="it-rev__when">{{ gg_meta[i] }}</span>
+            </span>
+          </div>
+          <div class="it-rev__top">
+            <div class="it-rev__stars" role="img" aria-label="{{ st }} de 5 estrellas">
+              {%- for s in (1..5) -%}
+                {%- if s <= st -%}{%- assign fill = '#fbbc05' -%}{%- else -%}{%- assign fill = '#d6d6d6' -%}{%- endif -%}
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="{{ fill }}" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              {%- endfor -%}
+            </div>
+            <span class="it-rev__when">{{ gg_when[i] }}</span>
+          </div>
+          {%- if pic != blank -%}
+            <img class="it-rev__shot" src="{{ pic }}" alt="Foto compartida por {{ nm | escape }}" width="280" height="200" loading="lazy" decoding="async">
+          {%- endif -%}
+          <p class="it-rev__text">&ldquo;{{ t }}&rdquo;</p>
+          <div class="it-rev__foot">
+            <span class="it-rev__src">
+              <svg width="11" height="11" viewBox="0 0 48 48" aria-hidden="true"><path fill="#4285F4" d="M45.1 24.5c0-1.6-.1-2.8-.4-4H24v7.3h12.1c-.2 2-1.6 5-4.5 7l-.1.3 6.5 5 .5.1c4.2-3.8 6.6-9.5 6.6-15.7"/><path fill="#34A853" d="M24 46c5.9 0 10.9-2 14.5-5.3l-6.9-5.4c-1.8 1.3-4.3 2.2-7.6 2.2-5.8 0-10.7-3.8-12.5-9.1l-.3.1-6.8 5.2-.1.3C7.9 40.9 15.4 46 24 46"/><path fill="#FBBC05" d="M11.5 28.4c-.5-1.4-.8-2.9-.8-4.4s.3-3.1.7-4.4v-.4l-6.9-5.3-.2.1a22 22 0 0 0 0 20l7.2-5.6"/><path fill="#EA4335" d="M24 10.1c4.1 0 6.9 1.8 8.5 3.3l6.2-6C34.9 3.9 29.9 2 24 2 15.4 2 7.9 7.1 4.3 14.4l7.2 5.6C13.3 14.7 18.2 10.1 24 10.1"/></svg>
+              Google
+            </span>
+          </div>
+        </article>
+      {%- endfor -%}
+    </div>
+
+    <button class="it-rev__nav it-rev__nav--next" type="button" data-it-next aria-label="Rese&ntilde;as siguientes" aria-controls="itgg-{{ sid }}">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <div class="it-rev__dots" data-it-dots></div>
+  </div>
+
+  <div class="it-rev__cta">
+    <a href="{{ gg_maps }}" target="_blank" rel="noopener" class="it-btn-secondary">Ver las {{ gg_count }} rese&ntilde;as en Google &rarr;</a>
+    {%- if section.settings.cta_text != blank -%}
+      <a href="{{ gg_url }}" target="_blank" rel="noopener" class="it-rev__leave">{{ section.settings.cta_text }}</a>
+    {%- endif -%}
+  </div>
+</section>
+{{ 'it-reviews-carousel.js' | asset_url | script_tag }}
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Valoraciones Google",
+  "settings": [
+    { "type": "checkbox", "id": "show_section", "label": "Mostrar seccion", "default": true },
+    { "type": "text", "id": "eyebrow", "label": "Texto pequeno arriba", "default": "Valorados en Google" },
+    { "type": "text", "id": "title", "label": "Titulo", "default": "Resenas verificadas en Google" },
+    { "type": "text", "id": "cta_text", "label": "Enlace para dejar resena", "default": "Dejar mi resena en Google" },
+    { "type": "paragraph", "content": "Las resenas, la nota media y los enlaces se leen de snippets/it-google-data.liquid, copiados de la ficha real de Google." }
+  ],
+  "presets": [{ "name": "Valoraciones Google" }]
+}
+{% endschema %}
