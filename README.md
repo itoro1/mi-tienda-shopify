@@ -89,3 +89,27 @@ subidas a Shopify. Se comprobo que sirve las imagenes sin bloquear por
 `Referer`. Si algun dia Wallapop rota esas rutas, las fotos desapareceran pero
 las tarjetas se siguen viendo: el marcado tiene un hueco con la inicial del
 comprador cuando no hay foto.
+
+## Política de devoluciones (`tienda/politica-devoluciones.html`)
+
+Vive en Shopify como página, no en el tema. La copia del repositorio es un
+espejo de lo publicado.
+
+Dos cosas que **no** se pueden cambiar aunque se pidan:
+
+- **No se puede rechazar la devolución de un iPhone o un cargador porque el
+  cliente haya roto el precinto.** Las excepciones al desistimiento estan
+  tasadas en el articulo 103 del TRLGDCU y la de bienes precintados cubre
+  higiene y salud (103.e) y software precintado (103.i), no electronica. La
+  redaccion anterior ("los iPhones con precinto roto solo se aceptan si
+  presentan defecto de fabrica") era nula, y ademas se contradecia con el
+  parrafo de arriba, que prometia devolucion en todos los productos.
+- Lo que si ampara la ley es **descontar la depreciacion** (articulo 108.2)
+  cuando el producto se manipula mas alla de lo necesario para comprobarlo.
+  Eso es lo que hace la version actual: cubre el mismo riesgo comercial y es
+  defendible ante una reclamacion.
+
+**La garantia de cargadores y cables es de 3 años, no de 1.** Son bienes
+nuevos, asi que les aplica el plazo del articulo 120.1. El año solo vale para
+segunda mano, y por pacto expreso. Anunciar 1 año en producto nuevo rebaja el
+minimo legal.

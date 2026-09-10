@@ -15,9 +15,9 @@
       var d = document.createElement('button');
       d.type = 'button';
       d.className = 'it-rev__dot';
-      d.setAttribute('aria-label', 'Ir a la valoración ' + (i + 1));
+      d.setAttribute('aria-label', 'Ir a la valoracion ' + (i + 1));
       d.addEventListener('click', function () { scrollToCard(i); });
-      dotsBox && dotsBox.appendChild(d);
+      if (dotsBox) dotsBox.appendChild(d);
       return d;
     });
 
@@ -40,8 +40,8 @@
       if (next) next.disabled = track.scrollLeft >= max;
     }
 
-    prev && prev.addEventListener('click', function () { scrollToCard(Math.max(0, current() - 1)); });
-    next && next.addEventListener('click', function () { scrollToCard(Math.min(cards.length - 1, current() + 1)); });
+    if (prev) prev.addEventListener('click', function () { scrollToCard(Math.max(0, current() - 1)); });
+    if (next) next.addEventListener('click', function () { scrollToCard(Math.min(cards.length - 1, current() + 1)); });
     track.addEventListener('keydown', function (e) {
       if (e.key === 'ArrowRight') { e.preventDefault(); scrollToCard(Math.min(cards.length - 1, current() + 1)); }
       if (e.key === 'ArrowLeft') { e.preventDefault(); scrollToCard(Math.max(0, current() - 1)); }
