@@ -58,3 +58,34 @@ estándar de Shopify (`assets/`, `config/`, `layout/`, `locales/`, `sections/`,
 
 Aviso de la documentación de Shopify: una vez conectada una rama, **no se puede
 reconectar tras desconectarla** — al reconectar se crea un tema nuevo.
+
+## Carrusel de valoraciones de Wallapop
+
+Las valoraciones de la portada son reales, leidas del perfil de Wallapop
+(`fernandot-419803299`) el 10/09/2026: **18 valoraciones escritas, 98
+valoraciones totales, media 4,9**. Antes la web mostraba 10 y decia "4,8".
+
+Reparto de archivos (`theme/`):
+
+| Archivo | Para que |
+|---|---|
+| `snippets/it-wallapop-data.liquid` | Los datos: textos, nombres, estrellas, fotos y fechas |
+| `sections/it-wallapop-reviews.liquid` | El marcado del carrusel |
+| `assets/it-reviews-carousel.css` | Estilos |
+| `assets/it-reviews-carousel.js` | Flechas, puntos y teclado |
+
+Dos decisiones que conviene no deshacer sin querer:
+
+- **Los datos van en un snippet, no en `templates/index.json`.** Cada escritura
+  de archivo tiene que caber en una sola llamada de la API, y con las 15
+  valoraciones dentro la plantilla se pasaba de largo. Ademas asi la portada
+  queda legible.
+- **La seccion usa `{% include %}` y no `{% render %}`.** `render` aisla el
+  ambito: las variables `wp_*` del snippet no llegarian a la seccion y el
+  carrusel saldria vacio (paso, y asi se detecto).
+
+Las fotos de perfil y de producto apuntan a `cdn.wallapop.com` en vez de estar
+subidas a Shopify. Se comprobo que sirve las imagenes sin bloquear por
+`Referer`. Si algun dia Wallapop rota esas rutas, las fotos desapareceran pero
+las tarjetas se siguen viendo: el marcado tiene un hueco con la inicial del
+comprador cuando no hay foto.
