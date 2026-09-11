@@ -113,3 +113,23 @@ Dos cosas que **no** se pueden cambiar aunque se pidan:
 nuevos, asi que les aplica el plazo del articulo 120.1. El año solo vale para
 segunda mano, y por pacto expreso. Anunciar 1 año en producto nuevo rebaja el
 minimo legal.
+
+## Sello flotante de valoraciones (`it-trust-badge`)
+
+Tarjeta pequeña fija abajo a la izquierda con la nota de Google y la de
+Wallapop, para que la prueba social se vea al entrar sin bajar a los
+carruseles. Se cierra con una X y no vuelve a salir en 7 dias
+(`localStorage: it_tb_hidden_until`).
+
+- `assets/it-trust-badge.css` — estilos.
+- `assets/it-trust-badge.js` — monta el DOM y gestiona el cierre.
+- Las cifras **no** van en el JS: llegan en un `<script type="application/json"
+  id="it-tb-data">` que escribe `snippets/it-schema-org.liquid`, que es el
+  snippet que se renderiza en el `<head>` de todas las paginas. Asi el sello
+  sale en toda la tienda sin tocar `layout/theme.liquid` (25 KB).
+- Va **abajo a la izquierda** a proposito: el boton de WhatsApp
+  (`.it-wa-wrap`) esta fijo abajo a la derecha y no se pisan.
+- Al pulsar la tarjeta hace scroll suave hasta la primera seccion `.it-rev`
+  (el carrusel de Wallapop); si la pagina no la tiene, navega al ancla.
+
+Vista previa en `disenos/`.
