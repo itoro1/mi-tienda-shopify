@@ -107,7 +107,6 @@
 
   function boot() {
     if (hidden() || document.querySelector('.it-tb')) return;
-    if (window.Shopify && window.Shopify.designMode === false) { /* noop */ }
     var c = cfg();
     if (c && c.sources && c.sources.length) build(c);
   }
