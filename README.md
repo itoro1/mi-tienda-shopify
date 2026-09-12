@@ -133,3 +133,29 @@ carruseles. Se cierra con una X y no vuelve a salir en 7 dias
   (el carrusel de Wallapop); si la pagina no la tiene, navega al ancla.
 
 Vista previa en `disenos/`.
+
+## Hero de la portada (`it-hero-premium`)
+
+La seccion tenia dos fallos que solo se ven cuando cambias el producto
+destacado, y los dos venian del filtro `default` de Liquid, que trata la
+**cadena vacia como "sin valor"**:
+
+- `price_compare | default: '1.649'` y `price_save | default: '200'`.
+  Vaciar el ajuste no quitaba el precio tachado: lo dejaba clavado en
+  1.649 €. Es decir, **pintaba un descuento inventado sobre cualquier
+  producto que pusieras**, que es justo lo que prohibe la Omnibus. Ahora
+  cada trozo va dentro de un `{% if ... != blank %}`.
+- La imagen caia a `all_products['iphone-17-pro-max']`, asi que al poner
+  el iPhone 18 en el titulo seguia saliendo la foto del 17. Ahora el
+  producto del hero es un ajuste (`hero_handle`) y de el salen foto,
+  alt y colores.
+
+Los enlaces de color estaban escritos a mano apuntando a variantes
+archivadas (daban 404 bajo el boton principal). Ahora se recorren las
+variantes del producto del hero.
+
+**El CSS se saco a `assets/it-hero-premium.css` y `-dark.css`.** La
+seccion pesaba 16 KB y cada escritura de archivo tiene que caber en una
+sola llamada de la API, asi que no se podia editar el marcado sin
+reenviar la hoja de estilos entera. Partida en dos, el marcado se toca
+sin problema.
