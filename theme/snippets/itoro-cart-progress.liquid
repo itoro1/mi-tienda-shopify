@@ -1,0 +1,143 @@
+{%- comment -%}
+  ITORO - Cajon del carrito: barra de envio gratis + bloque "Completa tu pedido".
+
+  Antes este bloque pintaba los dos primeros productos de la coleccion
+  "cargadores-y-cables" tal cual venian ordenados, sin mirar que telefono
+  habia en el carrito. Como el primero de la lista es el cable Lightning, a
+  quien compraba un iPhone 17 se le ofrecia un cable que no le entra en el
+  telefono: del iPhone 15 en adelante el conector es USB-C, no Lightning.
+
+  Ahora se mira el modelo de cada iPhone del carrito y se recomienda el pack
+  que de verdad le sirve. Si el modelo no se reconoce se cae al cargador
+  suelto, que vale con cualquiera de los dos cables.
+
+  El CSS vive en assets/itoro-cart-progress.css.
+{%- endcomment -%}
+
+{{ 'itoro-cart-progress.css' | asset_url | stylesheet_tag }}
+
+<div class="icp">
+  <div class="icp__bar-wrap">
+    <span class="icp__free-ship">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+      Envío gratis incluido
+    </span>
+  </div>
+</div>
+
+{%- liquid
+  assign has_iphone = false
+  assign has_charger = false
+  assign needs_usbc = false
+  assign needs_lightning = false
+
+  comment
+    Se comparan cadenas completas ("iphone 15"), no el numero suelto: asi
+    "iPhone 15" nunca cuela como "iPhone 5". "iphone x" cubre tambien XR y XS.
+  endcomment
+  assign usbc_models = 'iphone 15,iphone 16,iphone 17,iphone 18,iphone 19,iphone 20,iphone air' | split: ','
+  assign lightning_models = 'iphone 5,iphone 6,iphone 7,iphone 8,iphone x,iphone 11,iphone 12,iphone 13,iphone 14,iphone se' | split: ','
+
+  for item in cart.items
+    assign ptype = item.product.type
+    assign ptitle = item.product.title | downcase
+
+    if ptype == 'Cargador' or ptype == 'Cable'
+      assign has_charger = true
+    else
+      if ptype == 'Smartphone' or ptitle contains 'iphone'
+        assign has_iphone = true
+        for m in usbc_models
+          if ptitle contains m
+            assign needs_usbc = true
+          endif
+        endfor
+        for m in lightning_models
+          if ptitle contains m
+            assign needs_lightning = true
+          endif
+        endfor
+      endif
+    endif
+  endfor
+
+  if needs_usbc and needs_lightning
+    assign up_handles = 'pack-cargador-usb-c-20w-cable-usb-c-1m-apple-original,cargador-apple-usb-c' | split: ','
+    assign up_note = 'Llevas dos conectores distintos en el carrito: un pack para cada uno.'
+  elsif needs_usbc
+    assign up_handles = 'pack-cargador-usb-c-20w-cable-usb-c-1m-apple-original,cable-usb-c-a-usb-c-1m-apple' | split: ','
+    assign up_note = 'Con conector USB-C, el que lleva tu iPhone.'
+  elsif needs_lightning
+    assign up_handles = 'cargador-apple-usb-c,cable-usb-c-a-lightning-1m-apple' | split: ','
+    assign up_note = 'Con conector Lightning, el que lleva tu iPhone.'
+  else
+    assign up_handles = 'cargador-usb-c-20w-apple-original,pack-cargador-usb-c-20w-cable-usb-c-1m-apple-original' | split: ','
+    assign up_note = ''
+  endif
+
+  comment
+    Se cuenta antes de pintar para no dejar el recuadro verde vacio si alguno
+    de los dos productos esta archivado o sin stock.
+  endcomment
+  assign up_count = 0
+  for h in up_handles
+    assign up = all_products[h]
+    if up != blank and up.available
+      assign up_count = up_count | plus: 1
+    endif
+  endfor
+-%}
+
+{%- if has_iphone and has_charger == false and up_count > 0 -%}
+  <div class="icp icp-upsell-wrap">
+    <div class="icp__upsell icp__upsell--show">
+      <p class="icp__upsell-label">Completa tu pedido</p>
+      {%- if up_note != blank -%}<p class="icp__upsell-note">{{ up_note }}</p>{%- endif -%}
+      <div class="icp__upsell-list">
+        {%- for h in up_handles -%}
+          {%- assign up = all_products[h] -%}
+          {%- if up != blank and up.available -%}
+            {%- assign up_v = up.selected_or_first_available_variant -%}
+            <div class="icp__upsell-item">
+              <div class="icp__upsell-img">
+                {%- if up.featured_image -%}
+                  <img src="{{ up.featured_image | image_url: width: 88 }}" alt="{{ up.title | escape }}" loading="lazy" width="44" height="44">
+                {%- else -%}
+                  🔌
+                {%- endif -%}
+              </div>
+              <div class="icp__upsell-info">
+                <p class="icp__upsell-name">{{ up.title }}</p>
+                <p class="icp__upsell-price">{{ up.price | money }}</p>
+              </div>
+              <button type="button" class="icp__upsell-btn" onclick="icpAddToCart(this, {{ up_v.id }})">+ Añadir</button>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+
+<script>
+function icpAddToCart(btn, variantId) {
+  btn.classList.add('loading');
+  btn.textContent = '...';
+  fetch('/cart/add.js', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id: variantId, quantity: 1 })
+  })
+  .then(r => r.json())
+  .then(() => {
+    btn.textContent = '✓ Añadido';
+    btn.style.background = '#166534';
+    btn.classList.remove('loading');
+    setTimeout(() => location.reload(), 800);
+  })
+  .catch(() => {
+    btn.textContent = 'Error';
+    btn.classList.remove('loading');
+  });
+}
+</script>

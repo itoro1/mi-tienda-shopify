@@ -1,8 +1,16 @@
 /* Sello flotante con las valoraciones de Google y Wallapop.
    Los datos llegan en el <script type="application/json" id="it-tb-data">
-   que escribe snippets/it-schema-org.liquid, para no repetir cifras aqui. */
+   que escribe snippets/it-schema-org.liquid, para no repetir cifras aqui.
+
+   Arranca plegado en una pildora pequena. Se despliega al tocarla y la X
+   vuelve a plegarlo. Se recuerda el estado por visitante, nada mas.
+
+   La clave de localStorage cambio de "it_tb_hidden_until" a "it_tb_state" a
+   proposito: la version anterior escondia el sello siete dias en todo el
+   sitio a quien pulsara la X una vez, y esa marca seguia viva en el
+   navegador. Con la clave nueva ya no cuenta. */
 (function () {
-  var KEY = 'it_tb_hidden_until';
+  var KEY = 'it_tb_state';
   var SVG = 'http://www.w3.org/2000/svg';
 
   function cfg() {
@@ -10,21 +18,15 @@
     if (!el) return null;
     try { return JSON.parse(el.textContent); } catch (e) { return null; }
   }
-  function hidden() {
-    try {
-      var v = localStorage.getItem(KEY);
-      return v && Date.now() < parseInt(v, 10);
-    } catch (e) { return false; }
-  }
-  function hide() {
-    try { localStorage.setItem(KEY, String(Date.now() + 7 * 864e5)); } catch (e) {}
-  }
-  function stars(n, color) {
+  function remember(v) { try { localStorage.setItem(KEY, v); } catch (e) {} }
+  function recall() { try { return localStorage.getItem(KEY); } catch (e) { return null; } }
+
+  function stars(n, color, size) {
     var wrap = document.createElement('span');
     wrap.className = 'it-tb__stars';
     for (var i = 1; i <= 5; i++) {
       var s = document.createElementNS(SVG, 'svg');
-      s.setAttribute('width', '11'); s.setAttribute('height', '11');
+      s.setAttribute('width', size); s.setAttribute('height', size);
       s.setAttribute('viewBox', '0 0 24 24');
       s.setAttribute('fill', i <= Math.round(n) ? color : '#d6d6d6');
       var p = document.createElementNS(SVG, 'polygon');
@@ -33,55 +35,75 @@
     }
     return wrap;
   }
+  function num(v) { return parseFloat(String(v).replace(',', '.')); }
+
   function row(src) {
     var r = document.createElement('div');
     r.className = 'it-tb__row';
     var logo = document.createElement('span');
     logo.className = 'it-tb__logo';
     logo.innerHTML = src.logo;
-
     var meta = document.createElement('span');
     meta.className = 'it-tb__meta';
     var top = document.createElement('span');
     top.className = 'it-tb__top';
-    top.appendChild(stars(parseFloat(String(src.avg).replace(',', '.')), src.color));
+    top.appendChild(stars(num(src.avg), src.color, '11'));
     var score = document.createElement('span');
     score.className = 'it-tb__score';
     score.textContent = src.avg;
     top.appendChild(score);
     var count = document.createElement('span');
     count.className = 'it-tb__count';
-    count.innerHTML = '<b>' + src.label + '</b> \u00b7 ' + src.count;
-    meta.appendChild(top);
-    meta.appendChild(count);
-
-    r.appendChild(logo);
-    r.appendChild(meta);
+    count.innerHTML = '<b>' + src.label + '</b> · ' + src.count;
+    meta.appendChild(top); meta.appendChild(count);
+    r.appendChild(logo); r.appendChild(meta);
     r.setAttribute('aria-label', src.label + ': ' + src.avg + ' sobre 5, ' + src.count);
     return r;
   }
 
+  /* La pildora resume las dos fuentes en una sola cifra: la nota mas alta y
+     la suma de opiniones. Nada inventado, todo sale del JSON. */
+  function summary(sources) {
+    var best = 0, total = 0;
+    sources.forEach(function (s) {
+      var a = num(s.avg);
+      if (a > best) best = a;
+      var n = parseInt(String(s.count).replace(/\D/g, ''), 10);
+      if (n) total += n;
+    });
+    return { avg: String(best).replace('.', ','), total: total };
+  }
+
   function build(c) {
+    var sum = summary(c.sources);
     var box = document.createElement('aside');
     box.className = 'it-tb';
-    box.setAttribute('role', 'complementary');
     box.setAttribute('aria-label', 'Valoraciones de clientes');
 
+    var pill = document.createElement('button');
+    pill.type = 'button';
+    pill.className = 'it-tb__pill';
+    pill.setAttribute('aria-expanded', 'false');
+    pill.appendChild(stars(sum.avg, '#fbbc05', '10'));
+    var b = document.createElement('b');
+    b.textContent = sum.avg;
+    var sp = document.createElement('span');
+    sp.textContent = sum.total + ' opiniones';
+    pill.appendChild(b); pill.appendChild(sp);
+    pill.setAttribute('aria-label', sum.avg + ' sobre 5 en ' + sum.total + ' opiniones. Ver detalle.');
+
+    var card = document.createElement('div');
+    card.className = 'it-tb__card';
     var head = document.createElement('div');
     head.className = 'it-tb__head';
     var eye = document.createElement('span');
     eye.className = 'it-tb__eyebrow';
     eye.textContent = 'Opiniones verificadas';
     var x = document.createElement('button');
-    x.className = 'it-tb__x';
     x.type = 'button';
-    x.setAttribute('aria-label', 'Cerrar');
-    x.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>';
-    x.addEventListener('click', function (e) {
-      e.stopPropagation(); e.preventDefault();
-      hide(); box.removeAttribute('data-show');
-      setTimeout(function () { box.remove(); }, 350);
-    });
+    x.className = 'it-tb__x';
+    x.setAttribute('aria-label', 'Plegar');
+    x.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>';
     head.appendChild(eye); head.appendChild(x);
 
     var rows = document.createElement('a');
@@ -94,19 +116,27 @@
     rows.appendChild(foot);
     rows.addEventListener('click', function (e) {
       var target = document.querySelector('.it-rev');
-      if (target) {
-        e.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
     });
 
-    box.appendChild(head); box.appendChild(rows);
+    card.appendChild(head); card.appendChild(rows);
+    box.appendChild(pill); box.appendChild(card);
+
+    function open() { box.setAttribute('data-open', '1'); pill.setAttribute('aria-expanded', 'true'); remember('open'); }
+    function close() { box.removeAttribute('data-open'); pill.setAttribute('aria-expanded', 'false'); remember('pill'); }
+    pill.addEventListener('click', open);
+    x.addEventListener('click', function (e) { e.stopPropagation(); e.preventDefault(); close(); });
+    document.addEventListener('click', function (e) {
+      if (box.hasAttribute('data-open') && !box.contains(e.target)) close();
+    });
+    if (recall() === 'open') open();
+
     document.body.appendChild(box);
     setTimeout(function () { box.setAttribute('data-show', '1'); }, c.delay || 1200);
   }
 
   function boot() {
-    if (hidden() || document.querySelector('.it-tb')) return;
+    if (document.querySelector('.it-tb')) return;
     var c = cfg();
     if (c && c.sources && c.sources.length) build(c);
   }
