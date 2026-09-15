@@ -62,7 +62,12 @@
   }
 
   /* La pildora resume las dos fuentes en una sola cifra: la nota mas alta y
-     la suma de opiniones. Nada inventado, todo sale del JSON. */
+     la suma de opiniones. Nada inventado, todo sale del JSON.
+
+     Se devuelven las dos formas de la nota a proposito. "avg" es para leerla
+     ("4,9", con coma, como se escribe en espanol) y "num" para calcular. Si se
+     le pasa la cadena a stars(), Math.round('4,9') da NaN y las cinco estrellas
+     salen grises: es justo el fallo que se veia en la pildora cerrada. */
   function summary(sources) {
     var best = 0, total = 0;
     sources.forEach(function (s) {
@@ -71,7 +76,7 @@
       var n = parseInt(String(s.count).replace(/\D/g, ''), 10);
       if (n) total += n;
     });
-    return { avg: String(best).replace('.', ','), total: total };
+    return { avg: String(best).replace('.', ','), num: best, total: total };
   }
 
   function build(c) {
@@ -84,7 +89,7 @@
     pill.type = 'button';
     pill.className = 'it-tb__pill';
     pill.setAttribute('aria-expanded', 'false');
-    pill.appendChild(stars(sum.avg, '#fbbc05', '10'));
+    pill.appendChild(stars(sum.num, '#fbbc05', '10'));
     var b = document.createElement('b');
     b.textContent = sum.avg;
     var sp = document.createElement('span');
