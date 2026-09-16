@@ -9,5 +9,7 @@ node_modules/
 # imputacion de fraude. Un historial de git no se borra: una vez dentro, ese
 # dato queda ahi para siempre y se copia con cada clon del repositorio.
 # El fichero se genera, se entrega al usuario y se queda solo en su equipo.
-tienda/carta-*.txt
-tienda/denuncia-*.txt
+# Cualquier extension: el PDF lleva exactamente los mismos datos que el .txt,
+# y el patron anterior solo cubria .txt.
+tienda/carta-*
+tienda/denuncia-*
