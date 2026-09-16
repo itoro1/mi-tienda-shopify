@@ -1,0 +1,29 @@
+/* Precio oficial de Apple, debajo de nuestro precio.
+
+   Lo pinta snippets/price.liquid leyendo el metacampo custom.pvp_apple, asi
+   que sale tanto en la ficha como en las tarjetas de coleccion.
+
+   La etiqueta "PVP oficial de Apple" va SIEMPRE pegada al numero tachado y
+   no se puede separar ni ocultar. Un 19,00 tachado a secas junto a nuestro
+   precio se leeria como "antes costaba 19 aqui", y eso seria un descuento
+   inventado de los que persigue la Directiva Omnibus. */
+.it-pvp{
+  display:flex;
+  align-items:center;
+  gap:5px;
+  margin:5px 0 0;
+  font-size:12.5px;
+  line-height:1.3;
+  color:#6b7280;
+  font-weight:400;
+}
+.it-pvp s{
+  color:#9ca3af;
+  text-decoration-thickness:1px;
+}
+[data-theme="dark"] .it-pvp{color:#9a9a9a}
+[data-theme="dark"] .it-pvp s{color:#7a7a7a}
+
+/* En las tarjetas de coleccion hay menos sitio: se encoge un punto. */
+.card__information .it-pvp,
+.card-information .it-pvp{font-size:11.5px;margin-top:3px}

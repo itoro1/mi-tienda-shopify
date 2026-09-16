@@ -94,8 +94,15 @@
     b.textContent = sum.avg;
     var sp = document.createElement('span');
     sp.textContent = sum.total + ' opiniones';
-    pill.appendChild(b); pill.appendChild(sp);
-    pill.setAttribute('aria-label', sum.avg + ' sobre 5 en ' + sum.total + ' opiniones. Ver detalle.');
+    /* Chevron hacia arriba. Sin el, la pildora parecia una etiqueta muerta y
+       nadie adivinaba que al tocarla se abre y dice de donde salen las notas. */
+    var chev = document.createElement('span');
+    chev.className = 'it-tb__chev';
+    chev.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="18 15 12 9 6 15"/></svg>';
+
+    pill.appendChild(b); pill.appendChild(sp); pill.appendChild(chev);
+    pill.setAttribute('aria-label', sum.avg + ' sobre 5 en ' + sum.total + ' opiniones. Toca para ver de donde son.');
+    pill.setAttribute('title', 'Ver de dónde son las opiniones');
 
     var card = document.createElement('div');
     card.className = 'it-tb__card';

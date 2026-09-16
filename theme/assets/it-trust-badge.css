@@ -16,6 +16,13 @@
 .it-tb__stars{display:inline-flex;gap:1px;flex-shrink:0}
 .it-tb[data-open] .it-tb__pill{display:none}
 
+/* Pista de que la pildora se abre. Sin esto parecia una etiqueta muerta y
+   nadie la tocaba: el chevron hacia arriba dice que hay algo que se despliega,
+   y el subrayado punteado que es pulsable. */
+.it-tb__chev{display:inline-flex;align-items:center;color:#9ca3af;flex-shrink:0;margin-left:-1px;transition:transform .2s,color .2s}
+.it-tb__pill:hover .it-tb__chev{color:#1a1a1a;transform:translateY(-1px)}
+.it-tb__pill span{border-bottom:1px dotted rgba(0,0,0,.28);padding-bottom:1px}
+
 .it-tb__card{display:none;width:232px;padding:11px 12px 12px;border:.5px solid rgba(0,0,0,.12);border-radius:14px;background:rgba(255,255,255,.96);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 8px 28px rgba(0,0,0,.18)}
 .it-tb[data-open] .it-tb__card{display:block;animation:it-tb-in .22s ease}
 @keyframes it-tb-in{from{opacity:0;transform:translateY(6px) scale(.97)}to{opacity:1;transform:none}}
@@ -39,6 +46,9 @@
 
 [data-theme="dark"] .it-tb__pill,[data-theme="dark"] .it-tb__card{background:rgba(24,24,27,.94);border-color:rgba(255,255,255,.14);color:#ede9e2;box-shadow:0 6px 22px rgba(0,0,0,.5)}
 [data-theme="dark"] .it-tb__pill span,[data-theme="dark"] .it-tb__count{color:#9a9a9a}
+[data-theme="dark"] .it-tb__pill span{border-bottom-color:rgba(255,255,255,.3)}
+[data-theme="dark"] .it-tb__chev{color:#7a7a7a}
+[data-theme="dark"] .it-tb__pill:hover .it-tb__chev{color:#ede9e2}
 [data-theme="dark"] .it-tb__score,[data-theme="dark"] .it-tb__count b{color:#ede9e2}
 [data-theme="dark"] .it-tb__row+.it-tb__row{border-top-color:rgba(255,255,255,.10)}
 [data-theme="dark"] .it-tb__x:hover{color:#ede9e2;background:rgba(255,255,255,.10)}
