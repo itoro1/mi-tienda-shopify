@@ -2,3 +2,12 @@
 node_modules/
 *.log
 .shopify/
+
+# Escritos dirigidos a clientes concretos (cartas, requerimientos, denuncias).
+#
+# Llevan nombre, correo y domicilio de un particular, y en algun caso una
+# imputacion de fraude. Un historial de git no se borra: una vez dentro, ese
+# dato queda ahi para siempre y se copia con cada clon del repositorio.
+# El fichero se genera, se entrega al usuario y se queda solo en su equipo.
+tienda/carta-*.txt
+tienda/denuncia-*.txt
