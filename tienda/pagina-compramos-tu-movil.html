@@ -1,0 +1,333 @@
+<style>
+.itv*{box-sizing:border-box}
+.itv{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;max-width:800px;margin:0 auto;color:#111}
+.itv-hero{background:#0a0a0a;padding:44px 24px 36px;text-align:center}
+.itv-hero-tag{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#4ade80;border:1px solid rgba(74,222,128,.3);padding:5px 14px;border-radius:20px;margin-bottom:18px}
+.itv-hero-tag-dot{width:6px;height:6px;border-radius:50%;background:#4ade80;display:inline-block}
+.itv-hero h1{font-size:clamp(24px,5vw,40px);font-weight:700;color:#fff;line-height:1.1;letter-spacing:-.025em;margin:0 0 12px}
+.itv-hero h1 span{color:#4ade80}
+.itv-hero p{font-size:15px;color:rgba(255,255,255,.55);line-height:1.65;margin:0 auto 28px;max-width:480px}
+.itv-stats{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid rgba(255,255,255,.07);border-bottom:1px solid rgba(255,255,255,.07);margin-bottom:28px}
+.itv-stat{padding:14px 8px;text-align:center;border-right:1px solid rgba(255,255,255,.07)}
+.itv-stat:last-child{border-right:none}
+.itv-stat-n{font-size:20px;font-weight:600;color:#4ade80;line-height:1}
+.itv-stat-l{font-size:10px;color:rgba(255,255,255,.35);margin-top:4px}
+.itv-hero-cta{display:inline-flex;align-items:center;gap:8px;padding:15px 28px;background:#22c55e;color:#fff;border-radius:12px;font-weight:700;font-size:15px;text-decoration:none;border:none;cursor:pointer;font-family:inherit;transition:background .2s}
+.itv-hero-cta:hover{background:#16a34a;color:#fff;text-decoration:none}
+.itv-wizard{padding:28px 20px}
+.itv-wiz-tabs{display:flex;gap:0;margin-bottom:28px;border-bottom:2px solid #f3f4f6}
+.itv-tab{flex:1;text-align:center;padding:12px 2px;font-size:12px;color:#9ca3af;font-weight:500;border-bottom:2px solid transparent;margin-bottom:-2px;cursor:default}
+.itv-tab.active{color:#111;border-bottom-color:#111;font-weight:600}
+.itv-tab-num{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#e5e7eb;font-size:10px;font-weight:700;margin-right:5px}
+.itv-tab.active .itv-tab-num{background:#111;color:#fff}
+.itv-tab.done .itv-tab-num{background:#22c55e;color:#fff}
+.itv-step{display:none}
+.itv-step.active{display:block}
+.itv-step-title{font-size:20px;font-weight:700;color:#111;margin:0 0 6px;letter-spacing:-.02em}
+.itv-step-sub{font-size:14px;color:#6b7280;margin:0 0 20px}
+.itv-models{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px}
+@media(min-width:480px){.itv-models{grid-template-columns:repeat(3,1fr)}}
+.itv-model-card{border:1.5px solid #e5e7eb;border-radius:12px;padding:14px 12px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:10px}
+.itv-model-card:hover{border-color:#22c55e}
+.itv-model-card.selected{border-color:#22c55e;background:#f0fdf4}
+.itv-model-icon{width:32px;height:32px;background:#f9fafb;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px}
+.itv-model-card.selected .itv-model-icon{background:#dcfce7}
+.itv-model-name{font-size:13px;font-weight:600;color:#111;margin:0 0 2px;line-height:1.2}
+.itv-model-card.selected .itv-model-name{color:#166534}
+.itv-model-year{font-size:11px;color:#9ca3af;margin:0}
+.itv-model-badge{font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;background:#dcfce7;color:#166534;border:1px solid #86efac;margin-left:auto;flex-shrink:0;white-space:nowrap}
+.itv-caps{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.itv-cap-card{border:1.5px solid #e5e7eb;border-radius:12px;padding:16px 10px;cursor:pointer;transition:all .15s;text-align:center}
+.itv-cap-card:hover{border-color:#22c55e}
+.itv-cap-card.selected{border-color:#22c55e;background:#f0fdf4}
+.itv-cap-gb{font-size:16px;font-weight:700;color:#111;margin:0 0 3px}
+.itv-cap-card.selected .itv-cap-gb{color:#166534}
+.itv-cap-p{font-size:12px;color:#6b7280;margin:0}
+.itv-cap-card.selected .itv-cap-p{color:#166534;font-weight:600}
+.itv-estimate{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:12px;margin-bottom:16px}
+.itv-est-label{font-size:12px;color:#6b7280;margin:0 0 2px}
+.itv-est-model{font-size:11px;color:#9ca3af;margin:0}
+.itv-est-val{font-size:18px;font-weight:700;color:#166534;white-space:nowrap;padding-left:10px}
+.itv-estimate.active{border-color:#22c55e;background:#f0fdf4}
+.itv-btn-next{width:100%;padding:14px;background:#0a0a0a;color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:space-between;transition:opacity .2s}
+.itv-btn-next:hover{opacity:.85}
+.itv-btn-next:disabled{opacity:.4;cursor:not-allowed}
+.itv-estados{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.itv-estado{display:flex;align-items:flex-start;gap:12px;padding:14px;border:1.5px solid #e5e7eb;border-radius:12px;cursor:pointer;transition:all .15s}
+.itv-estado:hover{border-color:#22c55e}
+.itv-estado.selected{border-color:#22c55e;background:#f0fdf4}
+.itv-estado-radio{width:18px;height:18px;border-radius:50%;border:2px solid #d1d5db;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center}
+.itv-estado.selected .itv-estado-radio{border-color:#22c55e;background:#22c55e}
+.itv-estado-check{display:none;color:#fff;font-size:10px;font-weight:700}
+.itv-estado.selected .itv-estado-check{display:block}
+.itv-estado-title{font-size:14px;font-weight:600;color:#111;margin:0 0 3px}
+.itv-estado.selected .itv-estado-title{color:#166534}
+.itv-estado-desc{font-size:12px;color:#6b7280;margin:0;line-height:1.4}
+.itv-estado-price{font-size:13px;font-weight:700;color:#166534;margin-left:auto;flex-shrink:0;white-space:nowrap;padding-left:8px}
+.itv-btn-row{display:flex;gap:8px}
+.itv-btn-back{padding:14px 18px;border:1.5px solid #e5e7eb;background:#fff;color:#374151;border-radius:12px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500}
+.itv-btn-back:hover{border-color:#111}
+.itv-btn-wa{flex:1;padding:14px;background:#25d366;color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .2s;text-decoration:none}
+.itv-btn-wa:hover{opacity:.9;color:#fff;text-decoration:none}
+.itv-garantias{padding:20px;border-top:1px solid #f3f4f6;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.itv-gc{display:flex;align-items:flex-start;gap:10px;padding:12px;border:1px solid #f3f4f6;border-radius:12px;background:#fff}
+.itv-gc-ico{width:36px;height:36px;border-radius:50%;background:#f0fdf4;border:1px solid #bbf7d0;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:17px}
+.itv-gc h4{font-size:12px;font-weight:700;color:#111;margin:0 0 2px}
+.itv-gc p{font-size:11px;color:#6b7280;margin:0;line-height:1.4}
+.itv-faq{padding:20px;border-top:1px solid #f3f4f6}
+.itv-faq h3{font-size:16px;font-weight:700;color:#111;margin:0 0 16px}
+.itv-faq-item{border-bottom:1px solid #f3f4f6;padding:12px 0}
+.itv-faq-item:last-child{border-bottom:none}
+.itv-faq-q{font-size:13px;font-weight:600;color:#111;margin:0 0 5px}
+.itv-faq-a{font-size:12px;color:#6b7280;line-height:1.6;margin:0}
+.itv-footer{background:#0a0a0a;padding:32px 20px;text-align:center}
+.itv-footer h3{font-size:18px;font-weight:700;color:#fff;margin:0 0 6px}
+.itv-footer p{font-size:13px;color:rgba(255,255,255,.45);margin:0 0 18px}
+.itv-footer-wa{display:inline-flex;align-items:center;gap:8px;padding:13px 24px;background:#25d366;color:#fff;border-radius:12px;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:inherit;text-decoration:none}
+.itv-footer-wa:hover{opacity:.9;color:#fff;text-decoration:none}
+@media(max-width:480px){
+  .itv-hero{padding:32px 16px 28px}
+  .itv-hero h1{font-size:26px}
+  .itv-stat-n{font-size:16px}
+  .itv-wizard{padding:20px 14px}
+  .itv-garantias{grid-template-columns:1fr}
+  .itv-tab{font-size:10px}
+  .itv-tab-num{margin-right:3px}
+}
+</style>
+
+<div class="itv">
+
+<div class="itv-hero">
+  <div class="itv-hero-tag"><span class="itv-hero-tag-dot"></span> Compramos iPhones &mdash; Pago inmediato</div>
+  <h1>Vende tu iPhone<br><span>y cobra hoy mismo</span></h1>
+  <p>Tasaci&oacute;n gratuita en menos de 2 h. Pago inmediato por Bizum. Recogida gratuita a domicilio en toda Espa&ntilde;a.</p>
+  <div class="itv-stats">
+    <div class="itv-stat"><div class="itv-stat-n">0 &euro;</div><div class="itv-stat-l">recogida gratis</div></div>
+    <div class="itv-stat"><div class="itv-stat-n">2 h</div><div class="itv-stat-l">oferta garantizada</div></div>
+    <div class="itv-stat"><div class="itv-stat-n">48 h</div><div class="itv-stat-l">precio bloqueado</div></div>
+    <div class="itv-stat"><div class="itv-stat-n">Bizum</div><div class="itv-stat-l">pago el mismo d&iacute;a</div></div>
+  </div>
+  <a href="#itv-wizard" class="itv-hero-cta">&#128241; Tasar mi iPhone gratis</a>
+</div>
+
+<div class="itv-wizard" id="itv-wizard">
+  <div class="itv-wiz-tabs">
+    <div class="itv-tab active" id="itv-tab-1"><span class="itv-tab-num">1</span>Modelo</div>
+    <div class="itv-tab" id="itv-tab-2"><span class="itv-tab-num">2</span>Capacidad</div>
+    <div class="itv-tab" id="itv-tab-3"><span class="itv-tab-num">3</span>Estado</div>
+    <div class="itv-tab" id="itv-tab-4"><span class="itv-tab-num">4</span>Resumen</div>
+  </div>
+
+  <div class="itv-step active" id="itv-step-1">
+    <p class="itv-step-title">&iquest;Qu&eacute; modelo tienes?</p>
+    <p class="itv-step-sub">Selecciona tu iPhone para ver la horquilla de tasaci&oacute;n</p>
+    <div class="itv-models" id="itv-models"></div>
+    <div class="itv-estimate" id="itv-est-1">
+      <div><p class="itv-est-label">Tasaci&oacute;n seg&uacute;n capacidad</p><p class="itv-est-model" id="itv-est-model">Selecciona un modelo</p></div>
+      <span class="itv-est-val" id="itv-est-val">&mdash;</span>
+    </div>
+    <button class="itv-btn-next" id="itv-btn-1" onclick="itvGoStep(2)" disabled>
+      <span>Siguiente &mdash; capacidad</span><span>&rarr;</span>
+    </button>
+  </div>
+
+  <div class="itv-step" id="itv-step-2">
+    <p class="itv-step-title">&iquest;Cu&aacute;nta memoria tiene?</p>
+    <p class="itv-step-sub">Lo tienes en Ajustes &rsaquo; General &rsaquo; Almacenamiento del iPhone</p>
+    <div class="itv-caps" id="itv-caps"></div>
+    <div class="itv-estimate">
+      <div><p class="itv-est-label">Modelo seleccionado</p><p class="itv-est-model" id="itv-cap-model">&mdash;</p></div>
+    </div>
+    <div class="itv-btn-row">
+      <button class="itv-btn-back" onclick="itvGoStep(1)">&larr; Atr&aacute;s</button>
+      <button class="itv-btn-next" style="flex:1" id="itv-btn-2" onclick="itvGoStep(3)" disabled>
+        <span>Siguiente &mdash; estado</span><span>&rarr;</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="itv-step" id="itv-step-3">
+    <p class="itv-step-title">&iquest;En qu&eacute; estado est&aacute;?</p>
+    <p class="itv-step-sub">S&eacute; realista &mdash; as&iacute; recibes la oferta m&aacute;s precisa</p>
+    <div class="itv-estados">
+      <div class="itv-estado" data-mult="1.0" onclick="itvSelectEstado(this)">
+        <div class="itv-estado-radio"><span class="itv-estado-check">&#10003;</span></div>
+        <div><p class="itv-estado-title">Como nuevo &mdash; sin marcas</p><p class="itv-estado-desc">Sin ara&ntilde;azos, pantalla perfecta, todo funciona</p></div>
+        <span class="itv-estado-price" id="itv-ep-1">&mdash;</span>
+      </div>
+      <div class="itv-estado" data-mult="0.80" onclick="itvSelectEstado(this)">
+        <div class="itv-estado-radio"><span class="itv-estado-check">&#10003;</span></div>
+        <div><p class="itv-estado-title">Buen estado &mdash; uso normal</p><p class="itv-estado-desc">Alguna marca leve, todo funciona correctamente</p></div>
+        <span class="itv-estado-price" id="itv-ep-2">&mdash;</span>
+      </div>
+      <div class="itv-estado" data-mult="0.55" onclick="itvSelectEstado(this)">
+        <div class="itv-estado-radio"><span class="itv-estado-check">&#10003;</span></div>
+        <div><p class="itv-estado-title">Con da&ntilde;os visibles</p><p class="itv-estado-desc">Pantalla rota, carcasa da&ntilde;ada u otros desperfectos</p></div>
+        <span class="itv-estado-price" id="itv-ep-3">&mdash;</span>
+      </div>
+    </div>
+    <div class="itv-btn-row">
+      <button class="itv-btn-back" onclick="itvGoStep(2)">&larr; Atr&aacute;s</button>
+      <button class="itv-btn-next" style="flex:1" id="itv-btn-3" onclick="itvGoStep(4)" disabled>
+        <span>Ver resumen</span><span>&rarr;</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="itv-step" id="itv-step-4">
+    <p class="itv-step-title">Tu tasaci&oacute;n estimada</p>
+    <p class="itv-step-sub">Oferta real en menos de 2 horas por WhatsApp</p>
+    <div style="background:#f0fdf4;border:2px solid #22c55e;border-radius:16px;padding:20px;margin-bottom:16px;text-align:center">
+      <p style="font-size:13px;color:#166534;margin:0 0 6px;font-weight:600">ESTIMACI&Oacute;N PARA TU IPHONE</p>
+      <p id="itv-res-model" style="font-size:16px;font-weight:700;color:#111;margin:0 0 4px"></p>
+      <p id="itv-res-estado" style="font-size:13px;color:#6b7280;margin:0 0 16px"></p>
+      <p id="itv-res-precio" style="font-size:36px;font-weight:800;color:#166534;margin:0 0 6px;line-height:1"></p>
+      <p style="font-size:11px;color:#9ca3af;margin:0">* Precio orientativo, no es una oferta en firme. La oferta real se confirma por WhatsApp en menos de 2 h tras revisar el equipo.</p>
+    </div>
+    <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:14px;margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f3f4f6;font-size:13px"><span style="color:#6b7280">Recogida a domicilio</span><span style="font-weight:600;color:#166534">Gratis &#10003;</span></div>
+      <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f3f4f6;font-size:13px"><span style="color:#6b7280">Tasaci&oacute;n</span><span style="font-weight:600;color:#166534">Gratuita &#10003;</span></div>
+      <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f3f4f6;font-size:13px"><span style="color:#6b7280">Tiempo de respuesta</span><span style="font-weight:600;color:#111">Menos de 2 h</span></div>
+      <div style="display:flex;justify-content:space-between;padding:7px 0;font-size:13px"><span style="color:#6b7280">Forma de pago</span><span style="font-weight:600;color:#111">Bizum inmediato</span></div>
+    </div>
+    <div class="itv-btn-row">
+      <button class="itv-btn-back" onclick="itvGoStep(3)">&larr; Atr&aacute;s</button>
+      <a id="itv-wa-link" href="https://wa.me/34624150603?text=Hola%2C+quiero+vender+mi+iPhone" target="_blank" class="itv-btn-wa">&#128172; Solicitar oferta por WhatsApp</a>
+    </div>
+    <p style="font-size:11px;color:#9ca3af;text-align:center;margin-top:8px">Sin compromiso &mdash; cancelaci&oacute;n gratuita</p>
+  </div>
+</div>
+
+<div class="itv-garantias">
+  <div class="itv-gc"><div class="itv-gc-ico">&#128666;</div><div><h4>Recogida gratis</h4><p>Mensajero a domicilio en toda Espa&ntilde;a</p></div></div>
+  <div class="itv-gc"><div class="itv-gc-ico">&#8987;</div><div><h4>Oferta en 2 horas</h4><p>Precio garantizado 48 h sin compromiso</p></div></div>
+  <div class="itv-gc"><div class="itv-gc-ico">&#128180;</div><div><h4>Cobras al instante</h4><p>Bizum o transferencia &mdash; mismo d&iacute;a</p></div></div>
+  <div class="itv-gc"><div class="itv-gc-ico">&#128274;</div><div><h4>Sin trampas</h4><p>Precio acordado = pago garantizado</p></div></div>
+</div>
+
+<div class="itv-faq">
+  <h3>Preguntas frecuentes</h3>
+  <div class="itv-faq-item"><p class="itv-faq-q">&iquest;Qu&eacute; necesito para vender mi iPhone?</p><p class="itv-faq-a">Solo el iPhone con iCloud cerrado y datos borrados, y tu DNI. Te guiamos paso a paso si tienes dudas.</p></div>
+  <div class="itv-faq-item"><p class="itv-faq-q">&iquest;Por qu&eacute; me pregunt&aacute;is la capacidad?</p><p class="itv-faq-a">Porque cambia mucho el precio. Un mismo modelo de 512 GB vale bastante m&aacute;s que el de 128 GB, y queremos darte la cifra que te corresponde y no una media.</p></div>
+  <div class="itv-faq-item"><p class="itv-faq-q">&iquest;Compr&aacute;is iPhones con pantalla rota?</p><p class="itv-faq-a">S&iacute;, en cualquier estado. El precio var&iacute;a seg&uacute;n el da&ntilde;o, pero siempre hacemos oferta.</p></div>
+  <div class="itv-faq-item"><p class="itv-faq-q">&iquest;El precio de la web es definitivo?</p><p class="itv-faq-a">Es una estimaci&oacute;n orientativa. La oferta en firme te la damos por WhatsApp tras revisar el equipo, y una vez acordada no cambia.</p></div>
+  <div class="itv-faq-item"><p class="itv-faq-q">&iquest;Cu&aacute;ndo cobro?</p><p class="itv-faq-a">El mismo d&iacute;a que verificamos el iPhone &mdash; Bizum o transferencia instant&aacute;nea.</p></div>
+  <div class="itv-faq-item"><p class="itv-faq-q">&iquest;Puedo cancelar sin coste?</p><p class="itv-faq-a">S&iacute;, sin ninguna penalizaci&oacute;n hasta que se realice la recogida.</p></div>
+</div>
+
+<div class="itv-footer">
+  <h3>&iquest;Prefieres hablar primero?</h3>
+  <p>Escr&iacute;benos por WhatsApp &mdash; respondemos en minutos</p>
+  <a href="https://wa.me/34624150603?text=Hola%2C+quiero+vender+mi+iPhone" target="_blank" class="itv-footer-wa">&#128172; WhatsApp 624 15 06 03</a>
+</div>
+
+</div>
+
+<script>
+/* Tabla de tasacion. Cada importe es el 70 % del precio al que ITorostore
+   vende esa misma combinacion de modelo y capacidad, redondeado a la baja.
+   Ese 30 % de margen es lo que cubre recogida, revision, comision de pago y
+   la garantia legal de 3 anos. Si cambian los precios de venta en Shopify,
+   hay que rehacer esta tabla: es el unico sitio donde viven estas cifras. */
+var ITV_P = {
+ '17 Pro Max':['2025',{256:800,512:970}],
+ '17 Pro':['2025',{256:730,512:860}],
+ '17':['2025',{256:520,512:620}],
+ '16 Pro Max':['2024',{256:590,512:810}],
+ '16 Pro':['2024',{128:480,256:510,512:720}],
+ '16':['2024',{128:410,256:460,512:550}],
+ '15 Pro Max':['2023',{256:450,512:670}],
+ '15 Pro':['2023',{128:390,256:410,512:600}],
+ '15':['2023',{128:290,256:340,512:450}],
+ '14 Pro Max':['2022',{128:430,256:480,512:530}],
+ '14 Pro':['2022',{128:300,256:340,512:480}],
+ '14':['2022',{128:230,256:270}],
+ '13 Pro Max':['2021',{128:270,256:310,512:340}],
+ '13 Pro':['2021',{128:240,256:270,512:380}],
+ '13':['2021',{128:190,256:210}],
+ '12 o anterior':['2020-',{128:90,256:110}]
+};
+
+var itvModel=null,itvCap=null,itvBase=0,itvEstado=null,itvMult=1;
+
+/* Las claves numericas de un objeto JS se recorren siempre en orden
+   ascendente, asi que 128/256/512 salen ya ordenadas sin tener que ordenarlas. */
+function itvCaps(m){return Object.keys(ITV_P[m][1]).map(Number);}
+
+function itvRenderModelos(){
+  var h='';
+  for(var m in ITV_P){
+    var badge = ITV_P[m][0]==='2025' ? '<span class="itv-model-badge">Nuevo</span>' : '';
+    h+='<div class="itv-model-card" data-model="'+m+'" onclick="itvSelectModel(this)">'
+      +'<div class="itv-model-icon">&#128241;</div>'
+      +'<div><p class="itv-model-name">'+m+'</p><p class="itv-model-year">'+ITV_P[m][0]+'</p></div>'
+      +badge+'</div>';
+  }
+  document.getElementById('itv-models').innerHTML=h;
+}
+
+function itvSelectModel(el){
+  document.querySelectorAll('.itv-model-card').forEach(function(c){c.classList.remove('selected')});
+  el.classList.add('selected');
+  itvModel=el.dataset.model;
+  var caps=itvCaps(itvModel), pr=ITV_P[itvModel][1];
+  document.getElementById('itv-est-model').textContent='iPhone '+itvModel;
+  document.getElementById('itv-est-val').textContent=pr[caps[0]]+' – '+pr[caps[caps.length-1]]+' €';
+  document.getElementById('itv-est-1').classList.add('active');
+  document.getElementById('itv-btn-1').disabled=false;
+  document.getElementById('itv-cap-model').textContent='iPhone '+itvModel;
+  /* Al cambiar de modelo la capacidad elegida deja de ser valida: puede que
+     ese modelo ni siquiera exista en esa capacidad. Se limpia la seleccion. */
+  itvCap=null; itvBase=0;
+  document.getElementById('itv-btn-2').disabled=true;
+  document.getElementById('itv-btn-3').disabled=true;
+  var h='';
+  caps.forEach(function(c){
+    h+='<div class="itv-cap-card" data-cap="'+c+'" data-p="'+pr[c]+'" onclick="itvSelectCap(this)">'
+      +'<p class="itv-cap-gb">'+c+' GB</p><p class="itv-cap-p">hasta '+pr[c]+' €</p></div>';
+  });
+  document.getElementById('itv-caps').innerHTML=h;
+}
+
+function itvSelectCap(el){
+  document.querySelectorAll('.itv-cap-card').forEach(function(c){c.classList.remove('selected')});
+  el.classList.add('selected');
+  itvCap=el.dataset.cap;
+  itvBase=parseInt(el.dataset.p,10);
+  document.getElementById('itv-btn-2').disabled=false;
+  document.getElementById('itv-ep-1').textContent='hasta '+itvBase+' €';
+  document.getElementById('itv-ep-2').textContent='hasta '+Math.round(itvBase*0.80)+' €';
+  document.getElementById('itv-ep-3').textContent='hasta '+Math.round(itvBase*0.55)+' €';
+  if(itvEstado) document.getElementById('itv-btn-3').disabled=false;
+}
+
+function itvSelectEstado(el){
+  document.querySelectorAll('.itv-estado').forEach(function(e){e.classList.remove('selected')});
+  el.classList.add('selected');
+  itvEstado=el.querySelector('.itv-estado-title').textContent.split(' —')[0];
+  itvMult=parseFloat(el.dataset.mult);
+  document.getElementById('itv-btn-3').disabled=false;
+}
+
+function itvGoStep(n){
+  document.querySelectorAll('.itv-step').forEach(function(s){s.classList.remove('active')});
+  document.getElementById('itv-step-'+n).classList.add('active');
+  document.querySelectorAll('.itv-tab').forEach(function(t,i){
+    t.classList.remove('active','done');
+    if(i+1<n) t.classList.add('done');
+    if(i+1===n) t.classList.add('active');
+  });
+  if(n===4){
+    var final=Math.round(itvBase*itvMult);
+    document.getElementById('itv-res-model').textContent='iPhone '+itvModel+' · '+itvCap+' GB';
+    document.getElementById('itv-res-estado').textContent=itvEstado;
+    document.getElementById('itv-res-precio').textContent='hasta '+final+' €';
+    document.getElementById('itv-wa-link').href='https://wa.me/34624150603?text='
+      +encodeURIComponent('Hola, quiero vender mi iPhone '+itvModel+' de '+itvCap+' GB. Estado: '+itvEstado+'.');
+  }
+  document.getElementById('itv-wizard').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+itvRenderModelos();
+</script>

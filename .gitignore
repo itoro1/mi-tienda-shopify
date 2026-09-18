@@ -13,3 +13,9 @@ node_modules/
 # y el patron anterior solo cubria .txt.
 tienda/carta-*
 tienda/denuncia-*
+
+# Las facturas llevan nombre, domicilio y NIF del cliente: mismo motivo que
+# las cartas. Se generan, se entregan y no entran nunca en el repositorio.
+tienda/factura-*
+tienda/recibo-*
+tienda/justificante-*
