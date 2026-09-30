@@ -34,3 +34,37 @@ fichero a fichero, leyendo del publicado y escribiendo en el gemelo.
 - Carrito con iPhone 17 Pro Max → Pack **USB-C** + cable USB-C.
 - Carrito con iPhone 13 → Pack **Lightning** + cable Lightning.
 - Sin errores de Liquid.
+
+## Segunda pasada — 30/09/2026
+
+| Fichero | De | A | Qué aporta |
+|---|---|---|---|
+| `assets/itoro-trade-in.js` | 13.478 B | 15.944 B | Tasador v4: ficha completa, fotos y multiplicadores <= 1 |
+| `sections/itoro-trade-in.liquid` | 11.691 B | 16.884 B | Los 6 pasos (Modelo, Memoria, Estado, Ficha, Fotos, Enviar) |
+| `snippets/it-wallapop-data.liquid` | 5.222 B | 6.369 B | 21 valoraciones reales (29/09) en vez de 18 |
+| `snippets/it-schema-org.liquid` | — | 3.528 B | Sello y `aggregateRating` al día: 5,0 · 21 y 26 reseñas |
+| `templates/index.json` | — | 7.123 B | Hero del 18 Pro Max a 1.800 € |
+
+Los dos ficheros del tasador quedan con el **mismo tamaño exacto** que en el
+tema publicado. `itoro-trade-in.css` (13.763 B) ya era idéntico en los dos, así
+que no hizo falta tocarlo.
+
+Comprobado en la vista previa del gemelo (`/pages/compramos-tu-movil`):
+los 6 pasos del navegador, los 6 paneles, los campos de la ficha
+(color, batería, IMEI, notas, desperfectos) y la rejilla de fotos.
+Cero errores de Liquid. El JS servido por el CDN lleva `renderFicha`,
+`renderShots`, `itrBateria`, el tramo de 2 TB y el WhatsApp 34624150603.
+
+### Diferencias que quedan a propósito
+
+`it-footer.liquid`, `it-popup-email.liquid`, `it-compra-banner.liquid`,
+`it-slider-valor.liquid` y `itoro-trust-strip.liquid` siguen distintos porque
+el gemelo va por delante. `it-email-gate.liquid` existe en los dos pero el
+`index.json` del gemelo ya no lo invoca, así que no se renderiza.
+
+### Pendiente
+
+La copia de `snippets/it-schema-org.liquid` de este repositorio tiene 3.532 B
+y la del tema 3.528 B. El contenido que importa es el mismo (mismas cifras,
+mismo JSON, comprobado renderizado), pero conviene igualarlas cuando se vuelva
+a tocar el fichero.
