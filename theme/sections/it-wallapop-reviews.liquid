@@ -40,7 +40,17 @@
               <img class="it-rev__thumb" src="{{ pr }}" alt="Producto comprado por {{ nm | escape }}" width="56" height="56" loading="lazy" decoding="async">
             {%- endif -%}
           </div>
-          <p class="it-rev__text">&ldquo;{{ t }}&rdquo;</p>
+          {%- comment -%}
+            Hay valoraciones que puntuan sin escribir nada. Se ensenan igual,
+            porque cuentan en la nota, pero diciendo que no hay comentario en
+            vez de unas comillas vacias.
+          {%- endcomment -%}
+          {%- assign tt = t | strip -%}
+          {%- if tt != '' -%}
+            <p class="it-rev__text">&ldquo;{{ tt }}&rdquo;</p>
+          {%- else -%}
+            <p class="it-rev__text" style="opacity:.6">Valor&oacute; con {{ st }} estrellas sin dejar comentario.</p>
+          {%- endif -%}
           <div class="it-rev__foot">
             <div class="it-rev__who">
               {%- if ph != blank -%}
