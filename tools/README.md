@@ -71,3 +71,66 @@ El feature id sale de seguir las redirecciones del enlace corto de resenas
 La via buena es la **API de Google Business Profile**, porque la ficha es del
 dueno: devuelve todas las resenas con autor, texto y foto, y es gratis. Pide
 OAuth y que Google apruebe el acceso por formulario, lo que tarda dias.
+
+## sync_valoraciones.py — dejarlo automatico
+
+Relee las dos plataformas, regenera los snippets y los sube al tema que este
+publicado. Lo ejecuta `.github/workflows/valoraciones.yml` una vez al dia
+(07:13 UTC) y tambien se puede lanzar a mano desde la pestana Actions, con
+una casilla para hacerlo en seco.
+
+Aqui no hace falta el truco de resolver cada peticion por curl: GitHub Actions
+tiene internet directo. Por eso este script es mucho mas simple que los dos
+lectores de arriba, que si lo necesitan.
+
+### Que hay que configurar una sola vez
+
+En **Settings -> Secrets and variables -> Actions** del repositorio:
+
+*Variables* (no son secretas):
+
+| Nombre | Valor |
+|---|---|
+| `SHOPIFY_STORE` | `udyaa4-gf.myshopify.com` |
+| `WALLAPOP_PROFILE` | `fernandot-419803299` |
+| `GOOGLE_PLACE_ID` | `ChIJ_43DilVzDQ0RjDfcvTxLfA8` |
+| `GOOGLE_FEATURE_ID` | `0xd0d73558ac38dff:0xf7c4b3cbddc378c` |
+
+*Secrets*:
+
+| Nombre | De donde sale |
+|---|---|
+| `SHOPIFY_TOKEN` | Shopify admin -> Configuracion -> Aplicaciones -> Desarrollar aplicaciones -> crear una, darle **solo** `write_themes` y `read_themes`, instalarla y copiar el token de la Admin API |
+| `GOOGLE_API_KEY` | Opcional. Clave de Google Cloud con la Places API (New) activada |
+
+### Que se actualiza solo y que no
+
+| | Automatico |
+|---|---|
+| Wallapop: textos, nombres, fechas, estrellas, fotos | **Si**, entero |
+| Wallapop: nota media y totales | **Si** |
+| Google: nota media y numero de resenas | **Si**, sin necesidad de clave |
+| Google: textos de las resenas | Solo con `GOOGLE_API_KEY`, y **la Places API devuelve 5 como maximo** |
+| Google: fotos de los autores | **No, a proposito.** Rehospedarlas nos haria responsables de datos personales sin base legal, y enlazar a googleusercontent se rompe. La seccion pone un circulo con la inicial |
+| Sello flotante y `aggregateRating` | **Si**, se recalculan de las dos fuentes |
+
+Para las **8 resenas de Google con texto** haria falta la API de Google
+Business Profile (la ficha es del dueno, devuelve todas y es gratis), que pide
+OAuth y que Google apruebe el acceso por formulario. Este script **no** la
+implementa todavia.
+
+### Por que no publica numeros raros
+
+Antes de subir nada comprueba que todos los arrays de un snippet miden lo
+mismo (un desajuste pondria el nombre de un cliente en la resena de otro),
+que la nota esta entre 1 y 5, y que el total de Google aparece dos veces en
+la respuesta y coincide. Si algo no cuadra, **falla y no sube nada**: dejar
+las cifras de ayer es mejor que publicar una inventada. Tambien aborta si
+Google responde con su CAPTCHA (`/sorry/`).
+
+### Primera vez
+
+Lanzarlo **en seco** desde Actions (`Run workflow` con la casilla marcada) y
+mirar el log antes de dejarlo suelto. El camino de subida a Shopify y la
+lectura de Wallapop desde el runner no se han podido probar desde la sesion
+de Claude: el token es tuyo y Google bloquea la IP de las sesiones.

@@ -1,0 +1,78 @@
+name: Valoraciones al día
+
+# Relee Wallapop y Google y publica las cifras en el tema que esté publicado.
+# Se ejecuta solo una vez al día, y también a mano desde la pestaña Actions.
+on:
+  schedule:
+    # 07:13 UTC = 09:13 en España (verano) / 08:13 (invierno). Minuto 13 y no
+    # 0 para no coincidir con la avalancha de crons que GitHub encola en punto.
+    - cron: "13 7 * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Solo leer y escribir ficheros, sin tocar la tienda"
+        type: boolean
+        default: false
+
+concurrency:
+  group: valoraciones
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  sincronizar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar Playwright y Chromium
+        run: |
+          python -m pip install --upgrade pip
+          pip install playwright
+          python -m playwright install --with-deps chromium
+
+      - name: Leer las valoraciones y publicarlas
+        env:
+          SHOPIFY_STORE: ${{ vars.SHOPIFY_STORE }}
+          SHOPIFY_TOKEN: ${{ secrets.SHOPIFY_TOKEN }}
+          WALLAPOP_PROFILE: ${{ vars.WALLAPOP_PROFILE }}
+          GOOGLE_PLACE_ID: ${{ vars.GOOGLE_PLACE_ID }}
+          GOOGLE_FEATURE_ID: ${{ vars.GOOGLE_FEATURE_ID }}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        run: |
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            python3 tools/sync_valoraciones.py --dry-run
+          else
+            python3 tools/sync_valoraciones.py
+          fi
+
+      - name: Guardar los cambios en el repositorio
+        if: inputs.dry_run != true
+        run: |
+          if git diff --quiet -- theme/snippets; then
+            echo "Sin cambios: las valoraciones siguen igual."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add theme/snippets
+          git commit -m "Valoraciones al dia ($(date -u +%d/%m/%Y))"
+          git push
+
+      - name: Guardar el diagnóstico si algo ha fallado
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: diagnostico-valoraciones
+          path: |
+            theme/snippets/it-wallapop-data.liquid
+            theme/snippets/it-google-data.liquid
+          if-no-files-found: ignore
+          retention-days: 7
