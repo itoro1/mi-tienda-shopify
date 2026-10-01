@@ -19,3 +19,7 @@ tienda/denuncia-*
 tienda/factura-*
 tienda/recibo-*
 tienda/justificante-*
+
+# Basura de Python
+__pycache__/
+*.pyc
