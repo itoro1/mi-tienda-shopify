@@ -1,25 +1,32 @@
 {%- comment -%}
-  Reseñas reales de la ficha de Google Business de ITorostore
+  Resenas reales de la ficha de Google Business de ITorostore
   (CID 1115849531936487308, place_id ChIJ_43DilVzDQ0RjDfcvTxLfA8,
   feature id 0xd0d73558ac38dff:0xf7c4b3cbddc378c).
-  Los 5 textos son los copiados el 10/09/2026. La media y el total
-  se releyeron el 30/09/2026 del endpoint maps/preview/place de
-  Google: 4,9 de media sobre 8 reseñas.
-  Los textos de las 3 nuevas Google no los sirve sin sesion de
-  navegador, asi que se ensenan 5 tarjetas y se dice que hay 8,
-  igual que en Wallapop (19 tarjetas de 21 valoraciones).
-  Las fotos son las que subieron las clientas, rehospedadas en
-  Shopify porque Google no sirve esas imagenes de forma estable.
+  Google publica 4,9 de media sobre 8 resenas (leido el 01/10/2026).
+
+  Aqui van 7 de las 8. Las dos primeras se leyeron el 01/10/2026 del
+  endpoint maps/preview/place, que devuelve nombre, texto y fecha pero
+  no la nota. Esta se deduce sin margen de error: con 8 notas enteras y
+  media 4,9 la suma solo puede ser 39, o sea una resena de 4 estrellas
+  y siete de 5. La de 4 es la de Maria Catalina, asi que las dos nuevas
+  son de 5.
+
+  Las dos nuevas van sin foto de autor a proposito: rehospedar las caras
+  de los clientes nos haria responsables de sus datos sin base legal, y
+  enlazar a googleusercontent se rompe. La seccion pone un circulo con
+  la inicial, igual que hace con Maria Catalina y Natalia.
+
+  Falta una octava resena cuyo texto Google no sirve por esta via.
 {%- endcomment -%}
-{%- assign gg_text = 'Vendedor y producto 10/10. Súper recomendable, muy contenta con la compra, te explica y enseña las comprobaciones del iPhone antes de comprarlo. Sin duda en mi próximo móvil volveré!|Pedí un cable de carga porque me recomendaron itorestore no les conocía me sorprendió muchísimo y me encantó la seriedad y profesionalidad el cable de carga estupendo la atención excelente y la rapidez de entrega una pasada estoy súper contenta por haberlos elegido son geniales me a gustado muchísimo súper comunicativos yo personal mente los recomiendo muy mucho son muy formales y volveré a comprar me a encantado itorestore total confianza muchas gracias|Es la primera vez que les compro. Muy bien. Ràpida la entrega y todo perfecto.|Envío rápido y todo perfecto. Muy amables|Excelente compra. Todo perfecto. Los cargadores Apple son 100% originales, llegaron rapidísimo y perfectamente protegidos. Se nota el cuidado tanto en el embalaje como en el envío. Muy buena experiencia de compra, totalmente recomendable. Sin duda volveré a comprar.' | split: '|' -%}
-{%- assign gg_name = 'Laura Mar Vaz|dolores LOPEZ MONTERO|Maria Catalina Ginestar Giner|BEATRIZ PEREZ|Natalia Panal Puerto' | split: '|' -%}
-{%- assign gg_stars = '5|5|4|5|5' | split: '|' -%}
-{%- assign gg_when = 'Hace 3 semanas|Hace 1 mes|Hace 1 mes|Hace 1 mes|Hace 2 meses' | split: '|' -%}
-{%- assign gg_meta = 'Local Guide &middot; 14 rese&ntilde;as|10 rese&ntilde;as|2 rese&ntilde;as|2 rese&ntilde;as|2 rese&ntilde;as' | split: '|' -%}
-{%- assign gg_av = 'https://cdn.shopify.com/s/files/1/1032/6048/8005/files/g-av-laura.jpg?v=1789057006|https://cdn.shopify.com/s/files/1/1032/6048/8005/files/g-av-dolores.jpg?v=1789057006| |https://cdn.shopify.com/s/files/1/1032/6048/8005/files/g-av-beatriz.jpg?v=1789057006| ' | split: '|' -%}
-{%- assign gg_pic = 'https://cdn.shopify.com/s/files/1/1032/6048/8005/files/g-laura-iphone.jpg?v=1789057006| | | |https://cdn.shopify.com/s/files/1/1032/6048/8005/files/g-natalia-cargador.jpg?v=1789057006' | split: '|' -%}
-{%- assign gg_total = 5 -%}
+{%- assign gg_text = 'El vendedor muy atento. Da muchas explicaciones. Da gusto tratar con él. Recomendable 100%.|Podéis confiar en este vendedor, teléfono precintado y original, trato excepcional, siempre presente y atento. Un 10|Vendedor y producto 10/10. Súper recomendable, muy contenta con la compra, te explica y enseña las comprobaciones del iPhone antes de comprarlo. Sin duda en mi próximo móvil volveré!|Pedí un cable de carga porque me recomendaron itorestore no les conocía me sorprendió muchísimo y me encantó la seriedad y profesionalidad el cable de carga estupendo la atención excelente y la rapidez de entrega una pasada estoy súper contenta por haberlos elegido son geniales me a gustado muchísimo súper comunicativos yo personal mente los recomiendo muy mucho son muy formales y volveré a comprar me a encantado itorestore total confianza muchas gracias|Es la primera vez que les compro. Muy bien. Ràpida la entrega y todo perfecto.|Envío rápido y todo perfecto. Muy amables|Excelente compra. Todo perfecto. Los cargadores Apple son 100% originales, llegaron rapidísimo y perfectamente protegidos. Se nota el cuidado tanto en el embalaje como en el envío. Muy buena experiencia de compra, totalmente recomendable. Sin duda volveré a comprar.' | split: '|' -%}
+{%- assign gg_name = 'Manuel E. García Mateo|JaVillarta M|Laura Mar Vaz|dolores LOPEZ MONTERO|Maria Catalina Ginestar Giner|BEATRIZ PEREZ|Natalia Panal Puerto' | split: '|' -%}
+{%- assign gg_stars = '5|5|5|5|4|5|5' | split: '|' -%}
+{%- assign gg_when = 'Hace 3 días|Hace 6 días|Hace 3 semanas|Hace 1 mes|Hace 1 mes|Hace 1 mes|Hace 2 meses' | split: '|' -%}
+{%- assign gg_meta = ' | |Local Guide &middot; 14 rese&ntilde;as|10 rese&ntilde;as|2 rese&ntilde;as|2 rese&ntilde;as|2 rese&ntilde;as' | split: '|' -%}
+{%- assign gg_av = ' | |https://cdn.shopify.com/s/files/1/1032/6048/8005/files/g-av-laura.jpg?v=1789057006|https://cdn.shopify.com/s/files/1/1032/6048/8005/files/g-av-dolores.jpg?v=1789057006| |https://cdn.shopify.com/s/files/1/1032/6048/8005/files/g-av-beatriz.jpg?v=1789057006| ' | split: '|' -%}
+{%- assign gg_pic = ' | |https://cdn.shopify.com/s/files/1/1032/6048/8005/files/g-laura-iphone.jpg?v=1789057006| | | |https://cdn.shopify.com/s/files/1/1032/6048/8005/files/g-natalia-cargador.jpg?v=1789057006' | split: '|' -%}
+{%- assign gg_total = 7 -%}
 {%- assign gg_avg = '4,9' -%}
 {%- assign gg_count = '8' -%}
 {%- assign gg_url = 'https://g.page/r/CYw33L08S3wPEBM/review' -%}
-{%- assign gg_maps = 'https://www.google.com/maps?cid=1115849531936487308' -%}
+{%- assign gg_maps = 'https://search.google.com/local/reviews?placeid=ChIJ_43DilVzDQ0RjDfcvTxLfA8' -%}
