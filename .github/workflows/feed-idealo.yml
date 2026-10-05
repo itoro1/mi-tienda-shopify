@@ -1,0 +1,69 @@
+name: Feed de idealo
+
+# idealo descargaba el feed directamente de la tienda
+# (https://itorostore.com/collections/all?view=idealo) y Shopify le respondía
+# "429 Too Many Requests": la protección anti-robots de la tienda frena las
+# descargas automáticas. Aquí lo descargamos nosotros, con reintentos, y lo
+# guardamos como fichero fijo en el repositorio. idealo lee esa copia desde
+# raw.githubusercontent.com, que no tiene ese límite:
+#
+#   https://raw.githubusercontent.com/itoro1/mi-tienda-shopify/claude/hola-lba1rn/feeds/idealo.csv
+#
+# Si una descarga falla se conserva el último fichero bueno, así idealo nunca
+# se encuentra un feed vacío o roto.
+on:
+  schedule:
+    # Cada hora, en el minuto 37 para no coincidir con los crons en punto.
+    - cron: "37 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: feed-idealo
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Descargar el feed de la tienda
+        run: |
+          curl -sS --fail --retry 6 --retry-delay 20 --max-time 60 \
+            -A "Mozilla/5.0 (compatible; ITorostore-feed/1.0)" \
+            -o /tmp/idealo.csv \
+            "https://itorostore.com/collections/all?view=idealo"
+
+      - name: Comprobar que es un CSV válido
+        run: |
+          cabecera="Numero de articulo del comerciante;EAN;"
+          if ! head -n 1 /tmp/idealo.csv | grep -q "^${cabecera}"; then
+            echo "La primera línea no es la cabecera del feed:"
+            head -c 500 /tmp/idealo.csv
+            exit 1
+          fi
+          filas=$(($(wc -l < /tmp/idealo.csv) - 1))
+          if [ "$filas" -lt 1 ]; then
+            echo "El feed no tiene ningún producto."
+            exit 1
+          fi
+          echo "Feed correcto: $filas productos."
+
+      - name: Guardar el feed en el repositorio
+        run: |
+          mkdir -p feeds
+          cp /tmp/idealo.csv feeds/idealo.csv
+          if git diff --quiet -- feeds/idealo.csv && git ls-files --error-unmatch feeds/idealo.csv >/dev/null 2>&1; then
+            echo "Sin cambios en el feed."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add feeds/idealo.csv
+          git commit -m "Feed de idealo al dia ($(date -u +%d/%m/%Y\ %H:%M) UTC)"
+          git pull --rebase -q
+          git push
