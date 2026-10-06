@@ -1,0 +1,21 @@
+{%- comment -%}
+  "desde 1.099€" a partir del precio más bajo del producto, para que la
+  portada no se quede con precios escritos a mano cuando cambian en Shopify.
+  Uso: {%- render 'it-desde', handle: 'iphone-17', fallback: 'desde 899&euro;' -%}
+  Si el producto no existe o no tiene precio, se pinta el fallback.
+{%- endcomment -%}
+{%- liquid
+  assign p = all_products[handle]
+  if p != blank and p.price_min > 0
+    assign e = p.price_min | divided_by: 100
+    if e >= 1000
+      assign miles = e | divided_by: 1000
+      assign resto = e | modulo: 1000 | plus: 1000 | append: '' | slice: 1, 3
+      echo 'desde ' | append: miles | append: '.' | append: resto | append: '&euro;'
+    else
+      echo 'desde ' | append: e | append: '&euro;'
+    endif
+  else
+    echo fallback
+  endif
+-%}
