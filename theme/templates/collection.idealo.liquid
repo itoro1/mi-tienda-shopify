@@ -58,10 +58,12 @@ Numero de articulo del comerciante{{ sep }}EAN{{ sep }}Numero del fabricante{{ s
     {%- unless variant.available -%}{%- continue -%}{%- endunless -%}
 
     {%- comment -%}
-      Nombre. El espacio antes de la raya va escrito con la entidad porque el
-      recorte de espacios de Liquid se come los espacios sueltos del borde.
+      Nombre. Se arma con append y no con capture: el recorte de espacios de
+      Liquid se come los espacios del borde, y la entidad &#32; que se usaba
+      antes perdia su punto y coma al limpiar el separador del CSV.
     {%- endcomment -%}
-    {%- capture nombre -%}{{ product.title }}{%- unless variant.title contains 'Default' -%}&#32;—&#32;{{ variant.title }}{%- endunless -%}{%- endcapture -%}
+    {%- assign nombre = product.title -%}
+    {%- unless variant.title contains 'Default' -%}{%- assign nombre = nombre | append: ' — ' | append: variant.title -%}{%- endunless -%}
 
     {%- comment -%}
       Descripcion. Se sustituyen los cierres de parrafo y de lista por espacios
