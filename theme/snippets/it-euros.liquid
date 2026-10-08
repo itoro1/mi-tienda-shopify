@@ -1,0 +1,15 @@
+{%- comment -%}
+  Euros enteros con punto de miles a partir de un precio en centimos:
+  164900 -> "1.649". Sin simbolo, para que cada sitio ponga el suyo.
+  Uso: {%- render 'it-euros', cents: product.price -%}
+{%- endcomment -%}
+{%- liquid
+  assign e = cents | divided_by: 100
+  if e >= 1000
+    assign miles = e | divided_by: 1000
+    assign resto = e | modulo: 1000 | plus: 1000 | append: '' | slice: 1, 3
+    echo miles | append: '.' | append: resto
+  else
+    echo e
+  endif
+-%}

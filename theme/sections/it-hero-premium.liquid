@@ -1,0 +1,140 @@
+{{ 'it-hero-premium.css' | asset_url | stylesheet_tag }}
+{{ 'it-hero-premium-dark.css' | asset_url | stylesheet_tag }}
+{%- comment -%}
+  El CSS vivia dentro de esta seccion (16 KB en total). Se saco a dos assets
+  para poder editar el marcado sin reenviar la hoja de estilos entera.
+{%- endcomment -%}
+{%- liquid
+  assign hero_handle = section.settings.hero_handle | default: 'iphone-18-pro-max'
+  assign hp = all_products[hero_handle]
+  assign hero_img = section.settings.hero_image
+  if hero_img == blank and hp != blank
+    assign hero_img = hp.featured_image
+  endif
+  assign hero_title = section.settings.heading | default: 'iPhone 18 Pro Max'
+-%}
+<section class="it-hp">
+  <div class="it-hp-inner">
+
+    <div class="it-hp-text">
+      <div class="it-hp-eyebrow-row">
+        <span class="it-hp-dot"></span>
+        <span class="it-hp-eyebrow">{{ section.settings.eyebrow | default: 'Nuevo 2026' }}</span>
+        {%- if section.settings.show_stock -%}
+        <span class="it-hp-stock-pill"><span class="it-hp-stock-dot"></span>{{ section.settings.stock_text | default: 'En stock' }}</span>
+        {%- endif -%}
+      </div>
+
+      <h1 class="it-hp-title">{{ hero_title }}<br><span class="it-hp-title-sub">{{ section.settings.heading2 | default: 'al mejor precio de Espa&ntilde;a.' }}</span></h1>
+
+      {%- comment -%}
+        El precio tachado y el ahorro llevaban "| default: '1.649'" y
+        "| default: '200'". El filtro default de Liquid trata la cadena vacia
+        como "sin valor", asi que vaciar el ajuste no quitaba el tachado: lo
+        dejaba clavado en 1.649. Eso pintaba un descuento inventado sobre
+        cualquier producto, que es justo lo que prohibe la Directiva Omnibus.
+        Ahora cada trozo solo se pinta si tiene valor de verdad.
+      {%- endcomment -%}
+      <div class="it-hp-price-row">
+        {%- comment -%}
+          El precio sale del producto del hero (el mas barato de sus variantes).
+          Escrito a mano se quedaba atras: la portada seguia en 1.800 con el
+          producto ya a 1.649. El ajuste "Precio" solo se usa si el producto
+          no existe.
+        {%- endcomment -%}
+        <span class="it-hp-price">&euro;{%- if hp != blank and hp.price > 0 -%}{%- render 'it-euros', cents: hp.price -%}{%- else -%}{{ section.settings.price }}{%- endif -%}</span>
+        {%- if section.settings.price_compare != blank -%}
+          <span class="it-hp-price-old">&euro;{{ section.settings.price_compare }}</span>
+        {%- endif -%}
+        {%- if section.settings.price_save != blank -%}
+          <span class="it-hp-price-save">Ahorras &euro;{{ section.settings.price_save }}</span>
+        {%- endif -%}
+      </div>
+
+      <div class="it-hp-pills">
+        <span class="it-hp-pill"><span class="it-hp-check"></span>Sellado de f&aacute;brica</span>
+        <span class="it-hp-pill"><span class="it-hp-check"></span>Garant&iacute;a 3 a&ntilde;os</span>
+        <span class="it-hp-pill"><span class="it-hp-check"></span>Env&iacute;o 24h gratis</span>
+        <span class="it-hp-pill"><span class="it-hp-check"></span>100% original</span>
+      </div>
+
+      <div class="it-hp-actions">
+        <a href="{{ section.settings.cta1_url | default: hp.url }}" class="it-hp-cta-primary">
+          {{ section.settings.cta1_text | default: 'Comprar ahora' }}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+        {%- comment -%} El boton 2 solo aparece si tiene texto Y enlace. {%- endcomment -%}
+        {%- if section.settings.cta2_text != blank and section.settings.cta2_url != blank -%}
+          <a href="{{ section.settings.cta2_url }}" class="it-hp-cta-secondary">{{ section.settings.cta2_text }}</a>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%}
+        Los colores se sacan del propio producto del hero. Antes eran enlaces a
+        variantes escritas a mano, que se quedaron apuntando a productos
+        archivados y daban 404 justo bajo el boton principal.
+      {%- endcomment -%}
+      {%- if hp != blank -%}
+        <div class="it-hp-bottom">
+          {%- assign seen = '' -%}
+          {%- for v in hp.variants -%}
+            {%- assign c = v.option2 -%}
+            {%- unless c == blank or seen contains c -%}
+              {%- assign seen = seen | append: c | append: '|' -%}
+              <a href="{{ hp.url }}?variant={{ v.id }}" class="it-hp-color-link">{{ c }}</a>
+            {%- endunless -%}
+          {%- endfor -%}
+          <a href="{{ hp.url }}" class="it-hp-color-link">Ver todos los modelos &rarr;</a>
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="it-hp-visual">
+      <span class="it-hp-glow"></span>
+      <div class="it-hp-frame">
+        <span class="it-hp-frame-chip"><span class="it-hp-chip-dot"></span>Sellado &middot; Nuevo</span>
+        {%- if hero_img != blank -%}
+          <img src="{{ hero_img | image_url: width: 800 }}" alt="{{ hero_title | escape }}" width="800" height="800" loading="eager" class="it-hp-img">
+        {%- else -%}
+          <div class="it-hp-img-ph">{{ hero_title }}</div>
+        {%- endif -%}
+      </div>
+      <div class="it-hp-float it-hp-float-1">
+        <span class="it-hp-float-ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+        </span>
+        <div><p class="it-hp-float-t">Entrega en 24h</p><p class="it-hp-float-s">Gratis con Correos</p></div>
+      </div>
+      <div class="it-hp-float it-hp-float-2">
+        <span class="it-hp-float-ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </span>
+        <div><p class="it-hp-float-t">Garant&iacute;a 3 a&ntilde;os</p><p class="it-hp-float-s">100% original</p></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name":"Hero Premium",
+  "settings":[
+    {"type":"text","id":"hero_handle","label":"Handle del producto del hero (de ahi salen foto y colores)","default":"iphone-18-pro-max"},
+    {"type":"image_picker","id":"hero_image","label":"Imagen del hero (vacio = foto del producto de arriba)"},
+    {"type":"text","id":"eyebrow","label":"Eyebrow","default":"Nuevo 2026"},
+    {"type":"text","id":"heading","label":"Titulo linea 1","default":"iPhone 18 Pro Max"},
+    {"type":"text","id":"heading2","label":"Titulo linea 2","default":"256 GB"},
+    {"type":"text","id":"price","label":"Precio (solo si no hay producto: si lo hay, sale de Shopify)","default":"1.849"},
+    {"type":"text","id":"price_compare","label":"Precio tachado (vacio = no se pinta)"},
+    {"type":"text","id":"price_save","label":"Ahorro mostrado (vacio = no se pinta)"},
+    {"type":"text","id":"cta1_text","label":"Boton 1","default":"Comprar ahora"},
+    {"type":"url","id":"cta1_url","label":"URL boton 1"},
+    {"type":"text","id":"cta2_text","label":"Boton 2 (vacio para ocultarlo)"},
+    {"type":"url","id":"cta2_url","label":"URL boton 2 (vacio para ocultarlo)"},
+    {"type":"checkbox","id":"show_stock","label":"Mostrar etiqueta de stock","default":false},
+    {"type":"text","id":"stock_text","label":"Texto stock","default":"En stock"}
+  ],
+  "presets":[{"name":"Hero Premium"}]
+}
+{% endschema %}
