@@ -46,9 +46,16 @@
     </div>
 
     <p class="it-finder-row-label" style="margin-top:18px">Modelos Pro</p>
-    <div class="it-finder-grid">
-      <a href="/products/iphone-17-pro" class="it-fcard it-fcard--pro it-fcard--new">
+    <div class="it-finder-grid it-finder-grid--6">
+      <a href="/products/iphone-18-pro" class="it-fcard it-fcard--pro it-fcard--new">
         <div class="it-fcard-wrap"><span class="it-fcard-hot">Nuevo</span>
+          <div class="it-fcard-img">{%- assign fp = all_products['iphone-18-pro'] -%}{%- if fp.featured_image -%}<img src="{{ fp.featured_image | image_url: width: 300 }}" alt="iPhone 18 Pro Burdeos" loading="lazy">{%- endif -%}</div>
+        </div>
+        <p class="it-fcard-name">18 Pro</p><p class="it-fcard-price">{%- render 'it-desde', handle: 'iphone-18-pro', fallback: '' -%}</p>
+        <span class="it-fcard-badge it-fcard-badge--new">Sellado</span>
+      </a>
+      <a href="/products/iphone-17-pro" class="it-fcard it-fcard--pro">
+        <div class="it-fcard-wrap">
           <div class="it-fcard-img"><img src="https://cdn.shopify.com/s/files/1/1032/6048/8005/files/hq_17_orange.jpg" alt="iPhone 17 Pro" loading="lazy"></div>
         </div>
         <p class="it-fcard-name">17 Pro</p><p class="it-fcard-price">{%- render 'it-desde', handle: 'iphone-17-pro', fallback: 'desde 1.100&euro;' -%}</p>
@@ -85,9 +92,16 @@
     </div>
 
     <p class="it-finder-row-label" style="margin-top:18px">Modelos Pro Max</p>
-    <div class="it-finder-grid">
-      <a href="/products/iphone-17-pro-max" class="it-fcard it-fcard--pro it-fcard--top">
-        <div class="it-fcard-wrap"><span class="it-fcard-hot it-fcard-hot--top">Top</span>
+    <div class="it-finder-grid it-finder-grid--6">
+      <a href="/products/iphone-18-pro-max" class="it-fcard it-fcard--pro it-fcard--top">
+        <div class="it-fcard-wrap"><span class="it-fcard-hot it-fcard-hot--top">Nuevo</span>
+          <div class="it-fcard-img">{%- assign fp = all_products['iphone-18-pro-max'] -%}{%- if fp.featured_image -%}<img src="{{ fp.featured_image | image_url: width: 300 }}" alt="iPhone 18 Pro Max Burdeos" loading="lazy">{%- endif -%}</div>
+        </div>
+        <p class="it-fcard-name">18 Pro Max</p><p class="it-fcard-price">{%- render 'it-desde', handle: 'iphone-18-pro-max', fallback: '' -%}</p>
+        <span class="it-fcard-badge it-fcard-badge--new">Sellado</span>
+      </a>
+      <a href="/products/iphone-17-pro-max" class="it-fcard it-fcard--pro">
+        <div class="it-fcard-wrap">
           <div class="it-fcard-img"><img src="https://cdn.shopify.com/s/files/1/1032/6048/8005/files/hq_17_orange_c3428b30-757d-4401-bb2d-6b676e05a724.jpg" alt="iPhone 17 Pro Max" loading="lazy"></div>
         </div>
         <p class="it-fcard-name">17 Pro Max</p><p class="it-fcard-price">{%- render 'it-desde', handle: 'iphone-17-pro-max', fallback: 'desde 1.200&euro;' -%}</p>
@@ -124,7 +138,7 @@
     </div>
 
     <div style="text-align:center;margin-top:24px">
-      <a href="/collections/todos-los-iphones" class="it-btn-secondary">Ver cat&aacute;logo completo (17 modelos) &rarr;</a>
+      <a href="/collections/todos-los-iphones" class="it-btn-secondary">Ver cat&aacute;logo completo &rarr;</a>
     </div>
   </div>
 </div>
@@ -136,6 +150,7 @@
 .it-finder-sub{font-size:13px;color:var(--it-muted);margin:0}
 .it-finder-row-label{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--it-muted);margin:0 0 10px;padding:0 2px}
 .it-finder-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.it-finder-grid--6{grid-template-columns:repeat(6,1fr)}
 .it-fcard{display:flex;flex-direction:column;align-items:center;text-decoration:none;color:inherit;padding:10px 6px 12px;border:0.5px solid var(--it-border);border-radius:var(--it-radius-lg);background:var(--it-surface);transition:all .2s;text-align:center;gap:5px;cursor:pointer}
 .it-fcard:hover{border-color:var(--it-border2);transform:translateY(-3px);box-shadow:0 6px 18px rgba(0,0,0,.09)}
 .it-fcard--pro{border-color:rgba(180,140,30,.3);background:linear-gradient(to bottom,rgba(212,175,55,.04),var(--it-surface))}
@@ -161,6 +176,7 @@
 [data-theme=dark] .it-fcard-badge--new{background:rgba(212,175,55,.1);color:var(--it-accent);border-color:rgba(212,175,55,.25)}
 @media(max-width:600px){
   .it-finder-grid{grid-template-columns:repeat(5,1fr);gap:6px}
+  .it-finder-grid--6{grid-template-columns:repeat(3,1fr)}
   .it-fcard{padding:7px 3px 9px;gap:4px}
   .it-fcard-name{font-size:9px}
   .it-fcard-price{font-size:9px}
