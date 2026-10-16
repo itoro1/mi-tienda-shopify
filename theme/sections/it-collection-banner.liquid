@@ -8,8 +8,8 @@
         assign stat2label = 'originales'
         assign stat3num = '24h'
         assign stat3label = 'envío gratis'
-        assign stat4num = '50€'
-        assign stat4label = 'reserva desde'
+        assign stat4num = '14 días'
+        assign stat4label = 'para devolverlo'
 
         if collection.handle == 'todos-los-iphones'
           assign eyebrow = 'Catálogo completo'
@@ -22,16 +22,16 @@
         elsif collection.handle == 'iphones-nuevos-sellados'
           assign eyebrow = 'Nuevos · Sellados · Garantía 3 años'
           assign badge = 'Sellados de fábrica'
-          assign cta1_label = 'Ver iPhone 17 Pro Max'
-          assign cta1_url = '/products/iphone-17-pro-max'
-          assign cta2_label = 'Reservar por 50 €'
-          assign cta2_url = '/products/reserva-de-pedido-iphone-itorostore'
+          assign cta1_label = 'Ver iPhone 18 Pro Max'
+          assign cta1_url = '/products/iphone-18-pro-max'
+          assign cta2_label = 'Ver iPhone 17 Pro Max'
+          assign cta2_url = '/products/iphone-17-pro-max'
           assign show_model_nav = true
         elsif collection.handle contains 'segunda-mano'
           assign eyebrow = 'Revisados · Garantía ITorostore 12 meses'
           assign badge = 'Garantía 12 meses incluida'
-          assign cta1_label = 'Reservar por 50 €'
-          assign cta1_url = '/products/reserva-de-pedido-iphone-itorostore'
+          assign cta1_label = 'Ver iPhone 17 revisado'
+          assign cta1_url = '/products/iphone-17-segunda-mano'
           assign cta2_label = 'Ver nuevos sellados'
           assign cta2_url = '/collections/iphones-nuevos-sellados'
           assign show_model_nav = true
@@ -40,8 +40,8 @@
           assign badge = 'Carga rápida USB-C 20W'
           assign cta1_label = 'Ver todos los iPhones'
           assign cta1_url = '/collections/todos-los-iphones'
-          assign cta2_label = 'Pack iPhone + Cargador'
-          assign cta2_url = '/products/pack-iphone-17-pro-max-512gb-cargador-usb-c-20w-apple'
+          assign cta2_label = 'Pack cargador + cable'
+          assign cta2_url = '/products/pack-cargador-usb-c-20w-cable-usb-c-1m-apple-original'
           assign stat1num = '100%'
           assign stat1label = 'originales'
           assign stat2num = '20W'
@@ -51,20 +51,17 @@
           assign stat4num = 'USB-C'
           assign stat4label = 'y Lightning'
         else
-          assign eyebrow = 'Asegura tu iPhone · Sin riesgo'
-          assign badge = 'Cancelación gratuita'
+          comment
+            Antes este caso era el de la coleccion de reservas ("Asegura tu
+            iPhone", "50 EUR reserva", "cancelacion gratuita"). Ya no se
+            reserva: cualquier otra coleccion usa los datos generales de arriba.
+          endcomment
+          assign eyebrow = 'ITorostore · Envío gratis 24h'
+          assign badge = '100% originales'
           assign cta1_label = 'Ver todos los iPhones'
           assign cta1_url = '/collections/todos-los-iphones'
           assign cta2_label = 'Nuevos sellados'
           assign cta2_url = '/collections/iphones-nuevos-sellados'
-          assign stat1num = '50€'
-          assign stat1label = 'reserva'
-          assign stat2num = '24h'
-          assign stat2label = 'te contactamos'
-          assign stat3num = 'Gratis'
-          assign stat3label = 'cancelación'
-          assign stat4num = '100%'
-          assign stat4label = 'originales'
         endif
       -%}
 
@@ -91,7 +88,7 @@
         </span>
         <span class="it-col-pill">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          WhatsApp 688 809 683
+          WhatsApp 624 15 06 03
         </span>
       </div>
 
@@ -99,7 +96,8 @@
         <div class="it-col-nav">
           <a href="/collections/iphones-nuevos-sellados" class="it-col-nav-chip{% if collection.handle == 'iphones-nuevos-sellados' %} it-col-nav-chip--active{% endif %}">Nuevos sellados</a>
           <a href="/collections/iphones-segunda-mano-1" class="it-col-nav-chip{% if collection.handle contains 'segunda-mano' %} it-col-nav-chip--active{% endif %}">Segunda mano</a>
-          <a href="/products/iphone-17-pro-max" class="it-col-nav-chip it-col-nav-chip--gold">iPhone 17 Pro Max</a>
+          <a href="/products/iphone-18-pro-max" class="it-col-nav-chip it-col-nav-chip--gold">iPhone 18 Pro Max</a>
+          <a href="/products/iphone-17-pro-max" class="it-col-nav-chip">iPhone 17 Pro Max</a>
           <a href="/products/iphone-16-pro-max" class="it-col-nav-chip">iPhone 16 Pro Max</a>
           <a href="/products/iphone-15-pro-max" class="it-col-nav-chip">iPhone 15 Pro Max</a>
         </div>
