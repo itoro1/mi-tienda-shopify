@@ -1,0 +1,181 @@
+<div class="it-col-banner it-col-banner--{{ collection.handle }}">
+  <div class="it-col-banner-inner">
+    <div class="it-col-banner-left">
+      {%- liquid
+        assign stat1num = collection.products_count
+        assign stat1label = 'modelos'
+        assign stat2num = '100%'
+        assign stat2label = 'originales'
+        assign stat3num = '24h'
+        assign stat3label = 'envío gratis'
+        assign stat4num = '50€'
+        assign stat4label = 'reserva desde'
+
+        if collection.handle == 'todos-los-iphones'
+          assign eyebrow = 'Catálogo completo'
+          assign badge = collection.products_count | append: ' modelos disponibles'
+          assign cta1_label = 'Nuevos sellados'
+          assign cta1_url = '/collections/iphones-nuevos-sellados'
+          assign cta2_label = 'Segunda mano'
+          assign cta2_url = '/collections/iphones-segunda-mano-1'
+          assign show_model_nav = true
+        elsif collection.handle == 'iphones-nuevos-sellados'
+          assign eyebrow = 'Nuevos · Sellados · Garantía 3 años'
+          assign badge = 'Sellados de fábrica'
+          assign cta1_label = 'Ver iPhone 17 Pro Max'
+          assign cta1_url = '/products/iphone-17-pro-max'
+          assign cta2_label = 'Reservar por 50 €'
+          assign cta2_url = '/products/reserva-de-pedido-iphone-itorostore'
+          assign show_model_nav = true
+        elsif collection.handle contains 'segunda-mano'
+          assign eyebrow = 'Revisados · Garantía ITorostore 12 meses'
+          assign badge = 'Garantía 12 meses incluida'
+          assign cta1_label = 'Reservar por 50 €'
+          assign cta1_url = '/products/reserva-de-pedido-iphone-itorostore'
+          assign cta2_label = 'Ver nuevos sellados'
+          assign cta2_url = '/collections/iphones-nuevos-sellados'
+          assign show_model_nav = true
+        elsif collection.handle contains 'cargador'
+          assign eyebrow = 'Originales Apple · Envío gratis 24h'
+          assign badge = 'Carga rápida USB-C 20W'
+          assign cta1_label = 'Ver todos los iPhones'
+          assign cta1_url = '/collections/todos-los-iphones'
+          assign cta2_label = 'Pack iPhone + Cargador'
+          assign cta2_url = '/products/pack-iphone-17-pro-max-512gb-cargador-usb-c-20w-apple'
+          assign stat1num = '100%'
+          assign stat1label = 'originales'
+          assign stat2num = '20W'
+          assign stat2label = 'carga rápida'
+          assign stat3num = '24h'
+          assign stat3label = 'envío gratis'
+          assign stat4num = 'USB-C'
+          assign stat4label = 'y Lightning'
+        else
+          assign eyebrow = 'Asegura tu iPhone · Sin riesgo'
+          assign badge = 'Cancelación gratuita'
+          assign cta1_label = 'Ver todos los iPhones'
+          assign cta1_url = '/collections/todos-los-iphones'
+          assign cta2_label = 'Nuevos sellados'
+          assign cta2_url = '/collections/iphones-nuevos-sellados'
+          assign stat1num = '50€'
+          assign stat1label = 'reserva'
+          assign stat2num = '24h'
+          assign stat2label = 'te contactamos'
+          assign stat3num = 'Gratis'
+          assign stat3label = 'cancelación'
+          assign stat4num = '100%'
+          assign stat4label = 'originales'
+        endif
+      -%}
+
+      <span class="it-col-eyebrow">{{ eyebrow }}</span>
+      <h1 class="it-col-title">{{ collection.title }}</h1>
+      {%- if collection.description != blank -%}
+        <p class="it-col-desc">{{ collection.description }}</p>
+      {%- endif -%}
+
+      <div class="it-col-pills">
+        <span class="it-col-pill">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          Envío gratis 24h
+        </span>
+        {%- if badge != blank -%}
+          <span class="it-col-pill it-col-pill--accent">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            {{ badge }}
+          </span>
+        {%- endif -%}
+        <span class="it-col-pill">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Pago seguro
+        </span>
+        <span class="it-col-pill">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          WhatsApp 688 809 683
+        </span>
+      </div>
+
+      {%- if show_model_nav -%}
+        <div class="it-col-nav">
+          <a href="/collections/iphones-nuevos-sellados" class="it-col-nav-chip{% if collection.handle == 'iphones-nuevos-sellados' %} it-col-nav-chip--active{% endif %}">Nuevos sellados</a>
+          <a href="/collections/iphones-segunda-mano-1" class="it-col-nav-chip{% if collection.handle contains 'segunda-mano' %} it-col-nav-chip--active{% endif %}">Segunda mano</a>
+          <a href="/products/iphone-17-pro-max" class="it-col-nav-chip it-col-nav-chip--gold">iPhone 17 Pro Max</a>
+          <a href="/products/iphone-16-pro-max" class="it-col-nav-chip">iPhone 16 Pro Max</a>
+          <a href="/products/iphone-15-pro-max" class="it-col-nav-chip">iPhone 15 Pro Max</a>
+        </div>
+      {%- endif -%}
+
+      {%- if cta1_label != blank or cta2_label != blank -%}
+        <div class="it-col-actions">
+          {%- if cta1_label != blank -%}
+            <a href="{{ cta1_url }}" class="it-btn-primary" style="padding:11px 20px;font-size:13px">{{ cta1_label }}</a>
+          {%- endif -%}
+          {%- if cta2_label != blank -%}
+            <a href="{{ cta2_url }}" class="it-btn-secondary" style="font-size:13px">{{ cta2_label }}</a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+    <div class="it-col-banner-stats">
+      <div class="it-col-stat it-col-stat--accent">
+        <span class="it-col-stat-num">{{ stat1num }}</span>
+        <span class="it-col-stat-label">{{ stat1label }}</span>
+      </div>
+      <div class="it-col-stat">
+        <span class="it-col-stat-num">{{ stat2num }}</span>
+        <span class="it-col-stat-label">{{ stat2label }}</span>
+      </div>
+      <div class="it-col-stat it-col-stat--green">
+        <span class="it-col-stat-num">{{ stat3num }}</span>
+        <span class="it-col-stat-label">{{ stat3label }}</span>
+      </div>
+      <div class="it-col-stat">
+        <span class="it-col-stat-num">{{ stat4num }}</span>
+        <span class="it-col-stat-label">{{ stat4label }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.it-col-banner{border-bottom:0.5px solid var(--it-border);background:var(--it-surface)}
+.it-col-banner--iphones-nuevos-sellados{background:linear-gradient(135deg,var(--it-surface) 55%,rgba(21,128,61,.05) 100%);border-top:2px solid #15803d}
+.it-col-banner--iphones-segunda-mano-1{background:linear-gradient(135deg,var(--it-surface) 55%,rgba(59,130,246,.05) 100%);border-top:2px solid #3b82f6}
+.it-col-banner--todos-los-iphones{background:linear-gradient(135deg,var(--it-surface) 55%,rgba(212,175,55,.05) 100%);border-top:2px solid var(--it-accent)}
+[data-theme="dark"] .it-col-banner--iphones-nuevos-sellados,[data-theme="dark"] .it-col-banner--iphones-segunda-mano-1,[data-theme="dark"] .it-col-banner--todos-los-iphones{background:var(--it-surface)}
+.it-col-banner-inner{max-width:1100px;margin:0 auto;padding:32px 48px;display:flex;gap:32px;align-items:center;flex-wrap:wrap}
+.it-col-banner-left{flex:2;min-width:260px}
+.it-col-eyebrow{display:inline-block;font-size:11px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--it-muted);margin-bottom:8px}
+.it-col-title{font-size:28px;font-weight:600;letter-spacing:-.03em;color:var(--it-text);margin:0 0 10px;line-height:1.1}
+.it-col-desc{font-size:14px;color:var(--it-muted);line-height:1.65;margin:0 0 14px;max-width:520px}
+.it-col-pills{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
+.it-col-pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:500;padding:5px 12px;border-radius:20px;background:var(--it-surface2);border:0.5px solid var(--it-border);color:var(--it-text)}
+.it-col-pill svg{width:12px;height:12px;flex-shrink:0;color:#d4af37;stroke:#d4af37}
+.it-col-pill--accent{background:rgba(21,128,61,.08);border-color:rgba(21,128,61,.25);color:#15803d}
+.it-col-pill--accent svg{color:#15803d;stroke:#15803d}
+[data-theme="dark"] .it-col-pill--accent{background:rgba(212,175,55,.08);border-color:rgba(212,175,55,.25);color:var(--it-accent)}
+[data-theme="dark"] .it-col-pill--accent svg{color:#d4af37;stroke:#d4af37}
+.it-col-nav{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px}
+.it-col-nav-chip{display:inline-flex;align-items:center;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:500;background:var(--it-surface2);border:0.5px solid var(--it-border);color:var(--it-text);text-decoration:none;transition:all .18s}
+.it-col-nav-chip:hover{background:var(--it-surface);border-color:var(--it-text);color:var(--it-text)}
+.it-col-nav-chip--active{background:var(--it-text);color:var(--it-surface);border-color:var(--it-text)}
+.it-col-nav-chip--gold{background:rgba(212,175,55,.10);border-color:rgba(212,175,55,.4);color:#8a6f00;font-weight:600}
+[data-theme="dark"] .it-col-nav-chip--gold{color:#d4af37}
+.it-col-nav-chip--gold:hover{background:rgba(212,175,55,.18);border-color:#d4af37}
+.it-col-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.it-col-banner-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;flex:1;min-width:200px}
+.it-col-stat{background:var(--it-surface2);border:0.5px solid var(--it-border);border-radius:var(--it-radius-lg);padding:14px 16px;text-align:center}
+.it-col-stat--accent{background:rgba(212,175,55,.07);border-color:rgba(212,175,55,.25)}
+.it-col-stat--green{background:rgba(21,128,61,.07);border-color:rgba(21,128,61,.2)}
+.it-col-stat-num{display:block;font-size:22px;font-weight:500;color:var(--it-text);line-height:1;margin-bottom:4px}
+.it-col-stat--accent .it-col-stat-num{color:var(--it-accent)}
+.it-col-stat--green .it-col-stat-num{color:#15803d}
+[data-theme="dark"] .it-col-stat--green .it-col-stat-num{color:#4ade80}
+.it-col-stat-label{display:block;font-size:11px;color:var(--it-hint)}
+@media(max-width:768px){.it-col-banner-inner{flex-direction:column;padding:20px 16px;gap:16px}.it-col-title{font-size:22px}.it-col-banner-stats{grid-template-columns:repeat(4,1fr);gap:8px;width:100%}.it-col-stat{padding:10px 8px}.it-col-stat-num{font-size:16px}}
+@media(max-width:480px){.it-col-banner-stats{grid-template-columns:repeat(2,1fr)}.it-col-actions{flex-direction:column;width:100%}.it-col-actions a{width:100%;justify-content:center;text-align:center}}
+</style>
+
+{% schema %}
+{"name":"Banner de colección","settings":[],"presets":[{"name":"Banner de colección"}]}
+{% endschema %}
