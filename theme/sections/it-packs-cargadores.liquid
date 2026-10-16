@@ -15,6 +15,12 @@
   telefono. Los descuentos pasan a darse uno a uno, no publicados en la web.
 {%- endcomment -%}
 
+{%- comment -%}
+  Al lado de cada precio va el PVP de Apple (metacampo custom.pvp_apple), con
+  la etiqueta "En Apple" siempre pegada: es una comparacion con el fabricante,
+  no un "antes costaba" nuestro (ver snippets/price.liquid).
+{%- endcomment -%}
+
 <div class="it-section it-acc">
   <div class="it-section-inner">
 
@@ -44,8 +50,10 @@
           <div class="it-acc-price">
             {%- if feat.compare_at_price > feat.price -%}<span class="it-acc-old">{{ feat.compare_at_price | money }}</span>{%- endif -%}
             <span class="it-acc-now it-acc-now--lg">{{ feat.price | money }}</span>
+            {%- assign pa = feat.metafields.custom.pvp_apple.value -%}
+            {%- if pa != blank -%}<span class="it-acc-apple">En Apple <s>{{ pa }}</s></span>{%- endif -%}
           </div>
-          <span class="it-acc-hero-cta">{% if feat.available %}Comprar ahora{% else %}Reservar{% endif %} &rarr;</span>
+          <span class="it-acc-hero-cta">Comprar ahora &rarr;</span>
         </div>
       </div>
     </a>
@@ -74,8 +82,10 @@
                 <div class="it-acc-price">
                   {%- if p.compare_at_price > p.price -%}<span class="it-acc-old">{{ p.compare_at_price | money }}</span>{%- endif -%}
                   <span class="it-acc-now">{{ p.price | money }}</span>
+                  {%- assign pa = p.metafields.custom.pvp_apple.value -%}
+                  {%- if pa != blank -%}<span class="it-acc-apple">En Apple <s>{{ pa }}</s></span>{%- endif -%}
                 </div>
-                <span class="it-acc-card-btn">{% if p.available %}Comprar{% else %}Reservar{% endif %}</span>
+                <span class="it-acc-card-btn">Comprar</span>
               </div>
             </div>
           </a>
@@ -106,8 +116,10 @@
                 <div class="it-acc-price">
                   {%- if p.compare_at_price > p.price -%}<span class="it-acc-old">{{ p.compare_at_price | money }}</span>{%- endif -%}
                   <span class="it-acc-now">{{ p.price | money }}</span>
+                  {%- assign pa = p.metafields.custom.pvp_apple.value -%}
+                  {%- if pa != blank -%}<span class="it-acc-apple">En Apple <s>{{ pa }}</s></span>{%- endif -%}
                 </div>
-                <span class="it-acc-card-btn">{% if p.available %}Comprar{% else %}Reservar{% endif %}</span>
+                <span class="it-acc-card-btn">Comprar</span>
               </div>
             </div>
           </a>
@@ -152,7 +164,9 @@
 .it-acc-hero-buy{ display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
 .it-acc-hero-cta{ display:inline-flex; align-items:center; padding:11px 22px; background:var(--it-text); color:var(--it-bg); border-radius:11px; font-size:14px; font-weight:600; white-space:nowrap; transition:opacity .2s; }
 .it-acc-hero:hover .it-acc-hero-cta{ opacity:.88; }
-.it-acc-price{ display:flex; align-items:baseline; gap:9px; }
+.it-acc-price{ display:flex; align-items:baseline; gap:4px 9px; flex-wrap:wrap; }
+.it-acc-apple{ font-size:12px; color:var(--it-muted); white-space:nowrap; }
+.it-acc-apple s{ color:var(--it-hint); }
 .it-acc-old{ font-size:14px; color:var(--it-hint); text-decoration:line-through; font-weight:400; }
 .it-acc-now{ font-size:18px; font-weight:700; color:var(--it-text); letter-spacing:-.01em; }
 .it-acc-now--lg{ font-size:24px; }

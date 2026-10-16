@@ -127,11 +127,38 @@
       anteriores. Nunca hemos vendido al precio de Apple, asi que ponerlo ahi
       seria anunciar un descuento inventado. Como referencia del fabricante, y
       con la etiqueta siempre visible al lado, si es licito.
+
+      En los packs el metacampo guarda el precio de UNA unidad (cargador +
+      cable = 38,00 €). Si la variante elegida es "2 unidades" o "3 unidades",
+      se multiplica por ese numero, para comparar siempre lo mismo con lo mismo.
+      Dawn vuelve a pintar este bloque al cambiar de variante, asi que el
+      tachado y el ahorro siguen a la variante sin JavaScript.
     {%- endcomment -%}
-    {%- assign pvp_apple = product.metafields.custom.pvp_apple.value -%}
-    {%- if pvp_apple != blank -%}
+    {%- liquid
+      assign pvp_apple = product.metafields.custom.pvp_apple.value
+      assign pvp_ahorro = 0
+      if pvp_apple != blank
+        assign pvp_cents = pvp_apple | remove: '€' | remove: ' ' | replace: ',', '.' | times: 100 | round
+        assign pvp_mult = 1
+        if use_variant
+          assign pvp_n = target.title | split: ' ' | first | plus: 0
+          if pvp_n > 1
+            assign pvp_mult = pvp_n
+          endif
+        endif
+        assign pvp_total = pvp_cents | times: pvp_mult
+        assign pvp_ahorro = pvp_total | minus: price
+        if pvp_ahorro > 0
+          assign pvp_pct = pvp_ahorro | times: 100 | divided_by: pvp_total
+        endif
+      endif
+    -%}
+    {%- if pvp_ahorro > 0 -%}
       {{ 'it-pvp.css' | asset_url | stylesheet_tag }}
-      <p class="it-pvp">PVP oficial de Apple <s>{{ pvp_apple }}</s></p>
+      <p class="it-pvp">
+        <span>PVP oficial de Apple <s>{{ pvp_total | money }}</s></span>
+        <span class="it-pvp__ahorro">Ahorras {{ pvp_ahorro | money }} &middot; &minus;{{ pvp_pct }}%</span>
+      </p>
     {%- endif -%}
 
     {%- if show_badges -%}
