@@ -1,25 +1,11 @@
 {%- comment -%}
-  Resenas reales de la ficha de Google Business de ITorostore
-  (CID 1115849531936487308, place_id ChIJ_43DilVzDQ0RjDfcvTxLfA8,
-  feature id 0xd0d73558ac38dff:0xf7c4b3cbddc378c).
-  Leido el 10/10/2026 de maps/preview/place: Google publica
-  4,9 de media sobre 11 resenas (el 02/10 era 4,5 sobre 11; una
-  de 1 estrella se borro y entro otra nueva).
-
-  Aqui van 10 de las 11 (14/10/2026). M.Mar y Alesander se leyeron
-  del propio Google con google-scrape.py, con sus fotos; las fotos de
-  Alberto y Manuel salen de capturas que mando el dueno de la tienda. Google no sirve el
-  texto de todas por esta via. Las notas de Alberto, Manuel y
-  JaVillarta se dedujeron de la aritmetica cuando el total era 8
-  sobre 4,9: la suma solo podia ser 39, o sea una de 4 estrellas
-  (Maria Catalina) y el resto de 5.
-
-  Con 11 resenas y media 4,9 la suma es 54: diez de 5 y una de 4
-  (Maria Catalina). Las 3 que faltan aqui son, por tanto, de 5.
-
-  Sin foto de autor a proposito: rehospedar las caras de los
-  clientes nos haria responsables de sus datos sin base legal, y
-  enlazar a googleusercontent se rompe. La seccion pone la inicial.
+  Resenas de la ficha de Google Business de ITorostore
+  (place_id ChIJ_43DilVzDQ0RjDfcvTxLfA8).
+  Generado por tools/sync_valoraciones.py leyendo maps/preview/place.
+  NO EDITAR A MANO: lo sobrescribe la siguiente ejecucion.
+  4,9 de media sobre 12 resenas.
+  Se ensenan 10 tarjetas de 12 resenas: Google
+  no sirve el texto de todas por esta via.
 {%- endcomment -%}
 {%- assign gg_text = 'Comprar en IToro me ha resultado una muy buena experiencia. Todo fue bien desde el principio. Al poco de pedir el artículo (cargador + cable) me comunicaron que ya lo habían enviado. Y era domingo! Después me han mantenido informada de todo el proceso mediante WhatsApp. Y en 2 días tenía el producto en casa. Todo genial, en su caja sellada y marca original de Apple. Y mucho más barato que en Apple Store. Estoy muy satisfecha con la compra, el servicio y el precio. Volvería a comprar sin dudarlo.|Una compra perfecta, Fernando dueño de “Itoro Store” Súper atento y Un trato perfecto. Me quedé sin teléfono y lo solucionó en el mismo día dándome la unidad que deseaba. Sin duda volveremos en futuras compras|Todo perfecto|El vendedor muy atento. Da muchas explicaciones. Da gusto tratar con él. Recomendable 100%.|Podéis confiar en este vendedor, teléfono precintado y original, trato excepcional, siempre presente y atento. Un 10|Vendedor y producto 10/10. Súper recomendable, muy contenta con la compra, te explica y enseña las comprobaciones del iPhone antes de comprarlo. Sin duda en mi próximo móvil volveré!|Pedí un cable de carga porque me recomendaron itorestore no les conocía me sorprendió muchísimo y me encantó la seriedad y profesionalidad el cable de carga estupendo la atención excelente y la rapidez de entrega una pasada estoy súper contenta por haberlos elegido son geniales me a gustado muchísimo súper comunicativos yo personal mente los recomiendo muy mucho son muy formales y volveré a comprar me a encantado itorestore total confianza muchas gracias|Es la primera vez que les compro. Muy bien. Ràpida la entrega y todo perfecto.|Envío rápido y todo perfecto. Muy amables|Excelente compra. Todo perfecto. Los cargadores Apple son 100% originales, llegaron rapidísimo y perfectamente protegidos. Se nota el cuidado tanto en el embalaje como en el envío. Muy buena experiencia de compra, totalmente recomendable. Sin duda volveré a comprar.' | split: '|' -%}
 {%- assign gg_name = 'M.Mar Trigo Pérez|Alberto Benitez Fernández|Alesander unai Arias|Manuel E. García Mateo|JaVillarta M|Laura Mar Vaz|dolores LOPEZ MONTERO|Maria Catalina Ginestar Giner|BEATRIZ PEREZ|Natalia Panal Puerto' | split: '|' -%}
@@ -30,6 +16,6 @@
 {%- assign gg_pic = 'https://cdn.shopify.com/s/files/1/1032/6048/8005/files/AABkmLdjz9Ba3nrYUlQos3c_mbgCFeRXhgVqjkVfDxjHPO8ZlddOQzjxuibWGo3yjIZXbZ-aBk362KChae9U5_zbqGNrqdp0Bufdh8aYHTNHiipb-PYFA1hPJ01VrLr79Z_stlO-S6arr9hKL_Lj_w1200-h1600-k-no.jpg?v=1791730496|https://cdn.shopify.com/s/files/1/1032/6048/8005/files/g-alberto-caja.jpg?v=1791978318|https://cdn.shopify.com/s/files/1/1032/6048/8005/files/AABkmLdWGWLmt1FE0FbJltlgQGxJrS8Fj31i_T5sfmD6wLqM1KFkyKGX8IOsB73a3TtOKbbwi9VBOdWH9GZyVpFQw0TdrU_5_R6XPScr-zoz7Z7jQxaBPMpHjaBzRsBYBBq_RQ2gz-v7PvCFYUE_w1200-h1600-k-no.jpg?v=1791730496|https://cdn.shopify.com/s/files/1/1032/6048/8005/files/g-manuel-iphone.jpg?v=1791978318| |https://cdn.shopify.com/s/files/1/1032/6048/8005/files/g-laura-iphone.jpg?v=1789057006| | | |https://cdn.shopify.com/s/files/1/1032/6048/8005/files/g-natalia-cargador.jpg?v=1789057006' | split: '|' -%}
 {%- assign gg_total = 10 -%}
 {%- assign gg_avg = '4,9' -%}
-{%- assign gg_count = '11' -%}
+{%- assign gg_count = '12' -%}
 {%- assign gg_url = 'https://g.page/r/CYw33L08S3wPEBM/review' -%}
 {%- assign gg_maps = 'https://search.google.com/local/reviews?placeid=ChIJ_43DilVzDQ0RjDfcvTxLfA8' -%}

@@ -44,3 +44,8 @@
 .card-information .it-pvp{font-size:11.5px;margin-top:3px}
 .card__information .it-pvp__ahorro,
 .card-information .it-pvp__ahorro{font-size:10.5px;padding:1px 6px}
+
+/* Las descripciones de cargadores y packs llevan su propio cuadro de PVP de
+   Apple (clase it-apple-cmp) para el tema antiguo, que no lo pinta junto al
+   precio. En este tema ya sale bajo el precio: se oculta para no repetirlo. */
+.product__description .it-apple-cmp{display:none}

@@ -12,7 +12,9 @@ script es mucho mas simple.
 Variables de entorno:
 
     SHOPIFY_STORE     udyaa4-gf.myshopify.com
-    SHOPIFY_TOKEN     token de app privada con permiso write_themes
+    SHOPIFY_TOKEN     token de app con permiso write_themes (shpat_...), o bien
+    SHOPIFY_CLIENT_ID + SHOPIFY_CLIENT_SECRET de una app del Dev Dashboard
+                      instalada en la tienda: el script pide el token solo.
     WALLAPOP_PROFILE  fernandot-419803299
     GOOGLE_PLACE_ID   ChIJ_43DilVzDQ0RjDfcvTxLfA8
     GOOGLE_FEATURE_ID 0xd0d73558ac38dff:0xf7c4b3cbddc378c
@@ -30,12 +32,14 @@ import urllib.request
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SNIPPETS = os.path.join(RAIZ, "theme", "snippets")
 
-STORE = os.environ.get("SHOPIFY_STORE", "udyaa4-gf.myshopify.com")
+STORE = os.environ.get("SHOPIFY_STORE") or "udyaa4-gf.myshopify.com"
 TOKEN = os.environ.get("SHOPIFY_TOKEN", "")
-WP_PROFILE = os.environ.get("WALLAPOP_PROFILE", "fernandot-419803299")
-GG_PLACE = os.environ.get("GOOGLE_PLACE_ID", "ChIJ_43DilVzDQ0RjDfcvTxLfA8")
-GG_FEATURE = os.environ.get("GOOGLE_FEATURE_ID",
-                            "0xd0d73558ac38dff:0xf7c4b3cbddc378c")
+CLIENT_ID = os.environ.get("SHOPIFY_CLIENT_ID", "")
+CLIENT_SECRET = os.environ.get("SHOPIFY_CLIENT_SECRET", "")
+WP_PROFILE = os.environ.get("WALLAPOP_PROFILE") or "fernandot-419803299"
+GG_PLACE = os.environ.get("GOOGLE_PLACE_ID") or "ChIJ_43DilVzDQ0RjDfcvTxLfA8"
+GG_FEATURE = (os.environ.get("GOOGLE_FEATURE_ID")
+              or "0xd0d73558ac38dff:0xf7c4b3cbddc378c")
 GG_KEY = os.environ.get("GOOGLE_API_KEY", "")
 
 UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
@@ -98,10 +102,21 @@ def leer_wallapop():
         pg.on("response", mirar)
         pg.goto(url, wait_until="domcontentloaded", timeout=90000)
         pg.wait_for_timeout(6000)
-        try:
-            pg.locator("#tab-reviews").click(timeout=15000, force=True)
-        except Exception as e:
-            log("  no se pudo pulsar la pestana:", str(e)[:100])
+        # Wallapop cambia el id de la pestana de vez en cuando (en octubre de
+        # 2026 paso de #tab-reviews a #tabName-reviews). Se prueban varios.
+        pulsada = False
+        for sel in ("#tabName-reviews", "#tab-reviews",
+                    "[role=tab]:has-text('Valoraciones')",
+                    "text=Valoraciones"):
+            try:
+                pg.locator(sel).first.click(timeout=8000, force=True)
+                log("  pestana de valoraciones:", sel)
+                pulsada = True
+                break
+            except Exception:
+                continue
+        if not pulsada:
+            log("  no se pudo pulsar la pestana de valoraciones")
         for _ in range(12):
             if "reviews" in capturado and "summary" in capturado:
                 break
@@ -306,12 +321,34 @@ def actualiza_sello(texto, g, w, wp_escritas):
 # Subida al tema publicado
 # --------------------------------------------------------------------------
 
+def token():
+    """SHOPIFY_TOKEN si lo hay; si no, se pide uno con las credenciales de la
+    app (client credentials). Ese token caduca a las 24 h, que sobra para una
+    ejecucion."""
+    global TOKEN
+    if TOKEN:
+        return TOKEN
+    if not (CLIENT_ID and CLIENT_SECRET):
+        return ""
+    datos = urllib.parse.urlencode({
+        "grant_type": "client_credentials",
+        "client_id": CLIENT_ID,
+        "client_secret": CLIENT_SECRET,
+    }).encode()
+    req = urllib.request.Request(
+        f"https://{STORE}/admin/oauth/access_token", data=datos,
+        headers={"Content-Type": "application/x-www-form-urlencoded"})
+    with urllib.request.urlopen(req, timeout=60) as r:
+        TOKEN = json.loads(r.read())["access_token"]
+    return TOKEN
+
+
 def shopify(query, variables):
     datos = json.dumps({"query": query, "variables": variables}).encode()
     req = urllib.request.Request(
         f"https://{STORE}/admin/api/{API}/graphql.json", data=datos,
         headers={"Content-Type": "application/json",
-                 "X-Shopify-Access-Token": TOKEN})
+                 "X-Shopify-Access-Token": token()})
     with urllib.request.urlopen(req, timeout=60) as r:
         d = json.loads(r.read())
     if d.get("errors"):
@@ -364,35 +401,66 @@ def main():
                     help="escribe en disco pero no sube nada a Shopify")
     args = ap.parse_args()
 
-    log("Leyendo Wallapop...")
-    w = leer_wallapop()
-    # El total de valoraciones del perfil (incluidas las que solo son
-    # estrellas) no viene en el resumen; se conserva el que ya hubiera.
     previo_wp = open(os.path.join(SNIPPETS, "it-wallapop-data.liquid"),
                      encoding="utf-8").read()
-    m = re.search(r"wp_ratings = '(\d+)'", previo_wp)
-    ratings = m.group(1) if m else str(w["total"])
-    log(f"  {len(w['reviews'])} valoraciones, media {w['media']}, "
-        f"{w['total']} escritas, {ratings} en total")
-
-    log("Leyendo Google...")
-    g = leer_google()
-    log(f"  media {g['media']}, {g['total']} resenas, "
-        f"{len(g['resenas'])} con texto ({g['fuente']})")
-
-    if not w["reviews"] or not g["total"]:
-        raise RuntimeError("datos vacios: no publico nada")
-
     previo_gg = open(os.path.join(SNIPPETS, "it-google-data.liquid"),
                      encoding="utf-8").read()
     ruta_sello = os.path.join(SNIPPETS, "it-schema-org.liquid")
     sello = open(ruta_sello, encoding="utf-8").read()
 
-    nuevos = {
-        "snippets/it-wallapop-data.liquid": genera_wallapop(w, ratings),
-        "snippets/it-google-data.liquid": genera_google(g, previo_gg),
-        "snippets/it-schema-org.liquid": actualiza_sello(sello, g, w, w["total"]),
-    }
+    # Cada fuente va por su lado: si Wallapop cambia su web, Google se sigue
+    # actualizando, y al reves. Solo se para si fallan las dos.
+    nuevos = {}
+    log("Leyendo Wallapop...")
+    w = None
+    try:
+        w = leer_wallapop()
+        if not w["reviews"]:
+            raise RuntimeError("lista vacia")
+    except Exception as e:
+        log(f"  AVISO Wallapop: {e}. Se mantienen las valoraciones anteriores.")
+        w = None
+    if w:
+        # El total de valoraciones del perfil (incluidas las que solo son
+        # estrellas) no viene en el resumen; se conserva el que ya hubiera,
+        # subiendolo si ahora hay mas escritas que antes.
+        m = re.search(r"wp_ratings = '(\d+)'", previo_wp)
+        ratings = m.group(1) if m else str(w["total"])
+        m_prev = re.search(r"wp_reviews = '(\d+)'", previo_wp)
+        if m_prev and int(w["total"]) > int(m_prev.group(1)):
+            ratings = str(int(ratings) + int(w["total"]) - int(m_prev.group(1)))
+        log(f"  {len(w['reviews'])} valoraciones, media {w['media']}, "
+            f"{w['total']} escritas, {ratings} en total")
+        nuevos["snippets/it-wallapop-data.liquid"] = genera_wallapop(w, ratings)
+
+    log("Leyendo Google...")
+    g = None
+    try:
+        g = leer_google()
+        if not g["total"]:
+            raise RuntimeError("total vacio")
+        log(f"  media {g['media']}, {g['total']} resenas, "
+            f"{len(g['resenas'])} con texto ({g['fuente']})")
+    except Exception as e:
+        log(f"  AVISO Google: {e}. Se mantienen las resenas anteriores.")
+        g = None
+    if g:
+        nuevos["snippets/it-google-data.liquid"] = genera_google(g, previo_gg)
+
+    if not nuevos:
+        raise RuntimeError("no se ha podido leer ninguna fuente: no publico nada")
+
+    # El sello necesita las dos cifras: la que no se haya podido leer se toma
+    # del fichero que ya habia.
+    if g is None:
+        g = {"media": float(re.search(r"gg_avg = '([\d,]+)'", previo_gg)
+                            .group(1).replace(",", ".")),
+             "total": int(re.search(r"gg_count = '(\d+)'", previo_gg).group(1))}
+    if w is None:
+        w = {"media": float(re.search(r"wp_avg = '([\d,]+)'", previo_wp)
+                            .group(1).replace(",", ".")),
+             "total": int(re.search(r"wp_reviews = '(\d+)'", previo_wp).group(1))}
+    nuevos["snippets/it-schema-org.liquid"] = actualiza_sello(sello, g, w, w["total"])
 
     log("Validando...")
     for n, v in nuevos.items():
@@ -408,9 +476,10 @@ def main():
     if args.dry_run:
         log("--dry-run: no subo nada a Shopify")
         return 0
-    if not TOKEN:
-        log("Sin SHOPIFY_TOKEN: no subo nada")
-        return 1
+    if not token():
+        log("Sin SHOPIFY_TOKEN ni SHOPIFY_CLIENT_ID/SECRET: no subo nada.")
+        log("Los ficheros nuevos se guardan en el repositorio igualmente.")
+        return 0
 
     tema, nombre = tema_publicado()
     log(f"Subiendo al tema publicado: {nombre}")

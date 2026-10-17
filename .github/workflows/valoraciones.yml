@@ -42,6 +42,8 @@ jobs:
         env:
           SHOPIFY_STORE: ${{ vars.SHOPIFY_STORE }}
           SHOPIFY_TOKEN: ${{ secrets.SHOPIFY_TOKEN }}
+          SHOPIFY_CLIENT_ID: ${{ secrets.SHOPIFY_CLIENT_ID }}
+          SHOPIFY_CLIENT_SECRET: ${{ secrets.SHOPIFY_CLIENT_SECRET }}
           WALLAPOP_PROFILE: ${{ vars.WALLAPOP_PROFILE }}
           GOOGLE_PLACE_ID: ${{ vars.GOOGLE_PLACE_ID }}
           GOOGLE_FEATURE_ID: ${{ vars.GOOGLE_FEATURE_ID }}
