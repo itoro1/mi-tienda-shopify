@@ -23,3 +23,7 @@ tienda/justificante-*
 # Basura de Python
 __pycache__/
 *.pyc
+
+# Informes internos (costes de compra, margenes). El repositorio es publico:
+# se quedan solo en local.
+informes/
