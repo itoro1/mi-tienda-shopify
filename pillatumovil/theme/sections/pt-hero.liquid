@@ -1,0 +1,129 @@
+{%- comment -%}
+  Portada: titular grande, dos botones, sellos de confianza y la foto del
+  producto estrella con su precio al lado.
+
+  El producto es un ajuste de la seccion: de el salen foto, precio y PVP de
+  Apple. Cambias el producto y todo lo demas se actualiza solo; no hay
+  precios escritos a mano que se puedan quedar viejos.
+{%- endcomment -%}
+{{ 'pt-base.css' | asset_url | stylesheet_tag }}
+{%- liquid
+  assign p = section.settings.producto
+  assign anim = ''
+  if settings.animations_reveal_on_scroll
+    assign anim = 'scroll-trigger animate--slide-in'
+  endif
+-%}
+<section class="pt pt-hero{% if section.settings.fondo_oscuro %} pt--dark{% endif %}" style="--pt-accent:{{ settings.pt_accent | default: '#ff5a1f' }}">
+  <div class="pt-wrap pt-hero__grid">
+    <div class="pt-hero__copy {{ anim }}">
+      {%- if section.settings.eyebrow != blank -%}<p class="pt-eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+      <h1 class="pt-h1">
+        {{- section.settings.titulo -}}
+        {%- if section.settings.titulo_destacado != blank %} <em>{{ section.settings.titulo_destacado }}</em>{%- endif -%}
+      </h1>
+      {%- if section.settings.texto != blank -%}<p class="pt-lead">{{ section.settings.texto }}</p>{%- endif -%}
+
+      <div class="pt-btns">
+        {%- if section.settings.boton_1 != blank -%}
+          <a class="pt-btn pt-btn--primary" href="{{ section.settings.enlace_1 | default: '#encuentra' }}">{{ section.settings.boton_1 }} <span class="pt-arrow">&rarr;</span></a>
+        {%- endif -%}
+        {%- if section.settings.boton_2 != blank -%}
+          <a class="pt-btn pt-btn--ghost" href="{{ section.settings.enlace_2 | default: routes.all_products_collection_url }}">{{ section.settings.boton_2 }}</a>
+        {%- endif -%}
+      </div>
+
+      <ul class="pt-hero__seals">
+        {%- for i in (1..3) -%}
+          {%- assign key = 'sello_' | append: i -%}
+          {%- if section.settings[key] != blank -%}
+            <li><span class="pt-hero__tick">&#10003;</span>{{ section.settings[key] }}</li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    </div>
+
+    <div class="pt-hero__media {{ anim }}">
+      <span class="pt-hero__glow" aria-hidden="true"></span>
+      {%- if section.settings.etiqueta_imagen != blank -%}
+        <span class="pt-hero__badge">{{ section.settings.etiqueta_imagen }}</span>
+      {%- endif -%}
+      {%- if section.settings.imagen != blank -%}
+        {{ section.settings.imagen | image_url: width: 1100 | image_tag: class: 'pt-hero__img', loading: 'eager', fetchpriority: 'high', sizes: '(min-width: 990px) 50vw, 100vw', widths: '550, 800, 1100' }}
+      {%- elsif p.featured_image -%}
+        {%- assign alt = p.featured_image.alt | default: p.title -%}
+        {{ p.featured_image | image_url: width: 1100 | image_tag: class: 'pt-hero__img', loading: 'eager', fetchpriority: 'high', sizes: '(min-width: 990px) 50vw, 100vw', widths: '550, 800, 1100', alt: alt }}
+      {%- else -%}
+        {{ 'product-1' | placeholder_svg_tag: 'pt-ph pt-hero__img' }}
+      {%- endif -%}
+
+      {%- if p != blank and section.settings.tarjeta_precio -%}
+        <a class="pt-hero__card" href="{{ p.url }}">
+          <span class="pt-hero__card-name">{{ p.title }}</span>
+          {%- render 'pt-precio', product: p -%}
+          <span class="pt-hero__card-cta">Comprar <span class="pt-arrow">&rarr;</span></span>
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+.pt-hero{position:relative;overflow:hidden;padding:clamp(40px,7vw,96px) 0}
+.pt-hero__grid{display:grid;grid-template-columns:1.05fr 1fr;gap:clamp(28px,5vw,72px);align-items:center}
+.pt-hero__seals{list-style:none;display:flex;flex-wrap:wrap;gap:10px 22px;margin:28px 0 0;padding:0}
+.pt-hero__seals li{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--pt-ink)}
+.pt-hero__tick{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;font-size:12px;color:#fff;background:var(--pt-accent)}
+.pt-hero__media{position:relative;aspect-ratio:1/1;border-radius:32px;background:var(--pt-soft);display:grid;place-items:center;overflow:hidden;isolation:isolate}
+.pt-hero__glow{position:absolute;inset:-20%;z-index:-1;background:radial-gradient(closest-side,color-mix(in srgb,var(--pt-accent) 38%,transparent),transparent 70%);filter:blur(10px);animation:pt-glow 9s ease-in-out infinite alternate}
+@keyframes pt-glow{from{transform:translate(-6%,4%) scale(.95)}to{transform:translate(6%,-4%) scale(1.05)}}
+.pt-hero__img{width:78%;height:78%;object-fit:contain;mix-blend-mode:multiply;animation:pt-float 6s ease-in-out infinite}
+.pt--dark .pt-hero__img{mix-blend-mode:normal;width:70%;height:auto;border-radius:28px}
+@keyframes pt-float{50%{transform:translateY(-10px)}}
+.pt-hero__badge{position:absolute;top:20px;right:20px;padding:8px 14px;border-radius:999px;background:var(--pt-ink);color:var(--pt-soft);font-size:12px;font-weight:700;letter-spacing:.04em}
+.pt--dark .pt-hero__badge{background:#fff;color:#0e0f13}
+.pt-hero__card{position:absolute;left:20px;bottom:20px;max-width:min(320px,calc(100% - 40px));display:flex;flex-direction:column;gap:8px;padding:16px 18px;border-radius:18px;text-decoration:none;color:var(--pt-ink);background:color-mix(in srgb,var(--pt-card) 82%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 20px 40px -20px rgba(0,0,0,.35);border:1px solid var(--pt-line);transition:transform .15s ease}
+.pt--dark .pt-hero__card{background:rgba(20,21,26,.75)}
+.pt-hero__card:hover{transform:translateY(-3px)}
+.pt-hero__card-name{font-size:13px;font-weight:600;color:var(--pt-muted)}
+.pt-hero__card-cta{font-size:14px;font-weight:700;color:var(--pt-accent)}
+@media (prefers-reduced-motion:reduce){.pt-hero__glow,.pt-hero__img{animation:none}}
+@media (max-width:989px){
+  .pt-hero__grid{grid-template-columns:1fr}
+  .pt-hero__media{aspect-ratio:auto;display:flex;flex-direction:column;align-items:center;gap:14px;padding:56px 16px 16px}
+  .pt-hero__img{width:min(78%,420px);height:auto;aspect-ratio:1/1}
+  .pt-hero__card{position:static;max-width:none;width:100%}
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PT · Portada",
+  "tag": "div",
+  "class": "pt-section",
+  "settings": [
+    { "type": "header", "content": "Texto" },
+    { "type": "text", "id": "eyebrow", "label": "Antetítulo", "default": "Cargadores y cables originales Apple" },
+    { "type": "text", "id": "titulo", "label": "Titular", "default": "Carga tu iPhone" },
+    { "type": "text", "id": "titulo_destacado", "label": "Final del titular (en color)", "info": "Va pegado al titular y sale con el color de marca.", "default": "como el primer día." },
+    { "type": "textarea", "id": "texto", "label": "Texto de apoyo", "default": "El cargador que ya no viene en la caja. 100 % original Apple, más barato que en Apple y con garantía legal de 3 años." },
+    { "type": "header", "content": "Botones" },
+    { "type": "text", "id": "boton_1", "label": "Botón principal", "default": "Encuentra tu cargador" },
+    { "type": "url", "id": "enlace_1", "label": "Enlace del botón principal", "info": "Si lo dejas vacío, baja al buscador «¿Qué iPhone tienes?» de la portada." },
+    { "type": "text", "id": "boton_2", "label": "Botón secundario", "default": "Ver todo" },
+    { "type": "url", "id": "enlace_2", "label": "Enlace del botón secundario" },
+    { "type": "header", "content": "Sellos de confianza" },
+    { "type": "text", "id": "sello_1", "label": "Sello 1", "default": "Original Apple" },
+    { "type": "text", "id": "sello_2", "label": "Sello 2", "default": "Garantía de 3 años" },
+    { "type": "text", "id": "sello_3", "label": "Sello 3", "default": "14 días para devolver" },
+    { "type": "header", "content": "Producto e imagen" },
+    { "type": "product", "id": "producto", "label": "Producto estrella", "info": "De aquí salen la foto, el precio y el PVP de Apple." },
+    { "type": "checkbox", "id": "tarjeta_precio", "label": "Mostrar tarjeta con el precio", "default": true },
+    { "type": "image_picker", "id": "imagen", "label": "Imagen propia (opcional)", "info": "Si la pones, sustituye a la foto del producto. Mejor PNG con fondo transparente." },
+    { "type": "text", "id": "etiqueta_imagen", "label": "Etiqueta sobre la imagen", "default": "100 % original" },
+    { "type": "header", "content": "Estilo" },
+    { "type": "checkbox", "id": "fondo_oscuro", "label": "Fondo oscuro", "default": false }
+  ],
+  "presets": [{ "name": "PT · Portada" }]
+}
+{% endschema %}

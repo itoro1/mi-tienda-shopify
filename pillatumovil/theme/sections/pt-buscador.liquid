@@ -1,0 +1,116 @@
+{%- comment -%}
+  "¿Que iPhone tienes?": una tarjeta por tipo de conector, cada una con su
+  producto. La duda numero uno al comprar un cargador es cual me vale, y
+  esto la resuelve antes de que el cliente se vaya a buscarlo fuera.
+
+  El dibujo del conector es CSS (no hay imagenes que subir). El ancla
+  #encuentra es a donde apunta el boton principal de la portada.
+{%- endcomment -%}
+{{ 'pt-base.css' | asset_url | stylesheet_tag }}
+<section id="encuentra" class="pt pt-sec pt-find{% if section.settings.fondo_suave %} pt--soft{% endif %}" style="--pt-accent:{{ settings.pt_accent | default: '#ff5a1f' }}">
+  <div class="pt-wrap">
+    <div class="pt-head">
+      {%- if section.settings.eyebrow != blank -%}<p class="pt-eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+      <h2 class="pt-h2">{{ section.settings.titulo }}</h2>
+      {%- if section.settings.texto != blank -%}<p class="pt-lead">{{ section.settings.texto }}</p>{%- endif -%}
+    </div>
+
+    <div class="pt-find__grid">
+      {%- for block in section.blocks -%}
+        {%- assign p = block.settings.producto -%}
+        <div class="pt-find__card" {{ block.shopify_attributes }}>
+          <div class="pt-find__top">
+            <span class="pt-plug pt-plug--{{ block.settings.conector }}" aria-hidden="true"><i></i></span>
+            <div>
+              <p class="pt-find__models">{{ block.settings.modelos }}</p>
+              <p class="pt-find__conn">{{ block.settings.nota }}</p>
+            </div>
+          </div>
+
+          {%- if p != blank -%}
+            <a class="pt-find__prod" href="{{ p.url }}">
+              <span class="pt-find__img">
+                {%- if p.featured_image -%}{{ p.featured_image | image_url: width: 400 | image_tag: loading: 'lazy', widths: '200, 400', sizes: '160px' }}{%- endif -%}
+              </span>
+              <span class="pt-find__info">
+                <span class="pt-find__name">{{ p.title }}</span>
+                {%- render 'pt-precio', product: p -%}
+              </span>
+            </a>
+            <a class="pt-btn pt-btn--primary pt-btn--block" href="{{ p.url }}">{{ block.settings.boton | default: 'Lo quiero' }} <span class="pt-arrow">&rarr;</span></a>
+          {%- else -%}
+            <p class="pt-find__empty">Elige un producto para esta tarjeta en el editor.</p>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+
+    {%- if section.settings.ayuda != blank -%}<p class="pt-find__help">{{ section.settings.ayuda }}</p>{%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+.pt-find__grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;max-width:960px;margin:0 auto}
+.pt-find__card{display:flex;flex-direction:column;gap:18px;padding:24px;border-radius:var(--pt-r);background:var(--pt-card);border:1px solid var(--pt-line);transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease}
+.pt-find__card:hover{border-color:var(--pt-accent);box-shadow:0 24px 50px -30px color-mix(in srgb,var(--pt-accent) 70%,transparent);transform:translateY(-3px)}
+.pt-find__top{display:flex;gap:16px;align-items:center}
+.pt-find__models{margin:0;font-size:18px;font-weight:800;color:var(--pt-ink)}
+.pt-find__conn{margin:2px 0 0;font-size:13.5px;color:var(--pt-muted)}
+.pt-find__prod{display:flex;gap:16px;align-items:center;padding:12px;border-radius:16px;background:var(--pt-soft);text-decoration:none;color:inherit}
+.pt-find__img{flex:none;width:96px;height:96px;border-radius:12px;background:#fff;display:grid;place-items:center;overflow:hidden}
+.pt-find__img img{width:88%;height:88%;object-fit:contain}
+.pt-find__info{display:flex;flex-direction:column;gap:6px;min-width:0}
+.pt-find__name{font-size:14px;font-weight:600;color:var(--pt-ink);line-height:1.3}
+.pt-find__info .pt-price__now{font-size:19px}
+.pt-find__empty{margin:0;padding:20px;border-radius:16px;border:1px dashed var(--pt-line);font-size:14px;color:var(--pt-muted);text-align:center}
+.pt-find__help{margin:24px auto 0;max-width:640px;text-align:center;font-size:14px;color:var(--pt-muted)}
+
+/* Dibujo del conector visto de frente. */
+.pt-plug{flex:none;display:grid;place-items:center;width:64px;height:64px;border-radius:18px;background:color-mix(in srgb,var(--pt-accent) 12%,transparent)}
+.pt-plug i{display:block;background:var(--pt-ink);position:relative}
+.pt-plug--usbc i{width:34px;height:12px;border-radius:7px}
+.pt-plug--usbc i::after{content:"";position:absolute;left:7px;right:7px;top:4px;height:4px;border-radius:2px;background:var(--pt-soft)}
+.pt-plug--lightning i{width:14px;height:34px;border-radius:4px}
+.pt-plug--lightning i::after{content:"";position:absolute;left:4px;right:4px;top:5px;bottom:5px;border-radius:2px;background:repeating-linear-gradient(to bottom,var(--pt-accent) 0 3px,transparent 3px 6px)}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PT · ¿Qué iPhone tienes?",
+  "tag": "div",
+  "class": "pt-section",
+  "max_blocks": 4,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Antetítulo", "default": "En 10 segundos" },
+    { "type": "text", "id": "titulo", "label": "Título", "default": "¿Qué iPhone tienes?" },
+    { "type": "textarea", "id": "texto", "label": "Texto", "default": "Elige tu modelo y te decimos el cargador exacto. Sin dudas y sin devoluciones por equivocarte de cable." },
+    { "type": "text", "id": "ayuda", "label": "Nota al pie", "default": "¿No lo sabes? Mira el puerto de carga: si es ovalado y algo más ancho, es USB-C; si es más fino, es Lightning. Del iPhone 15 en adelante todos llevan USB-C." },
+    { "type": "checkbox", "id": "fondo_suave", "label": "Fondo gris suave", "default": true }
+  ],
+  "blocks": [
+    {
+      "type": "opcion",
+      "name": "Tipo de iPhone",
+      "settings": [
+        { "type": "text", "id": "modelos", "label": "Modelos", "default": "iPhone 15 o posterior" },
+        { "type": "select", "id": "conector", "label": "Dibujo del conector", "default": "usbc", "options": [
+          { "value": "usbc", "label": "USB-C" },
+          { "value": "lightning", "label": "Lightning" }
+        ]},
+        { "type": "text", "id": "nota", "label": "Nota", "default": "Conector USB-C" },
+        { "type": "product", "id": "producto", "label": "Producto recomendado" },
+        { "type": "text", "id": "boton", "label": "Texto del botón", "default": "Lo quiero" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PT · ¿Qué iPhone tienes?",
+      "blocks": [
+        { "type": "opcion", "settings": { "modelos": "iPhone 15, 16, 17 o 18", "conector": "usbc", "nota": "Conector USB-C · el mismo que el iPad o el Mac" } },
+        { "type": "opcion", "settings": { "modelos": "iPhone 8 al 14", "conector": "lightning", "nota": "Conector Lightning · estrecho y plano" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

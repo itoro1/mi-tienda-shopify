@@ -1,0 +1,110 @@
+{
+  "sections": {
+    "hero": {
+      "type": "pt-hero",
+      "settings": {
+        "eyebrow": "Cargadores y cables originales Apple",
+        "titulo": "Carga tu iPhone",
+        "titulo_destacado": "como el primer día.",
+        "texto": "El cargador que ya no viene en la caja. 100 % original Apple, más barato que en Apple y con garantía legal de 3 años.",
+        "boton_1": "Encuentra tu cargador",
+        "enlace_1": "",
+        "boton_2": "Ver todo",
+        "enlace_2": "",
+        "sello_1": "Original Apple",
+        "sello_2": "Garantía de 3 años",
+        "sello_3": "14 días para devolver",
+        "producto": "cargador-usb-c-20w-apple-original",
+        "tarjeta_precio": true,
+        "etiqueta_imagen": "100 % original",
+        "fondo_oscuro": false
+      }
+    },
+    "ventajas": {
+      "type": "pt-ventajas",
+      "blocks": {
+        "v1": { "type": "ventaja", "settings": { "icono": "apple", "titulo": "100 % original Apple", "texto": "Producto nuevo, precintado, en su caja." } },
+        "v2": { "type": "ventaja", "settings": { "icono": "escudo", "titulo": "Garantía legal de 3 años", "texto": "La que marca la ley para producto nuevo." } },
+        "v3": { "type": "ventaja", "settings": { "icono": "devolucion", "titulo": "14 días para devolver", "texto": "Si no te convence, nos lo devuelves." } },
+        "v4": { "type": "ventaja", "settings": { "icono": "candado", "titulo": "Pago seguro", "texto": "Pagos cifrados, sin compartir tus datos." } }
+      },
+      "block_order": ["v1", "v2", "v3", "v4"],
+      "settings": { "titulo": "", "fondo": "blanco" }
+    },
+    "buscador": {
+      "type": "pt-buscador",
+      "blocks": {
+        "usbc": { "type": "opcion", "settings": { "modelos": "iPhone 15, 16, 17 o 18", "conector": "usbc", "nota": "Conector USB-C · el mismo que el iPad o el Mac", "producto": "pack-cargador-usb-c-20w-cable-usb-c-1m-apple-original", "boton": "Lo quiero" } },
+        "lightning": { "type": "opcion", "settings": { "modelos": "iPhone 8 al 14", "conector": "lightning", "nota": "Conector Lightning · estrecho y plano", "producto": "cargador-apple-usb-c", "boton": "Lo quiero" } }
+      },
+      "block_order": ["usbc", "lightning"],
+      "settings": {
+        "eyebrow": "En 10 segundos",
+        "titulo": "¿Qué iPhone tienes?",
+        "texto": "Elige tu modelo y te decimos el cargador exacto. Sin dudas y sin devoluciones por equivocarte de cable.",
+        "ayuda": "¿No lo sabes? Mira el puerto de carga: si es ovalado y algo más ancho, es USB-C; si es más fino, es Lightning. Del iPhone 15 en adelante todos llevan USB-C.",
+        "fondo_suave": true
+      }
+    },
+    "productos": {
+      "type": "pt-productos",
+      "settings": {
+        "eyebrow": "Los más vendidos",
+        "titulo": "Todo lo que necesitas para cargar",
+        "productos": [
+          "cargador-usb-c-20w-apple-original",
+          "pack-cargador-usb-c-20w-cable-usb-c-1m-apple-original",
+          "cable-usb-c-a-usb-c-1m-apple",
+          "cable-usb-c-a-lightning-1m-apple",
+          "cargador-apple-usb-c"
+        ],
+        "maximo": 4,
+        "ver_todo": "Ver todo",
+        "fondo_suave": false
+      }
+    },
+    "pack": {
+      "type": "pt-pack",
+      "settings": {
+        "eyebrow": "El pack completo",
+        "titulo": "Cargador + cable.",
+        "titulo_destacado": "Listo para cargar.",
+        "texto": "Los iPhone nuevos vienen sin cargador. Llévate el adaptador de 20W y el cable originales de Apple juntos y paga menos que por separado.",
+        "pack": "pack-cargador-usb-c-20w-cable-usb-c-1m-apple-original",
+        "incluye": ["cargador-usb-c-20w-apple-original", "cable-usb-c-a-usb-c-1m-apple"],
+        "etiqueta_pack": "Pack completo",
+        "boton": "Quiero el pack",
+        "fondo_oscuro": true
+      }
+    },
+    "faq": {
+      "type": "pt-faq",
+      "blocks": {
+        "q1": { "type": "pregunta", "settings": { "pregunta": "¿Son originales de Apple?", "respuesta": "<p>Sí. Todo lo que vendemos es producto nuevo y original de Apple, en su caja.</p>" } },
+        "q2": { "type": "pregunta", "settings": { "pregunta": "¿Qué cargador necesita mi iPhone?", "respuesta": "<p>El adaptador de 20W vale para cualquier iPhone. Lo que cambia es el cable: del iPhone 15 en adelante es USB-C a USB-C, y del iPhone 8 al 14, USB-C a Lightning.</p>" } },
+        "q3": { "type": "pregunta", "settings": { "pregunta": "¿Carga rápido?", "respuesta": "<p>Sí. Con el adaptador de 20W y el cable USB-C, el iPhone admite carga rápida: según Apple, hasta un 50 % en unos 30 minutos.</p>" } },
+        "q4": { "type": "pregunta", "settings": { "pregunta": "¿Qué garantía tiene?", "respuesta": "<p>La garantía legal de 3 años que marca la ley para producto nuevo.</p>" } },
+        "q5": { "type": "pregunta", "settings": { "pregunta": "¿Puedo devolverlo?", "respuesta": "<p>Sí. Tienes 14 días naturales desde que lo recibes para devolverlo sin dar explicaciones.</p>" } }
+      },
+      "block_order": ["q1", "q2", "q3", "q4", "q5"],
+      "settings": {
+        "eyebrow": "Dudas frecuentes",
+        "titulo": "Lo que nos preguntáis antes de comprar",
+        "texto": "¿Te queda alguna duda? Escríbenos y te contestamos.",
+        "boton": "Contactar",
+        "enlace": "",
+        "abrir_primera": true
+      }
+    },
+    "cta": {
+      "type": "pt-cta",
+      "settings": {
+        "titulo": "Tu iPhone merece su cargador original",
+        "texto": "Original Apple, más barato que en Apple y con 3 años de garantía.",
+        "boton": "Comprar ahora",
+        "enlace": ""
+      }
+    }
+  },
+  "order": ["hero", "ventajas", "buscador", "productos", "pack", "faq", "cta"]
+}

@@ -1,0 +1,101 @@
+{%- comment -%}
+  Preguntas frecuentes en acordeon (details/summary, sin JavaScript). Cada
+  pregunta es un bloque. Tambien escribe el FAQPage de schema.org para que
+  Google pueda sacar las preguntas en los resultados.
+{%- endcomment -%}
+{{ 'pt-base.css' | asset_url | stylesheet_tag }}
+<section class="pt pt-sec pt-faq" style="--pt-accent:{{ settings.pt_accent | default: '#ff5a1f' }}">
+  <div class="pt-wrap pt-faq__grid">
+    <div class="pt-faq__intro">
+      {%- if section.settings.eyebrow != blank -%}<p class="pt-eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+      <h2 class="pt-h2">{{ section.settings.titulo }}</h2>
+      {%- if section.settings.texto != blank -%}<p class="pt-lead">{{ section.settings.texto }}</p>{%- endif -%}
+      {%- if section.settings.boton != blank and section.settings.enlace != blank -%}
+        <div class="pt-btns"><a class="pt-btn pt-btn--ghost" href="{{ section.settings.enlace }}">{{ section.settings.boton }}</a></div>
+      {%- endif -%}
+    </div>
+    <div class="pt-faq__list">
+      {%- for block in section.blocks -%}
+        <details class="pt-faq__item" {{ block.shopify_attributes }}{% if forloop.first and section.settings.abrir_primera %} open{% endif %}>
+          <summary>{{ block.settings.pregunta }}<span class="pt-faq__plus" aria-hidden="true"></span></summary>
+          <div class="pt-faq__a">{{ block.settings.respuesta }}</div>
+        </details>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{%- if section.blocks.size > 0 -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {%- for block in section.blocks -%}
+    {
+      "@type": "Question",
+      "name": {{ block.settings.pregunta | json }},
+      "acceptedAnswer": { "@type": "Answer", "text": {{ block.settings.respuesta | strip_html | json }} }
+    }{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  ]
+}
+</script>
+{%- endif -%}
+
+{% stylesheet %}
+.pt-faq__grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:clamp(24px,5vw,72px);align-items:start}
+.pt-faq__intro{position:sticky;top:110px}
+.pt-faq__list{display:grid;gap:12px}
+.pt-faq__item{border:1px solid var(--pt-line);border-radius:18px;background:var(--pt-card);transition:border-color .2s ease}
+.pt-faq__item[open]{border-color:var(--pt-accent)}
+.pt-faq__item summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:20px 22px;font-size:16px;font-weight:700;color:var(--pt-ink)}
+.pt-faq__item summary::-webkit-details-marker{display:none}
+.pt-faq__plus{flex:none;position:relative;width:28px;height:28px;border-radius:50%;background:var(--pt-soft)}
+.pt-faq__plus::before,.pt-faq__plus::after{content:"";position:absolute;left:50%;top:50%;width:12px;height:2px;margin:-1px 0 0 -6px;background:var(--pt-ink);border-radius:2px;transition:transform .2s ease}
+.pt-faq__plus::after{transform:rotate(90deg)}
+.pt-faq__item[open] .pt-faq__plus{background:var(--pt-accent)}
+.pt-faq__item[open] .pt-faq__plus::before,.pt-faq__item[open] .pt-faq__plus::after{background:#fff}
+.pt-faq__item[open] .pt-faq__plus::after{transform:rotate(0)}
+.pt-faq__a{padding:0 22px 20px;font-size:15px;line-height:1.6;color:var(--pt-muted)}
+.pt-faq__a p{margin:0 0 10px}.pt-faq__a p:last-child{margin:0}
+@media (max-width:989px){.pt-faq__grid{grid-template-columns:1fr}.pt-faq__intro{position:static}}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PT · Preguntas",
+  "tag": "div",
+  "class": "pt-section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Antetítulo", "default": "Dudas frecuentes" },
+    { "type": "text", "id": "titulo", "label": "Título", "default": "Lo que nos preguntáis antes de comprar" },
+    { "type": "textarea", "id": "texto", "label": "Texto", "default": "¿Te queda alguna duda? Escríbenos y te contestamos." },
+    { "type": "text", "id": "boton", "label": "Texto del botón", "default": "Contactar" },
+    { "type": "url", "id": "enlace", "label": "Enlace del botón", "info": "Si lo dejas vacío, el botón no sale." },
+    { "type": "checkbox", "id": "abrir_primera", "label": "Primera pregunta abierta", "default": true }
+  ],
+  "blocks": [
+    {
+      "type": "pregunta",
+      "name": "Pregunta",
+      "settings": [
+        { "type": "text", "id": "pregunta", "label": "Pregunta", "default": "Pregunta" },
+        { "type": "richtext", "id": "respuesta", "label": "Respuesta", "default": "<p>Respuesta</p>" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PT · Preguntas",
+      "blocks": [
+        { "type": "pregunta", "settings": { "pregunta": "¿Son originales de Apple?", "respuesta": "<p>Sí. Todo lo que vendemos es producto nuevo y original de Apple, en su caja.</p>" } },
+        { "type": "pregunta", "settings": { "pregunta": "¿Qué cargador necesita mi iPhone?", "respuesta": "<p>El adaptador de 20W vale para cualquier iPhone. Lo que cambia es el cable: del iPhone 15 en adelante es USB-C a USB-C, y del iPhone 8 al 14, USB-C a Lightning.</p>" } },
+        { "type": "pregunta", "settings": { "pregunta": "¿Carga rápido?", "respuesta": "<p>Sí. Con el adaptador de 20W y el cable USB-C, el iPhone admite carga rápida: según Apple, hasta un 50 % en unos 30 minutos.</p>" } },
+        { "type": "pregunta", "settings": { "pregunta": "¿Qué garantía tiene?", "respuesta": "<p>La garantía legal de 3 años que marca la ley para producto nuevo.</p>" } },
+        { "type": "pregunta", "settings": { "pregunta": "¿Puedo devolverlo?", "respuesta": "<p>Sí. Tienes 14 días naturales desde que lo recibes para devolverlo sin dar explicaciones.</p>" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

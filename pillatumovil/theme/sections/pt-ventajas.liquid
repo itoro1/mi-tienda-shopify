@@ -1,0 +1,82 @@
+{%- comment -%}
+  Franja de ventajas: icono + titulo + texto corto. Cada ventaja es un
+  bloque, asi que se anaden, quitan y reordenan desde el editor.
+{%- endcomment -%}
+{{ 'pt-base.css' | asset_url | stylesheet_tag }}
+<section class="pt pt-vent{% if section.settings.fondo == 'suave' %} pt--soft{% elsif section.settings.fondo == 'oscuro' %} pt--dark{% endif %}" style="--pt-accent:{{ settings.pt_accent | default: '#ff5a1f' }}">
+  <div class="pt-wrap">
+    {%- if section.settings.titulo != blank -%}
+      <div class="pt-head"><h2 class="pt-h2">{{ section.settings.titulo }}</h2></div>
+    {%- endif -%}
+    <ul class="pt-vent__grid">
+      {%- for block in section.blocks -%}
+        <li class="pt-vent__item" {{ block.shopify_attributes }}>
+          <span class="pt-vent__ico">{%- render 'pt-icono', nombre: block.settings.icono -%}</span>
+          <div>
+            <p class="pt-vent__t">{{ block.settings.titulo }}</p>
+            {%- if block.settings.texto != blank -%}<p class="pt-vent__d">{{ block.settings.texto }}</p>{%- endif -%}
+          </div>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+
+{% stylesheet %}
+.pt-vent{padding:clamp(28px,4vw,44px) 0;border-top:1px solid var(--pt-line);border-bottom:1px solid var(--pt-line)}
+.pt-vent .pt-head{margin-bottom:28px}
+.pt-vent__grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:22px 28px}
+.pt-vent__item{display:flex;gap:14px;align-items:flex-start}
+.pt-vent__ico{flex:none;display:grid;place-items:center;width:46px;height:46px;border-radius:14px;color:var(--pt-accent);background:color-mix(in srgb,var(--pt-accent) 12%,transparent)}
+.pt-vent__t{margin:2px 0 4px;font-size:15px;font-weight:700;color:var(--pt-ink)}
+.pt-vent__d{margin:0;font-size:13.5px;line-height:1.45;color:var(--pt-muted)}
+@media (max-width:749px){.pt-vent__grid{grid-template-columns:1fr 1fr;gap:18px 14px}.pt-vent__item{flex-direction:column;gap:10px}}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PT · Ventajas",
+  "tag": "div",
+  "class": "pt-section",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "text", "id": "titulo", "label": "Título (opcional)" },
+    { "type": "select", "id": "fondo", "label": "Fondo", "default": "blanco", "options": [
+      { "value": "blanco", "label": "Blanco" },
+      { "value": "suave", "label": "Gris suave" },
+      { "value": "oscuro", "label": "Oscuro" }
+    ]}
+  ],
+  "blocks": [
+    {
+      "type": "ventaja",
+      "name": "Ventaja",
+      "settings": [
+        { "type": "select", "id": "icono", "label": "Icono", "default": "escudo", "options": [
+          { "value": "apple", "label": "Manzana" },
+          { "value": "escudo", "label": "Escudo (garantía)" },
+          { "value": "rayo", "label": "Rayo (carga rápida)" },
+          { "value": "devolucion", "label": "Flecha (devolución)" },
+          { "value": "envio", "label": "Furgoneta (envío)" },
+          { "value": "candado", "label": "Candado (pago seguro)" },
+          { "value": "chat", "label": "Bocadillo (atención)" },
+          { "value": "estrella", "label": "Estrella" }
+        ]},
+        { "type": "text", "id": "titulo", "label": "Título", "default": "Ventaja" },
+        { "type": "text", "id": "texto", "label": "Texto corto" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PT · Ventajas",
+      "blocks": [
+        { "type": "ventaja", "settings": { "icono": "apple", "titulo": "100 % original Apple", "texto": "Producto nuevo, precintado, en su caja." } },
+        { "type": "ventaja", "settings": { "icono": "escudo", "titulo": "Garantía legal de 3 años", "texto": "La que marca la ley para producto nuevo." } },
+        { "type": "ventaja", "settings": { "icono": "devolucion", "titulo": "14 días para devolver", "texto": "Si no te convence, nos lo devuelves." } },
+        { "type": "ventaja", "settings": { "icono": "candado", "titulo": "Pago seguro", "texto": "Pagos cifrados, sin compartir tus datos." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

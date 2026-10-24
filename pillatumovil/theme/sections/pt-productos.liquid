@@ -1,0 +1,94 @@
+{%- comment -%}
+  Rejilla de productos. Se eligen a mano (lista de productos) o, si la lista
+  esta vacia, salen los de una coleccion. Cada tarjeta lleva el precio con
+  la comparativa frente a Apple (snippets/pt-precio.liquid).
+{%- endcomment -%}
+{{ 'pt-base.css' | asset_url | stylesheet_tag }}
+{%- liquid
+  assign lista = section.settings.productos
+  if lista == blank or lista.size == 0
+    assign lista = section.settings.coleccion.products
+  endif
+  assign maximo = section.settings.maximo
+-%}
+<section class="pt pt-sec pt-prods{% if section.settings.fondo_suave %} pt--soft{% endif %}" style="--pt-accent:{{ settings.pt_accent | default: '#ff5a1f' }}">
+  <div class="pt-wrap">
+    <div class="pt-prods__head">
+      <div>
+        {%- if section.settings.eyebrow != blank -%}<p class="pt-eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+        <h2 class="pt-h2">{{ section.settings.titulo }}</h2>
+      </div>
+      {%- if section.settings.ver_todo != blank -%}
+        <a class="pt-prods__all" href="{{ section.settings.coleccion.url | default: routes.all_products_collection_url }}">{{ section.settings.ver_todo }} <span class="pt-arrow">&rarr;</span></a>
+      {%- endif -%}
+    </div>
+
+    <ul class="pt-prods__grid">
+      {%- for p in lista limit: maximo -%}
+        <li>
+          <a class="pt-card" href="{{ p.url }}">
+            <span class="pt-card__media">
+              {%- if p.featured_image -%}
+                {%- assign alt = p.featured_image.alt | default: p.title -%}
+                {{ p.featured_image | image_url: width: 600 | image_tag: loading: 'lazy', widths: '300, 450, 600', sizes: '(min-width: 990px) 25vw, 50vw', alt: alt }}
+              {%- else -%}
+                {{ 'product-1' | placeholder_svg_tag: 'pt-ph' }}
+              {%- endif -%}
+              {%- unless p.available -%}<span class="pt-card__tag">Agotado</span>{%- endunless -%}
+            </span>
+            <span class="pt-card__body">
+              <span class="pt-card__name">{{ p.title }}</span>
+              {%- render 'pt-precio', product: p -%}
+              <span class="pt-card__btn">{% if p.has_only_default_variant %}Comprar{% else %}Elegir{% endif %} <span class="pt-arrow">&rarr;</span></span>
+            </span>
+          </a>
+        </li>
+      {%- else -%}
+        {%- for i in (1..4) -%}
+          <li><div class="pt-card"><span class="pt-card__media">{{ 'product-' | append: i | placeholder_svg_tag: 'pt-ph' }}</span><span class="pt-card__body"><span class="pt-card__name">Elige productos en el editor</span></span></div></li>
+        {%- endfor -%}
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+
+{% stylesheet %}
+.pt-prods__head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:clamp(24px,3vw,36px)}
+.pt-prods__head .pt-h2{margin-bottom:0}
+.pt-prods__all{font-size:15px;font-weight:700;color:var(--pt-ink);text-decoration:none;white-space:nowrap}
+.pt-prods__grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.pt-card{height:100%;display:flex;flex-direction:column;border-radius:var(--pt-r);background:var(--pt-card);border:1px solid var(--pt-line);overflow:hidden;text-decoration:none;color:inherit;transition:transform .2s ease,box-shadow .2s ease}
+a.pt-card:hover{transform:translateY(-4px);box-shadow:0 26px 50px -30px rgba(0,0,0,.35)}
+.pt-card__media{position:relative;aspect-ratio:1/1;background:var(--pt-soft);display:grid;place-items:center;overflow:hidden}
+.pt-card__media img{width:82%;height:82%;object-fit:contain;mix-blend-mode:multiply;transition:transform .35s ease}
+a.pt-card:hover .pt-card__media img{transform:scale(1.05)}
+.pt-card__tag{position:absolute;top:12px;left:12px;padding:4px 10px;border-radius:999px;background:var(--pt-ink);color:var(--pt-soft);font-size:12px;font-weight:700}
+.pt-card__body{flex:1;display:flex;flex-direction:column;gap:10px;padding:16px 18px 18px}
+.pt-card__name{font-size:15px;font-weight:600;line-height:1.35;color:var(--pt-ink)}
+.pt-card__btn{margin-top:auto;font-size:14px;font-weight:700;color:var(--pt-accent)}
+@media (max-width:989px){.pt-prods__grid{grid-template-columns:repeat(2,1fr);gap:12px}}
+@media (max-width:749px){
+  .pt-card__body{padding:12px 12px 14px}
+  .pt-card__name{font-size:13.5px}
+  .pt-card .pt-price__now{font-size:18px}
+  .pt-card .pt-save{font-size:11px}
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PT · Productos",
+  "tag": "div",
+  "class": "pt-section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Antetítulo", "default": "Los más vendidos" },
+    { "type": "text", "id": "titulo", "label": "Título", "default": "Todo lo que necesitas para cargar" },
+    { "type": "product_list", "id": "productos", "label": "Productos", "limit": 12, "info": "Elige y ordena los productos. Si lo dejas vacío, salen los de la colección de abajo." },
+    { "type": "collection", "id": "coleccion", "label": "Colección (si no eliges productos)" },
+    { "type": "range", "id": "maximo", "label": "Máximo de productos", "min": 2, "max": 12, "step": 1, "default": 8 },
+    { "type": "text", "id": "ver_todo", "label": "Texto del enlace «ver todo»", "default": "Ver todo" },
+    { "type": "checkbox", "id": "fondo_suave", "label": "Fondo gris suave", "default": false }
+  ],
+  "presets": [{ "name": "PT · Productos" }]
+}
+{% endschema %}

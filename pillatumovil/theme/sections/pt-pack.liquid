@@ -1,0 +1,102 @@
+{%- comment -%}
+  Banner del pack: "llevatelo todo y ahorra". Las tres cifras se calculan:
+  - Pack: precio del producto elegido.
+  - Por separado: suma de los productos sueltos que incluye.
+  - En Apple: metacampo custom.pvp_apple del pack.
+  Si una cifra no sale mas cara que el pack, esa fila no se pinta: asi no
+  hay forma de anunciar un ahorro que no existe.
+{%- endcomment -%}
+{{ 'pt-base.css' | asset_url | stylesheet_tag }}
+{%- liquid
+  assign p = section.settings.pack
+  assign suelto = 0
+  for s in section.settings.incluye
+    assign suelto = suelto | plus: s.price
+  endfor
+  assign pa = p.metafields.custom.pvp_apple.value
+  assign pa_cents = 0
+  if pa != blank
+    assign pa_cents = pa | remove: '€' | remove: ' ' | remove: '.' | replace: ',', '.' | strip | times: 100 | round
+  endif
+-%}
+<section class="pt pt-sec pt-pack{% if section.settings.fondo_oscuro %} pt--dark{% endif %}" style="--pt-accent:{{ settings.pt_accent | default: '#ff5a1f' }}">
+  <div class="pt-wrap">
+    <div class="pt-pack__box">
+      <div class="pt-pack__copy">
+        {%- if section.settings.eyebrow != blank -%}<p class="pt-eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+        <h2 class="pt-h2">{{ section.settings.titulo }}{% if section.settings.titulo_destacado != blank %} <em>{{ section.settings.titulo_destacado }}</em>{% endif %}</h2>
+        {%- if section.settings.texto != blank -%}<p class="pt-lead">{{ section.settings.texto }}</p>{%- endif -%}
+
+        {%- if p != blank -%}
+          <dl class="pt-pack__rows">
+            {%- if pa_cents > p.price -%}
+              <div><dt>En Apple</dt><dd><s>{{ pa_cents | money }}</s></dd></div>
+            {%- endif -%}
+            {%- if suelto > p.price -%}
+              <div><dt>Por separado aquí</dt><dd><s>{{ suelto | money }}</s></dd></div>
+            {%- endif -%}
+            <div class="pt-pack__total"><dt>{{ section.settings.etiqueta_pack }}</dt><dd>{{ p.price | money }}</dd></div>
+          </dl>
+          {%- if pa_cents > p.price -%}
+            <p class="pt-pack__save"><span class="pt-save">Ahorras {{ pa_cents | minus: p.price | money }} frente a Apple</span></p>
+          {%- endif -%}
+          <div class="pt-btns">
+            <a class="pt-btn pt-btn--primary" href="{{ p.url }}">{{ section.settings.boton }} <span class="pt-arrow">&rarr;</span></a>
+          </div>
+        {%- else -%}
+          <p class="pt-lead">Elige el pack en el editor para mostrar precios y botón.</p>
+        {%- endif -%}
+      </div>
+
+      <div class="pt-pack__media">
+        <span class="pt-pack__glow" aria-hidden="true"></span>
+        {%- if section.settings.imagen != blank -%}
+          {{ section.settings.imagen | image_url: width: 900 | image_tag: loading: 'lazy', widths: '450, 700, 900', sizes: '(min-width: 990px) 45vw, 100vw' }}
+        {%- elsif p.featured_image -%}
+          {%- assign alt = p.featured_image.alt | default: p.title -%}
+          {{ p.featured_image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '450, 700, 900', sizes: '(min-width: 990px) 45vw, 100vw', alt: alt }}
+        {%- else -%}
+          {{ 'product-2' | placeholder_svg_tag: 'pt-ph' }}
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+.pt-pack__box{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,4vw,56px);align-items:center;padding:clamp(24px,4vw,56px);border-radius:32px;background:var(--pt-soft);border:1px solid var(--pt-line);position:relative;overflow:hidden}
+.pt-pack__rows{margin:26px 0 0;display:grid;gap:10px;max-width:380px}
+.pt-pack__rows div{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding-bottom:10px;border-bottom:1px dashed var(--pt-line)}
+.pt-pack__rows dt{font-size:15px;color:var(--pt-muted)}
+.pt-pack__rows dd{margin:0;font-size:17px;font-weight:600;color:var(--pt-muted)}
+.pt-pack__rows .pt-pack__total{border-bottom:0;padding-bottom:0}
+.pt-pack__total dt{font-weight:700;color:var(--pt-ink)}
+.pt-pack__total dd{font-size:34px;font-weight:800;color:var(--pt-ink);letter-spacing:-.02em}
+.pt-pack__save{margin:14px 0 0}
+.pt-pack__save .pt-save{font-size:14px;padding:6px 12px}
+.pt-pack__media{position:relative;aspect-ratio:1/1;display:grid;place-items:center;isolation:isolate}
+.pt-pack__media img,.pt-pack__media svg{width:80%;height:auto;aspect-ratio:1/1;object-fit:contain;border-radius:28px;background:#fff;box-shadow:0 40px 70px -35px rgba(0,0,0,.55)}
+.pt-pack__glow{position:absolute;inset:0;z-index:-1;border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--pt-accent) 30%,transparent),transparent 72%)}
+@media (max-width:989px){.pt-pack__box{grid-template-columns:1fr}.pt-pack__media{order:-1;max-width:420px;margin:0 auto;width:100%}}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PT · Pack",
+  "tag": "div",
+  "class": "pt-section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Antetítulo", "default": "El pack completo" },
+    { "type": "text", "id": "titulo", "label": "Título", "default": "Cargador + cable." },
+    { "type": "text", "id": "titulo_destacado", "label": "Final del título (en color)", "default": "Listo para cargar." },
+    { "type": "textarea", "id": "texto", "label": "Texto", "default": "Los iPhone nuevos vienen sin cargador. Llévate el adaptador de 20W y el cable originales de Apple juntos y paga menos que por separado." },
+    { "type": "product", "id": "pack", "label": "Producto del pack", "info": "De aquí salen la foto, el precio y el PVP de Apple." },
+    { "type": "product_list", "id": "incluye", "label": "Productos sueltos que incluye", "limit": 4, "info": "Sirve para calcular la fila «Por separado». Si lo dejas vacío, esa fila no sale." },
+    { "type": "text", "id": "etiqueta_pack", "label": "Etiqueta del precio del pack", "default": "Pack completo" },
+    { "type": "text", "id": "boton", "label": "Texto del botón", "default": "Quiero el pack" },
+    { "type": "image_picker", "id": "imagen", "label": "Imagen propia (opcional)" },
+    { "type": "checkbox", "id": "fondo_oscuro", "label": "Fondo oscuro", "default": true }
+  ],
+  "presets": [{ "name": "PT · Pack" }]
+}
+{% endschema %}
