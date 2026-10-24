@@ -1,0 +1,272 @@
+{%- comment -%}
+  Portada: la oferta del pack (cargador + cable), lo mas atractivo de la
+  tienda, en primer plano.
+
+  - Escena 3D con dos cajas con volumen (adaptador delante, cable detras).
+    La escena se inclina siguiendo el raton o el dedo (assets/pt-cine.js,
+    [data-pt-tilt]) y entra una sola vez desde la oscuridad.
+  - Selector "Mi iPhone es del ...": cada opcion es un bloque con su pack,
+    la foto de su cable y el texto de lo que incluye. Al elegir, cambian la
+    caja del cable, el precio, el ahorro y el boton. Sin JavaScript: radios
+    + :has(). Sin :has() se ven todas las opciones, que sigue siendo valido.
+
+  Precios en formato espanol ("25,99 €") con money_without_currency, para no
+  depender del formato de moneda de la tienda.
+{%- endcomment -%}
+{{ 'pt-base.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'pt-cine.js' | asset_url }}" defer></script>
+{%- liquid
+  assign adaptador = section.settings.adaptador
+  assign hay = 0
+  for block in section.blocks
+    if block.settings.pack != blank
+      assign hay = hay | plus: 1
+    endif
+  endfor
+-%}
+<section id="encuentra" class="pt pt-of" data-pt-oferta style="--pt-accent:{{ settings.pt_accent | default: '#c9a86a' }}">
+  <span class="pt-of__foco" aria-hidden="true"></span>
+  <div class="pt-wrap pt-of__grid">
+    <div class="pt-of__titulo">
+      {%- if section.settings.etiqueta != blank -%}<p class="pt-of__pill">{{ section.settings.etiqueta }}</p>{%- endif -%}
+      <h1 class="pt-h1 pt-of__h1">
+        {%- assign lineas = section.settings.titulo | newline_to_br | split: '<br />' -%}
+        {%- for l in lineas -%}<span class="pt-of__linea" style="--i:{{ forloop.index0 }}">{{ l | strip }}</span>{%- endfor -%}
+      </h1>
+      {%- if section.settings.texto != blank -%}<p class="pt-lead">{{ section.settings.texto }}</p>{%- endif -%}
+    </div>
+
+    <div class="pt-of__escena" data-pt-tilt aria-hidden="true">
+      <span class="pt-of__aura"></span>
+      <span class="pt-of__podio"><span class="pt-of__podio-cuerpo"></span><span class="pt-of__podio-tapa"></span></span>
+      <span class="pt-of__suelo"></span>
+      <div class="pt-of__grupo">
+        {%- render 'pt-caja3d', img: adaptador, pestana: 0.15, clase: 'pt-of__caja pt-of__caja--a' -%}
+        {%- for block in section.blocks -%}
+          {%- if block.settings.cable != blank -%}
+            {%- render 'pt-caja3d', img: block.settings.cable, pestana: 0.15, clase: 'pt-of__caja pt-of__caja--b', id: block.id -%}
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+      <span class="pt-of__barrido"></span>
+    </div>
+
+    <div class="pt-of__compra">
+      {%- if hay > 0 or request.design_mode -%}
+        <fieldset class="pt-of__sel">
+          <legend>{{ section.settings.pregunta }}</legend>
+          <div class="pt-of__opciones">
+            {%- assign marcado = false -%}
+            {%- for block in section.blocks -%}
+              {%- if block.settings.pack == blank and request.design_mode == false -%}{%- continue -%}{%- endif -%}
+              <input class="pt-of__in" type="radio" name="pt-of-{{ section.id }}" id="pt-of-{{ block.id }}"{% unless marcado %} checked{% endunless %}>
+              {%- assign marcado = true -%}
+              <label class="pt-of__op" for="pt-of-{{ block.id }}" {{ block.shopify_attributes }}>
+                <span class="pt-of__op-mod">{{ block.settings.modelos }}</span>
+                <span class="pt-of__op-con">{{ block.settings.conector }}</span>
+              </label>
+            {%- endfor -%}
+          </div>
+        </fieldset>
+
+        {%- for block in section.blocks -%}
+          {%- assign p = block.settings.pack -%}
+          {%- if p == blank -%}
+            {%- if request.design_mode -%}<p class="pt-of__panel pt-of__falta" data-op="{{ block.id }}">Elige el pack de «{{ block.settings.modelos }}».</p>{%- endif -%}
+            {%- continue -%}
+          {%- endif -%}
+          {%- liquid
+            assign pa = p.metafields.custom.pvp_apple.value
+            assign pa_cents = 0
+            if pa != blank
+              assign pa_cents = pa | remove: '€' | remove: ' ' | remove: '.' | replace: ',', '.' | strip | times: 100 | round
+            endif
+            assign precio = p.variants.first.price
+            assign ahorro = pa_cents | minus: precio
+            assign pct = 0
+            if ahorro > 0
+              assign pct = ahorro | times: 100.0 | divided_by: pa_cents | floor
+            endif
+          -%}
+          <div class="pt-of__panel" data-op="{{ block.id }}">
+            <p class="pt-of__precio">
+              <span class="pt-of__num">{{ precio | money_without_currency }}<span class="pt-eur">€</span></span>
+              {%- if pa_cents > precio -%}<span class="pt-of__ref">En Apple <s>{{ pa_cents | money_without_currency }} €</s></span>{%- endif -%}
+            </p>
+            {%- if ahorro > 0 -%}<p class="pt-of__ahorro"><span class="pt-save">Ahorra {{ ahorro | money_without_currency }} € ({{ pct }} %)</span></p>{%- endif -%}
+            {%- if block.settings.incluye != blank -%}<p class="pt-of__inc">{{ block.settings.incluye }}</p>{%- endif -%}
+            <div class="pt-btns">
+              <a class="pt-btn" href="{{ p.url }}">{{ block.settings.boton | default: 'Comprar el pack' }}</a>
+              {%- if section.settings.enlace_2 != blank -%}<a class="pt-link" href="{{ section.settings.enlace_2 }}">{{ section.settings.boton_2 }}</a>{%- endif -%}
+            </div>
+          </div>
+        {%- endfor -%}
+      {%- endif -%}
+
+      <ul class="pt-of__sellos" role="list">
+        {%- for i in (1..3) -%}
+          {%- assign k = 'sello_' | append: i -%}
+          {%- if section.settings[k] != blank -%}<li><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><circle cx="8" cy="8" r="7.25" fill="none" stroke="currentColor" stroke-width="1"/><path d="M4.8 8.2 7 10.3l4.2-4.4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>{{ section.settings[k] }}</li>{%- endif -%}
+        {%- endfor -%}
+      </ul>
+    </div>
+  </div>
+
+  <style>
+    @supports selector(:has(*)) {
+      #shopify-section-{{ section.id }} .pt-of__panel { display: none; }
+      #shopify-section-{{ section.id }} .pt-of__caja--b { opacity: 0; }
+      {%- for block in section.blocks %}
+      #shopify-section-{{ section.id }} .pt-of:has(#pt-of-{{ block.id }}:checked) [data-op="{{ block.id }}"] { display: block; }
+      #shopify-section-{{ section.id }} .pt-of:has(#pt-of-{{ block.id }}:checked) [data-caja="{{ block.id }}"] { opacity: 1; }
+      {%- endfor %}
+    }
+  </style>
+</section>
+
+{% stylesheet %}
+.pt-of{position:relative;overflow:hidden;isolation:isolate;padding:clamp(40px,6vw,88px) 0 clamp(56px,7vw,104px);
+  background:radial-gradient(90% 80% at 72% 30%,#1b2440 0%,#0f1424 45%,#0b0f1a 100%)}
+.pt-of__foco{position:absolute;z-index:-1;top:-35%;left:70%;width:60vw;height:110%;transform:translateX(-50%);pointer-events:none;
+  background:radial-gradient(closest-side,rgba(231,211,166,.20),rgba(231,211,166,.05) 55%,transparent 75%);filter:blur(10px)}
+.pt-of__grid{display:grid;grid-template-columns:1fr 1.05fr;grid-template-areas:"titulo escena" "compra escena";column-gap:clamp(24px,5vw,80px);align-items:center}
+.pt-of__titulo{grid-area:titulo;align-self:end}
+.pt-of__escena{grid-area:escena}
+.pt-of__compra{grid-area:compra;align-self:start;margin-top:28px}
+
+.pt-of__pill{display:inline-block;margin:0 0 22px;padding:7px 14px;border-radius:999px;font-size:13px;font-weight:600;letter-spacing:.02em;color:var(--pt-oro-claro);box-shadow:inset 0 0 0 1px rgba(201,168,106,.45);background:rgba(201,168,106,.08)}
+.pt-of .pt-of__h1{font-size:clamp(40px,4.4vw,66px);line-height:1.02}
+.pt-of__linea{display:block;opacity:0;transform:translateY(.3em);animation:pt-of-linea 1.1s cubic-bezier(.2,.7,.2,1) forwards;animation-delay:calc(.35s + var(--i) * .14s)}
+@keyframes pt-of-linea{to{opacity:1;transform:none}}
+
+/* Selector "Mi iPhone es del..." */
+.pt-of__sel{border:0;margin:0;padding:0;min-width:0}
+.pt-of__sel legend{padding:0;margin-bottom:12px;font-size:14px;color:var(--pt-muted)}
+.pt-of__opciones{display:inline-flex;flex-wrap:wrap;gap:6px;padding:5px;border-radius:999px;background:rgba(244,239,230,.06);box-shadow:inset 0 0 0 1px var(--pt-line)}
+.pt-of__in{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+.pt-of__op{display:flex;align-items:baseline;gap:8px;padding:11px 20px;border-radius:999px;cursor:pointer;color:var(--pt-muted);transition:background-color .25s ease,color .25s ease}
+.pt-of__op:hover{color:var(--pt-ink)}
+.pt-of__op-mod{font-size:15px;font-weight:700}
+.pt-of__op-con{font-size:12px;opacity:.75}
+.pt-of__in:checked + .pt-of__op{background:var(--pt-ink);color:#0b0f1a}
+.pt-of__in:focus-visible + .pt-of__op{outline:2px solid var(--pt-oro);outline-offset:2px}
+
+/* Precio de la opcion elegida */
+.pt-of__panel{margin-top:26px;animation:pt-of-panel .45s ease}
+@keyframes pt-of-panel{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.pt-of__precio{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 18px;margin:0}
+.pt-of__num{font-family:var(--font-heading-family);font-size:clamp(56px,6vw,84px);line-height:1;letter-spacing:-.02em;background:var(--pt-oro-grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.pt-of__ref{font-size:16px;color:var(--pt-muted)}
+.pt-of__ahorro{margin:12px 0 0}
+.pt-of__ahorro .pt-save{font-size:14px;padding:6px 12px;margin:0}
+.pt-of__inc{margin:14px 0 0;font-size:15px;color:var(--pt-muted)}
+.pt-of__falta{color:var(--pt-muted)}
+.pt-of__sellos{list-style:none;display:flex;flex-wrap:wrap;gap:10px 24px;margin:30px 0 0;padding:22px 0 0;border-top:1px solid var(--pt-line)}
+.pt-of__sellos li{display:flex;align-items:center;gap:9px;font-size:14px;color:var(--pt-ink)}
+.pt-of__sellos svg{flex:none;color:var(--pt-oro)}
+
+/* Escena 3D */
+.pt-of__escena{position:relative;height:clamp(380px,44vw,600px);perspective:1700px;touch-action:pan-y;user-select:none}
+/* Plato: foco cenital suave y una peana satinada con filo de oro. Las
+   cajas apoyan sobre la tapa de la peana, con su sombra de contacto. */
+.pt-of__aura{position:absolute;left:50%;top:-14%;width:120%;height:100%;transform:translateX(-50%);pointer-events:none;
+  background:radial-gradient(28% 55% at 50% 0%,rgba(255,244,220,.22),rgba(255,244,220,.06) 55%,transparent 80%);filter:blur(6px)}
+.pt-of__podio{--p:calc(var(--w,220px) * 2.9);position:absolute;left:50%;bottom:calc(30% - var(--p) * .3);width:var(--p);height:calc(var(--p) * .43);transform:translateX(-50%)}
+.pt-of__podio-cuerpo{position:absolute;left:0;right:0;top:calc(var(--p) * .135);bottom:0;border-radius:0 0 50% 50% / 0 0 calc(var(--p) * .135) calc(var(--p) * .135);
+  background:linear-gradient(90deg,#070a12 0%,#1b2236 22%,#2b3450 46%,#1c2338 70%,#070a12 100%)}
+.pt-of__podio-cuerpo::after{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,#e9d5a3 30%,#c9a86a 70%,transparent)}
+.pt-of__podio-tapa{position:absolute;left:0;top:0;width:100%;height:calc(var(--p) * .27);border-radius:50%;
+  background:radial-gradient(50% 55% at 46% 42%,#3a4566 0%,#232b43 45%,#151b2d 100%);
+  box-shadow:inset 0 0 0 1.5px rgba(233,213,163,.85),inset 0 -6px 18px rgba(0,0,0,.45)}
+.pt-of__suelo{position:absolute;left:50%;bottom:calc(30% - var(--w,220px) * .98);width:calc(var(--w,220px) * 3.4);height:calc(var(--w,220px) * .5);transform:translateX(-50%);border-radius:50%;
+  background:radial-gradient(closest-side,rgba(0,0,0,.55),transparent);filter:blur(8px);z-index:-1}
+.pt-of__escena{--w:clamp(140px,14.5vw,216px)}
+.pt-of__grupo{position:absolute;inset:0;transform-style:preserve-3d;transform:rotateX(var(--rx,-13deg)) rotateY(var(--ry,-34deg));will-change:transform}
+.pt-of__caja{left:50%;bottom:30%}
+.pt-of__caja--a{transform:translate3d(calc(var(--w) * -1),0,calc(var(--w) * .5))}
+.pt-of__caja--b{transform:translate3d(calc(var(--w) * .02),0,calc(var(--w) * -.45));transition:opacity .5s ease}
+.pt-of__barrido{position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen;opacity:0;
+  background:linear-gradient(105deg,transparent 35%,rgba(255,240,205,.55) 50%,transparent 65%);background-size:250% 100%}
+.pt-of.is-entrando .pt-of__barrido{animation:pt-of-barrido 2.2s ease .9s forwards}
+@keyframes pt-of-barrido{0%{opacity:1;background-position:120% 0}100%{opacity:0;background-position:-30% 0}}
+.pt-of.is-entrando .pt-of__grupo{animation:pt-of-luz 2s ease forwards}
+@keyframes pt-of-luz{from{filter:brightness(.1)}to{filter:brightness(1)}}
+
+/* Caja con volumen (snippets/pt-caja3d.liquid) */
+.pt-c3{--h:calc(var(--w) / var(--ar) * (1 - var(--pest)));--d:calc(var(--w) * .42);position:absolute;width:var(--w);height:var(--h);transform-style:preserve-3d}
+/* Dawn oculta los div vacios (base.css: div:empty{display:none}); los
+   laterales y la tapa estan vacios a proposito, asi que se fuerzan aqui. */
+.pt-c3 > .pt-c3__f{display:block}
+.pt-c3__f{position:absolute;left:0;top:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.pt-c3__frente,.pt-c3__trasera{width:var(--w);height:var(--h)}
+.pt-c3__frente{transform:translateZ(calc(var(--d) / 2))}
+.pt-c3__frente{overflow:hidden}
+.pt-c3 > .pt-c3__sombra{display:block;position:absolute;left:-8%;width:116%;height:var(--d);top:calc(var(--h) - var(--d) / 2);transform:rotateX(90deg) translateZ(calc(var(--d) / -2 + 1px));
+  background:radial-gradient(closest-side,rgba(0,0,0,.75),rgba(0,0,0,.25) 60%,transparent);border-radius:50%}
+.pt-c3__frente img{position:absolute;left:0;bottom:0;width:100%;height:auto;pointer-events:none}
+.pt-c3 > .pt-c3__pestana{display:block;position:absolute;left:0;width:var(--w);height:calc(var(--w) / var(--ar) * var(--pest) + 2px);top:calc(var(--w) / var(--ar) * var(--pest) * -1);
+  background-repeat:no-repeat;background-size:100% auto;background-position:top center;transform:translateZ(calc(var(--d) / -2 + 1px))}
+.pt-c3__brillo{position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,255,255,.18),transparent 40%);pointer-events:none}
+.pt-c3__trasera{transform:rotateY(180deg) translateZ(calc(var(--d) / 2));background:#e9ebee}
+.pt-c3__dcha,.pt-c3__izda{width:var(--d);height:var(--h);left:calc((var(--w) - var(--d)) / 2)}
+.pt-c3__dcha{transform:rotateY(90deg) translateZ(calc(var(--w) / 2));background:linear-gradient(90deg,#c9cdd4,#a9aeb7);box-shadow:inset 1px 0 0 rgba(255,255,255,.5)}
+.pt-c3__izda{transform:rotateY(-90deg) translateZ(calc(var(--w) / 2));background:linear-gradient(90deg,#f6f6f7,#e2e4e8)}
+.pt-c3__arriba{width:var(--w);height:var(--d);top:calc((var(--h) - var(--d)) / 2);transform:rotateX(90deg) translateZ(calc(var(--h) / 2));background:linear-gradient(180deg,#fbfbfc,#e8eaed)}
+
+@media (max-width:989px){
+  .pt-of__grid{grid-template-columns:1fr;grid-template-areas:"titulo" "escena" "compra"}
+  .pt-of__escena{height:clamp(320px,88vw,460px);margin-top:8px}
+  .pt-of__escena{--w:clamp(110px,28vw,180px)}
+  .pt-of__compra{margin-top:0}
+}
+@media (max-width:749px){
+  .pt-of__opciones{display:flex;border-radius:18px}
+  .pt-of__op{flex:1 1 0;flex-direction:column;align-items:center;gap:2px;border-radius:14px;padding:10px 8px;text-align:center}
+}
+@media (prefers-reduced-motion:reduce){.pt-of__linea{opacity:1;transform:none;animation:none}}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PT · Oferta del pack",
+  "tag": "div",
+  "class": "pt-section",
+  "max_blocks": 3,
+  "settings": [
+    { "type": "text", "id": "etiqueta", "label": "Etiqueta sobre el titular", "default": "Oferta: pack completo" },
+    { "type": "textarea", "id": "titulo", "label": "Titular", "info": "Cada línea entra por separado.", "default": "Cargador y cable.\nOriginales de Apple." },
+    { "type": "textarea", "id": "texto", "label": "Texto", "default": "El adaptador de 20 W y el cable que su iPhone necesita, nuevos y en su caja precintada. Por menos de lo que cuestan en Apple." },
+    { "type": "text", "id": "pregunta", "label": "Pregunta del selector", "default": "Mi iPhone es del" },
+    { "type": "image_picker", "id": "adaptador", "label": "Caja del adaptador (PNG sin fondo)" },
+    { "type": "text", "id": "boton_2", "label": "Enlace secundario", "default": "Ver todos los productos" },
+    { "type": "url", "id": "enlace_2", "label": "Destino del enlace secundario" },
+    { "type": "header", "content": "Sellos" },
+    { "type": "text", "id": "sello_1", "label": "Sello 1", "default": "Envío gratis" },
+    { "type": "text", "id": "sello_2", "label": "Sello 2", "default": "Devolución gratis" },
+    { "type": "text", "id": "sello_3", "label": "Sello 3", "default": "Garantía de 3 años" }
+  ],
+  "blocks": [
+    {
+      "type": "opcion",
+      "name": "Tipo de iPhone",
+      "settings": [
+        { "type": "text", "id": "modelos", "label": "Modelos", "default": "15 al 18" },
+        { "type": "text", "id": "conector", "label": "Conector", "default": "USB-C" },
+        { "type": "product", "id": "pack", "label": "Pack de esta opción" },
+        { "type": "image_picker", "id": "cable", "label": "Caja del cable (PNG sin fondo)" },
+        { "type": "text", "id": "incluye", "label": "Qué incluye" },
+        { "type": "text", "id": "boton", "label": "Texto del botón", "default": "Comprar el pack" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PT · Oferta del pack",
+      "blocks": [
+        { "type": "opcion", "settings": { "modelos": "15 al 18", "conector": "USB-C" } },
+        { "type": "opcion", "settings": { "modelos": "8 al 14", "conector": "Lightning" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

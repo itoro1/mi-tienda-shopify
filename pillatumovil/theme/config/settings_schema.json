@@ -18,8 +18,8 @@
         "type": "color",
         "id": "pt_accent",
         "label": "Color de marca",
-        "default": "#0E7C3A",
-        "info": "Lo usan todas las secciones PT · (botones, enlaces destacados). Usa un tono oscuro: el texto de los botones es blanco."
+        "default": "#C9A86A",
+        "info": "El oro de la marca: precios, botones y detalles de las secciones PT ·."
       }
     ]
   },

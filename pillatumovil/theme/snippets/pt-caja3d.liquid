@@ -1,0 +1,25 @@
+{%- comment -%}
+  Caja de producto en 3D con volumen: frontal (foto PNG sin fondo, con la
+  pestana de colgar), trasera, laterales y tapa. Los laterales llevan el
+  sombreado de una luz que viene de arriba a la izquierda.
+
+  Uso: {%- render 'pt-caja3d', img: imagen, pestana: 0.15, clase: 'mi-clase', id: 'opcional' -%}
+  - pestana: parte de la foto (0..1) que ocupa la pestana de colgar. La
+    pestana se recorta del frontal y se coloca en el plano trasero, que es
+    de donde sale en una caja real; asi asoma por detras de la tapa.
+  El tamano lo da --w en la clase que se pase; estilos en sections/pt-oferta.liquid.
+{%- endcomment -%}
+{%- if img != blank -%}
+  <div class="pt-c3 {{ clase }}"{% if id %} data-caja="{{ id }}"{% endif %} style="--ar:{{ img.aspect_ratio }};--pest:{{ pestana | default: 0.15 }}">
+    <div class="pt-c3__f pt-c3__frente">
+      {{ img | image_url: width: 900 | image_tag: loading: 'eager', widths: '450, 700, 900', sizes: '(min-width: 990px) 300px, 45vw', alt: img.alt, draggable: 'false' }}
+      <span class="pt-c3__brillo" aria-hidden="true"></span>
+    </div>
+    <div class="pt-c3__f pt-c3__trasera" aria-hidden="true"></div>
+    <div class="pt-c3__pestana" aria-hidden="true" style="background-image:url('{{ img | image_url: width: 800 }}')"></div>
+    <div class="pt-c3__f pt-c3__dcha" aria-hidden="true"></div>
+    <div class="pt-c3__f pt-c3__izda" aria-hidden="true"></div>
+    <div class="pt-c3__f pt-c3__arriba" aria-hidden="true"></div>
+    <div class="pt-c3__sombra" aria-hidden="true"></div>
+  </div>
+{%- endif -%}

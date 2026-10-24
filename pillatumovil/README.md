@@ -21,51 +21,63 @@ Segunda tienda (`j2zukw-xp.myshopify.com`), separada de ITorostore.
 - Esta carpeta es el espejo de lo que hay en Dawn: si se cambia un fichero
   aquí, se sube al tema; si se cambia en el editor, se trae aquí.
 
-## Portada de cine (25/10/2026)
+## Portada (25/10/2026, versión «noche y champán»)
 
-Arriba del todo, dos secciones oscuras que sustituyen a la portada clara:
-
-- **`pt-cine` (PT · Portada de cine)**: plató oscuro con foco y grano de
-  película. La caja real del cargador en 3D (CSS 3D, sin librerías): el
-  cliente la gira arrastrando, con las flechas o con «Delante / Detrás», y
-  ve la trasera impresa por Apple. Al entrar, la caja aparece desde la
-  oscuridad y el titular entra línea a línea: es la única animación de
-  entrada de la página.
-- **`pt-historia` (PT · Historia de cine)**: tres capítulos que avanzan con
-  el scroll en un plano fijo. *Original* (marco verde sobre la etiqueta de
-  Apple y la referencia 602-05566-A), *Seguro* (marco sobre el marcado CE y
-  la garantía) y *Rápido* (batería que se carga del 0 al 50 % y reloj de 0 a
-  30 min al bajar). Sin JavaScript o con «reducir movimiento», los
-  capítulos se leen uno debajo de otro.
-- La lógica está en `assets/pt-cine.js`. Las caras de la caja están en
-  `fotos/cine/` (recortes propios; medidas en `tools/medidas/cine-cargador.json`).
-- Los marcos de *Original* y *Seguro* van en % de la foto
-  `caja-cargador-trasera-cuerpo.jpg`: si se cambia la foto, hay que
-  recolocarlos en `sections/pt-historia.liquid`.
-- No hay vídeo porque no hay grabación propia y la skill `marca-tiendas`
-  prohíbe usar material oficial de Apple. Si se graba un clip con el móvil,
-  la skill `videos-reels` lo deja en formato para la portada.
-
-## Resto de la portada
-
-Secciones propias, todas con el prefijo `pt-` y con nombre
-`PT · …` en el editor de temas:
-
-| Sección (fichero) | Nombre en el editor | Qué hace |
+| Orden | Sección | Qué hace |
 |---|---|---|
-| `pt-hero` | PT · Portada | Titular, batería que se carga al entrar y producto estrella con su precio |
-| `pt-ventajas` | PT · Garantías | Etiqueta de caja: dato y valor (producto, garantía, devolución, pago) |
-| `pt-buscador` | PT · ¿Qué conector? | El cliente toca su puerto (USB-C o Lightning) y aparece su producto |
-| `pt-productos` | PT · Lista de precios | Una fila por producto con columnas «En Apple» y «Aquí» |
-| `pt-pack` | PT · Pack | El pack como una suma: piezas sueltas, total, precio del pack |
-| `pt-faq` | PT · Preguntas | Preguntas en acordeón + datos estructurados FAQPage para Google |
-| `pt-cta` | PT · Cierre | Franja final con un botón que sube al buscador |
+| 1 | `pt-oferta` · PT · Oferta del pack | Lo primero: el pack cargador + cable. Dos cajas 3D con volumen sobre una peana con filo de oro; se inclinan con el ratón o el dedo. Selector «Mi iPhone es del 15 al 18 / 8 al 14» que cambia caja del cable, precio, ahorro y botón |
+| 2 | `pt-envio` · PT · Envío gratis | Banner grande «Envío gratis.» y tres cifras (0 € envío, 0 € devolución, 14 días) |
+| 3 | `pt-categorias` · PT · Categorías | Cargador, Cables y Packs con foto y precio «desde» (colecciones `cables` y `packs`) |
+| 4 | `pt-video` · PT · Vídeo | Banda a todo el ancho con el vídeo de estudio en bucle |
+| 5 | `pt-historia` · PT · Historia de cine | Original / Seguro / Rápido, ligado al scroll |
+| 6 | `pt-productos` · PT · Lista de precios | Precio aquí y en Apple |
+| 7 | `pt-faq`, `pt-cta` | Preguntas y cierre |
 
-| `pt-whatsapp` | PT · WhatsApp | Botón flotante en todas las páginas (va en el grupo del pie) |
+Siguen en el tema, sin usar en la portada: `pt-cine` (caja que gira 360°),
+`pt-hero`, `pt-buscador`, `pt-pack` y `pt-ventajas` (esta última sí está en
+la ficha de producto y en la colección).
 
-Piezas comunes: `assets/pt-base.css` (paleta, tipografía, botones),
-`snippets/pt-precio.liquid` (precio + comparativa con Apple) y
-`snippets/pt-pvp.liquid` (comparativa bajo el precio de la ficha).
+### Identidad
+
+- **Paleta**: noche `#0B0F1A`, medianoche `#131A2B`, oro champán `#C9A86A`,
+  oro claro `#E7D3A6`, marfil `#F4EFE6`, y marfil cálido `#EDE8DF` como
+  fondo de las fotos de producto. No es el negro y oro de ITorostore: el
+  fondo es azul noche.
+- **Tipografía**: Bodoni Moda (titulares, precios grandes, logo) y Archivo
+  (texto y botones).
+- **Logo**: el nombre en Bodoni Moda con los puntos de las dos «i» en oro
+  (`marca/`, `tools/logo_firma.py`). Icono: una «P» con el punto en oro.
+- **Barra superior** en oro con «Envío gratis…», cabecera y pie en noche.
+
+### Trampas de Dawn que ya están resueltas (no deshacer)
+
+- **Dawn oculta los `div` vacíos** (`base.css`: `div:empty{display:none}`).
+  Las caras de las cajas 3D (laterales, tapa, trasera) son `div` vacíos que
+  se pintan con CSS: por eso la caja parecía «de papel». Se fuerzan con
+  `.pt-c3 > .pt-c3__f{display:block}` (y `.pt-box > .pt-box__cara`).
+- **El orden de carga de las hojas**: `pt-base.css` se carga después de los
+  `{% stylesheet %}` de las secciones; una regla de sección que quiera pisar
+  una de `pt-base` necesita más especificidad (ej. `.pt-of .pt-of__h1`).
+- **El euro en Bodoni Moda se lee como una «C»**: todos los «€» de las
+  secciones van en `<span class="pt-eur">` con la fuente de texto, y el
+  precio de la ficha de producto va en Archivo.
+- **La pestaña de colgar de las cajas** se recorta del frontal y se pinta en
+  el plano trasero (`.pt-c3__pestana`), que es de donde sale en la caja real.
+
+### Vídeo de estudio
+
+- `video/pillatumovil-estudio-web.mp4` (1600 × 900, 8 s en bucle) está
+  subido a Contenido > Archivos; la sección `pt-video` usa su versión 720p
+  del CDN de Shopify. `video/pillatumovil-estudio-reel.mp4` (1080 × 1920,
+  24 s) es para Reels, TikTok y Stories.
+- Se rueda con `tools/video/estudio.html` (la caja del adaptador girando
+  360° sobre la peana, con foco y barrido de luz) y `tools/video/rodar.js`,
+  que la fotografía fotograma a fotograma con Playwright; luego `ffmpeg`.
+  `estudio.html` espera `caja-cargador-frente.png` y `-trasera.png` (en
+  `fotos/cine/`) en su misma carpeta.
+- No es vídeo generado con IA ni material de Apple: son las fotos propias
+  de la caja montadas en 3D. Para clips con IA (Higgsfield u otro), el
+  vídeo se sube a Archivos y se pega su enlace en *PT · Vídeo*.
 
 ## Resto de la tienda
 
@@ -79,8 +91,8 @@ Piezas comunes: `assets/pt-base.css` (paleta, tipografía, botones),
   necesito?, Contacto) y pie (Información).
 - **`assets/pt-dawn.css`**: lleva el estilo de la portada a las páginas de
   Dawn (títulos, precios, fotos sobre gris de caja). Lo carga `pt-whatsapp`.
-- **Logo e icono** en `marca/`, generados con `tools/logo.py` (Archivo 800,
-  fuente OFL; el script la espera en `fuentes/Archivovar.ttf`).
+- **Logo e icono** en `marca/`, generados con `tools/logo_firma.py`
+  (Bodoni Moda, fuente OFL; el script la espera en `fuentes/BodoniModa.ttf`).
 - **Fotos de producto** en `fotos/` (2048 × 2048, fondo blanco, sin la
   bolsa de Apple). Salen de las fotos originales con `tools/cajas.py`
   (recorta la cara delantera de cada caja) y `tools/componer.py`. Las
@@ -88,7 +100,7 @@ Piezas comunes: `assets/pt-base.css` (paleta, tipografía, botones),
   borde derecho de la primera caja se corrigió a mano (421 y 431 px)
   porque el hueco en sombra entre cajas engañaba al afinado automático.
 
-## Identidad visual (rediseño del 24/10/2026)
+## Identidad anterior (24/10/2026, sustituida el 25/10)
 
 Hecha con la skill `frontend-design`, a partir de los objetos que se venden
 y no de una plantilla:

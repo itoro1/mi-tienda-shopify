@@ -1,0 +1,72 @@
+{%- comment -%}
+  Banner del envio gratis: el titular a tamano de cartel, en oro, y tres
+  cifras que lo concretan. Las cifras son bloques editables.
+{%- endcomment -%}
+{{ 'pt-base.css' | asset_url | stylesheet_tag }}
+<section class="pt pt-env" style="--pt-accent:{{ settings.pt_accent | default: '#c9a86a' }}">
+  <div class="pt-wrap pt-env__grid">
+    <h2 class="pt-env__titulo">
+      {%- assign lineas = section.settings.titulo | newline_to_br | split: '<br />' -%}
+      {%- for l in lineas -%}<span>{{ l | strip }}</span>{%- endfor -%}
+    </h2>
+    <div class="pt-env__texto">
+      {%- if section.settings.texto != blank -%}<p class="pt-env__lead">{{ section.settings.texto }}</p>{%- endif -%}
+      <dl class="pt-env__datos">
+        {%- for block in section.blocks -%}
+          <div {{ block.shopify_attributes }}><dt>{{ block.settings.cifra | escape | replace: '€', '<span class="pt-eur">€</span>' }}</dt><dd>{{ block.settings.texto }}</dd></div>
+        {%- endfor -%}
+      </dl>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+.pt-env{position:relative;overflow:hidden;padding:clamp(72px,10vw,140px) 0;
+  background:radial-gradient(70% 120% at 15% 50%,rgba(201,168,106,.16),transparent 60%),#0d1222;
+  border-top:1px solid rgba(201,168,106,.28);border-bottom:1px solid rgba(201,168,106,.28)}
+.pt-env__grid{display:grid;grid-template-columns:1.25fr 1fr;gap:clamp(28px,5vw,80px);align-items:center}
+.pt-env__titulo{margin:0;font-family:var(--font-heading-family);font-weight:var(--font-heading-weight,500);font-size:clamp(76px,12.5vw,196px);line-height:.86;letter-spacing:-.025em}
+.pt-env__titulo span{display:block;background:var(--pt-oro-grad);-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:.06em}
+.pt-env__titulo span + span{background:none;color:var(--pt-ink)}
+.pt-env__lead{margin:0;font-size:clamp(18px,1.6vw,22px);line-height:1.55;color:var(--pt-ink);max-width:34ch}
+.pt-env__datos{display:grid;grid-template-columns:repeat(3,1fr);margin:34px 0 0;border-top:1px solid var(--pt-line)}
+.pt-env__datos div{padding:18px 16px 0 0}
+.pt-env__datos div + div{padding-left:16px;border-left:1px solid var(--pt-line)}
+.pt-env__datos dt{font-family:var(--font-heading-family);font-size:clamp(34px,3.4vw,48px);line-height:1;color:var(--pt-oro-claro)}
+.pt-env__datos dd{margin:8px 0 0;font-size:14px;color:var(--pt-muted)}
+@media (max-width:989px){.pt-env__grid{grid-template-columns:1fr}}
+@media (max-width:749px){.pt-env__datos div{padding-right:8px}.pt-env__datos div + div{padding-left:10px}}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PT · Envío gratis",
+  "tag": "div",
+  "class": "pt-section",
+  "max_blocks": 4,
+  "settings": [
+    { "type": "textarea", "id": "titulo", "label": "Titular", "info": "La primera línea sale en oro.", "default": "Envío\ngratis." },
+    { "type": "textarea", "id": "texto", "label": "Texto", "default": "En todos los pedidos, sin importe mínimo. Y si no le convence, la devolución también es gratis." }
+  ],
+  "blocks": [
+    {
+      "type": "cifra",
+      "name": "Cifra",
+      "settings": [
+        { "type": "text", "id": "cifra", "label": "Cifra", "default": "0 €" },
+        { "type": "text", "id": "texto", "label": "Texto", "default": "de envío" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PT · Envío gratis",
+      "blocks": [
+        { "type": "cifra", "settings": { "cifra": "0 €", "texto": "de envío" } },
+        { "type": "cifra", "settings": { "cifra": "0 €", "texto": "por devolverlo" } },
+        { "type": "cifra", "settings": { "cifra": "14", "texto": "días para decidir" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

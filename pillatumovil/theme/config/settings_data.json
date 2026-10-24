@@ -2,67 +2,67 @@
   "current": "Dawn",
   "presets": {
     "Dawn": {
-      "logo_width": 170,
+      "logo_width": 190,
       "customer_account_menu": "customer-account-main-menu",
       "color_schemes": {
         "scheme-1": {
           "settings": {
-            "background": "#FFFFFF",
+            "background": "#0B0F1A",
             "background_gradient": "",
-            "text": "#1B2230",
-            "button": "#0E7C3A",
-            "button_label": "#FFFFFF",
-            "secondary_button_label": "#1B2230",
-            "shadow": "#1B2230"
+            "text": "#F4EFE6",
+            "button": "#C9A86A",
+            "button_label": "#0B0F1A",
+            "secondary_button_label": "#F4EFE6",
+            "shadow": "#000000"
           }
         },
         "scheme-2": {
           "settings": {
-            "background": "#EEEFEC",
+            "background": "#131A2B",
             "background_gradient": "",
-            "text": "#1B2230",
-            "button": "#1B2230",
-            "button_label": "#FFFFFF",
-            "secondary_button_label": "#1B2230",
-            "shadow": "#1B2230"
+            "text": "#F4EFE6",
+            "button": "#C9A86A",
+            "button_label": "#0B0F1A",
+            "secondary_button_label": "#F4EFE6",
+            "shadow": "#000000"
           }
         },
         "scheme-3": {
           "settings": {
-            "background": "#242833",
+            "background": "#EDE8DF",
             "background_gradient": "",
-            "text": "#FFFFFF",
-            "button": "#FFFFFF",
-            "button_label": "#000000",
-            "secondary_button_label": "#FFFFFF",
-            "shadow": "#121212"
+            "text": "#0B0F1A",
+            "button": "#0B0F1A",
+            "button_label": "#EDE8DF",
+            "secondary_button_label": "#0B0F1A",
+            "shadow": "#000000"
           }
         },
         "scheme-4": {
           "settings": {
-            "background": "#1B2230",
+            "background": "#0B0F1A",
             "background_gradient": "",
-            "text": "#FFFFFF",
-            "button": "#FFFFFF",
-            "button_label": "#1B2230",
-            "secondary_button_label": "#FFFFFF",
-            "shadow": "#1B2230"
+            "text": "#F4EFE6",
+            "button": "#C9A86A",
+            "button_label": "#0B0F1A",
+            "secondary_button_label": "#F4EFE6",
+            "shadow": "#000000"
           }
         },
         "scheme-5": {
           "settings": {
-            "background": "#334FB4",
-            "background_gradient": "",
-            "text": "#FFFFFF",
-            "button": "#FFFFFF",
-            "button_label": "#334FB4",
-            "secondary_button_label": "#FFFFFF",
-            "shadow": "#121212"
+            "background": "#C9A86A",
+            "background_gradient": "linear-gradient(90deg, rgba(169,133,63,1) 0%, rgba(233,213,163,1) 50%, rgba(169,133,63,1) 100%)",
+            "text": "#0B0F1A",
+            "button": "#0B0F1A",
+            "button_label": "#C9A86A",
+            "secondary_button_label": "#0B0F1A",
+            "shadow": "#000000"
           }
         }
       },
-      "type_header_font": "archivo_n8",
-      "heading_scale": 100,
+      "type_header_font": "bodoni_moda_n5",
+      "heading_scale": 110,
       "type_body_font": "archivo_n4",
       "body_scale": 100,
       "page_width": 1200,
@@ -73,21 +73,21 @@
       "animations_hover_elements": "none",
       "buttons_border_thickness": 1,
       "buttons_border_opacity": 100,
-      "buttons_radius": 12,
+      "buttons_radius": 40,
       "buttons_shadow_opacity": 0,
       "buttons_shadow_horizontal_offset": 0,
       "buttons_shadow_vertical_offset": 4,
       "buttons_shadow_blur": 5,
       "variant_pills_border_thickness": 1,
       "variant_pills_border_opacity": 55,
-      "variant_pills_radius": 12,
+      "variant_pills_radius": 40,
       "variant_pills_shadow_opacity": 0,
       "variant_pills_shadow_horizontal_offset": 0,
       "variant_pills_shadow_vertical_offset": 4,
       "variant_pills_shadow_blur": 5,
       "inputs_border_thickness": 1,
       "inputs_border_opacity": 55,
-      "inputs_radius": 12,
+      "inputs_radius": 14,
       "inputs_shadow_opacity": 0,
       "inputs_shadow_horizontal_offset": 0,
       "inputs_shadow_vertical_offset": 4,
@@ -98,7 +98,7 @@
       "card_color_scheme": "scheme-2",
       "card_border_thickness": 0,
       "card_border_opacity": 10,
-      "card_corner_radius": 14,
+      "card_corner_radius": 18,
       "card_shadow_opacity": 0,
       "card_shadow_horizontal_offset": 0,
       "card_shadow_vertical_offset": 4,
@@ -127,14 +127,14 @@
       "blog_card_shadow_blur": 5,
       "text_boxes_border_thickness": 0,
       "text_boxes_border_opacity": 10,
-      "text_boxes_radius": 14,
+      "text_boxes_radius": 18,
       "text_boxes_shadow_opacity": 0,
       "text_boxes_shadow_horizontal_offset": 0,
       "text_boxes_shadow_vertical_offset": 4,
       "text_boxes_shadow_blur": 5,
       "media_border_thickness": 1,
       "media_border_opacity": 5,
-      "media_radius": 14,
+      "media_radius": 18,
       "media_shadow_opacity": 0,
       "media_shadow_horizontal_offset": 0,
       "media_shadow_vertical_offset": 4,
@@ -191,9 +191,9 @@
           }
         }
       },
-      "pt_accent": "#0E7C3A",
-      "logo": "shopify://shop_images/logo-pillatumovil-blanco.png",
-      "favicon": "shopify://shop_images/favicon-pillatumovil.png"
+      "pt_accent": "#C9A86A",
+      "logo": "shopify://shop_images/logo-pillatumovil-firma.png",
+      "favicon": "shopify://shop_images/favicon-pillatumovil-p.png"
     }
   }
 }

@@ -14,7 +14,7 @@
   assign f = section.settings.frente
   assign t = section.settings.trasera
 -%}
-<section class="pt pt-cine" style="--pt-accent:{{ settings.pt_accent | default: '#0e7c3a' }}">
+<section class="pt pt-cine" style="--pt-accent:{{ settings.pt_accent | default: '#c9a86a' }}">
   <span class="pt-cine__foco" aria-hidden="true"></span>
   <span class="pt-cine__grano" aria-hidden="true"></span>
   <div class="pt-wrap pt-cine__grid">
@@ -106,6 +106,7 @@
   --h:calc(var(--w) / var(--ar-f) * (1 - var(--pestana)));--d:calc(var(--w) * .38);
   position:relative;width:var(--w);height:var(--h);margin-top:calc(var(--w) / var(--ar-f) * var(--pestana));
   transform-style:preserve-3d;transform:rotateX(-8deg) rotateY(-24deg);will-change:transform}
+.pt-box > .pt-box__cara{display:block}
 .pt-box__cara{position:absolute;left:0;top:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
 .pt-box__frente,.pt-box__trasera{width:var(--w);height:var(--h)}
 .pt-box__frente{transform:translateZ(calc(var(--d) / 2))}

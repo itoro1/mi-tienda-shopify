@@ -23,7 +23,7 @@
 <div class="pt-price">
   <span class="pt-price__now">
     {%- if product.price_varies -%}<small>Desde</small>{%- endif -%}
-    {{- product.price | money -}}
+    {{- product.price | money_without_currency -}}<span class="pt-eur">€</span>
   </span>
   {%- if pa != blank -%}
     <span class="pt-price__ref">En Apple <s>{{ pa }}</s></span>

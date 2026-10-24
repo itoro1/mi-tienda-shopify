@@ -121,9 +121,58 @@
     medir();
   }
 
+  /* ---------- Escena que se inclina (oferta del pack) ---------- */
+  function inclinar(escena) {
+    var grupo = escena.querySelector('.pt-of__grupo');
+    var sec = escena.closest('section');
+    if (!grupo || !sec || escena.dataset.ptListo) return;
+    escena.dataset.ptListo = '1';
+    var BY = -34, BX = -13;
+    function poner(x, y) { grupo.style.setProperty('--ry', y.toFixed(2) + 'deg'); grupo.style.setProperty('--rx', x.toFixed(2) + 'deg'); }
+    if (quieto) { poner(BX, BY); return; }
+
+    var ry = -64, rx = -3, ty = BY, tx = BX, ultimo = 0, arrastre = null, visible = true, corriendo = false;
+    function arrancar() { if (!corriendo) { corriendo = true; requestAnimationFrame(paso); } }
+    sec.classList.add('is-entrando');
+    setTimeout(function () { sec.classList.remove('is-entrando'); }, 3400);
+
+    sec.addEventListener('pointermove', function (e) {
+      if (e.pointerType !== 'mouse') return;
+      var r = sec.getBoundingClientRect();
+      ty = BY + ((e.clientX - r.left) / r.width - 0.5) * 26;
+      tx = BX - ((e.clientY - r.top) / r.height - 0.5) * 8;
+      ultimo = performance.now();
+    });
+    sec.addEventListener('pointerleave', function () { ty = BY; tx = BX; });
+    escena.addEventListener('pointerdown', function (e) {
+      if (e.pointerType === 'mouse') return;
+      arrastre = { x: e.clientX, ry: ty };
+    });
+    escena.addEventListener('pointermove', function (e) {
+      if (!arrastre) return;
+      ty = Math.max(-70, Math.min(20, arrastre.ry + (e.clientX - arrastre.x) * 0.35));
+      ultimo = performance.now();
+    });
+    ['pointerup', 'pointercancel'].forEach(function (n) { escena.addEventListener(n, function () { arrastre = null; }); });
+
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (es) { visible = es[0].isIntersecting; if (visible) arrancar(); }).observe(sec);
+    }
+    function paso(t) {
+      if (!visible) { corriendo = false; return; }
+      var ox = 0, oy = 0;
+      if (t - ultimo > 2500 && !arrastre) { oy = Math.sin(t / 2800) * 9; ox = Math.sin(t / 3700) * 2; }
+      ry += (ty + oy - ry) * 0.05; rx += (tx + ox - rx) * 0.05;
+      poner(rx, ry);
+      requestAnimationFrame(paso);
+    }
+    arrancar();
+  }
+
   function iniciar(raiz) {
     (raiz || document).querySelectorAll('[data-pt-caja]').forEach(caja);
     (raiz || document).querySelectorAll('[data-pt-historia]').forEach(historia);
+    (raiz || document).querySelectorAll('[data-pt-tilt]').forEach(inclinar);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { iniciar(); });
   else iniciar();

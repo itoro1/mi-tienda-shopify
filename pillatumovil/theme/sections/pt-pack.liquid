@@ -21,7 +21,7 @@
     assign pa_cents = pa | remove: '€' | remove: ' ' | remove: '.' | replace: ',', '.' | strip | times: 100 | round
   endif
 -%}
-<section class="pt pt-sec pt-pack-sec" style="--pt-accent:{{ settings.pt_accent | default: '#0e7c3a' }}">
+<section class="pt pt-sec pt-pack-sec" style="--pt-accent:{{ settings.pt_accent | default: '#c9a86a' }}">
   <div class="pt-wrap pt-pack">
     <div class="pt-pack__copy">
       <h2 class="pt-h2">{{ section.settings.titulo }}</h2>

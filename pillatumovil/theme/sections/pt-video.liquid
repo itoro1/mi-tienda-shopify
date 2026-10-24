@@ -1,0 +1,63 @@
+{%- comment -%}
+  Banda de video a todo el ancho, con el texto encima (como las de Nomad).
+  El video se sube en Contenido > Archivos y aqui se pega su enlace .mp4.
+  Silenciado, en bucle y sin controles. Con "reducir movimiento" se queda
+  quieto en el primer fotograma (poster).
+{%- endcomment -%}
+{{ 'pt-base.css' | asset_url | stylesheet_tag }}
+{%- liquid
+  assign poster = ''
+  if section.settings.poster != blank
+    assign poster = section.settings.poster | image_url: width: 1600
+  endif
+-%}
+<section class="pt pt-vid" style="--pt-accent:{{ settings.pt_accent | default: '#c9a86a' }}">
+  {%- if section.settings.video_url != blank -%}
+    <video class="pt-vid__video" src="{{ section.settings.video_url }}"{% if poster != blank %} poster="{{ poster }}"{% endif %} autoplay muted loop playsinline preload="metadata" aria-hidden="true" data-pt-video></video>
+  {%- elsif poster != blank -%}
+    <img class="pt-vid__video" src="{{ poster }}" alt="" loading="lazy">
+  {%- endif -%}
+  <span class="pt-vid__velo" aria-hidden="true"></span>
+  <div class="pt-wrap pt-vid__texto">
+    <h2 class="pt-h2">{{ section.settings.titulo }}</h2>
+    {%- if section.settings.texto != blank -%}<p class="pt-lead">{{ section.settings.texto }}</p>{%- endif -%}
+    {%- if section.settings.boton != blank -%}
+      <div class="pt-btns"><a class="pt-btn pt-btn--line" href="{{ section.settings.enlace | default: '#encuentra' }}">{{ section.settings.boton }}</a></div>
+    {%- endif -%}
+  </div>
+  <script>
+    (function () {
+      var v = document.currentScript.parentElement.querySelector('[data-pt-video]');
+      if (v && window.matchMedia('(prefers-reduced-motion: reduce)').matches) { v.removeAttribute('autoplay'); v.pause(); }
+    })();
+  </script>
+</section>
+
+{% stylesheet %}
+.pt-vid{position:relative;overflow:hidden;min-height:min(86svh,820px);display:flex;align-items:flex-end;padding:clamp(48px,7vw,96px) 0;background:#07090f}
+.pt-vid__video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.pt-vid__velo{position:absolute;inset:0;background:linear-gradient(90deg,rgba(7,9,15,.85) 0%,rgba(7,9,15,.35) 45%,transparent 70%),linear-gradient(0deg,rgba(7,9,15,.7),transparent 45%)}
+.pt-vid__texto{position:relative;width:100%}
+.pt-vid__texto .pt-h2{max-width:13ch}
+@media (max-width:749px){
+  .pt-vid{min-height:88svh}
+  .pt-vid__velo{background:linear-gradient(0deg,rgba(7,9,15,.92) 0%,rgba(7,9,15,.5) 45%,transparent 70%)}
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PT · Vídeo",
+  "tag": "div",
+  "class": "pt-section",
+  "settings": [
+    { "type": "text", "id": "video_url", "label": "Enlace del vídeo (.mp4)", "info": "Sube el vídeo en Contenido > Archivos y copia aquí su enlace." },
+    { "type": "image_picker", "id": "poster", "label": "Imagen mientras carga (opcional)" },
+    { "type": "text", "id": "titulo", "label": "Título", "default": "Gírela. Es la de Apple." },
+    { "type": "textarea", "id": "texto", "label": "Texto" },
+    { "type": "text", "id": "boton", "label": "Texto del botón" },
+    { "type": "url", "id": "enlace", "label": "Enlace del botón" }
+  ],
+  "presets": [{ "name": "PT · Vídeo" }]
+}
+{% endschema %}

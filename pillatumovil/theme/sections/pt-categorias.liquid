@@ -1,0 +1,94 @@
+{%- comment -%}
+  Accesos por categoria (como "Shop by category" de Nomad): una tarjeta por
+  bloque con foto sobre fondo marfil, nombre, una linea y el precio "desde"
+  sacado del producto o la coleccion elegida.
+{%- endcomment -%}
+{{ 'pt-base.css' | asset_url | stylesheet_tag }}
+<section class="pt pt-sec pt-cat" style="--pt-accent:{{ settings.pt_accent | default: '#c9a86a' }}">
+  <div class="pt-wrap">
+    <div class="pt-cat__head">
+      <h2 class="pt-h2">{{ section.settings.titulo }}</h2>
+      {%- if section.settings.texto != blank -%}<p class="pt-lead">{{ section.settings.texto }}</p>{%- endif -%}
+    </div>
+    <ul class="pt-cat__grid" role="list">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign c = block.settings.coleccion
+          assign p = block.settings.producto
+          assign url = block.settings.enlace
+          if url == blank and c != blank
+            assign url = c.url
+          elsif url == blank and p != blank
+            assign url = p.url
+          endif
+          assign desde = nil
+          if p != blank
+            assign desde = p.price
+          elsif c != blank
+            assign desde = c.products | map: 'price' | sort | first
+          endif
+        -%}
+        <li {{ block.shopify_attributes }}>
+          <a class="pt-cat__card" href="{{ url | default: routes.all_products_collection_url }}">
+            <span class="pt-cat__img">
+              {%- if block.settings.imagen != blank -%}
+                {{ block.settings.imagen | image_url: width: 900 | image_tag: loading: 'lazy', widths: '450, 700, 900', sizes: '(min-width: 990px) 33vw, 100vw', alt: '' }}
+              {%- endif -%}
+            </span>
+            <span class="pt-cat__info">
+              <span class="pt-cat__nombre">{{ block.settings.titulo }}</span>
+              {%- if block.settings.texto != blank -%}<span class="pt-cat__txt">{{ block.settings.texto }}</span>{%- endif -%}
+              {%- if desde -%}<span class="pt-cat__desde">Desde <b>{{ desde | money_without_currency }}<span class="pt-eur">€</span></b></span>{%- endif -%}
+            </span>
+          </a>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+
+{% stylesheet %}
+.pt-cat__head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px 40px;flex-wrap:wrap;margin-bottom:clamp(28px,4vw,48px)}
+.pt-cat__head .pt-lead{margin:0;max-width:40ch}
+.pt-cat__grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.pt-cat__card{display:flex;flex-direction:column;height:100%;border-radius:var(--pt-r-panel);overflow:hidden;background:var(--pt-paper);text-decoration:none;color:inherit;box-shadow:inset 0 0 0 1px var(--pt-line);transition:box-shadow .3s ease}
+.pt-cat__card:hover{box-shadow:inset 0 0 0 1px rgba(201,168,106,.6)}
+.pt-cat__img{display:block;aspect-ratio:4/3;background:var(--pt-tile);overflow:hidden}
+.pt-cat__img img{width:100%;height:100%;object-fit:cover;mix-blend-mode:multiply;transform:scale(1.02);transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.pt-cat__card:hover .pt-cat__img img{transform:scale(1.07)}
+.pt-cat__info{display:flex;flex-direction:column;gap:6px;padding:22px 24px 24px}
+.pt-cat__nombre{font-family:var(--font-heading-family);font-size:28px;line-height:1.1}
+.pt-cat__txt{font-size:15px;color:var(--pt-muted)}
+.pt-cat__desde{margin-top:8px;font-size:14px;color:var(--pt-muted)}
+.pt-cat__desde b{font-family:var(--font-heading-family);font-weight:var(--font-heading-weight,500);font-size:22px;color:var(--pt-oro-claro);margin-left:4px}
+@media (max-width:989px){.pt-cat__grid{grid-template-columns:1fr 1fr}}
+@media (max-width:600px){.pt-cat__grid{grid-template-columns:1fr}}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PT · Categorías",
+  "tag": "div",
+  "class": "pt-section",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "text", "id": "titulo", "label": "Título", "default": "Elija por categoría" },
+    { "type": "textarea", "id": "texto", "label": "Texto" }
+  ],
+  "blocks": [
+    {
+      "type": "categoria",
+      "name": "Categoría",
+      "settings": [
+        { "type": "text", "id": "titulo", "label": "Nombre", "default": "Cargadores" },
+        { "type": "text", "id": "texto", "label": "Una línea" },
+        { "type": "image_picker", "id": "imagen", "label": "Foto" },
+        { "type": "collection", "id": "coleccion", "label": "Colección", "info": "Enlace y precio «desde». O elige un producto." },
+        { "type": "product", "id": "producto", "label": "Producto (en vez de colección)" },
+        { "type": "url", "id": "enlace", "label": "Enlace propio (opcional)" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "PT · Categorías" }]
+}
+{% endschema %}

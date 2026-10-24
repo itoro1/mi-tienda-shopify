@@ -2,7 +2,7 @@
   Cierre de la portada: una franja en tinta con una frase y un boton.
 {%- endcomment -%}
 {{ 'pt-base.css' | asset_url | stylesheet_tag }}
-<section class="pt pt-sec pt--ink pt-close" style="--pt-accent:{{ settings.pt_accent | default: '#0e7c3a' }}">
+<section class="pt pt-sec pt--ink pt-close" style="--pt-accent:{{ settings.pt_accent | default: '#c9a86a' }}">
   <div class="pt-wrap pt-close__grid">
     <div>
       <h2 class="pt-h2">{{ section.settings.titulo }}</h2>
@@ -10,7 +10,7 @@
     </div>
     <div class="pt-close__actions">
       {%- if section.settings.boton != blank -%}
-        <a class="pt-btn pt-btn--light" href="{{ section.settings.enlace | default: '#encuentra' }}">{{ section.settings.boton }}</a>
+        <a class="pt-btn" href="{{ section.settings.enlace | default: '#encuentra' }}">{{ section.settings.boton }}</a>
       {%- endif -%}
       {%- if section.settings.boton_2 != blank and section.settings.enlace_2 != blank -%}
         <a class="pt-link pt-close__link" href="{{ section.settings.enlace_2 }}" target="_blank" rel="noopener">{{ section.settings.boton_2 }}</a>
@@ -23,7 +23,8 @@
 .pt-close__grid{display:flex;justify-content:space-between;align-items:center;gap:24px 48px;flex-wrap:wrap}
 .pt-close .pt-h2{max-width:18ch}
 .pt-close__actions{display:flex;flex-wrap:wrap;align-items:center;gap:16px 28px}
-.pt-close__link{color:#fff;text-decoration-color:rgba(255,255,255,.4)}
+.pt-close{border-top:1px solid rgba(201,168,106,.28)}
+.pt-close__link{color:var(--pt-ink)}
 @media (max-width:749px){.pt-close__actions{width:100%}.pt-close__actions .pt-btn{width:100%}}
 {% endstylesheet %}
 

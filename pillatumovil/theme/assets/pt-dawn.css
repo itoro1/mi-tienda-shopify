@@ -3,38 +3,38 @@
    de los ajustes del tema; aqui solo va lo que Dawn no deja ajustar.
    Lo carga sections/pt-whatsapp.liquid, que esta en todas las paginas. */
 
-h1,h2,h3,.h0,.h1,.h2,.h3{letter-spacing:-.02em}
-.title,.main-page-title,.collection-hero__title{font-weight:800;letter-spacing:-.03em}
-.product__title h1{font-weight:800;letter-spacing:-.025em;line-height:1.08}
-.price .price-item{font-weight:800;letter-spacing:-.01em}
-.product .price .price-item{font-size:2.8rem}
+h1,h2,h3,.h0,.h1,.h2,.h3{letter-spacing:-.01em}
+.product__title h1{line-height:1.08}
+.price .price-item{font-weight:700}
+.product .price .price-item{font-family:var(--font-body-family);font-weight:700;font-size:3.2rem;letter-spacing:-.01em;color:#e7d3a6}
+.price__badge-sale,.price__badge-sold-out{border-radius:999px}
 
 /* Las fotos de producto tienen fondo blanco: sobre el gris de caja se
    funden con multiply y el producto parece recortado. */
 .product__media-item .product-media-container,
-.card__inner .card__media{background:#eeefec}
+.card__inner .card__media{background:#ede8df}
 .product__media-item img,
 .card__media img{mix-blend-mode:multiply}
 .card__heading{font-weight:700;letter-spacing:-.005em}
 
 /* Precio de Apple bajo el precio de la ficha (snippets/pt-pvp.liquid). */
 .pt-pvp{margin:-.4rem 0 1.6rem}
-.pt-pvp__v{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin:0;font-size:1.5rem;color:#5e6672}
+.pt-pvp__v{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin:0;font-size:1.5rem;color:#a3a8b4}
 .pt-pvp__v[hidden]{display:none}
 .pt-pvp__v small{font-size:1.3rem}
-.pt-pvp__save{padding:3px 9px;border-radius:6px;background:#e3f5e8;color:#0b5e2c;font-size:1.35rem;font-weight:700}
-.pt-pvp__extra{flex-basis:100%;font-size:1.4rem;font-weight:600;color:#0b5e2c}
-.pt-ayuda{margin:1.2rem 0 0;font-size:1.5rem;color:#5e6672}
+.pt-pvp__save{padding:4px 11px;border-radius:999px;background:rgba(201,168,106,.14);box-shadow:inset 0 0 0 1px rgba(201,168,106,.4);color:#e7d3a6;font-size:1.35rem;font-weight:700}
+.pt-pvp__extra{flex-basis:100%;font-size:1.4rem;font-weight:600;color:#e7d3a6}
+.pt-ayuda{margin:1.2rem 0 0;font-size:1.5rem;color:#a3a8b4}
 .pt-ayuda a{color:inherit;font-weight:700}
 
 /* Descripciones de producto: subtitulos con peso y listas comodas. */
-.product__description h3{margin:2.4rem 0 .6rem;font-size:1.7rem;font-weight:800;letter-spacing:-.01em}
+.product__description h3{margin:2.4rem 0 .6rem;font-size:2rem;color:#e7d3a6}
 .product__description ul{margin:0;padding-left:1.8rem}
 .product__description li{margin:.3rem 0}
 
 /* Paginas de texto (garantia, contacto): medida de lectura comoda. */
 .main-page-title + .rte,.page-width--narrow .rte{max-width:68ch}
-.rte h2{font-weight:800;letter-spacing:-.02em;margin-top:3.2rem}
+.rte h2{letter-spacing:-.01em;margin-top:3.2rem}
 
 /* Pie: enlaces sin subrayado hasta el hover. */
 .footer-block__details-content .list-menu__item--link{text-decoration:none}

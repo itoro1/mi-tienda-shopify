@@ -1,0 +1,65 @@
+<!doctype html><html><head><meta charset="utf-8">
+<style>
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#07090f}
+.plato{position:absolute;inset:0;overflow:hidden;background:radial-gradient(60% 75% at 50% 18%,#26304d 0%,#121829 38%,#07090f 78%)}
+.foco{position:absolute;left:50%;top:-12%;width:120%;height:100%;transform:translateX(-50%);background:radial-gradient(26% 55% at 50% 0%,rgba(255,244,220,.24),rgba(255,244,220,.06) 55%,transparent 80%);filter:blur(6px)}
+.suelo{position:absolute;left:0;right:0;bottom:0;height:36%;background:linear-gradient(180deg,rgba(12,16,28,0),#0a0d16 40%)}
+.podio{--p:calc(var(--w)*2.3);position:absolute;left:50%;bottom:calc(30% - var(--p)*.3);width:var(--p);height:calc(var(--p)*.43);transform:translateX(-50%)}
+.cuerpo{position:absolute;left:0;right:0;top:calc(var(--p)*.135);bottom:0;border-radius:0 0 50% 50%/0 0 calc(var(--p)*.135) calc(var(--p)*.135);background:linear-gradient(90deg,#05070d 0%,#1b2236 22%,#2b3450 46%,#1c2338 70%,#05070d 100%)}
+.cuerpo::after{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,#e9d5a3 30%,#c9a86a 70%,transparent)}
+.tapa{position:absolute;left:0;top:0;width:100%;height:calc(var(--p)*.27);border-radius:50%;background:radial-gradient(50% 55% at 46% 42%,#3a4566 0%,#232b43 45%,#151b2d 100%);box-shadow:inset 0 0 0 2px rgba(233,213,163,.85),inset 0 -6px 18px rgba(0,0,0,.45)}
+.sombra{position:absolute;left:50%;bottom:calc(30% - var(--w)*.06);width:calc(var(--w)*1.35);height:calc(var(--w)*.3);transform:translateX(-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.7),transparent);filter:blur(5px)}
+.escena{position:absolute;left:50%;bottom:30%;width:0;height:0;perspective:1800px}
+.grupo{position:absolute;left:0;top:0;transform-style:preserve-3d}
+.c3{--h:calc(var(--w) / var(--ar) * (1 - var(--pest)));--d:calc(var(--w)*.42);position:absolute;left:calc(var(--w) / -2);top:calc(var(--h) * -1);width:var(--w);height:var(--h);transform-style:preserve-3d}
+.f{position:absolute;left:0;top:0;backface-visibility:hidden}
+.frente,.trasera{width:var(--w);height:var(--h);overflow:hidden}
+.frente{transform:translateZ(calc(var(--d)/2))}
+.trasera{transform:rotateY(180deg) translateZ(calc(var(--d)/2))}
+.frente img,.trasera img{position:absolute;left:0;bottom:0;width:100%}
+.trasera img{height:calc(var(--h) / (1 - var(--pest)));object-fit:fill}
+.lado{width:var(--d);height:var(--h);left:calc((var(--w) - var(--d))/2)}
+.dcha{transform:rotateY(90deg) translateZ(calc(var(--w)/2));background:linear-gradient(90deg,#d5d9df,#b2b7c0)}
+.izda{transform:rotateY(-90deg) translateZ(calc(var(--w)/2));background:linear-gradient(90deg,#f5f6f7,#dfe2e6)}
+.arriba{width:var(--w);height:var(--d);top:calc((var(--h) - var(--d))/2);transform:rotateX(90deg) translateZ(calc(var(--h)/2));background:linear-gradient(#fbfbfc,#e6e8eb)}
+.pestana{position:absolute;left:0;width:var(--w);height:calc(var(--w)/var(--ar)*var(--pest) + 2px);top:calc(var(--w)/var(--ar)*var(--pest)*-1);background:url(caja-cargador-frente.png) top/100% auto no-repeat;transform:translateZ(calc(var(--d)/-2 + 1px))}
+/* sombreado que depende del angulo: se pone desde JS */
+.velo{position:absolute;inset:0;background:#000;opacity:var(--sombra,0);pointer-events:none}
+.barrido{position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen;background:linear-gradient(100deg,transparent 40%,rgba(255,236,196,.38) 50%,transparent 60%);background-size:300% 100%;background-position:var(--bx,150%) 0}
+.bruma{position:absolute;inset:0;pointer-events:none;background:radial-gradient(40% 30% at 50% 70%,rgba(201,168,106,.10),transparent 70%)}
+.vineta{position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 220px 60px rgba(0,0,0,.85)}
+</style></head><body>
+<div class="plato" id="plato">
+  <div class="foco"></div><div class="suelo"></div><div class="bruma"></div>
+  <div class="podio"><div class="cuerpo"></div><div class="tapa"></div></div><div class="sombra" id="sombra"></div>
+  <div class="escena"><div class="grupo" id="grupo">
+    <div class="c3" style="--ar:0.7393;--pest:0.15">
+      <div class="f frente"><img src="caja-cargador-frente.png"><div class="velo" id="vf"></div></div>
+      <div class="f trasera"><img src="caja-cargador-trasera.png"><div class="velo" id="vt"></div></div>
+      <div class="pestana"></div>
+      <div class="f lado dcha"><div class="velo" id="vd"></div></div>
+      <div class="f lado izda"><div class="velo" id="vi"></div></div>
+      <div class="f arriba"></div>
+    </div>
+  </div></div>
+  <div class="barrido" id="barrido"></div><div class="vineta"></div>
+</div>
+<script>
+// t en [0,1): un giro completo. Luz fija desde arriba-izquierda delante: cada
+// cara se oscurece segun lo que se aparta de la luz.
+const W = Math.min(innerWidth, innerHeight) * (innerWidth > innerHeight ? .36 : .46);
+document.documentElement.style.setProperty('--w', W + 'px');
+const luz = -35 * Math.PI / 180;
+function caraSombra(angCara) { const c = Math.cos(angCara - luz); return Math.max(0, (1 - c) * .32); }
+window.setT = function (t) {
+  const ry = -32 + t * 360, rx = -12 + Math.sin(t * Math.PI * 2) * 2.5;
+  const zoom = 1 + .035 * Math.sin(t * Math.PI * 2 - Math.PI / 2) + .035;
+  document.getElementById('grupo').style.transform = `scale(${zoom}) rotateX(${rx}deg) rotateY(${ry}deg)`;
+  const a = ry * Math.PI / 180;
+  const set = (id, ang) => document.getElementById(id).style.setProperty('--sombra', caraSombra(a + ang).toFixed(3));
+  set('vf', 0); set('vt', Math.PI); set('vd', Math.PI / 2); set('vi', -Math.PI / 2);
+  // barrido de luz dorada a mitad de giro y al final
+  const b = (t * 2) % 1; document.getElementById('barrido').style.setProperty('--bx', (150 - b * 200) + '%');
+};
+setT(0);
+</script></body></html>

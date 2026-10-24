@@ -4,7 +4,7 @@
   como un eslogan. Cada fila es un bloque.
 {%- endcomment -%}
 {{ 'pt-base.css' | asset_url | stylesheet_tag }}
-<section class="pt pt-label-sec{% if section.settings.margen_arriba %} pt-label-sec--sep{% endif %}" style="--pt-accent:{{ settings.pt_accent | default: '#0e7c3a' }}">
+<section class="pt pt-label-sec{% if section.settings.margen_arriba %} pt-label-sec--sep{% endif %}" style="--pt-accent:{{ settings.pt_accent | default: '#c9a86a' }}">
   <div class="pt-wrap">
     <dl class="pt-label">
       {%- for block in section.blocks -%}

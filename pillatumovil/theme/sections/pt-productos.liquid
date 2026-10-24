@@ -17,7 +17,7 @@
   endif
 -%}
 {%- if mostrar -%}
-<section class="pt pt-sec pt-list-sec" style="--pt-accent:{{ settings.pt_accent | default: '#0e7c3a' }}">
+<section class="pt pt-sec pt-list-sec" style="--pt-accent:{{ settings.pt_accent | default: '#c9a86a' }}">
   <div class="pt-wrap">
     <div class="pt-list__head">
       <div>
@@ -55,12 +55,12 @@
             {%- unless p.available -%}<span class="pt-list__out">Sin stock ahora mismo</span>{%- endunless -%}
           </div>
           <div class="pt-list__apple">
-            {%- if pa != blank -%}<span class="pt-list__k">En Apple</span><s>{{ pa }}</s>{%- endif -%}
+            {%- if pa != blank -%}<span class="pt-list__k">En Apple</span><s>{{ pa_cents | money_without_currency }} €</s>{%- endif -%}
           </div>
           <div class="pt-list__ours">
             <span class="pt-list__k">Aquí</span>
-            <strong>{% if p.price_varies %}<small>desde </small>{% endif %}{{ p.price | money }}</strong>
-            {%- if ahorro > 0 -%}<span class="pt-save">Ahorra {{ ahorro | money }}</span>{%- endif -%}
+            <strong>{% if p.price_varies %}<small>desde </small>{% endif %}{{ p.price | money_without_currency }}<span class="pt-eur">€</span></strong>
+            {%- if ahorro > 0 -%}<span class="pt-save">Ahorra {{ ahorro | money_without_currency }} €</span>{%- endif -%}
           </div>
           <a class="pt-btn pt-btn--line pt-list__btn" href="{{ p.url }}">{% if p.has_only_default_variant %}Comprar{% else %}Elegir cantidad{% endif %}</a>
         </li>
@@ -75,20 +75,20 @@
 {% stylesheet %}
 .pt-list-sec{padding-bottom:clamp(24px,3vw,40px)}
 .pt-list__head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px 32px;flex-wrap:wrap;margin-bottom:28px}
-.pt-list{list-style:none;margin:0;padding:0;border-top:3px solid var(--pt-ink)}
+.pt-list{list-style:none;margin:0;padding:0;border-top:1px solid rgba(201,168,106,.55)}
 .pt-list__cols,.pt-list__row{display:grid;grid-template-columns:112px minmax(0,1fr) 120px 170px 180px;gap:24px;align-items:center}
 .pt-list__cols{padding:10px 0;font-size:14px;color:var(--pt-muted);border-bottom:1px solid var(--pt-line)}
 .pt-list__row{position:relative;padding:16px 0;border-bottom:1px solid var(--pt-line)}
 .pt-list__row--empty{display:block;color:var(--pt-muted)}
-.pt-list__img{display:grid;place-items:center;aspect-ratio:1/1;border-radius:14px;background:var(--pt-box)}
+.pt-list__img{display:grid;place-items:center;aspect-ratio:1/1;border-radius:16px;background:var(--pt-tile);overflow:hidden}
 .pt-list__img img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
-.pt-list__name a{font-size:18px;font-weight:700;line-height:1.3;color:var(--pt-ink);text-decoration:none}
+.pt-list__name a{font-size:18px;font-weight:600;line-height:1.35;color:var(--pt-ink);text-decoration:none}
 .pt-list__name a:hover{text-decoration:underline;text-underline-offset:3px}
 .pt-list__out{display:block;margin-top:4px;font-size:14px;color:var(--pt-muted)}
 .pt-list__k{display:none}
 .pt-list__apple{font-size:17px;color:var(--pt-muted)}
 .pt-list__ours{display:flex;flex-direction:column;align-items:flex-start}
-.pt-list__ours strong{font-size:24px;font-weight:800;letter-spacing:-.02em}
+.pt-list__ours strong{font-family:var(--font-heading-family);font-size:30px;font-weight:var(--font-heading-weight,500);color:var(--pt-oro-claro)}
 .pt-list__ours small{font-size:14px;font-weight:600;color:var(--pt-muted);letter-spacing:0}
 .pt-list__btn{width:100%}
 @media (max-width:989px){
@@ -102,7 +102,7 @@
   .pt-list__name a::after{content:"";position:absolute;inset:0}
   .pt-list__k{display:block;font-size:13px;color:var(--pt-muted)}
   .pt-list__name a{font-size:16px}
-  .pt-list__ours strong{font-size:20px}
+  .pt-list__ours strong{font-size:24px}
 }
 {% endstylesheet %}
 
