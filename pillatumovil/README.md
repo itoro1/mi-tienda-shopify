@@ -15,31 +15,49 @@ Segunda tienda (`j2zukw-xp.myshopify.com`), separada de ITorostore.
 Siete secciones propias, todas con el prefijo `pt-` y con nombre
 `PT · …` en el editor de temas:
 
-| Sección | Qué hace |
-|---|---|
-| `pt-hero` | Titular grande, dos botones, sellos y foto del producto estrella con su precio |
-| `pt-ventajas` | Franja de iconos (bloques: se añaden, quitan y reordenan) |
-| `pt-buscador` | «¿Qué iPhone tienes?»: una tarjeta por conector con el producto que le va |
-| `pt-productos` | Rejilla de productos elegidos a mano (o de una colección) |
-| `pt-pack` | Banner del pack: En Apple / Por separado / Pack, calculados |
-| `pt-faq` | Preguntas en acordeón + datos estructurados FAQPage para Google |
-| `pt-cta` | Cierre con el color de marca de fondo |
+| Sección (fichero) | Nombre en el editor | Qué hace |
+|---|---|---|
+| `pt-hero` | PT · Portada | Titular, batería que se carga al entrar y producto estrella con su precio |
+| `pt-ventajas` | PT · Garantías | Etiqueta de caja: dato y valor (producto, garantía, devolución, pago) |
+| `pt-buscador` | PT · ¿Qué conector? | El cliente toca su puerto (USB-C o Lightning) y aparece su producto |
+| `pt-productos` | PT · Lista de precios | Una fila por producto con columnas «En Apple» y «Aquí» |
+| `pt-pack` | PT · Pack | El pack como una suma: piezas sueltas, total, precio del pack |
+| `pt-faq` | PT · Preguntas | Preguntas en acordeón + datos estructurados FAQPage para Google |
+| `pt-cta` | PT · Cierre | Franja final con un botón que sube al buscador |
 
-Piezas comunes: `assets/pt-base.css` (botones, tipografía, colores),
-`snippets/pt-precio.liquid` (precio + comparativa con Apple) y
-`snippets/pt-icono.liquid` (iconos).
+Piezas comunes: `assets/pt-base.css` (paleta, tipografía, botones) y
+`snippets/pt-precio.liquid` (precio + comparativa con Apple).
+
+## Identidad visual (rediseño del 24/10/2026)
+
+Hecha con la skill `frontend-design`, a partir de los objetos que se venden
+y no de una plantilla:
+
+- **Paleta**: blanco del plástico de Apple `#FFFFFF`, gris de la caja
+  `#EEEFEC`, tinta pizarra `#1B2230`, verde de carga `#0E7C3A` (botones) y
+  verde batería de iOS `#34C759` (solo la batería).
+- **Tipografía**: Archivo, una sola familia. Titulares en 800 y apretados,
+  como la rotulación de una caja.
+- **Un único elemento llamativo**: la batería de la portada, que se carga
+  una vez al entrar. Es la única animación que no provoca el cliente.
+- **Evitado a propósito**: antetítulos en mayúsculas, una palabra del
+  titular en otro color, flechas «→» en los botones, rejillas de tarjetas
+  iguales y animaciones en cada sección. Son las marcas de una web hecha
+  con plantilla.
 
 ## Cómo se cambia (sin tocar código)
 
 Todo se hace en *Tienda online → Temas → Dawn → Personalizar*:
 
-- **Color de marca**: *Configuración del tema → Pillatumovil*. Un solo color
-  que usan todas las secciones `PT ·` (botones, titulares en color, iconos).
+- **Color de marca**: *Configuración del tema → Pillatumovil*. Usa un tono
+  oscuro: el texto de los botones es blanco.
+- **Batería**: en *PT · Portada* se elige hasta qué porcentaje se carga y
+  el texto de debajo, o se oculta.
 - **Textos, botones y enlaces**: en cada sección.
-- **Productos**: cada sección tiene su selector de productos. Foto, precio y
-  PVP de Apple salen del producto: **no hay precios escritos a mano**, así que
-  cambiar un precio en el admin lo cambia en toda la portada.
-- **Fondo claro u oscuro**: casilla en la portada, el pack y las ventajas.
+- **Productos**: cada sección tiene su selector. Foto, precio y PVP de
+  Apple salen del producto: **no hay precios escritos a mano**.
+- **Garantías, opciones del buscador y preguntas** son bloques: se añaden,
+  quitan y reordenan.
 
 ## Decisiones que conviene no deshacer
 
@@ -53,9 +71,11 @@ Todo se hace en *Tienda online → Temas → Dawn → Personalizar*:
   el precio suelto baja, la fila «Por separado» desaparece sola en vez de
   anunciar un ahorro falso.
 - **Garantía de 3 años**, no 1: producto nuevo (ver el README principal).
-- **Las fotos de producto llevan fondo blanco**, por eso en fondo claro se
-  pintan con `mix-blend-mode: multiply` (el blanco se funde con el gris) y
-  en fondo oscuro van dentro de una tarjeta blanca.
+- **Las fotos de producto llevan fondo blanco**, por eso sobre el gris se
+  pintan con `mix-blend-mode: multiply`: el blanco se funde con el gris.
+- **El buscador funciona sin JavaScript** (radios + `:has()`). En un
+  navegador sin `:has()` se ven todas las respuestas a la vez, que sigue
+  siendo correcto.
 - **Los productos se eligen en el editor**, no por handle en el código como
   en las secciones `it-` de ITorostore: así se cambian sin programar.
 
@@ -64,8 +84,11 @@ Todo se hace en *Tienda online → Temas → Dawn → Personalizar*:
 - Los 5 productos están **en borrador**: mientras no se activen, la portada
   muestra huecos en su lugar. Ya están añadidos al canal Tienda online, así
   que basta con pasarlos a *Activo*.
-- El botón de la sección de preguntas («Contactar») no sale hasta que se le
+- El botón «Escríbenos» de la sección de preguntas no sale hasta que se le
   ponga un enlace (página de contacto o WhatsApp).
+- Las fotos de producto son las de ITorostore: cajas pequeñas en un encuadre
+  grande. Unas fotos del producto fuera de la caja, con fondo blanco y
+  ocupando el encuadre, mejorarían mucho la portada.
 - Sin sección de opiniones a propósito: la tienda es nueva y no tiene
   reseñas propias. No se copian las de ITorostore.
 

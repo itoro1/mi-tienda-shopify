@@ -1,67 +1,65 @@
 {%- comment -%}
-  Portada: titular grande, dos botones, sellos de confianza y la foto del
-  producto estrella con su precio al lado.
+  Portada. Titular, la bateria y el producto estrella con su precio.
 
-  El producto es un ajuste de la seccion: de el salen foto, precio y PVP de
-  Apple. Cambias el producto y todo lo demas se actualiza solo; no hay
-  precios escritos a mano que se puedan quedar viejos.
+  La bateria es el unico elemento animado de la pagina: al entrar se carga
+  una vez hasta el porcentaje del ajuste. Por defecto ensena el dato de Apple
+  para el cargador de 20 W (hasta el 50 % en unos 30 minutos).
+
+  Foto, precio y PVP de Apple salen del producto elegido; no hay precios
+  escritos a mano.
 {%- endcomment -%}
 {{ 'pt-base.css' | asset_url | stylesheet_tag }}
 {%- liquid
   assign p = section.settings.producto
-  assign anim = ''
-  if settings.animations_reveal_on_scroll
-    assign anim = 'scroll-trigger animate--slide-in'
-  endif
+  assign pct = section.settings.bateria_pct
 -%}
-<section class="pt pt-hero{% if section.settings.fondo_oscuro %} pt--dark{% endif %}" style="--pt-accent:{{ settings.pt_accent | default: '#ff5a1f' }}">
+<section class="pt pt-hero" style="--pt-accent:{{ settings.pt_accent | default: '#0e7c3a' }}">
   <div class="pt-wrap pt-hero__grid">
-    <div class="pt-hero__copy {{ anim }}">
-      {%- if section.settings.eyebrow != blank -%}<p class="pt-eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
-      <h1 class="pt-h1">
-        {{- section.settings.titulo -}}
-        {%- if section.settings.titulo_destacado != blank %} <em>{{ section.settings.titulo_destacado }}</em>{%- endif -%}
-      </h1>
+    <div class="pt-hero__copy">
+      <h1 class="pt-h1">{{ section.settings.titulo }}</h1>
       {%- if section.settings.texto != blank -%}<p class="pt-lead">{{ section.settings.texto }}</p>{%- endif -%}
+
+      {%- if section.settings.mostrar_bateria -%}
+        <figure class="pt-batt">
+          <div class="pt-batt__shell" role="img" aria-label="Batería al {{ pct }} %">
+            <div class="pt-batt__body">
+              <span class="pt-batt__fill" style="--pct:{{ pct }}%"></span>
+              <span class="pt-batt__num">
+                <svg viewBox="0 0 12 20" width="10" height="16" aria-hidden="true"><path d="M7.5 0 0 11.5h5L4 20l8-12H7z" fill="currentColor"/></svg>
+                {{ pct }} %
+              </span>
+            </div>
+            <span class="pt-batt__cap" aria-hidden="true"></span>
+          </div>
+          {%- if section.settings.bateria_texto != blank -%}<figcaption class="pt-batt__note">{{ section.settings.bateria_texto }}</figcaption>{%- endif -%}
+        </figure>
+      {%- endif -%}
 
       <div class="pt-btns">
         {%- if section.settings.boton_1 != blank -%}
-          <a class="pt-btn pt-btn--primary" href="{{ section.settings.enlace_1 | default: '#encuentra' }}">{{ section.settings.boton_1 }} <span class="pt-arrow">&rarr;</span></a>
+          <a class="pt-btn" href="{{ section.settings.enlace_1 | default: '#encuentra' }}">{{ section.settings.boton_1 }}</a>
         {%- endif -%}
         {%- if section.settings.boton_2 != blank -%}
-          <a class="pt-btn pt-btn--ghost" href="{{ section.settings.enlace_2 | default: routes.all_products_collection_url }}">{{ section.settings.boton_2 }}</a>
+          <a class="pt-link" href="{{ section.settings.enlace_2 | default: routes.all_products_collection_url }}">{{ section.settings.boton_2 }}</a>
         {%- endif -%}
       </div>
-
-      <ul class="pt-hero__seals">
-        {%- for i in (1..3) -%}
-          {%- assign key = 'sello_' | append: i -%}
-          {%- if section.settings[key] != blank -%}
-            <li><span class="pt-hero__tick">&#10003;</span>{{ section.settings[key] }}</li>
-          {%- endif -%}
-        {%- endfor -%}
-      </ul>
     </div>
 
-    <div class="pt-hero__media {{ anim }}">
-      <span class="pt-hero__glow" aria-hidden="true"></span>
-      {%- if section.settings.etiqueta_imagen != blank -%}
-        <span class="pt-hero__badge">{{ section.settings.etiqueta_imagen }}</span>
-      {%- endif -%}
-      {%- if section.settings.imagen != blank -%}
-        {{ section.settings.imagen | image_url: width: 1100 | image_tag: class: 'pt-hero__img', loading: 'eager', fetchpriority: 'high', sizes: '(min-width: 990px) 50vw, 100vw', widths: '550, 800, 1100' }}
-      {%- elsif p.featured_image -%}
-        {%- assign alt = p.featured_image.alt | default: p.title -%}
-        {{ p.featured_image | image_url: width: 1100 | image_tag: class: 'pt-hero__img', loading: 'eager', fetchpriority: 'high', sizes: '(min-width: 990px) 50vw, 100vw', widths: '550, 800, 1100', alt: alt }}
-      {%- else -%}
-        {{ 'product-1' | placeholder_svg_tag: 'pt-ph pt-hero__img' }}
-      {%- endif -%}
-
-      {%- if p != blank and section.settings.tarjeta_precio -%}
-        <a class="pt-hero__card" href="{{ p.url }}">
-          <span class="pt-hero__card-name">{{ p.title }}</span>
+    <div class="pt-hero__media">
+      <div class="pt-hero__photo">
+        {%- if section.settings.imagen != blank -%}
+          {{ section.settings.imagen | image_url: width: 1100 | image_tag: class: 'pt-hero__img', loading: 'eager', fetchpriority: 'high', sizes: '(min-width: 990px) 45vw, 100vw', widths: '550, 800, 1100' }}
+        {%- elsif p.featured_image -%}
+          {%- assign alt = p.featured_image.alt | default: p.title -%}
+          {{ p.featured_image | image_url: width: 1100 | image_tag: class: 'pt-hero__img', loading: 'eager', fetchpriority: 'high', sizes: '(min-width: 990px) 45vw, 100vw', widths: '550, 800, 1100', alt: alt }}
+        {%- else -%}
+          {{ 'product-1' | placeholder_svg_tag: 'pt-ph pt-hero__img' }}
+        {%- endif -%}
+      </div>
+      {%- if p != blank -%}
+        <a class="pt-hero__tag" href="{{ p.url }}">
+          <span class="pt-hero__name">{{ p.title }}</span>
           {%- render 'pt-precio', product: p -%}
-          <span class="pt-hero__card-cta">Comprar <span class="pt-arrow">&rarr;</span></span>
         </a>
       {%- endif -%}
     </div>
@@ -69,30 +67,35 @@
 </section>
 
 {% stylesheet %}
-.pt-hero{position:relative;overflow:hidden;padding:clamp(40px,7vw,96px) 0}
-.pt-hero__grid{display:grid;grid-template-columns:1.05fr 1fr;gap:clamp(28px,5vw,72px);align-items:center}
-.pt-hero__seals{list-style:none;display:flex;flex-wrap:wrap;gap:10px 22px;margin:28px 0 0;padding:0}
-.pt-hero__seals li{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--pt-ink)}
-.pt-hero__tick{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;font-size:12px;color:#fff;background:var(--pt-accent)}
-.pt-hero__media{position:relative;aspect-ratio:1/1;border-radius:32px;background:var(--pt-soft);display:grid;place-items:center;overflow:hidden;isolation:isolate}
-.pt-hero__glow{position:absolute;inset:-20%;z-index:-1;background:radial-gradient(closest-side,color-mix(in srgb,var(--pt-accent) 38%,transparent),transparent 70%);filter:blur(10px);animation:pt-glow 9s ease-in-out infinite alternate}
-@keyframes pt-glow{from{transform:translate(-6%,4%) scale(.95)}to{transform:translate(6%,-4%) scale(1.05)}}
-.pt-hero__img{width:78%;height:78%;object-fit:contain;mix-blend-mode:multiply;animation:pt-float 6s ease-in-out infinite}
-.pt--dark .pt-hero__img{mix-blend-mode:normal;width:70%;height:auto;border-radius:28px}
-@keyframes pt-float{50%{transform:translateY(-10px)}}
-.pt-hero__badge{position:absolute;top:20px;right:20px;padding:8px 14px;border-radius:999px;background:var(--pt-ink);color:var(--pt-soft);font-size:12px;font-weight:700;letter-spacing:.04em}
-.pt--dark .pt-hero__badge{background:#fff;color:#0e0f13}
-.pt-hero__card{position:absolute;left:20px;bottom:20px;max-width:min(320px,calc(100% - 40px));display:flex;flex-direction:column;gap:8px;padding:16px 18px;border-radius:18px;text-decoration:none;color:var(--pt-ink);background:color-mix(in srgb,var(--pt-card) 82%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 20px 40px -20px rgba(0,0,0,.35);border:1px solid var(--pt-line);transition:transform .15s ease}
-.pt--dark .pt-hero__card{background:rgba(20,21,26,.75)}
-.pt-hero__card:hover{transform:translateY(-3px)}
-.pt-hero__card-name{font-size:13px;font-weight:600;color:var(--pt-muted)}
-.pt-hero__card-cta{font-size:14px;font-weight:700;color:var(--pt-accent)}
-@media (prefers-reduced-motion:reduce){.pt-hero__glow,.pt-hero__img{animation:none}}
+.pt-hero{padding:clamp(40px,6vw,88px) 0 clamp(48px,7vw,96px)}
+.pt-hero__grid{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(32px,6vw,88px);align-items:center}
+
+/* La bateria: carcasa, polo y relleno verde que se carga al entrar. */
+.pt-batt{margin:36px 0 0;max-width:460px}
+.pt-batt__shell{display:flex;align-items:center;gap:4px}
+.pt-batt__body{position:relative;flex:1;height:56px;padding:5px;border:3px solid var(--pt-ink);border-radius:16px}
+.pt-batt__fill{display:block;height:100%;width:var(--pct);border-radius:9px;background:var(--pt-battery);animation:pt-charge 1.8s cubic-bezier(.2,.7,.2,1) .25s both}
+@keyframes pt-charge{from{width:6%}to{width:var(--pct)}}
+.pt-batt__num{position:absolute;inset:0;padding-left:20px;display:flex;align-items:center;justify-content:flex-start;gap:6px;font-size:20px;font-weight:800;letter-spacing:-.01em;color:var(--pt-ink)}
+.pt-batt__cap{width:7px;height:20px;border-radius:0 5px 5px 0;background:var(--pt-ink)}
+.pt-batt__note{margin:12px 0 0;font-size:14px;line-height:1.45;color:var(--pt-muted)}
+
+.pt-hero__media{display:flex;flex-direction:column;gap:12px}
+.pt-hero__photo{aspect-ratio:1/1;border-radius:var(--pt-r-panel);background:var(--pt-box);display:grid;place-items:center;overflow:hidden}
+.pt-hero__img{width:84%;height:84%;object-fit:contain;mix-blend-mode:multiply}
+.pt-hero__tag{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:16px 4px 0;text-decoration:none;color:inherit;border-top:3px solid var(--pt-ink)}
+.pt-hero__name{font-size:16px;font-weight:700;max-width:22ch}
+.pt-hero__tag .pt-price{align-items:flex-end;text-align:right}
+.pt-hero__tag:hover .pt-hero__name{text-decoration:underline;text-underline-offset:3px}
+
 @media (max-width:989px){
   .pt-hero__grid{grid-template-columns:1fr}
-  .pt-hero__media{aspect-ratio:auto;display:flex;flex-direction:column;align-items:center;gap:14px;padding:56px 16px 16px}
-  .pt-hero__img{width:min(78%,420px);height:auto;aspect-ratio:1/1}
-  .pt-hero__card{position:static;max-width:none;width:100%}
+  .pt-hero__photo{aspect-ratio:5/4}
+}
+@media (max-width:749px){
+  .pt-batt__body{height:48px}
+  .pt-hero__tag{flex-direction:column;align-items:flex-start}
+  .pt-hero__tag .pt-price{align-items:flex-start;text-align:left}
 }
 {% endstylesheet %}
 
@@ -103,26 +106,20 @@
   "class": "pt-section",
   "settings": [
     { "type": "header", "content": "Texto" },
-    { "type": "text", "id": "eyebrow", "label": "Antetítulo", "default": "Cargadores y cables originales Apple" },
-    { "type": "text", "id": "titulo", "label": "Titular", "default": "Carga tu iPhone" },
-    { "type": "text", "id": "titulo_destacado", "label": "Final del titular (en color)", "info": "Va pegado al titular y sale con el color de marca.", "default": "como el primer día." },
-    { "type": "textarea", "id": "texto", "label": "Texto de apoyo", "default": "El cargador que ya no viene en la caja. 100 % original Apple, más barato que en Apple y con garantía legal de 3 años." },
+    { "type": "text", "id": "titulo", "label": "Titular", "default": "Pilla el cargador que le toca a tu iPhone." },
+    { "type": "textarea", "id": "texto", "label": "Texto de apoyo", "default": "Cargadores y cables originales de Apple, más baratos que en Apple y con 3 años de garantía legal." },
+    { "type": "header", "content": "Batería" },
+    { "type": "checkbox", "id": "mostrar_bateria", "label": "Mostrar la batería", "default": true },
+    { "type": "range", "id": "bateria_pct", "label": "Hasta qué porcentaje se carga", "min": 10, "max": 100, "step": 5, "unit": "%", "default": 50 },
+    { "type": "text", "id": "bateria_texto", "label": "Texto bajo la batería", "default": "Hasta el 50 % en unos 30 minutos con el cargador de 20 W, según Apple." },
     { "type": "header", "content": "Botones" },
-    { "type": "text", "id": "boton_1", "label": "Botón principal", "default": "Encuentra tu cargador" },
-    { "type": "url", "id": "enlace_1", "label": "Enlace del botón principal", "info": "Si lo dejas vacío, baja al buscador «¿Qué iPhone tienes?» de la portada." },
-    { "type": "text", "id": "boton_2", "label": "Botón secundario", "default": "Ver todo" },
-    { "type": "url", "id": "enlace_2", "label": "Enlace del botón secundario" },
-    { "type": "header", "content": "Sellos de confianza" },
-    { "type": "text", "id": "sello_1", "label": "Sello 1", "default": "Original Apple" },
-    { "type": "text", "id": "sello_2", "label": "Sello 2", "default": "Garantía de 3 años" },
-    { "type": "text", "id": "sello_3", "label": "Sello 3", "default": "14 días para devolver" },
-    { "type": "header", "content": "Producto e imagen" },
+    { "type": "text", "id": "boton_1", "label": "Botón principal", "default": "Elegir mi cargador" },
+    { "type": "url", "id": "enlace_1", "label": "Enlace del botón principal", "info": "Si lo dejas vacío, baja al buscador «¿Qué conector tiene tu iPhone?»." },
+    { "type": "text", "id": "boton_2", "label": "Enlace secundario", "default": "Ver todos los productos" },
+    { "type": "url", "id": "enlace_2", "label": "Destino del enlace secundario" },
+    { "type": "header", "content": "Producto" },
     { "type": "product", "id": "producto", "label": "Producto estrella", "info": "De aquí salen la foto, el precio y el PVP de Apple." },
-    { "type": "checkbox", "id": "tarjeta_precio", "label": "Mostrar tarjeta con el precio", "default": true },
-    { "type": "image_picker", "id": "imagen", "label": "Imagen propia (opcional)", "info": "Si la pones, sustituye a la foto del producto. Mejor PNG con fondo transparente." },
-    { "type": "text", "id": "etiqueta_imagen", "label": "Etiqueta sobre la imagen", "default": "100 % original" },
-    { "type": "header", "content": "Estilo" },
-    { "type": "checkbox", "id": "fondo_oscuro", "label": "Fondo oscuro", "default": false }
+    { "type": "image_picker", "id": "imagen", "label": "Imagen propia (opcional)", "info": "Sustituye a la foto del producto." }
   ],
   "presets": [{ "name": "PT · Portada" }]
 }

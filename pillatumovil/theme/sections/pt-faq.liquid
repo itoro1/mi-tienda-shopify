@@ -4,14 +4,13 @@
   Google pueda sacar las preguntas en los resultados.
 {%- endcomment -%}
 {{ 'pt-base.css' | asset_url | stylesheet_tag }}
-<section class="pt pt-sec pt-faq" style="--pt-accent:{{ settings.pt_accent | default: '#ff5a1f' }}">
+<section class="pt pt-sec pt-faq" style="--pt-accent:{{ settings.pt_accent | default: '#0e7c3a' }}">
   <div class="pt-wrap pt-faq__grid">
     <div class="pt-faq__intro">
-      {%- if section.settings.eyebrow != blank -%}<p class="pt-eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
       <h2 class="pt-h2">{{ section.settings.titulo }}</h2>
       {%- if section.settings.texto != blank -%}<p class="pt-lead">{{ section.settings.texto }}</p>{%- endif -%}
       {%- if section.settings.boton != blank and section.settings.enlace != blank -%}
-        <div class="pt-btns"><a class="pt-btn pt-btn--ghost" href="{{ section.settings.enlace }}">{{ section.settings.boton }}</a></div>
+        <div class="pt-btns"><a class="pt-link" href="{{ section.settings.enlace }}">{{ section.settings.boton }}</a></div>
       {%- endif -%}
     </div>
     <div class="pt-faq__list">
@@ -44,20 +43,18 @@
 {%- endif -%}
 
 {% stylesheet %}
-.pt-faq__grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:clamp(24px,5vw,72px);align-items:start}
+.pt-faq__grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:clamp(24px,6vw,88px);align-items:start}
 .pt-faq__intro{position:sticky;top:110px}
-.pt-faq__list{display:grid;gap:12px}
-.pt-faq__item{border:1px solid var(--pt-line);border-radius:18px;background:var(--pt-card);transition:border-color .2s ease}
-.pt-faq__item[open]{border-color:var(--pt-accent)}
-.pt-faq__item summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:20px 22px;font-size:16px;font-weight:700;color:var(--pt-ink)}
+.pt-faq__list{border-top:3px solid var(--pt-ink)}
+.pt-faq__item{border-bottom:1px solid var(--pt-line)}
+.pt-faq__item summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:22px 0;font-size:18px;font-weight:700;line-height:1.3;color:var(--pt-ink)}
 .pt-faq__item summary::-webkit-details-marker{display:none}
-.pt-faq__plus{flex:none;position:relative;width:28px;height:28px;border-radius:50%;background:var(--pt-soft)}
-.pt-faq__plus::before,.pt-faq__plus::after{content:"";position:absolute;left:50%;top:50%;width:12px;height:2px;margin:-1px 0 0 -6px;background:var(--pt-ink);border-radius:2px;transition:transform .2s ease}
+.pt-faq__item summary:hover{color:var(--pt-accent)}
+.pt-faq__plus{flex:none;position:relative;width:20px;height:20px}
+.pt-faq__plus::before,.pt-faq__plus::after{content:"";position:absolute;left:0;right:0;top:50%;height:3px;margin-top:-1.5px;background:currentColor;border-radius:2px;transition:transform .2s ease}
 .pt-faq__plus::after{transform:rotate(90deg)}
-.pt-faq__item[open] .pt-faq__plus{background:var(--pt-accent)}
-.pt-faq__item[open] .pt-faq__plus::before,.pt-faq__item[open] .pt-faq__plus::after{background:#fff}
 .pt-faq__item[open] .pt-faq__plus::after{transform:rotate(0)}
-.pt-faq__a{padding:0 22px 20px;font-size:15px;line-height:1.6;color:var(--pt-muted)}
+.pt-faq__a{padding:0 40px 24px 0;font-size:16px;line-height:1.6;color:var(--pt-muted);max-width:64ch}
 .pt-faq__a p{margin:0 0 10px}.pt-faq__a p:last-child{margin:0}
 @media (max-width:989px){.pt-faq__grid{grid-template-columns:1fr}.pt-faq__intro{position:static}}
 {% endstylesheet %}
@@ -68,9 +65,8 @@
   "tag": "div",
   "class": "pt-section",
   "settings": [
-    { "type": "text", "id": "eyebrow", "label": "Antetítulo", "default": "Dudas frecuentes" },
-    { "type": "text", "id": "titulo", "label": "Título", "default": "Lo que nos preguntáis antes de comprar" },
-    { "type": "textarea", "id": "texto", "label": "Texto", "default": "¿Te queda alguna duda? Escríbenos y te contestamos." },
+    { "type": "text", "id": "titulo", "label": "Título", "default": "Antes de comprar" },
+    { "type": "textarea", "id": "texto", "label": "Texto", "default": "Las dudas que más nos llegan. Si la tuya no está, escríbenos." },
     { "type": "text", "id": "boton", "label": "Texto del botón", "default": "Contactar" },
     { "type": "url", "id": "enlace", "label": "Enlace del botón", "info": "Si lo dejas vacío, el botón no sale." },
     { "type": "checkbox", "id": "abrir_primera", "label": "Primera pregunta abierta", "default": true }

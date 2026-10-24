@@ -1,44 +1,36 @@
 {%- comment -%}
-  Cierre de la portada: un ultimo empujon con el color de marca de fondo.
+  Cierre de la portada: una franja en tinta con una frase y un boton.
 {%- endcomment -%}
 {{ 'pt-base.css' | asset_url | stylesheet_tag }}
-<section class="pt pt-sec pt-cta" style="--pt-accent:{{ settings.pt_accent | default: '#ff5a1f' }}">
-  <div class="pt-wrap">
-    <div class="pt-cta__box">
-      <span class="pt-cta__ring pt-cta__ring--a" aria-hidden="true"></span>
-      <span class="pt-cta__ring pt-cta__ring--b" aria-hidden="true"></span>
+<section class="pt pt-sec pt--ink pt-close" style="--pt-accent:{{ settings.pt_accent | default: '#0e7c3a' }}">
+  <div class="pt-wrap pt-close__grid">
+    <div>
       <h2 class="pt-h2">{{ section.settings.titulo }}</h2>
       {%- if section.settings.texto != blank -%}<p class="pt-lead">{{ section.settings.texto }}</p>{%- endif -%}
-      {%- if section.settings.boton != blank -%}
-        <div class="pt-btns"><a class="pt-btn pt-cta__btn" href="{{ section.settings.enlace | default: routes.all_products_collection_url }}">{{ section.settings.boton }} <span class="pt-arrow">&rarr;</span></a></div>
-      {%- endif -%}
     </div>
+    {%- if section.settings.boton != blank -%}
+      <a class="pt-btn pt-btn--light" href="{{ section.settings.enlace | default: '#encuentra' }}">{{ section.settings.boton }}</a>
+    {%- endif -%}
   </div>
 </section>
 
 {% stylesheet %}
-.pt-cta__box{position:relative;overflow:hidden;isolation:isolate;text-align:center;padding:clamp(40px,7vw,88px) clamp(20px,5vw,64px);border-radius:32px;background:var(--pt-accent);color:#fff}
-.pt-cta__box .pt-h2{color:#fff;max-width:20ch;margin-left:auto;margin-right:auto}
-.pt-cta__box .pt-lead{color:rgba(255,255,255,.88);margin:0 auto}
-.pt-cta__box .pt-btns{justify-content:center}
-.pt-cta__btn{background:#fff;color:#0e0f13;box-shadow:0 14px 30px -14px rgba(0,0,0,.45)}
-.pt-cta__btn:hover{transform:translateY(-2px)}
-.pt-cta__ring{position:absolute;z-index:-1;border-radius:50%;border:2px solid rgba(255,255,255,.22)}
-.pt-cta__ring--a{width:420px;height:420px;left:-140px;top:-180px}
-.pt-cta__ring--b{width:520px;height:520px;right:-200px;bottom:-260px}
+.pt-close__grid{display:flex;justify-content:space-between;align-items:center;gap:24px 48px;flex-wrap:wrap}
+.pt-close .pt-h2{max-width:18ch}
+@media (max-width:749px){.pt-close__grid .pt-btn{width:100%}}
 {% endstylesheet %}
 
 {% schema %}
 {
-  "name": "PT · Llamada final",
+  "name": "PT · Cierre",
   "tag": "div",
   "class": "pt-section",
   "settings": [
-    { "type": "text", "id": "titulo", "label": "Título", "default": "Tu iPhone merece su cargador original" },
-    { "type": "textarea", "id": "texto", "label": "Texto", "default": "Original Apple, más barato que en Apple y con 3 años de garantía." },
-    { "type": "text", "id": "boton", "label": "Texto del botón", "default": "Comprar ahora" },
-    { "type": "url", "id": "enlace", "label": "Enlace del botón", "info": "Si lo dejas vacío, lleva a todos los productos." }
+    { "type": "text", "id": "titulo", "label": "Título", "default": "¿Aún no sabes cuál te toca?" },
+    { "type": "textarea", "id": "texto", "label": "Texto", "default": "Mira el puerto de carga de tu iPhone y elige. Tardas diez segundos." },
+    { "type": "text", "id": "boton", "label": "Texto del botón", "default": "Elegir mi cargador" },
+    { "type": "url", "id": "enlace", "label": "Enlace del botón", "info": "Si lo dejas vacío, sube al buscador «¿Qué conector tiene tu iPhone?»." }
   ],
-  "presets": [{ "name": "PT · Llamada final" }]
+  "presets": [{ "name": "PT · Cierre" }]
 }
 {% endschema %}

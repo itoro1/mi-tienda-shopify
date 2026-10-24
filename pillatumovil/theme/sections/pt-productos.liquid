@@ -1,7 +1,7 @@
 {%- comment -%}
-  Rejilla de productos. Se eligen a mano (lista de productos) o, si la lista
-  esta vacia, salen los de una coleccion. Cada tarjeta lleva el precio con
-  la comparativa frente a Apple (snippets/pt-precio.liquid).
+  Lista de precios: una fila por producto con nuestro precio y el de Apple
+  en columnas, para comparar de un vistazo. Los productos se eligen a mano
+  o, si la lista esta vacia, salen los de una coleccion.
 {%- endcomment -%}
 {{ 'pt-base.css' | asset_url | stylesheet_tag }}
 {%- liquid
@@ -9,86 +9,108 @@
   if lista == blank or lista.size == 0
     assign lista = section.settings.coleccion.products
   endif
-  assign maximo = section.settings.maximo
 -%}
-<section class="pt pt-sec pt-prods{% if section.settings.fondo_suave %} pt--soft{% endif %}" style="--pt-accent:{{ settings.pt_accent | default: '#ff5a1f' }}">
+<section class="pt pt-sec pt-list-sec" style="--pt-accent:{{ settings.pt_accent | default: '#0e7c3a' }}">
   <div class="pt-wrap">
-    <div class="pt-prods__head">
+    <div class="pt-list__head">
       <div>
-        {%- if section.settings.eyebrow != blank -%}<p class="pt-eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
         <h2 class="pt-h2">{{ section.settings.titulo }}</h2>
+        {%- if section.settings.texto != blank -%}<p class="pt-lead">{{ section.settings.texto }}</p>{%- endif -%}
       </div>
       {%- if section.settings.ver_todo != blank -%}
-        <a class="pt-prods__all" href="{{ section.settings.coleccion.url | default: routes.all_products_collection_url }}">{{ section.settings.ver_todo }} <span class="pt-arrow">&rarr;</span></a>
+        <a class="pt-link" href="{{ section.settings.coleccion.url | default: routes.all_products_collection_url }}">{{ section.settings.ver_todo }}</a>
       {%- endif -%}
     </div>
 
-    <ul class="pt-prods__grid">
-      {%- for p in lista limit: maximo -%}
-        <li>
-          <a class="pt-card" href="{{ p.url }}">
-            <span class="pt-card__media">
-              {%- if p.featured_image -%}
-                {%- assign alt = p.featured_image.alt | default: p.title -%}
-                {{ p.featured_image | image_url: width: 600 | image_tag: loading: 'lazy', widths: '300, 450, 600', sizes: '(min-width: 990px) 25vw, 50vw', alt: alt }}
-              {%- else -%}
-                {{ 'product-1' | placeholder_svg_tag: 'pt-ph' }}
-              {%- endif -%}
-              {%- unless p.available -%}<span class="pt-card__tag">Agotado</span>{%- endunless -%}
-            </span>
-            <span class="pt-card__body">
-              <span class="pt-card__name">{{ p.title }}</span>
-              {%- render 'pt-precio', product: p -%}
-              <span class="pt-card__btn">{% if p.has_only_default_variant %}Comprar{% else %}Elegir{% endif %} <span class="pt-arrow">&rarr;</span></span>
-            </span>
+    <ol class="pt-list" role="list">
+      <li class="pt-list__cols" aria-hidden="true">
+        <span></span><span>Producto</span><span>En Apple</span><span>Aquí</span><span></span>
+      </li>
+      {%- for p in lista limit: section.settings.maximo -%}
+        {%- liquid
+          assign pa = p.metafields.custom.pvp_apple.value
+          assign pa_cents = 0
+          if pa != blank
+            assign pa_cents = pa | remove: '€' | remove: ' ' | remove: '.' | replace: ',', '.' | strip | times: 100 | round
+          endif
+          assign ahorro = pa_cents | minus: p.price
+        -%}
+        <li class="pt-list__row">
+          <a class="pt-list__img" href="{{ p.url }}" tabindex="-1" aria-hidden="true">
+            {%- if p.featured_image -%}
+              {{ p.featured_image | image_url: width: 300 | image_tag: loading: 'lazy', widths: '150, 300', sizes: '120px', alt: '' }}
+            {%- else -%}
+              {{ 'product-1' | placeholder_svg_tag: 'pt-ph' }}
+            {%- endif -%}
           </a>
+          <div class="pt-list__name">
+            <a href="{{ p.url }}">{{ p.title }}</a>
+            {%- unless p.available -%}<span class="pt-list__out">Sin stock ahora mismo</span>{%- endunless -%}
+          </div>
+          <div class="pt-list__apple">
+            {%- if pa != blank -%}<span class="pt-list__k">En Apple</span><s>{{ pa }}</s>{%- endif -%}
+          </div>
+          <div class="pt-list__ours">
+            <span class="pt-list__k">Aquí</span>
+            <strong>{% if p.price_varies %}<small>desde </small>{% endif %}{{ p.price | money }}</strong>
+            {%- if ahorro > 0 -%}<span class="pt-save">Ahorras {{ ahorro | money }}</span>{%- endif -%}
+          </div>
+          <a class="pt-btn pt-btn--line pt-list__btn" href="{{ p.url }}">{% if p.has_only_default_variant %}Comprar{% else %}Elegir cantidad{% endif %}</a>
         </li>
       {%- else -%}
-        {%- for i in (1..4) -%}
-          <li><div class="pt-card"><span class="pt-card__media">{{ 'product-' | append: i | placeholder_svg_tag: 'pt-ph' }}</span><span class="pt-card__body"><span class="pt-card__name">Elige productos en el editor</span></span></div></li>
-        {%- endfor -%}
+        <li class="pt-list__row pt-list__row--empty">Elige los productos de esta lista en el editor de temas.</li>
       {%- endfor -%}
-    </ul>
+    </ol>
   </div>
 </section>
 
 {% stylesheet %}
-.pt-prods__head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:clamp(24px,3vw,36px)}
-.pt-prods__head .pt-h2{margin-bottom:0}
-.pt-prods__all{font-size:15px;font-weight:700;color:var(--pt-ink);text-decoration:none;white-space:nowrap}
-.pt-prods__grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
-.pt-card{height:100%;display:flex;flex-direction:column;border-radius:var(--pt-r);background:var(--pt-card);border:1px solid var(--pt-line);overflow:hidden;text-decoration:none;color:inherit;transition:transform .2s ease,box-shadow .2s ease}
-a.pt-card:hover{transform:translateY(-4px);box-shadow:0 26px 50px -30px rgba(0,0,0,.35)}
-.pt-card__media{position:relative;aspect-ratio:1/1;background:var(--pt-soft);display:grid;place-items:center;overflow:hidden}
-.pt-card__media img{width:82%;height:82%;object-fit:contain;mix-blend-mode:multiply;transition:transform .35s ease}
-a.pt-card:hover .pt-card__media img{transform:scale(1.05)}
-.pt-card__tag{position:absolute;top:12px;left:12px;padding:4px 10px;border-radius:999px;background:var(--pt-ink);color:var(--pt-soft);font-size:12px;font-weight:700}
-.pt-card__body{flex:1;display:flex;flex-direction:column;gap:10px;padding:16px 18px 18px}
-.pt-card__name{font-size:15px;font-weight:600;line-height:1.35;color:var(--pt-ink)}
-.pt-card__btn{margin-top:auto;font-size:14px;font-weight:700;color:var(--pt-accent)}
-@media (max-width:989px){.pt-prods__grid{grid-template-columns:repeat(2,1fr);gap:12px}}
-@media (max-width:749px){
-  .pt-card__body{padding:12px 12px 14px}
-  .pt-card__name{font-size:13.5px}
-  .pt-card .pt-price__now{font-size:18px}
-  .pt-card .pt-save{font-size:11px}
+.pt-list-sec{padding-bottom:clamp(24px,3vw,40px)}
+.pt-list__head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px 32px;flex-wrap:wrap;margin-bottom:28px}
+.pt-list{list-style:none;margin:0;padding:0;border-top:3px solid var(--pt-ink)}
+.pt-list__cols,.pt-list__row{display:grid;grid-template-columns:112px minmax(0,1fr) 120px 170px 180px;gap:24px;align-items:center}
+.pt-list__cols{padding:10px 0;font-size:14px;color:var(--pt-muted);border-bottom:1px solid var(--pt-line)}
+.pt-list__row{position:relative;padding:16px 0;border-bottom:1px solid var(--pt-line)}
+.pt-list__row--empty{display:block;color:var(--pt-muted)}
+.pt-list__img{display:grid;place-items:center;aspect-ratio:1/1;border-radius:14px;background:var(--pt-box)}
+.pt-list__img img{width:86%;height:86%;object-fit:contain;mix-blend-mode:multiply}
+.pt-list__name a{font-size:18px;font-weight:700;line-height:1.3;color:var(--pt-ink);text-decoration:none}
+.pt-list__name a:hover{text-decoration:underline;text-underline-offset:3px}
+.pt-list__out{display:block;margin-top:4px;font-size:14px;color:var(--pt-muted)}
+.pt-list__k{display:none}
+.pt-list__apple{font-size:17px;color:var(--pt-muted)}
+.pt-list__ours{display:flex;flex-direction:column;align-items:flex-start}
+.pt-list__ours strong{font-size:24px;font-weight:800;letter-spacing:-.02em}
+.pt-list__ours small{font-size:14px;font-weight:600;color:var(--pt-muted);letter-spacing:0}
+.pt-list__btn{width:100%}
+@media (max-width:989px){
+  .pt-list__cols{display:none}
+  .pt-list__row{grid-template-columns:96px minmax(0,1fr) minmax(0,1fr);grid-template-areas:"img name name" "img apple ours";gap:8px 16px}
+  .pt-list__img{grid-area:img;align-self:start}
+  .pt-list__name{grid-area:name}
+  .pt-list__apple{grid-area:apple;align-self:start}
+  .pt-list__ours{grid-area:ours;align-self:start}
+  .pt-list__btn{display:none}
+  .pt-list__name a::after{content:"";position:absolute;inset:0}
+  .pt-list__k{display:block;font-size:13px;color:var(--pt-muted)}
+  .pt-list__name a{font-size:16px}
+  .pt-list__ours strong{font-size:20px}
 }
 {% endstylesheet %}
 
 {% schema %}
 {
-  "name": "PT · Productos",
+  "name": "PT · Lista de precios",
   "tag": "div",
   "class": "pt-section",
   "settings": [
-    { "type": "text", "id": "eyebrow", "label": "Antetítulo", "default": "Los más vendidos" },
-    { "type": "text", "id": "titulo", "label": "Título", "default": "Todo lo que necesitas para cargar" },
+    { "type": "text", "id": "titulo", "label": "Título", "default": "Precio aquí y en Apple" },
+    { "type": "textarea", "id": "texto", "label": "Texto", "default": "Los mismos productos originales, con el precio de Apple al lado." },
     { "type": "product_list", "id": "productos", "label": "Productos", "limit": 12, "info": "Elige y ordena los productos. Si lo dejas vacío, salen los de la colección de abajo." },
     { "type": "collection", "id": "coleccion", "label": "Colección (si no eliges productos)" },
-    { "type": "range", "id": "maximo", "label": "Máximo de productos", "min": 2, "max": 12, "step": 1, "default": 8 },
-    { "type": "text", "id": "ver_todo", "label": "Texto del enlace «ver todo»", "default": "Ver todo" },
-    { "type": "checkbox", "id": "fondo_suave", "label": "Fondo gris suave", "default": false }
+    { "type": "range", "id": "maximo", "label": "Máximo de productos", "min": 2, "max": 12, "step": 1, "default": 6 },
+    { "type": "text", "id": "ver_todo", "label": "Texto del enlace a todos los productos", "default": "Ver todos los productos" }
   ],
-  "presets": [{ "name": "PT · Productos" }]
+  "presets": [{ "name": "PT · Lista de precios" }]
 }
 {% endschema %}

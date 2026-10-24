@@ -2,6 +2,7 @@
   Precio de un producto con la comparativa frente al PVP oficial de Apple.
 
   Uso: {%- render 'pt-precio', product: p -%}
+  Sin la etiqueta de ahorro: {%- render 'pt-precio', product: p, mostrar_ahorro: false -%}
 
   El PVP sale del metacampo custom.pvp_apple ("19,00 €", texto). Si el
   producto no lo tiene, solo se pinta nuestro precio. El ahorro se calcula
@@ -25,9 +26,7 @@
     {{- product.price | money -}}
   </span>
   {%- if pa != blank -%}
-    <span class="pt-price__ref">
-      <span>En Apple <s>{{ pa }}</s></span>
-      {%- if ahorro > 0 -%}<span class="pt-save">Ahorras {{ ahorro | money }} · −{{ pct }} %</span>{%- endif -%}
-    </span>
+    <span class="pt-price__ref">En Apple <s>{{ pa }}</s></span>
+    {%- if ahorro > 0 and mostrar_ahorro != false -%}<span class="pt-save">Ahorras {{ ahorro | money }} ({{ pct }} %)</span>{%- endif -%}
   {%- endif -%}
 </div>

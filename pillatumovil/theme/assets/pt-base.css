@@ -1,88 +1,78 @@
 /* Pillatumovil — piezas comunes de las secciones pt-*.
 
-   El color de marca no se escribe aqui: llega en --pt-accent desde
-   Configuracion del tema > Pillatumovil (settings.pt_accent), y cada seccion
-   lo pone en su elemento raiz. Cambiarlo ahi lo cambia en toda la portada. */
+   La paleta sale de los objetos que se venden: el blanco del plastico de
+   Apple, el gris de la caja, el verde de la bateria cargando y una tinta
+   pizarra para el texto. El verde de marca llega en --pt-accent desde
+   Configuracion del tema > Pillatumovil (settings.pt_accent). */
 .pt{
-  --pt-ink:#0e0f13;
-  --pt-muted:#5b6170;
-  --pt-line:#e6e8ec;
-  --pt-soft:#f4f5f7;
-  --pt-card:#ffffff;
-  --pt-ok:#15803d;
-  --pt-ok-bg:#dcfce7;
-  --pt-r:22px;
+  --pt-ink:#1b2230;
+  --pt-muted:#5e6672;
+  --pt-line:#dcdfe3;
+  --pt-box:#eeefec;
+  --pt-paper:#ffffff;
+  --pt-battery:#34c759;
+  --pt-save-bg:#e3f5e8;
+  --pt-r-panel:20px;
+  --pt-r-ctl:12px;
   color:var(--pt-ink);
   font-family:var(--font-body-family);
+  font-size:16px;
+  line-height:1.55;
 }
 .pt *,.pt *::before,.pt *::after{box-sizing:border-box}
-.pt--dark{
-  --pt-ink:#f5f6f8;
-  --pt-muted:#a3a8b5;
-  --pt-line:rgba(255,255,255,.12);
-  --pt-soft:rgba(255,255,255,.06);
-  --pt-card:rgba(255,255,255,.04);
-  --pt-ok:#86efac;
-  --pt-ok-bg:rgba(34,197,94,.16);
-  background:#0e0f13;
+.pt--box{background:var(--pt-box)}
+.pt--ink{
+  --pt-ink:#ffffff;
+  --pt-muted:#b7bec9;
+  --pt-line:rgba(255,255,255,.18);
+  background:#1b2230;
 }
-.pt--soft{background:var(--pt-soft)}
 
 .pt-wrap{max-width:var(--page-width,120rem);margin:0 auto;padding:0 2rem}
-.pt-sec{padding:clamp(48px,8vw,96px) 0}
-.pt-head{text-align:center;max-width:680px;margin:0 auto clamp(28px,4vw,48px)}
-.pt-head .pt-lead{margin-left:auto;margin-right:auto}
+.pt-sec{padding:clamp(56px,8vw,104px) 0}
 
-.pt-eyebrow{
-  display:inline-flex;align-items:center;gap:10px;margin:0;
-  font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--pt-accent);
-}
-.pt-eyebrow::before{
-  content:"";width:8px;height:8px;border-radius:50%;background:var(--pt-accent);
-  box-shadow:0 0 0 4px color-mix(in srgb,var(--pt-accent) 22%,transparent);
-}
-.pt-h1,.pt-h2{
+/* Escala tipografica: 16 / 20 / 28 / 40 / 64. Titulares pesados y
+   apretados, como la rotulacion de una caja de producto. */
+.pt-h1,.pt-h2,.pt-h3{
   font-family:var(--font-heading-family);font-weight:800;color:var(--pt-ink);
-  letter-spacing:-.025em;margin:14px 0 14px;
+  margin:0;text-wrap:balance;
 }
-.pt-h1{font-size:clamp(38px,6vw,68px);line-height:1.02}
-.pt-h2{font-size:clamp(28px,4vw,44px);line-height:1.08}
-.pt-h1 em,.pt-h2 em{font-style:normal;color:var(--pt-accent)}
-.pt-lead{font-size:clamp(16px,1.6vw,18px);line-height:1.55;color:var(--pt-muted);max-width:56ch;margin:0}
+.pt-h1{font-size:clamp(40px,6.2vw,72px);line-height:.98;letter-spacing:-.035em}
+.pt-h2{font-size:clamp(28px,3.6vw,40px);line-height:1.05;letter-spacing:-.025em}
+.pt-h3{font-size:20px;line-height:1.2;letter-spacing:-.01em}
+.pt-lead{font-size:clamp(17px,1.5vw,20px);line-height:1.5;color:var(--pt-muted);max-width:52ch;margin:16px 0 0}
 
-.pt-btns{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.pt-btns{display:flex;flex-wrap:wrap;align-items:center;gap:12px 24px;margin-top:32px}
 .pt-btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:8px;
-  min-height:52px;padding:0 28px;border-radius:999px;border:2px solid transparent;
-  font-size:15px;font-weight:700;text-decoration:none;cursor:pointer;
-  transition:transform .15s ease,box-shadow .15s ease,background-color .15s ease;
+  display:inline-flex;align-items:center;justify-content:center;
+  min-height:52px;padding:0 24px;border-radius:var(--pt-r-ctl);border:0;
+  font-family:inherit;font-size:16px;font-weight:700;text-decoration:none;cursor:pointer;
+  background:var(--pt-accent);color:#fff;transition:background-color .15s ease;
 }
-.pt-btn--primary{background:var(--pt-accent);color:#fff;box-shadow:0 12px 28px -12px var(--pt-accent)}
-.pt-btn--primary:hover{transform:translateY(-2px);box-shadow:0 18px 34px -14px var(--pt-accent)}
-.pt-btn--ghost{border-color:var(--pt-line);color:var(--pt-ink);background:transparent}
-.pt-btn--ghost:hover{border-color:var(--pt-ink)}
-.pt-btn--block{width:100%}
-.pt-arrow{transition:transform .15s ease}
-a:hover .pt-arrow{transform:translateX(3px)}
+.pt-btn:hover{background:color-mix(in srgb,var(--pt-accent) 85%,#000)}
+.pt-btn--line{background:transparent;color:var(--pt-ink);box-shadow:inset 0 0 0 2px var(--pt-ink)}
+.pt-btn--line:hover{background:var(--pt-ink);color:#fff}
+.pt-btn--light{background:#fff;color:#1b2230}
+.pt-btn--light:hover{background:#eeefec}
+.pt-link{font-weight:700;color:var(--pt-ink);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px;text-decoration-color:var(--pt-line)}
+.pt-link:hover{text-decoration-color:currentColor}
+.pt :focus-visible{outline:3px solid var(--pt-accent);outline-offset:3px}
 
-/* Precio: el nuestro grande y, debajo, el de Apple con la etiqueta "En Apple"
-   siempre pegada. Es una comparacion con el fabricante, no un "antes costaba"
-   nuestro: un tachado sin etiqueta seria un descuento inventado (Omnibus). */
-.pt-price{display:flex;flex-direction:column;gap:4px}
-.pt-price__now{font-size:22px;font-weight:800;color:var(--pt-ink);letter-spacing:-.01em}
-.pt-price__now small{font-size:13px;font-weight:600;color:var(--pt-muted);margin-right:4px}
-.pt-price__ref{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;font-size:13px;color:var(--pt-muted)}
-.pt-price__ref s{opacity:.8}
+/* Precio. El PVP de Apple va siempre con su etiqueta "En Apple": es una
+   comparacion con el fabricante, no un "antes costaba" nuestro (Omnibus). */
+.pt-price{display:flex;flex-direction:column;align-items:flex-start;gap:2px}
+.pt-price__now{font-size:24px;font-weight:800;letter-spacing:-.02em;color:var(--pt-ink)}
+.pt-price__now small{font-size:14px;font-weight:600;color:var(--pt-muted);margin-right:6px;letter-spacing:0}
+.pt-price__ref{font-size:14px;color:var(--pt-muted)}
 .pt-save{
-  display:inline-flex;align-items:center;padding:3px 9px;border-radius:999px;
-  background:var(--pt-ok-bg);color:var(--pt-ok);font-size:12px;font-weight:700;white-space:nowrap;
+  display:inline-block;margin-top:6px;padding:3px 8px;border-radius:6px;
+  background:var(--pt-save-bg);color:#0b5e2c;font-size:13px;font-weight:700;
 }
 
-/* Hueco gris cuando un producto o imagen no esta elegido todavia. */
-.pt-ph{width:100%;height:100%;background:var(--pt-soft);fill:var(--pt-muted);opacity:.6}
+.pt-ph{width:100%;height:100%;background:var(--pt-box);fill:var(--pt-muted);opacity:.5}
 
 @media (max-width:749px){
   .pt-wrap{padding:0 1.6rem}
   .pt-btns .pt-btn{flex:1 1 100%}
 }
+@media (prefers-reduced-motion:reduce){.pt *{animation:none!important;transition:none!important}}

@@ -8,14 +8,14 @@
         "a1": {
           "type": "announcement",
           "settings": {
-            "text": "Accesorios 100 % originales Apple · Garantía legal de 3 años",
+            "text": "Cargadores y cables originales de Apple, con 3 años de garantía legal",
             "link": ""
           }
         },
         "a2": {
           "type": "announcement",
           "settings": {
-            "text": "¿Qué cable necesita tu iPhone? Te lo decimos en 10 segundos",
+            "text": "iPhone 15 o posterior: USB-C. Del iPhone 8 al 14: Lightning",
             "link": "/#encuentra"
           }
         }

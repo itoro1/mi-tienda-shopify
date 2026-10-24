@@ -1,91 +1,124 @@
 {%- comment -%}
-  "¿Que iPhone tienes?": una tarjeta por tipo de conector, cada una con su
-  producto. La duda numero uno al comprar un cargador es cual me vale, y
-  esto la resuelve antes de que el cliente se vaya a buscarlo fuera.
+  "¿Que conector tiene tu iPhone?". El cliente toca el puerto que se parece
+  al de su iPhone y debajo aparece el producto que le vale.
 
-  El dibujo del conector es CSS (no hay imagenes que subir). El ancla
-  #encuentra es a donde apunta el boton principal de la portada.
+  Sin JavaScript: cada opcion es un radio y la respuesta se muestra con
+  :has(). En navegadores sin :has() se ven todas las respuestas a la vez,
+  que sigue siendo correcto. El ancla #encuentra es a donde apunta el boton
+  principal de la portada.
 {%- endcomment -%}
 {{ 'pt-base.css' | asset_url | stylesheet_tag }}
-<section id="encuentra" class="pt pt-sec pt-find{% if section.settings.fondo_suave %} pt--soft{% endif %}" style="--pt-accent:{{ settings.pt_accent | default: '#ff5a1f' }}">
+<section id="encuentra" class="pt pt-sec pt-pick-sec pt--box" style="--pt-accent:{{ settings.pt_accent | default: '#0e7c3a' }}">
   <div class="pt-wrap">
-    <div class="pt-head">
-      {%- if section.settings.eyebrow != blank -%}<p class="pt-eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+    <div class="pt-pick__head">
       <h2 class="pt-h2">{{ section.settings.titulo }}</h2>
       {%- if section.settings.texto != blank -%}<p class="pt-lead">{{ section.settings.texto }}</p>{%- endif -%}
     </div>
 
-    <div class="pt-find__grid">
-      {%- for block in section.blocks -%}
-        {%- assign p = block.settings.producto -%}
-        <div class="pt-find__card" {{ block.shopify_attributes }}>
-          <div class="pt-find__top">
-            <span class="pt-plug pt-plug--{{ block.settings.conector }}" aria-hidden="true"><i></i></span>
-            <div>
-              <p class="pt-find__models">{{ block.settings.modelos }}</p>
-              <p class="pt-find__conn">{{ block.settings.nota }}</p>
-            </div>
-          </div>
+    <div class="pt-pick">
+      <fieldset class="pt-pick__opts">
+        <legend class="visually-hidden">{{ section.settings.titulo }}</legend>
+        {%- for block in section.blocks -%}
+          <input class="pt-pick__in" type="radio" name="pt-pick-{{ section.id }}" id="pt-o-{{ block.id }}" value="{{ block.id }}"{% if forloop.first %} checked{% endif %}>
+          <label class="pt-pick__opt" for="pt-o-{{ block.id }}" {{ block.shopify_attributes }}>
+            <span class="pt-port pt-port--{{ block.settings.conector }}" aria-hidden="true"><i></i></span>
+            <span class="pt-pick__models">{{ block.settings.modelos }}</span>
+            <span class="pt-pick__note">{{ block.settings.nota }}</span>
+          </label>
+        {%- endfor -%}
+      </fieldset>
 
-          {%- if p != blank -%}
-            <a class="pt-find__prod" href="{{ p.url }}">
-              <span class="pt-find__img">
-                {%- if p.featured_image -%}{{ p.featured_image | image_url: width: 400 | image_tag: loading: 'lazy', widths: '200, 400', sizes: '160px' }}{%- endif -%}
-              </span>
-              <span class="pt-find__info">
-                <span class="pt-find__name">{{ p.title }}</span>
+      <div class="pt-pick__results" aria-live="polite">
+        {%- for block in section.blocks -%}
+          {%- assign p = block.settings.producto -%}
+          <div class="pt-pick__res" data-res="{{ block.id }}">
+            {%- if p != blank -%}
+              <a class="pt-pick__img" href="{{ p.url }}" tabindex="-1" aria-hidden="true">
+                {%- if p.featured_image -%}{{ p.featured_image | image_url: width: 500 | image_tag: loading: 'lazy', widths: '250, 500', sizes: '220px', alt: '' }}{%- endif -%}
+              </a>
+              <div class="pt-pick__info">
+                <p class="pt-pick__for">Para {{ block.settings.modelos }}</p>
+                <h3 class="pt-h3"><a href="{{ p.url }}">{{ p.title }}</a></h3>
+                {%- if block.settings.incluye != blank -%}<p class="pt-pick__inc">{{ block.settings.incluye }}</p>{%- endif -%}
                 {%- render 'pt-precio', product: p -%}
-              </span>
-            </a>
-            <a class="pt-btn pt-btn--primary pt-btn--block" href="{{ p.url }}">{{ block.settings.boton | default: 'Lo quiero' }} <span class="pt-arrow">&rarr;</span></a>
-          {%- else -%}
-            <p class="pt-find__empty">Elige un producto para esta tarjeta en el editor.</p>
-          {%- endif -%}
-        </div>
-      {%- endfor -%}
+              </div>
+              <a class="pt-btn pt-pick__btn" href="{{ p.url }}">{{ block.settings.boton | default: 'Ver este producto' }}</a>
+            {%- else -%}
+              <p class="pt-pick__empty">Falta elegir el producto de «{{ block.settings.modelos }}» en el editor de temas.</p>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      </div>
     </div>
 
-    {%- if section.settings.ayuda != blank -%}<p class="pt-find__help">{{ section.settings.ayuda }}</p>{%- endif -%}
+    {%- if section.settings.ayuda != blank -%}<p class="pt-pick__help">{{ section.settings.ayuda }}</p>{%- endif -%}
   </div>
+
+  {%- comment -%} Una regla por opcion: muestra su respuesta cuando esta marcada. {%- endcomment -%}
+  <style>
+    @supports selector(:has(*)) {
+      #shopify-section-{{ section.id }} .pt-pick__res { display: none; }
+      {%- for block in section.blocks %}
+      #shopify-section-{{ section.id }} .pt-pick:has(#pt-o-{{ block.id }}:checked) [data-res="{{ block.id }}"] { display: grid; }
+      {%- endfor %}
+    }
+  </style>
 </section>
 
 {% stylesheet %}
-.pt-find__grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;max-width:960px;margin:0 auto}
-.pt-find__card{display:flex;flex-direction:column;gap:18px;padding:24px;border-radius:var(--pt-r);background:var(--pt-card);border:1px solid var(--pt-line);transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease}
-.pt-find__card:hover{border-color:var(--pt-accent);box-shadow:0 24px 50px -30px color-mix(in srgb,var(--pt-accent) 70%,transparent);transform:translateY(-3px)}
-.pt-find__top{display:flex;gap:16px;align-items:center}
-.pt-find__models{margin:0;font-size:18px;font-weight:800;color:var(--pt-ink)}
-.pt-find__conn{margin:2px 0 0;font-size:13.5px;color:var(--pt-muted)}
-.pt-find__prod{display:flex;gap:16px;align-items:center;padding:12px;border-radius:16px;background:var(--pt-soft);text-decoration:none;color:inherit}
-.pt-find__img{flex:none;width:96px;height:96px;border-radius:12px;background:#fff;display:grid;place-items:center;overflow:hidden}
-.pt-find__img img{width:88%;height:88%;object-fit:contain}
-.pt-find__info{display:flex;flex-direction:column;gap:6px;min-width:0}
-.pt-find__name{font-size:14px;font-weight:600;color:var(--pt-ink);line-height:1.3}
-.pt-find__info .pt-price__now{font-size:19px}
-.pt-find__empty{margin:0;padding:20px;border-radius:16px;border:1px dashed var(--pt-line);font-size:14px;color:var(--pt-muted);text-align:center}
-.pt-find__help{margin:24px auto 0;max-width:640px;text-align:center;font-size:14px;color:var(--pt-muted)}
+.pt-pick__head{max-width:640px;margin-bottom:clamp(28px,4vw,44px)}
+.pt-pick__opts{border:0;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;min-width:0}
+.pt-pick__in{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+.pt-pick__opt{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:18px;align-items:center;padding:20px;border-radius:var(--pt-r-panel);background:var(--pt-paper);border:3px solid transparent;cursor:pointer;transition:border-color .15s ease}
+.pt-pick__opt:hover{border-color:var(--pt-line)}
+.pt-pick__in:checked + .pt-pick__opt{border-color:var(--pt-ink)}
+.pt-pick__in:focus-visible + .pt-pick__opt{outline:3px solid var(--pt-accent);outline-offset:3px}
+.pt-pick__models{grid-column:2;font-size:20px;font-weight:800;letter-spacing:-.015em;line-height:1.2}
+.pt-pick__note{grid-column:2;font-size:14px;color:var(--pt-muted)}
 
-/* Dibujo del conector visto de frente. */
-.pt-plug{flex:none;display:grid;place-items:center;width:64px;height:64px;border-radius:18px;background:color-mix(in srgb,var(--pt-accent) 12%,transparent)}
-.pt-plug i{display:block;background:var(--pt-ink);position:relative}
-.pt-plug--usbc i{width:34px;height:12px;border-radius:7px}
-.pt-plug--usbc i::after{content:"";position:absolute;left:7px;right:7px;top:4px;height:4px;border-radius:2px;background:var(--pt-soft)}
-.pt-plug--lightning i{width:14px;height:34px;border-radius:4px}
-.pt-plug--lightning i::after{content:"";position:absolute;left:4px;right:4px;top:5px;bottom:5px;border-radius:2px;background:repeating-linear-gradient(to bottom,var(--pt-accent) 0 3px,transparent 3px 6px)}
+/* El puerto de carga visto de frente, a escala aproximada. */
+.pt-port{grid-row:span 2;display:grid;place-items:center;width:84px;height:56px;border-radius:12px;background:var(--pt-box)}
+.pt-port i{display:block;position:relative;background:var(--pt-ink)}
+.pt-port--usbc i{width:52px;height:18px;border-radius:9px}
+.pt-port--usbc i::after{content:"";position:absolute;left:10px;right:10px;top:7px;height:4px;border-radius:2px;background:#9aa1ab}
+.pt-port--lightning i{width:46px;height:11px;border-radius:6px}
+.pt-port--lightning i::after{content:"";position:absolute;left:8px;right:8px;top:4px;height:3px;background:repeating-linear-gradient(90deg,#9aa1ab 0 3px,transparent 3px 6px)}
+
+.pt-pick__results{margin-top:14px}
+.pt-pick__res{grid-template-columns:200px 1fr auto;gap:24px;align-items:center;padding:20px;border-radius:var(--pt-r-panel);background:var(--pt-paper);display:grid;animation:pt-show .25s ease}
+.pt-pick__res + .pt-pick__res{margin-top:14px}
+@keyframes pt-show{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.pt-pick__img{display:grid;place-items:center;aspect-ratio:1/1;border-radius:14px;background:var(--pt-box)}
+.pt-pick__img img{width:86%;height:86%;object-fit:contain;mix-blend-mode:multiply}
+.pt-pick__info{display:flex;flex-direction:column;gap:6px;min-width:0}
+.pt-pick__for{margin:0;font-size:14px;font-weight:700;color:var(--pt-accent)}
+.pt-pick__info .pt-h3 a{color:inherit;text-decoration:none}
+.pt-pick__info .pt-h3 a:hover{text-decoration:underline;text-underline-offset:3px}
+.pt-pick__inc{margin:0;font-size:15px;color:var(--pt-muted)}
+.pt-pick__empty{grid-column:1/-1;margin:0;color:var(--pt-muted)}
+.pt-pick__help{margin:24px 0 0;max-width:68ch;font-size:15px;color:var(--pt-muted)}
+@media (max-width:749px){
+  .pt-pick__res{grid-template-columns:96px 1fr;gap:14px 16px;padding:16px}
+  .pt-pick__btn{grid-column:1/-1}
+  .pt-port{width:64px;height:48px}
+  .pt-port--usbc i{width:40px;height:14px}
+  .pt-port--usbc i::after{top:5px;left:8px;right:8px}
+  .pt-port--lightning i{width:36px;height:9px}
+  .pt-port--lightning i::after{top:3px}
+  .pt-pick__models{font-size:18px}
+}
 {% endstylesheet %}
 
 {% schema %}
 {
-  "name": "PT · ¿Qué iPhone tienes?",
+  "name": "PT · ¿Qué conector?",
   "tag": "div",
   "class": "pt-section",
   "max_blocks": 4,
   "settings": [
-    { "type": "text", "id": "eyebrow", "label": "Antetítulo", "default": "En 10 segundos" },
-    { "type": "text", "id": "titulo", "label": "Título", "default": "¿Qué iPhone tienes?" },
-    { "type": "textarea", "id": "texto", "label": "Texto", "default": "Elige tu modelo y te decimos el cargador exacto. Sin dudas y sin devoluciones por equivocarte de cable." },
-    { "type": "text", "id": "ayuda", "label": "Nota al pie", "default": "¿No lo sabes? Mira el puerto de carga: si es ovalado y algo más ancho, es USB-C; si es más fino, es Lightning. Del iPhone 15 en adelante todos llevan USB-C." },
-    { "type": "checkbox", "id": "fondo_suave", "label": "Fondo gris suave", "default": true }
+    { "type": "text", "id": "titulo", "label": "Título", "default": "¿Qué conector tiene tu iPhone?" },
+    { "type": "textarea", "id": "texto", "label": "Texto", "default": "Elige el que se parece al tuyo y te enseñamos lo que le vale." },
+    { "type": "text", "id": "ayuda", "label": "Nota al pie", "default": "Del iPhone 15 en adelante todos llevan USB-C. Del iPhone 8 al 14, Lightning." }
   ],
   "blocks": [
     {
@@ -93,22 +126,23 @@
       "name": "Tipo de iPhone",
       "settings": [
         { "type": "text", "id": "modelos", "label": "Modelos", "default": "iPhone 15 o posterior" },
-        { "type": "select", "id": "conector", "label": "Dibujo del conector", "default": "usbc", "options": [
+        { "type": "select", "id": "conector", "label": "Dibujo del puerto", "default": "usbc", "options": [
           { "value": "usbc", "label": "USB-C" },
           { "value": "lightning", "label": "Lightning" }
         ]},
-        { "type": "text", "id": "nota", "label": "Nota", "default": "Conector USB-C" },
+        { "type": "text", "id": "nota", "label": "Cómo reconocerlo", "default": "Puerto ovalado, como el de un Mac o un iPad" },
         { "type": "product", "id": "producto", "label": "Producto recomendado" },
-        { "type": "text", "id": "boton", "label": "Texto del botón", "default": "Lo quiero" }
+        { "type": "text", "id": "incluye", "label": "Qué incluye (opcional)" },
+        { "type": "text", "id": "boton", "label": "Texto del botón", "default": "Ver este producto" }
       ]
     }
   ],
   "presets": [
     {
-      "name": "PT · ¿Qué iPhone tienes?",
+      "name": "PT · ¿Qué conector?",
       "blocks": [
-        { "type": "opcion", "settings": { "modelos": "iPhone 15, 16, 17 o 18", "conector": "usbc", "nota": "Conector USB-C · el mismo que el iPad o el Mac" } },
-        { "type": "opcion", "settings": { "modelos": "iPhone 8 al 14", "conector": "lightning", "nota": "Conector Lightning · estrecho y plano" } }
+        { "type": "opcion", "settings": { "modelos": "iPhone 15, 16, 17 o 18", "conector": "usbc", "nota": "Puerto ovalado, como el de un Mac o un iPad" } },
+        { "type": "opcion", "settings": { "modelos": "iPhone 8 al 14", "conector": "lightning", "nota": "Puerto más fino y estrecho que el USB-C" } }
       ]
     }
   ]

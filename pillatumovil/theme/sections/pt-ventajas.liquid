@@ -1,80 +1,63 @@
 {%- comment -%}
-  Franja de ventajas: icono + titulo + texto corto. Cada ventaja es un
-  bloque, asi que se anaden, quitan y reordenan desde el editor.
+  Garantias en forma de etiqueta de caja: dato y valor, sin iconos. Lo
+  que el cliente necesita saber antes de comprar, dicho como un dato, no
+  como un eslogan. Cada fila es un bloque.
 {%- endcomment -%}
 {{ 'pt-base.css' | asset_url | stylesheet_tag }}
-<section class="pt pt-vent{% if section.settings.fondo == 'suave' %} pt--soft{% elsif section.settings.fondo == 'oscuro' %} pt--dark{% endif %}" style="--pt-accent:{{ settings.pt_accent | default: '#ff5a1f' }}">
+<section class="pt pt-label-sec" style="--pt-accent:{{ settings.pt_accent | default: '#0e7c3a' }}">
   <div class="pt-wrap">
-    {%- if section.settings.titulo != blank -%}
-      <div class="pt-head"><h2 class="pt-h2">{{ section.settings.titulo }}</h2></div>
-    {%- endif -%}
-    <ul class="pt-vent__grid">
+    <dl class="pt-label">
       {%- for block in section.blocks -%}
-        <li class="pt-vent__item" {{ block.shopify_attributes }}>
-          <span class="pt-vent__ico">{%- render 'pt-icono', nombre: block.settings.icono -%}</span>
-          <div>
-            <p class="pt-vent__t">{{ block.settings.titulo }}</p>
-            {%- if block.settings.texto != blank -%}<p class="pt-vent__d">{{ block.settings.texto }}</p>{%- endif -%}
-          </div>
-        </li>
+        <div class="pt-label__row" {{ block.shopify_attributes }}>
+          <dt>{{ block.settings.dato }}</dt>
+          <dd>{{ block.settings.valor }}</dd>
+          {%- if block.settings.detalle != blank -%}<dd class="pt-label__more">{{ block.settings.detalle }}</dd>{%- endif -%}
+        </div>
       {%- endfor -%}
-    </ul>
+    </dl>
   </div>
 </section>
 
 {% stylesheet %}
-.pt-vent{padding:clamp(28px,4vw,44px) 0;border-top:1px solid var(--pt-line);border-bottom:1px solid var(--pt-line)}
-.pt-vent .pt-head{margin-bottom:28px}
-.pt-vent__grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:22px 28px}
-.pt-vent__item{display:flex;gap:14px;align-items:flex-start}
-.pt-vent__ico{flex:none;display:grid;place-items:center;width:46px;height:46px;border-radius:14px;color:var(--pt-accent);background:color-mix(in srgb,var(--pt-accent) 12%,transparent)}
-.pt-vent__t{margin:2px 0 4px;font-size:15px;font-weight:700;color:var(--pt-ink)}
-.pt-vent__d{margin:0;font-size:13.5px;line-height:1.45;color:var(--pt-muted)}
-@media (max-width:749px){.pt-vent__grid{grid-template-columns:1fr 1fr;gap:18px 14px}.pt-vent__item{flex-direction:column;gap:10px}}
+.pt-label-sec{padding:0 0 clamp(48px,6vw,80px)}
+.pt-label{margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));border:2px solid var(--pt-ink);border-radius:14px;overflow:hidden}
+.pt-label__row{padding:18px 22px;border-left:2px solid var(--pt-ink);margin-left:-2px}
+.pt-label dt{font-size:14px;color:var(--pt-muted)}
+.pt-label dd{margin:2px 0 0;font-size:20px;font-weight:800;letter-spacing:-.015em;line-height:1.2}
+.pt-label dd.pt-label__more{margin-top:6px;font-size:14px;font-weight:400;letter-spacing:0;color:var(--pt-muted)}
+@media (max-width:749px){
+  .pt-label{grid-template-columns:1fr 1fr}
+  .pt-label__row{border-left:0;margin-left:0;border-top:2px solid var(--pt-ink);margin-top:-2px;padding:14px 16px}
+  .pt-label__row:nth-child(even){border-left:2px solid var(--pt-ink)}
+  .pt-label dd{font-size:17px}
+}
 {% endstylesheet %}
 
 {% schema %}
 {
-  "name": "PT · Ventajas",
+  "name": "PT · Garantías",
   "tag": "div",
   "class": "pt-section",
   "max_blocks": 6,
-  "settings": [
-    { "type": "text", "id": "titulo", "label": "Título (opcional)" },
-    { "type": "select", "id": "fondo", "label": "Fondo", "default": "blanco", "options": [
-      { "value": "blanco", "label": "Blanco" },
-      { "value": "suave", "label": "Gris suave" },
-      { "value": "oscuro", "label": "Oscuro" }
-    ]}
-  ],
   "blocks": [
     {
-      "type": "ventaja",
-      "name": "Ventaja",
+      "type": "dato",
+      "name": "Dato",
       "settings": [
-        { "type": "select", "id": "icono", "label": "Icono", "default": "escudo", "options": [
-          { "value": "apple", "label": "Manzana" },
-          { "value": "escudo", "label": "Escudo (garantía)" },
-          { "value": "rayo", "label": "Rayo (carga rápida)" },
-          { "value": "devolucion", "label": "Flecha (devolución)" },
-          { "value": "envio", "label": "Furgoneta (envío)" },
-          { "value": "candado", "label": "Candado (pago seguro)" },
-          { "value": "chat", "label": "Bocadillo (atención)" },
-          { "value": "estrella", "label": "Estrella" }
-        ]},
-        { "type": "text", "id": "titulo", "label": "Título", "default": "Ventaja" },
-        { "type": "text", "id": "texto", "label": "Texto corto" }
+        { "type": "text", "id": "dato", "label": "Dato", "default": "Garantía" },
+        { "type": "text", "id": "valor", "label": "Valor", "default": "3 años" },
+        { "type": "text", "id": "detalle", "label": "Detalle (opcional)" }
       ]
     }
   ],
   "presets": [
     {
-      "name": "PT · Ventajas",
+      "name": "PT · Garantías",
       "blocks": [
-        { "type": "ventaja", "settings": { "icono": "apple", "titulo": "100 % original Apple", "texto": "Producto nuevo, precintado, en su caja." } },
-        { "type": "ventaja", "settings": { "icono": "escudo", "titulo": "Garantía legal de 3 años", "texto": "La que marca la ley para producto nuevo." } },
-        { "type": "ventaja", "settings": { "icono": "devolucion", "titulo": "14 días para devolver", "texto": "Si no te convence, nos lo devuelves." } },
-        { "type": "ventaja", "settings": { "icono": "candado", "titulo": "Pago seguro", "texto": "Pagos cifrados, sin compartir tus datos." } }
+        { "type": "dato", "settings": { "dato": "Producto", "valor": "Original de Apple", "detalle": "Nuevo, en su caja precintada" } },
+        { "type": "dato", "settings": { "dato": "Garantía", "valor": "3 años", "detalle": "La legal para producto nuevo" } },
+        { "type": "dato", "settings": { "dato": "Devolución", "valor": "14 días", "detalle": "Desde que lo recibes" } },
+        { "type": "dato", "settings": { "dato": "Pago", "valor": "Cifrado", "detalle": "No vemos los datos de tu tarjeta" } }
       ]
     }
   ]

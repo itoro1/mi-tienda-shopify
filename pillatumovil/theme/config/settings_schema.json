@@ -18,8 +18,8 @@
         "type": "color",
         "id": "pt_accent",
         "label": "Color de marca",
-        "default": "#FF5A1F",
-        "info": "Lo usan todas las secciones PT · de la portada: botones, destacados e iconos."
+        "default": "#0E7C3A",
+        "info": "Lo usan todas las secciones PT · (botones, enlaces destacados). Usa un tono oscuro: el texto de los botones es blanco."
       }
     ]
   },
