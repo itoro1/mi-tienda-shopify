@@ -1,0 +1,42 @@
+{%- comment -%}
+  Boton flotante de WhatsApp. Vive en el grupo del pie (footer-group), asi
+  que sale en todas las paginas sin tocar layout/theme.liquid.
+
+  Tambien carga assets/pt-dawn.css, los retoques globales que llevan el
+  diseno de la portada a las paginas de Dawn (producto, coleccion, contacto).
+{%- endcomment -%}
+{{ 'pt-base.css' | asset_url | stylesheet_tag }}
+{{ 'pt-dawn.css' | asset_url | stylesheet_tag }}
+{%- liquid
+  assign numero = section.settings.numero | remove: '+' | remove: ' ' | remove: '-'
+  assign texto = section.settings.mensaje | url_encode
+-%}
+{%- if section.settings.mostrar and numero != blank -%}
+  <a class="pt-wa" href="https://wa.me/{{ numero }}{% if texto != blank %}?text={{ texto }}{% endif %}" target="_blank" rel="noopener" aria-label="{{ section.settings.etiqueta | escape }}">
+    <svg viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><path fill="currentColor" d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3Zm0 23.7a10.7 10.7 0 0 1-5.5-1.5l-.4-.2-3.9 1 1-3.8-.2-.4A10.7 10.7 0 1 1 16 26.7Zm5.9-8c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2l-1 1.2c-.2.2-.4.2-.7.1a8.8 8.8 0 0 1-4.4-3.8c-.3-.6.3-.5.9-1.7.1-.2 0-.4 0-.5l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6a1.2 1.2 0 0 0-.9.4 3.7 3.7 0 0 0-1.1 2.7 6.4 6.4 0 0 0 1.3 3.4 14.6 14.6 0 0 0 5.6 4.9c2.1.9 2.9 1 4 .8a3.4 3.4 0 0 0 2.2-1.6 2.8 2.8 0 0 0 .2-1.6c-.1-.2-.3-.3-.6-.4Z"/></svg>
+    <span class="pt-wa__txt">{{ section.settings.etiqueta }}</span>
+  </a>
+{%- endif -%}
+
+{% stylesheet %}
+.pt-wa{position:fixed;right:20px;bottom:20px;z-index:40;display:flex;align-items:center;gap:10px;height:56px;padding:0 20px 0 16px;border-radius:28px;background:#25d366;color:#0b3d1f;font-family:var(--font-body-family);font-size:15px;font-weight:700;text-decoration:none;box-shadow:0 10px 28px -10px rgba(0,0,0,.45);transition:transform .15s ease}
+.pt-wa:hover{transform:translateY(-2px)}
+.pt-wa:focus-visible{outline:3px solid #1b2230;outline-offset:3px}
+@media (max-width:749px){.pt-wa{right:14px;bottom:14px;width:56px;padding:0;justify-content:center}.pt-wa__txt{display:none}}
+@media print{.pt-wa{display:none}}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PT · WhatsApp",
+  "tag": "div",
+  "class": "pt-section",
+  "settings": [
+    { "type": "checkbox", "id": "mostrar", "label": "Mostrar el botón", "default": true },
+    { "type": "text", "id": "numero", "label": "Número de WhatsApp", "default": "34641047539", "info": "Con prefijo de país, sin el +. Ejemplo: 34641047539" },
+    { "type": "text", "id": "etiqueta", "label": "Texto del botón", "default": "Consúltenos" },
+    { "type": "text", "id": "mensaje", "label": "Mensaje que se escribe solo", "default": "Hola, quería hacer una consulta sobre un cargador." }
+  ],
+  "presets": [{ "name": "PT · WhatsApp" }]
+}
+{% endschema %}

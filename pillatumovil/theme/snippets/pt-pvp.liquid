@@ -1,0 +1,29 @@
+{%- comment -%}
+  Comparativa con el PVP de Apple bajo el precio de la ficha de producto
+  (bloque "Liquid personalizado" de main-product).
+  Uso: {%- render 'pt-pvp', product: product -%}
+
+  En productos con varias cantidades, el PVP es el de 1 pack y el ahorro se
+  calcula con la primera variante (1 unidad), y asi se dice: nunca se
+  compara el precio de 3 packs con el PVP de uno.
+{%- endcomment -%}
+{%- liquid
+  assign pa = product.metafields.custom.pvp_apple.value
+  if pa != blank
+    assign pa_cents = pa | remove: '€' | remove: ' ' | remove: '.' | replace: ',', '.' | strip | times: 100 | round
+    assign base = product.variants.first.price
+    assign ahorro = pa_cents | minus: base
+    assign pct = 0
+    if ahorro > 0
+      assign pct = ahorro | times: 100.0 | divided_by: pa_cents | floor
+    endif
+  endif
+-%}
+{%- if pa != blank -%}
+  <p class="pt-pvp">
+    <span>En Apple <s>{{ pa }}</s>{% unless product.has_only_default_variant %} cada pack{% endunless %}</span>
+    {%- if ahorro > 0 -%}
+      <span class="pt-pvp__save">{% if product.has_only_default_variant %}Ahorra{% else %}Con 1 pack ahorra{% endif %} {{ ahorro | money }} ({{ pct }} %)</span>
+    {%- endif -%}
+  </p>
+{%- endif -%}

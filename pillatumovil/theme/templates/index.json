@@ -3,12 +3,12 @@
     "hero": {
       "type": "pt-hero",
       "settings": {
-        "titulo": "Pilla el cargador que le toca a tu iPhone.",
-        "texto": "Cargadores y cables originales de Apple, más baratos que en Apple y con 3 años de garantía legal.",
+        "titulo": "El cargador original que su iPhone necesita.",
+        "texto": "Cargadores y cables originales de Apple, nuevos y en su caja, por menos de lo que cuestan en Apple. Con 3 años de garantía legal.",
         "mostrar_bateria": true,
         "bateria_pct": 50,
         "bateria_texto": "Hasta el 50 % en unos 30 minutos con el cargador de 20 W, según Apple.",
-        "boton_1": "Elegir mi cargador",
+        "boton_1": "Elegir cargador",
         "enlace_1": "",
         "boton_2": "Ver todos los productos",
         "enlace_2": "",
@@ -39,7 +39,7 @@
           "settings": {
             "dato": "Devolución",
             "valor": "14 días",
-            "detalle": "Desde que lo recibes"
+            "detalle": "Desde que lo recibe"
           }
         },
         "d4": {
@@ -47,7 +47,7 @@
           "settings": {
             "dato": "Pago",
             "valor": "Cifrado",
-            "detalle": "No vemos los datos de tu tarjeta"
+            "detalle": "No vemos los datos de su tarjeta"
           }
         }
       },
@@ -90,8 +90,8 @@
         "lightning"
       ],
       "settings": {
-        "titulo": "¿Qué conector tiene tu iPhone?",
-        "texto": "Elige el que se parece al tuyo y te enseñamos lo que le vale.",
+        "titulo": "¿Qué conector tiene su iPhone?",
+        "texto": "Elija el que se parece al suyo y le mostramos el producto adecuado.",
         "ayuda": "Del iPhone 15 en adelante todos llevan USB-C. Del iPhone 8 al 14, Lightning."
       }
     },
@@ -115,7 +115,7 @@
       "type": "pt-pack",
       "settings": {
         "titulo": "Cargador y cable, juntos por menos.",
-        "texto": "Los iPhone ya no traen cargador en la caja. Con el pack tienes el adaptador de 20 W y el cable, los dos originales de Apple.",
+        "texto": "Los iPhone ya no traen cargador en la caja. Con el pack tiene el adaptador de 20 W y el cable, ambos originales de Apple.",
         "pack": "pack-cargador-usb-c-20w-cable-usb-c-1m-apple-original",
         "incluye": [
           "cargador-usb-c-20w-apple-original",
@@ -132,35 +132,42 @@
           "type": "pregunta",
           "settings": {
             "pregunta": "¿Son originales de Apple?",
-            "respuesta": "<p>Sí. Todo lo que vendemos es producto nuevo y original de Apple, en su caja.</p>"
+            "respuesta": "<p>Sí. Todo lo que vendemos es producto nuevo y original de Apple, en su caja precintada.</p>"
           }
         },
         "q2": {
           "type": "pregunta",
           "settings": {
             "pregunta": "¿Qué cargador necesita mi iPhone?",
-            "respuesta": "<p>El adaptador de 20W vale para cualquier iPhone. Lo que cambia es el cable: del iPhone 15 en adelante es USB-C a USB-C, y del iPhone 8 al 14, USB-C a Lightning.</p>"
+            "respuesta": "<p>El adaptador de 20 W sirve para cualquier iPhone. Lo que cambia es el cable: del iPhone 15 en adelante, USB-C a USB-C; del iPhone 8 al 14, USB-C a Lightning.</p>"
           }
         },
         "q3": {
           "type": "pregunta",
           "settings": {
             "pregunta": "¿Carga rápido?",
-            "respuesta": "<p>Sí. Con el adaptador de 20W y el cable USB-C, el iPhone admite carga rápida: según Apple, hasta un 50 % en unos 30 minutos.</p>"
+            "respuesta": "<p>Sí. Con el adaptador de 20 W, el iPhone 8 o posterior admite carga rápida: según Apple, hasta el 50 % en unos 30 minutos.</p>"
           }
         },
         "q4": {
           "type": "pregunta",
           "settings": {
-            "pregunta": "¿Qué garantía tiene?",
-            "respuesta": "<p>La garantía legal de 3 años que marca la ley para producto nuevo.</p>"
+            "pregunta": "¿Qué garantía tienen?",
+            "respuesta": "<p>La garantía legal de 3 años que corresponde a un producto nuevo, desde la entrega.</p>"
           }
         },
         "q5": {
           "type": "pregunta",
           "settings": {
-            "pregunta": "¿Puedo devolverlo?",
-            "respuesta": "<p>Sí. Tienes 14 días naturales desde que lo recibes para devolverlo sin dar explicaciones.</p>"
+            "pregunta": "¿Puedo devolver el pedido?",
+            "respuesta": "<p>Sí. Dispone de 14 días naturales desde que lo recibe para devolverlo sin necesidad de justificarlo. Tiene todos los detalles en <a href=\"/pages/garantia-y-devoluciones\">Garantía y devoluciones</a>.</p>"
+          }
+        },
+        "q6": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Cómo puedo contactar con ustedes?",
+            "respuesta": "<p>Por WhatsApp al <a href=\"https://wa.me/34641047539\">+34 641 04 75 39</a> o desde la <a href=\"/pages/contact\">página de contacto</a>.</p>"
           }
         }
       },
@@ -169,23 +176,26 @@
         "q2",
         "q3",
         "q4",
-        "q5"
+        "q5",
+        "q6"
       ],
       "settings": {
         "titulo": "Antes de comprar",
-        "texto": "Las dudas que más nos llegan. Si la tuya no está, escríbenos.",
-        "boton": "Escríbenos",
-        "enlace": "",
+        "texto": "Las dudas más habituales. Si la suya no está, escríbanos.",
+        "boton": "Escribir por WhatsApp",
+        "enlace": "https://wa.me/34641047539",
         "abrir_primera": true
       }
     },
     "cierre": {
       "type": "pt-cta",
       "settings": {
-        "titulo": "¿Aún no sabes cuál te toca?",
-        "texto": "Mira el puerto de carga de tu iPhone y elige. Tardas diez segundos.",
-        "boton": "Elegir mi cargador",
-        "enlace": ""
+        "titulo": "¿Aún no sabe cuál necesita?",
+        "texto": "Mire el puerto de carga de su iPhone y elija. O pregúntenos por WhatsApp y se lo decimos.",
+        "boton": "Elegir cargador",
+        "enlace": "",
+        "boton_2": "Preguntar por WhatsApp",
+        "enlace_2": "https://wa.me/34641047539"
       }
     }
   },

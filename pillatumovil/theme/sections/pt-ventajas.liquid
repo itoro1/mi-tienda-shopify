@@ -4,7 +4,7 @@
   como un eslogan. Cada fila es un bloque.
 {%- endcomment -%}
 {{ 'pt-base.css' | asset_url | stylesheet_tag }}
-<section class="pt pt-label-sec" style="--pt-accent:{{ settings.pt_accent | default: '#0e7c3a' }}">
+<section class="pt pt-label-sec{% if section.settings.margen_arriba %} pt-label-sec--sep{% endif %}" style="--pt-accent:{{ settings.pt_accent | default: '#0e7c3a' }}">
   <div class="pt-wrap">
     <dl class="pt-label">
       {%- for block in section.blocks -%}
@@ -20,6 +20,7 @@
 
 {% stylesheet %}
 .pt-label-sec{padding:0 0 clamp(48px,6vw,80px)}
+.pt-label-sec--sep{padding-top:clamp(32px,4vw,56px)}
 .pt-label{margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));border:2px solid var(--pt-ink);border-radius:14px;overflow:hidden}
 .pt-label__row{padding:18px 22px;border-left:2px solid var(--pt-ink);margin-left:-2px}
 .pt-label dt{font-size:14px;color:var(--pt-muted)}
@@ -39,6 +40,9 @@
   "tag": "div",
   "class": "pt-section",
   "max_blocks": 6,
+  "settings": [
+    { "type": "checkbox", "id": "margen_arriba", "label": "Separación arriba", "info": "Actívalo cuando la sección no vaya justo debajo de la portada.", "default": false }
+  ],
   "blocks": [
     {
       "type": "dato",
@@ -56,8 +60,8 @@
       "blocks": [
         { "type": "dato", "settings": { "dato": "Producto", "valor": "Original de Apple", "detalle": "Nuevo, en su caja precintada" } },
         { "type": "dato", "settings": { "dato": "Garantía", "valor": "3 años", "detalle": "La legal para producto nuevo" } },
-        { "type": "dato", "settings": { "dato": "Devolución", "valor": "14 días", "detalle": "Desde que lo recibes" } },
-        { "type": "dato", "settings": { "dato": "Pago", "valor": "Cifrado", "detalle": "No vemos los datos de tu tarjeta" } }
+        { "type": "dato", "settings": { "dato": "Devolución", "valor": "14 días", "detalle": "Desde que lo recibe" } },
+        { "type": "dato", "settings": { "dato": "Pago", "valor": "Cifrado", "detalle": "No vemos los datos de su tarjeta" } }
       ]
     }
   ]

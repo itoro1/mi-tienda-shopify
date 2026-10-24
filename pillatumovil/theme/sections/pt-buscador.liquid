@@ -1,5 +1,5 @@
 {%- comment -%}
-  "¿Que conector tiene tu iPhone?". El cliente toca el puerto que se parece
+  "¿Que conector tiene su iPhone?". El cliente toca el puerto que se parece
   al de su iPhone y debajo aparece el producto que le vale.
 
   Sin JavaScript: cada opcion es un radio y la respuesta se muestra con
@@ -7,6 +7,19 @@
   que sigue siendo correcto. El ancla #encuentra es a donde apunta el boton
   principal de la portada.
 {%- endcomment -%}
+{%- liquid
+  assign con_producto = 0
+  for block in section.blocks
+    if block.settings.producto != blank
+      assign con_producto = con_producto | plus: 1
+    endif
+  endfor
+  assign mostrar = true
+  if con_producto == 0 and request.design_mode == false
+    assign mostrar = false
+  endif
+-%}
+{%- if mostrar -%}
 {{ 'pt-base.css' | asset_url | stylesheet_tag }}
 <section id="encuentra" class="pt pt-sec pt-pick-sec pt--box" style="--pt-accent:{{ settings.pt_accent | default: '#0e7c3a' }}">
   <div class="pt-wrap">
@@ -18,8 +31,11 @@
     <div class="pt-pick">
       <fieldset class="pt-pick__opts">
         <legend class="visually-hidden">{{ section.settings.titulo }}</legend>
+        {%- assign marcado = false -%}
         {%- for block in section.blocks -%}
-          <input class="pt-pick__in" type="radio" name="pt-pick-{{ section.id }}" id="pt-o-{{ block.id }}" value="{{ block.id }}"{% if forloop.first %} checked{% endif %}>
+          {%- if block.settings.producto == blank and request.design_mode == false -%}{%- continue -%}{%- endif -%}
+          <input class="pt-pick__in" type="radio" name="pt-pick-{{ section.id }}" id="pt-o-{{ block.id }}" value="{{ block.id }}"{% unless marcado %} checked{% endunless %}>
+          {%- assign marcado = true -%}
           <label class="pt-pick__opt" for="pt-o-{{ block.id }}" {{ block.shopify_attributes }}>
             <span class="pt-port pt-port--{{ block.settings.conector }}" aria-hidden="true"><i></i></span>
             <span class="pt-pick__models">{{ block.settings.modelos }}</span>
@@ -31,6 +47,7 @@
       <div class="pt-pick__results" aria-live="polite">
         {%- for block in section.blocks -%}
           {%- assign p = block.settings.producto -%}
+          {%- if p == blank and request.design_mode == false -%}{%- continue -%}{%- endif -%}
           <div class="pt-pick__res" data-res="{{ block.id }}">
             {%- if p != blank -%}
               <a class="pt-pick__img" href="{{ p.url }}" tabindex="-1" aria-hidden="true">
@@ -64,6 +81,7 @@
     }
   </style>
 </section>
+{%- endif -%}
 
 {% stylesheet %}
 .pt-pick__head{max-width:640px;margin-bottom:clamp(28px,4vw,44px)}
@@ -89,7 +107,7 @@
 .pt-pick__res + .pt-pick__res{margin-top:14px}
 @keyframes pt-show{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .pt-pick__img{display:grid;place-items:center;aspect-ratio:1/1;border-radius:14px;background:var(--pt-box)}
-.pt-pick__img img{width:86%;height:86%;object-fit:contain;mix-blend-mode:multiply}
+.pt-pick__img img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
 .pt-pick__info{display:flex;flex-direction:column;gap:6px;min-width:0}
 .pt-pick__for{margin:0;font-size:14px;font-weight:700;color:var(--pt-accent)}
 .pt-pick__info .pt-h3 a{color:inherit;text-decoration:none}
@@ -116,8 +134,8 @@
   "class": "pt-section",
   "max_blocks": 4,
   "settings": [
-    { "type": "text", "id": "titulo", "label": "Título", "default": "¿Qué conector tiene tu iPhone?" },
-    { "type": "textarea", "id": "texto", "label": "Texto", "default": "Elige el que se parece al tuyo y te enseñamos lo que le vale." },
+    { "type": "text", "id": "titulo", "label": "Título", "default": "¿Qué conector tiene su iPhone?" },
+    { "type": "textarea", "id": "texto", "label": "Texto", "default": "Elija el que se parece al suyo y le mostramos el producto adecuado." },
     { "type": "text", "id": "ayuda", "label": "Nota al pie", "default": "Del iPhone 15 en adelante todos llevan USB-C. Del iPhone 8 al 14, Lightning." }
   ],
   "blocks": [

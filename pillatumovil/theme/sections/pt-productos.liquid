@@ -9,7 +9,14 @@
   if lista == blank or lista.size == 0
     assign lista = section.settings.coleccion.products
   endif
+  assign mostrar = true
+  if lista == blank or lista.size == 0
+    unless request.design_mode
+      assign mostrar = false
+    endunless
+  endif
 -%}
+{%- if mostrar -%}
 <section class="pt pt-sec pt-list-sec" style="--pt-accent:{{ settings.pt_accent | default: '#0e7c3a' }}">
   <div class="pt-wrap">
     <div class="pt-list__head">
@@ -53,7 +60,7 @@
           <div class="pt-list__ours">
             <span class="pt-list__k">Aquí</span>
             <strong>{% if p.price_varies %}<small>desde </small>{% endif %}{{ p.price | money }}</strong>
-            {%- if ahorro > 0 -%}<span class="pt-save">Ahorras {{ ahorro | money }}</span>{%- endif -%}
+            {%- if ahorro > 0 -%}<span class="pt-save">Ahorra {{ ahorro | money }}</span>{%- endif -%}
           </div>
           <a class="pt-btn pt-btn--line pt-list__btn" href="{{ p.url }}">{% if p.has_only_default_variant %}Comprar{% else %}Elegir cantidad{% endif %}</a>
         </li>
@@ -63,6 +70,7 @@
     </ol>
   </div>
 </section>
+{%- endif -%}
 
 {% stylesheet %}
 .pt-list-sec{padding-bottom:clamp(24px,3vw,40px)}
@@ -73,7 +81,7 @@
 .pt-list__row{position:relative;padding:16px 0;border-bottom:1px solid var(--pt-line)}
 .pt-list__row--empty{display:block;color:var(--pt-muted)}
 .pt-list__img{display:grid;place-items:center;aspect-ratio:1/1;border-radius:14px;background:var(--pt-box)}
-.pt-list__img img{width:86%;height:86%;object-fit:contain;mix-blend-mode:multiply}
+.pt-list__img img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
 .pt-list__name a{font-size:18px;font-weight:700;line-height:1.3;color:var(--pt-ink);text-decoration:none}
 .pt-list__name a:hover{text-decoration:underline;text-underline-offset:3px}
 .pt-list__out{display:block;margin-top:4px;font-size:14px;color:var(--pt-muted)}

@@ -1,0 +1,173 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "title": {
+          "type": "title",
+          "settings": {}
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "variant_picker": {
+          "type": "variant_picker",
+          "settings": {
+            "picker_type": "button",
+            "swatch_shape": "circle"
+          }
+        },
+        "quantity_selector": {
+          "type": "quantity_selector",
+          "settings": {}
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_dynamic_checkout": true,
+            "show_gift_card_recipient": true
+          }
+        },
+        "description": {
+          "type": "description",
+          "settings": {}
+        },
+        "pvp": {
+          "type": "custom_liquid",
+          "settings": {
+            "custom_liquid": "{%- render 'pt-pvp', product: product -%}"
+          }
+        },
+        "ayuda_cable": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "¿Qué cable necesita su iPhone?",
+            "icon": "question_mark",
+            "content": "<p>Del iPhone 15 en adelante, USB-C. Del iPhone 8 al 14, Lightning. El adaptador de 20 W sirve para los dos.</p>",
+            "page": ""
+          }
+        },
+        "garantia": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Garantía y devoluciones",
+            "icon": "check_mark",
+            "content": "<p>Producto nuevo y original de Apple, con garantía legal de 3 años. Dispone de 14 días desde que lo recibe para devolverlo.</p>",
+            "page": "garantia-y-devoluciones"
+          }
+        },
+        "whatsapp": {
+          "type": "custom_liquid",
+          "settings": {
+            "custom_liquid": "<p class=\"pt-pvp\" style=\"margin-top:1.2rem\">¿Dudas con su modelo? <a href=\"https://wa.me/34641047539\" target=\"_blank\" rel=\"noopener\" style=\"color:inherit;font-weight:700\">Pregúntenos por WhatsApp</a></p>"
+          }
+        }
+      },
+      "block_order": [
+        "title",
+        "price",
+        "pvp",
+        "variant_picker",
+        "quantity_selector",
+        "buy_buttons",
+        "whatsapp",
+        "description",
+        "ayuda_cable",
+        "garantia"
+      ],
+      "settings": {
+        "enable_sticky_info": true,
+        "color_scheme": "scheme-1",
+        "media_size": "medium",
+        "constrain_to_viewport": true,
+        "media_fit": "contain",
+        "gallery_layout": "stacked",
+        "mobile_thumbnails": "hide",
+        "media_position": "left",
+        "image_zoom": "lightbox",
+        "hide_variants": true,
+        "enable_video_looping": false,
+        "padding_top": 28,
+        "padding_bottom": 12
+      }
+    },
+    "disclosures": {
+      "type": "disclosures",
+      "settings": {
+        "padding_top": 36,
+        "padding_bottom": 0
+      }
+    },
+    "related-products": {
+      "type": "related-products",
+      "settings": {
+        "heading": "También le puede interesar",
+        "heading_size": "h2",
+        "products_to_show": 4,
+        "columns_desktop": 4,
+        "columns_mobile": "2",
+        "color_scheme": "scheme-1",
+        "image_ratio": "square",
+        "image_shape": "default",
+        "show_secondary_image": false,
+        "show_vendor": false,
+        "show_rating": false,
+        "padding_top": 36,
+        "padding_bottom": 28
+      }
+    },
+    "garantias": {
+      "type": "pt-ventajas",
+      "blocks": {
+        "d1": {
+          "type": "dato",
+          "settings": {
+            "dato": "Producto",
+            "valor": "Original de Apple",
+            "detalle": "Nuevo, en su caja precintada"
+          }
+        },
+        "d2": {
+          "type": "dato",
+          "settings": {
+            "dato": "Garantía",
+            "valor": "3 años",
+            "detalle": "La legal para producto nuevo"
+          }
+        },
+        "d3": {
+          "type": "dato",
+          "settings": {
+            "dato": "Devolución",
+            "valor": "14 días",
+            "detalle": "Desde que lo recibe"
+          }
+        },
+        "d4": {
+          "type": "dato",
+          "settings": {
+            "dato": "Pago",
+            "valor": "Cifrado",
+            "detalle": "No vemos los datos de su tarjeta"
+          }
+        }
+      },
+      "block_order": [
+        "d1",
+        "d2",
+        "d3",
+        "d4"
+      ],
+      "settings": {
+        "margen_arriba": true
+      }
+    }
+  },
+  "order": [
+    "main",
+    "garantias",
+    "disclosures",
+    "related-products"
+  ]
+}

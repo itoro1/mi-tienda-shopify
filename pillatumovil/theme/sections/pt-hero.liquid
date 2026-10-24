@@ -12,9 +12,13 @@
 {%- liquid
   assign p = section.settings.producto
   assign pct = section.settings.bateria_pct
+  assign con_media = true
+  if p == blank and section.settings.imagen == blank and request.design_mode == false
+    assign con_media = false
+  endif
 -%}
 <section class="pt pt-hero" style="--pt-accent:{{ settings.pt_accent | default: '#0e7c3a' }}">
-  <div class="pt-wrap pt-hero__grid">
+  <div class="pt-wrap pt-hero__grid{% unless con_media %} pt-hero__grid--solo{% endunless %}">
     <div class="pt-hero__copy">
       <h1 class="pt-h1">{{ section.settings.titulo }}</h1>
       {%- if section.settings.texto != blank -%}<p class="pt-lead">{{ section.settings.texto }}</p>{%- endif -%}
@@ -45,6 +49,7 @@
       </div>
     </div>
 
+    {%- if con_media -%}
     <div class="pt-hero__media">
       <div class="pt-hero__photo">
         {%- if section.settings.imagen != blank -%}
@@ -63,12 +68,14 @@
         </a>
       {%- endif -%}
     </div>
+    {%- endif -%}
   </div>
 </section>
 
 {% stylesheet %}
 .pt-hero{padding:clamp(40px,6vw,88px) 0 clamp(48px,7vw,96px)}
 .pt-hero__grid{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(32px,6vw,88px);align-items:center}
+.pt-hero__grid--solo{grid-template-columns:minmax(0,760px)}
 
 /* La bateria: carcasa, polo y relleno verde que se carga al entrar. */
 .pt-batt{margin:36px 0 0;max-width:460px}
@@ -82,7 +89,7 @@
 
 .pt-hero__media{display:flex;flex-direction:column;gap:12px}
 .pt-hero__photo{aspect-ratio:1/1;border-radius:var(--pt-r-panel);background:var(--pt-box);display:grid;place-items:center;overflow:hidden}
-.pt-hero__img{width:84%;height:84%;object-fit:contain;mix-blend-mode:multiply}
+.pt-hero__img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
 .pt-hero__tag{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:16px 4px 0;text-decoration:none;color:inherit;border-top:3px solid var(--pt-ink)}
 .pt-hero__name{font-size:16px;font-weight:700;max-width:22ch}
 .pt-hero__tag .pt-price{align-items:flex-end;text-align:right}
@@ -106,14 +113,14 @@
   "class": "pt-section",
   "settings": [
     { "type": "header", "content": "Texto" },
-    { "type": "text", "id": "titulo", "label": "Titular", "default": "Pilla el cargador que le toca a tu iPhone." },
-    { "type": "textarea", "id": "texto", "label": "Texto de apoyo", "default": "Cargadores y cables originales de Apple, más baratos que en Apple y con 3 años de garantía legal." },
+    { "type": "text", "id": "titulo", "label": "Titular", "default": "El cargador original que su iPhone necesita." },
+    { "type": "textarea", "id": "texto", "label": "Texto de apoyo", "default": "Cargadores y cables originales de Apple, nuevos y en su caja, por menos de lo que cuestan en Apple. Con 3 años de garantía legal." },
     { "type": "header", "content": "Batería" },
     { "type": "checkbox", "id": "mostrar_bateria", "label": "Mostrar la batería", "default": true },
     { "type": "range", "id": "bateria_pct", "label": "Hasta qué porcentaje se carga", "min": 10, "max": 100, "step": 5, "unit": "%", "default": 50 },
     { "type": "text", "id": "bateria_texto", "label": "Texto bajo la batería", "default": "Hasta el 50 % en unos 30 minutos con el cargador de 20 W, según Apple." },
     { "type": "header", "content": "Botones" },
-    { "type": "text", "id": "boton_1", "label": "Botón principal", "default": "Elegir mi cargador" },
+    { "type": "text", "id": "boton_1", "label": "Botón principal", "default": "Elegir cargador" },
     { "type": "url", "id": "enlace_1", "label": "Enlace del botón principal", "info": "Si lo dejas vacío, baja al buscador «¿Qué conector tiene tu iPhone?»." },
     { "type": "text", "id": "boton_2", "label": "Enlace secundario", "default": "Ver todos los productos" },
     { "type": "url", "id": "enlace_2", "label": "Destino del enlace secundario" },

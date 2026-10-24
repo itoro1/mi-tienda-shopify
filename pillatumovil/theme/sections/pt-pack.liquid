@@ -7,6 +7,7 @@
   Una fila de comparacion solo sale si es mas cara que el pack, para que
   nunca se anuncie un ahorro que no existe.
 {%- endcomment -%}
+{%- if section.settings.pack != blank or request.design_mode -%}
 {{ 'pt-base.css' | asset_url | stylesheet_tag }}
 {%- liquid
   assign p = section.settings.pack
@@ -48,7 +49,7 @@
           <div class="pt-sum__total"><dt>{{ section.settings.etiqueta_pack }}</dt><dd>{{ p.price | money }}</dd></div>
         </dl>
         {%- if pa_cents > p.price -%}
-          <p class="pt-sum__save"><span class="pt-save">Ahorras {{ pa_cents | minus: p.price | money }} frente a Apple</span></p>
+          <p class="pt-sum__save"><span class="pt-save">Ahorra {{ pa_cents | minus: p.price | money }} frente a Apple</span></p>
         {%- endif -%}
         <a class="pt-btn pt-sum__btn" href="{{ p.url }}">{{ section.settings.boton }}</a>
       </div>
@@ -57,6 +58,7 @@
     {%- endif -%}
   </div>
 </section>
+{%- endif -%}
 
 {% stylesheet %}
 .pt-pack-sec{padding-top:clamp(32px,4vw,56px)}
@@ -66,7 +68,7 @@
 .pt-sum__items{list-style:none;margin:0;padding:0}
 .pt-sum__items li{display:grid;grid-template-columns:64px 1fr auto;gap:16px;align-items:center;padding:10px 0}
 .pt-sum__thumb{display:grid;place-items:center;aspect-ratio:1/1;border-radius:10px;background:#fff}
-.pt-sum__thumb img{width:88%;height:88%;object-fit:contain}
+.pt-sum__thumb img{width:100%;height:100%;object-fit:contain}
 .pt-sum__name{font-size:16px;font-weight:600;line-height:1.3}
 .pt-sum__name b{color:var(--pt-muted)}
 .pt-sum__amt{font-size:17px;font-weight:700}
@@ -98,7 +100,7 @@
   "class": "pt-section",
   "settings": [
     { "type": "text", "id": "titulo", "label": "Título", "default": "Cargador y cable, juntos por menos." },
-    { "type": "textarea", "id": "texto", "label": "Texto", "default": "Los iPhone ya no traen cargador en la caja. Con el pack tienes el adaptador de 20 W y el cable, los dos originales de Apple." },
+    { "type": "textarea", "id": "texto", "label": "Texto", "default": "Los iPhone ya no traen cargador en la caja. Con el pack tiene el adaptador de 20 W y el cable, los dos originales de Apple." },
     { "type": "product", "id": "pack", "label": "Producto del pack", "info": "De aquí salen el precio del pack y el PVP de Apple." },
     { "type": "product_list", "id": "incluye", "label": "Productos sueltos que incluye", "limit": 4, "info": "Se listan como una suma. Si lo dejas vacío, solo sale el precio del pack." },
     { "type": "text", "id": "etiqueta_pack", "label": "Etiqueta del precio del pack", "default": "En pack" },

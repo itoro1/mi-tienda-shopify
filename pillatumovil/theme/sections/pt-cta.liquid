@@ -8,16 +8,23 @@
       <h2 class="pt-h2">{{ section.settings.titulo }}</h2>
       {%- if section.settings.texto != blank -%}<p class="pt-lead">{{ section.settings.texto }}</p>{%- endif -%}
     </div>
-    {%- if section.settings.boton != blank -%}
-      <a class="pt-btn pt-btn--light" href="{{ section.settings.enlace | default: '#encuentra' }}">{{ section.settings.boton }}</a>
-    {%- endif -%}
+    <div class="pt-close__actions">
+      {%- if section.settings.boton != blank -%}
+        <a class="pt-btn pt-btn--light" href="{{ section.settings.enlace | default: '#encuentra' }}">{{ section.settings.boton }}</a>
+      {%- endif -%}
+      {%- if section.settings.boton_2 != blank and section.settings.enlace_2 != blank -%}
+        <a class="pt-link pt-close__link" href="{{ section.settings.enlace_2 }}" target="_blank" rel="noopener">{{ section.settings.boton_2 }}</a>
+      {%- endif -%}
+    </div>
   </div>
 </section>
 
 {% stylesheet %}
 .pt-close__grid{display:flex;justify-content:space-between;align-items:center;gap:24px 48px;flex-wrap:wrap}
 .pt-close .pt-h2{max-width:18ch}
-@media (max-width:749px){.pt-close__grid .pt-btn{width:100%}}
+.pt-close__actions{display:flex;flex-wrap:wrap;align-items:center;gap:16px 28px}
+.pt-close__link{color:#fff;text-decoration-color:rgba(255,255,255,.4)}
+@media (max-width:749px){.pt-close__actions{width:100%}.pt-close__actions .pt-btn{width:100%}}
 {% endstylesheet %}
 
 {% schema %}
@@ -26,10 +33,12 @@
   "tag": "div",
   "class": "pt-section",
   "settings": [
-    { "type": "text", "id": "titulo", "label": "Título", "default": "¿Aún no sabes cuál te toca?" },
-    { "type": "textarea", "id": "texto", "label": "Texto", "default": "Mira el puerto de carga de tu iPhone y elige. Tardas diez segundos." },
-    { "type": "text", "id": "boton", "label": "Texto del botón", "default": "Elegir mi cargador" },
-    { "type": "url", "id": "enlace", "label": "Enlace del botón", "info": "Si lo dejas vacío, sube al buscador «¿Qué conector tiene tu iPhone?»." }
+    { "type": "text", "id": "titulo", "label": "Título", "default": "¿Aún no sabe cuál necesita?" },
+    { "type": "textarea", "id": "texto", "label": "Texto", "default": "Mire el puerto de carga de su iPhone y elija. O pregúntenos por WhatsApp y se lo decimos." },
+    { "type": "text", "id": "boton", "label": "Texto del botón", "default": "Elegir cargador" },
+    { "type": "url", "id": "enlace", "label": "Enlace del botón", "info": "Si lo dejas vacío, sube al buscador «¿Qué conector tiene tu iPhone?»." },
+    { "type": "text", "id": "boton_2", "label": "Enlace secundario", "default": "Preguntar por WhatsApp" },
+    { "type": "url", "id": "enlace_2", "label": "Destino del enlace secundario", "info": "Por ejemplo https://wa.me/34641047539. Si lo dejas vacío, no sale." }
   ],
   "presets": [{ "name": "PT · Cierre" }]
 }
