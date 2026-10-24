@@ -8,11 +8,18 @@
         "a1": {
           "type": "announcement",
           "settings": {
-            "text": "Cargadores y cables originales de Apple, con 3 años de garantía legal",
+            "text": "Envío y devolución gratis en todos los pedidos",
             "link": ""
           }
         },
         "a2": {
+          "type": "announcement",
+          "settings": {
+            "text": "Cargadores y cables originales de Apple, con 3 años de garantía legal",
+            "link": ""
+          }
+        },
+        "a3": {
           "type": "announcement",
           "settings": {
             "text": "iPhone 15 o posterior: USB-C. Del iPhone 8 al 14: Lightning",
@@ -22,13 +29,14 @@
       },
       "block_order": [
         "a1",
-        "a2"
+        "a2",
+        "a3"
       ],
       "settings": {
         "auto_rotate": true,
         "change_slides_speed": 5,
         "color_scheme": "scheme-4",
-        "show_line_separator": false,
+        "show_line_separator": true,
         "show_social": false,
         "enable_country_selector": false,
         "enable_language_selector": false
@@ -42,9 +50,9 @@
         "menu": "main-menu",
         "menu_type_desktop": "dropdown",
         "sticky_header_type": "always",
-        "show_line_separator": true,
-        "color_scheme": "scheme-1",
-        "menu_color_scheme": "scheme-1",
+        "show_line_separator": false,
+        "color_scheme": "scheme-4",
+        "menu_color_scheme": "scheme-4",
         "enable_country_selector": false,
         "enable_language_selector": false,
         "margin_bottom": 0,

@@ -140,16 +140,16 @@
           "type": "dato",
           "settings": {
             "dato": "Devolución",
-            "valor": "14 días",
+            "valor": "14 días, gratis",
             "detalle": "Desde que lo recibe"
           }
         },
         "d4": {
           "type": "dato",
           "settings": {
-            "dato": "Pago",
-            "valor": "Cifrado",
-            "detalle": "No vemos los datos de su tarjeta"
+            "dato": "Envío",
+            "valor": "Gratis",
+            "detalle": "En todos los pedidos"
           }
         }
       },

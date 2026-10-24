@@ -4,18 +4,51 @@ Segunda tienda (`j2zukw-xp.myshopify.com`), separada de ITorostore.
 
 - Moneda: EUR. Acceso por API con la app del Dev Dashboard (variables
   `SHOPIFY_PTM_*`, token por *client credentials*, caduca a las 24 h).
-- Tema: **Dawn 16.1.0** (`207180497244`), **publicado desde el 24/10/2026
-  a las 15:53** y con la tienda abierta al público. Desde entonces cualquier
-  cambio en estos ficheros sale en vivo: para cambios grandes, duplicar
-  antes el tema y trabajar en la copia.
+- Tema: **Dawn 16.1.0** (`207180497244`), **sin publicar**. Se publicó a
+  las 15:53 del 24/10 y se volvió a Canyon a las 16:22; la portada de cine
+  se hizo después, solo en Dawn. Vista previa:
+  `https://j2zukw-xp.myshopify.com/?preview_theme_id=207180497244`.
+- La tienda está **abierta al público** (sin contraseña) y los 5 productos
+  están **activos**, así que ya se ven y se venden con el tema publicado.
+- **Stock**: 200 unidades por variante (24/10/2026), sin vender sin stock.
+  Rutina diaria «Aviso de stock bajo Pillatumovil» (8:31, hora de Madrid):
+  avisa por notificación y correo si alguna variante baja de 50.
+- **Envío gratis** en todos los pedidos: descuento automático «Envío
+  gratis» (la app no tiene permiso de envíos, así que no toca las tarifas).
+  **Devolución gratis** también, según la página de garantía.
 - WhatsApp de la tienda: **+34 641 04 75 39** (distinto del de ITorostore).
 - Tono: **de usted** con el cliente. Las ayudas del editor van de tú.
 - Esta carpeta es el espejo de lo que hay en Dawn: si se cambia un fichero
   aquí, se sube al tema; si se cambia en el editor, se trae aquí.
 
-## Portada
+## Portada de cine (25/10/2026)
 
-Siete secciones propias, todas con el prefijo `pt-` y con nombre
+Arriba del todo, dos secciones oscuras que sustituyen a la portada clara:
+
+- **`pt-cine` (PT · Portada de cine)**: plató oscuro con foco y grano de
+  película. La caja real del cargador en 3D (CSS 3D, sin librerías): el
+  cliente la gira arrastrando, con las flechas o con «Delante / Detrás», y
+  ve la trasera impresa por Apple. Al entrar, la caja aparece desde la
+  oscuridad y el titular entra línea a línea: es la única animación de
+  entrada de la página.
+- **`pt-historia` (PT · Historia de cine)**: tres capítulos que avanzan con
+  el scroll en un plano fijo. *Original* (marco verde sobre la etiqueta de
+  Apple y la referencia 602-05566-A), *Seguro* (marco sobre el marcado CE y
+  la garantía) y *Rápido* (batería que se carga del 0 al 50 % y reloj de 0 a
+  30 min al bajar). Sin JavaScript o con «reducir movimiento», los
+  capítulos se leen uno debajo de otro.
+- La lógica está en `assets/pt-cine.js`. Las caras de la caja están en
+  `fotos/cine/` (recortes propios; medidas en `tools/medidas/cine-cargador.json`).
+- Los marcos de *Original* y *Seguro* van en % de la foto
+  `caja-cargador-trasera-cuerpo.jpg`: si se cambia la foto, hay que
+  recolocarlos en `sections/pt-historia.liquid`.
+- No hay vídeo porque no hay grabación propia y la skill `marca-tiendas`
+  prohíbe usar material oficial de Apple. Si se graba un clip con el móvil,
+  la skill `videos-reels` lo deja en formato para la portada.
+
+## Resto de la portada
+
+Secciones propias, todas con el prefijo `pt-` y con nombre
 `PT · …` en el editor de temas:
 
 | Sección (fichero) | Nombre en el editor | Qué hace |
@@ -114,18 +147,15 @@ Todo se hace en *Tienda online → Temas → Dawn → Personalizar*:
 
 ## Pendiente
 
-- **Los 5 productos siguen en borrador** con la tienda ya abierta: los
-  clientes no ven ningún producto. Antes de activarlos hay que cargar el
-  stock: en Pillatumovil no hay existencias y varias variantes de los packs
-  están en «Seguir vendiendo sin stock».
-- Condiciones de envío (transportista, plazos, precio): no hay página ni se
-  anuncian en la web hasta conocerlas.
-- Devoluciones: la página aplica lo que marca la ley por defecto (el porte
-  de vuelta lo paga el cliente salvo defecto). ITorostore las ofrece
-  gratis; decidir si Pillatumovil también.
+- Publicar Dawn cuando se dé el visto bueno a la vista previa.
+- Formato de moneda de la tienda: sale «€25,99»; en España se escribe
+  «25,99 €». Se cambia en *Configuración → General → Moneda de la tienda →
+  Cambiar formato* (`{{amount_with_comma_separator}} €`). La app no tiene
+  permiso para tocarlo.
+- Comprobar en *Configuración → Envío* que hay una tarifa para España: el
+  descuento pone el envío a 0 €, pero necesita una tarifa a la que
+  aplicarse. Plazos de entrega: no se anuncian hasta conocerlos.
 - Sin sección de opiniones a propósito: la tienda es nueva y no tiene
   reseñas propias. No se copian las de ITorostore.
 
-Capturas de la portada en `disenos/` (renderizado local con los datos
-reales de los productos; la vista previa real necesita la contraseña de la
-tienda).
+Capturas en `disenos/`: `cine-*.png` son las escenas de la portada de cine.

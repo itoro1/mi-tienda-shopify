@@ -1,0 +1,151 @@
+{%- comment -%}
+  Historia en tres capitulos que avanza con el scroll: Original, Seguro y
+  Rapido. Cada capitulo es un bloque (texto + imagen) y su tipo decide la
+  imagen:
+  - original: la trasera de la caja con zoom a la etiqueta de Apple.
+  - seguro:   zoom al marcado CE, con la garantia encima.
+  - rapido:   la bateria, que se carga al ritmo del scroll.
+
+  Con JavaScript los capitulos se apilan en un plano fijo y cambian al
+  bajar (assets/pt-cine.js). Sin JavaScript, o con "reducir movimiento", se
+  leen uno debajo de otro.
+{%- endcomment -%}
+{{ 'pt-base.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'pt-cine.js' | asset_url }}" defer></script>
+{%- assign t = section.settings.trasera -%}
+<section class="pt pt-hist" data-pt-historia style="--n:{{ section.blocks.size }};--pt-accent:{{ settings.pt_accent | default: '#0e7c3a' }}">
+  <div class="pt-hist__plano">
+    <ol class="pt-hist__rail" aria-hidden="true">
+      {%- for block in section.blocks -%}<li style="--i:{{ forloop.index0 }}"><span>{{ block.settings.titulo }}</span></li>{%- endfor -%}
+    </ol>
+    {%- for block in section.blocks -%}
+      <article class="pt-hist__cap pt-hist__cap--{{ block.settings.tipo }}{% if forloop.first %} is-activo{% endif %}" data-capitulo="{{ block.settings.tipo }}" {{ block.shopify_attributes }}>
+        <div class="pt-wrap pt-hist__grid">
+          <div class="pt-hist__texto">
+            <h2 class="pt-hist__h2">{{ block.settings.titulo }}</h2>
+            <p class="pt-hist__p">{{ block.settings.texto }}</p>
+            {%- if block.settings.dato != blank -%}<p class="pt-hist__dato">{{ block.settings.dato }}</p>{%- endif -%}
+          </div>
+          <div class="pt-hist__visual">
+            {%- case block.settings.tipo -%}
+              {%- when 'rapido' -%}
+                <div class="pt-hist__bat" data-pt-bateria data-tope="{{ block.settings.tope }}" data-minutos="{{ block.settings.minutos }}" style="--tope:{{ block.settings.tope }}%">
+                  <div class="pt-hist__bat-cuerpo"><span class="pt-hist__bat-carga"></span></div><span class="pt-hist__bat-polo"></span>
+                </div>
+                <div class="pt-hist__marcador">
+                  <span><b data-pt-pct>{{ block.settings.tope }} %</b> de batería</span>
+                  <span><b data-pt-minutos>{{ block.settings.minutos }} min</b> enchufado</span>
+                </div>
+              {%- else -%}
+                <div class="pt-hist__foto">
+                  {%- if t != blank -%}
+                    {{ t | image_url: width: 1400 | image_tag: loading: 'lazy', widths: '700, 1000, 1400', sizes: '(min-width: 990px) 45vw, 90vw', alt: block.settings.alt }}
+                  {%- endif -%}
+                  <span class="pt-hist__marco" aria-hidden="true"></span>
+                  {%- if block.settings.tipo == 'seguro' -%}<span class="pt-hist__sello"><b>3</b> años de garantía</span>{%- endif -%}
+                </div>
+            {%- endcase -%}
+          </div>
+        </div>
+      </article>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% stylesheet %}
+.pt-hist{--ink:#fff;position:relative;color:#fff;background:#0c1018}
+.pt-hist__rail{display:none}
+.pt-hist__cap{padding:clamp(56px,8vw,96px) 0;border-top:1px solid rgba(255,255,255,.08)}
+.pt-hist__grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(28px,5vw,80px);align-items:center}
+.pt-hist__h2{margin:0;font-family:var(--font-heading-family);font-weight:800;font-size:clamp(48px,6.2vw,96px);white-space:nowrap;line-height:.9;letter-spacing:-.05em;color:#fff}
+.pt-hist__p{margin:24px 0 0;max-width:40ch;font-size:clamp(17px,1.5vw,21px);line-height:1.5;color:#aab2bf}
+.pt-hist__dato{margin:20px 0 0;display:inline-block;padding:8px 14px;border:1px solid rgba(255,255,255,.2);border-radius:10px;font-size:14px;color:#dfe4ec}
+
+/* Imagen: la trasera real de la caja, entera y nitida. Un marco senala la
+   zona de la que habla cada capitulo (posiciones en % de la foto). */
+.pt-hist__visual{display:flex;justify-content:center}
+.pt-hist__cap--rapido .pt-hist__visual{display:block}
+.pt-hist__foto{position:relative;height:min(64svh,600px);aspect-ratio:760/843;border-radius:18px;overflow:hidden;background:#fff;box-shadow:0 40px 90px -40px rgba(0,0,0,.8)}
+.pt-hist__foto img{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;transition:transform 1.6s cubic-bezier(.2,.7,.2,1)}
+.pt-hist__cap--original .pt-hist__foto img{transform-origin:30% 94%;transform:scale(1.12)}
+.pt-hist__cap--seguro .pt-hist__foto img{transform-origin:80% 93%;transform:scale(1.12)}
+.pt-hist__marco{position:absolute;border:3px solid #34c759;border-radius:12px;box-shadow:0 0 0 999px rgba(12,16,24,.38),0 0 30px rgba(52,199,89,.5);transition:opacity .8s ease .5s}
+.pt-hist__cap--original .pt-hist__marco{left:3%;top:83%;width:61%;height:15.5%}
+.pt-hist__cap--seguro .pt-hist__marco{left:66%;top:84.5%;width:30%;height:12%}
+.pt-hist__sello{position:absolute;left:16px;top:16px;display:flex;align-items:baseline;gap:8px;padding:12px 16px;border-radius:14px;background:#151b29;color:#fff;font-size:15px;font-weight:600}
+.pt-hist__sello b{font-size:34px;font-weight:800;letter-spacing:-.03em}
+
+/* Bateria grande: se llena con --carga, que mueve el scroll. */
+.pt-hist__bat{display:flex;align-items:center;gap:8px;width:100%}
+.pt-hist__bat-cuerpo{flex:1;height:clamp(120px,14vw,190px);padding:10px;border:6px solid #fff;border-radius:34px}
+.pt-hist__bat-carga{display:block;height:100%;width:var(--carga,var(--tope));border-radius:20px;background:linear-gradient(90deg,#2fb24f,#34c759);box-shadow:0 0 60px rgba(52,199,89,.45)}
+.pt-hist__bat-polo{width:16px;height:30%;border-radius:0 10px 10px 0;background:#fff}
+.pt-hist__marcador{display:flex;justify-content:space-between;gap:16px;margin-top:18px;font-size:16px;color:#aab2bf}
+.pt-hist__marcador b{font-size:clamp(28px,3vw,40px);font-weight:800;letter-spacing:-.03em;color:#fff;margin-right:6px;font-variant-numeric:tabular-nums}
+
+/* Modo cine (con JavaScript): un plano fijo y los capitulos se suceden. */
+.pt-hist.is-js:not(.is-quieto){height:calc(var(--n) * 100svh + 40svh)}
+.pt-hist.is-js:not(.is-quieto) .pt-hist__plano{position:sticky;top:0;height:100svh;overflow:hidden}
+.pt-hist.is-js:not(.is-quieto) .pt-hist__cap{position:absolute;inset:0;display:flex;align-items:center;padding:0;border:0;opacity:0;visibility:hidden;transition:opacity .6s ease,visibility 0s linear .6s}
+.pt-hist.is-js:not(.is-quieto) .pt-hist__cap.is-activo{opacity:1;visibility:visible;transition:opacity .6s ease}
+.pt-hist.is-js:not(.is-quieto) .pt-hist__texto{transform:translateY(24px);transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.pt-hist.is-js:not(.is-quieto) .is-activo .pt-hist__texto{transform:none}
+.pt-hist.is-js:not(.is-quieto) .pt-hist__cap:not(.is-activo) .pt-hist__foto img{transform:scale(1)}
+.pt-hist.is-js:not(.is-quieto) .pt-hist__cap:not(.is-activo) .pt-hist__marco{opacity:0;transition:none}
+.pt-hist.is-js:not(.is-quieto) .pt-hist__rail{display:flex;gap:10px;position:absolute;z-index:2;top:clamp(20px,4vh,40px);left:50%;transform:translateX(-50%);width:min(var(--page-width,120rem),calc(100% - 3.2rem));margin:0;padding:0 2rem;list-style:none}
+.pt-hist__rail li{flex:1;position:relative;padding-top:12px;font-size:13px;font-weight:600;color:#7d8696}
+.pt-hist__rail li::before,.pt-hist__rail li::after{content:"";position:absolute;left:0;top:0;height:3px;border-radius:2px}
+.pt-hist__rail li::before{right:0;background:rgba(255,255,255,.14)}
+.pt-hist__rail li::after{background:#fff;width:calc(clamp(0, var(--p, 0) * var(--n) - var(--i), 1) * 100%)}
+
+@media (max-width:989px){
+  .pt-hist__grid{grid-template-columns:1fr}
+  .pt-hist__visual{order:-1}
+  .pt-hist.is-js:not(.is-quieto) .pt-hist__cap{align-items:flex-start;padding-top:80px}
+  .pt-hist__h2{font-size:clamp(44px,13vw,72px)}
+  .pt-hist__foto{height:min(46svh,420px)}
+  .pt-hist__bat-cuerpo{border-width:4px;border-radius:24px;padding:7px}
+  .pt-hist__bat-carga{border-radius:15px}
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PT · Historia de cine",
+  "tag": "div",
+  "class": "pt-section",
+  "max_blocks": 4,
+  "settings": [
+    { "type": "image_picker", "id": "trasera", "label": "Trasera de la caja (foto sin pestaña)", "info": "La de la etiqueta de Apple. Los capítulos Original y Seguro señalan zonas de esta foto: si la cambias, revisa que el marco caiga en su sitio." }
+  ],
+  "blocks": [
+    {
+      "type": "capitulo",
+      "name": "Capítulo",
+      "settings": [
+        { "type": "select", "id": "tipo", "label": "Imagen", "default": "original", "options": [
+          { "value": "original", "label": "Etiqueta de Apple (zoom)" },
+          { "value": "seguro", "label": "Marcado CE y garantía (zoom)" },
+          { "value": "rapido", "label": "Batería que se carga" }
+        ]},
+        { "type": "text", "id": "titulo", "label": "Título", "default": "Original." },
+        { "type": "textarea", "id": "texto", "label": "Texto" },
+        { "type": "text", "id": "dato", "label": "Dato destacado (opcional)" },
+        { "type": "text", "id": "alt", "label": "Descripción de la imagen", "default": "Trasera de la caja del cargador de Apple" },
+        { "type": "range", "id": "tope", "label": "Batería: carga final", "min": 10, "max": 100, "step": 5, "unit": "%", "default": 50 },
+        { "type": "range", "id": "minutos", "label": "Batería: minutos", "min": 5, "max": 120, "step": 5, "default": 30 }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PT · Historia de cine",
+      "blocks": [
+        { "type": "capitulo", "settings": { "tipo": "original", "titulo": "Original." } },
+        { "type": "capitulo", "settings": { "tipo": "seguro", "titulo": "Seguro." } },
+        { "type": "capitulo", "settings": { "tipo": "rapido", "titulo": "Rápido." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

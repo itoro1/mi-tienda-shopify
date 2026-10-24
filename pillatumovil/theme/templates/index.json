@@ -1,20 +1,5 @@
 {
   "sections": {
-    "hero": {
-      "type": "pt-hero",
-      "settings": {
-        "titulo": "El cargador original que su iPhone necesita.",
-        "texto": "Cargadores y cables originales de Apple, nuevos y en su caja, por menos de lo que cuestan en Apple. Con 3 años de garantía legal.",
-        "mostrar_bateria": true,
-        "bateria_pct": 50,
-        "bateria_texto": "Hasta el 50 % en unos 30 minutos con el cargador de 20 W, según Apple.",
-        "boton_1": "Elegir cargador",
-        "enlace_1": "",
-        "boton_2": "Ver todos los productos",
-        "enlace_2": "",
-        "producto": "cargador-usb-c-20w-apple-original"
-      }
-    },
     "garantias": {
       "type": "pt-ventajas",
       "blocks": {
@@ -38,16 +23,16 @@
           "type": "dato",
           "settings": {
             "dato": "Devolución",
-            "valor": "14 días",
+            "valor": "14 días, gratis",
             "detalle": "Desde que lo recibe"
           }
         },
         "d4": {
           "type": "dato",
           "settings": {
-            "dato": "Pago",
-            "valor": "Cifrado",
-            "detalle": "No vemos los datos de su tarjeta"
+            "dato": "Envío",
+            "valor": "Gratis",
+            "detalle": "En todos los pedidos"
           }
         }
       },
@@ -57,7 +42,9 @@
         "d3",
         "d4"
       ],
-      "settings": {}
+      "settings": {
+        "margen_arriba": true
+      }
     },
     "buscador": {
       "type": "pt-buscador",
@@ -169,12 +156,20 @@
             "pregunta": "¿Cómo puedo contactar con ustedes?",
             "respuesta": "<p>Por WhatsApp al <a href=\"https://wa.me/34641047539\">+34 641 04 75 39</a> o desde la <a href=\"/pages/contact\">página de contacto</a>.</p>"
           }
+        },
+        "q0": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Cuánto cuesta el envío?",
+            "respuesta": "<p>Nada. El envío es gratis en todos los pedidos, y la devolución también.</p>"
+          }
         }
       },
       "block_order": [
         "q1",
         "q2",
         "q3",
+        "q0",
         "q4",
         "q5",
         "q6"
@@ -197,10 +192,74 @@
         "boton_2": "Preguntar por WhatsApp",
         "enlace_2": "https://wa.me/34641047539"
       }
+    },
+    "cine": {
+      "type": "pt-cine",
+      "settings": {
+        "titulo": "Original.\nPor dentro y por fuera.",
+        "texto": "El cargador oficial de Apple, nuevo y en su caja precintada. Gire la caja y compruébelo usted mismo.",
+        "boton": "Elegir cargador",
+        "enlace": "",
+        "producto": "cargador-usb-c-20w-apple-original",
+        "frente": "shopify://shop_images/caja-cargador-frente.png",
+        "trasera": "shopify://shop_images/caja-cargador-trasera.png",
+        "pestana": 15,
+        "ayuda": "Arrastre la caja para girarla"
+      }
+    },
+    "historia": {
+      "type": "pt-historia",
+      "settings": {
+        "trasera": "shopify://shop_images/caja-cargador-trasera-cuerpo.jpg"
+      },
+      "blocks": {
+        "original": {
+          "type": "capitulo",
+          "settings": {
+            "tipo": "original",
+            "titulo": "Original.",
+            "texto": "Impreso por Apple en cada caja: fabricante, dirección y referencia de pieza. Al recibirla puede comprobarlo usted mismo.",
+            "dato": "Referencia del adaptador: 602-05566-A",
+            "alt": "Trasera de la caja con los datos de Apple Inc. y la referencia 602-05566-A",
+            "tope": 50,
+            "minutos": 30
+          }
+        },
+        "seguro": {
+          "type": "capitulo",
+          "settings": {
+            "tipo": "seguro",
+            "titulo": "Seguro.",
+            "texto": "El adaptador oficial de Apple, con su marcado CE europeo. Sin imitaciones de origen dudoso, y con 3 años de garantía legal.",
+            "dato": "",
+            "alt": "Marcado CE impreso en la caja del cargador de Apple",
+            "tope": 50,
+            "minutos": 30
+          }
+        },
+        "rapido": {
+          "type": "capitulo",
+          "settings": {
+            "tipo": "rapido",
+            "titulo": "Rápido.",
+            "texto": "Con el adaptador de 20 W, un iPhone 8 o posterior carga hasta el 50 % en unos 30 minutos, según Apple.",
+            "dato": "",
+            "alt": "",
+            "tope": 50,
+            "minutos": 30
+          }
+        }
+      },
+      "block_order": [
+        "original",
+        "seguro",
+        "rapido"
+      ]
     }
   },
   "order": [
-    "hero",
+    "cine",
+    "historia",
     "garantias",
     "buscador",
     "precios",
