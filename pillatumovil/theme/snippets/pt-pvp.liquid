@@ -3,27 +3,67 @@
   (bloque "Liquid personalizado" de main-product).
   Uso: {%- render 'pt-pvp', product: product -%}
 
-  En productos con varias cantidades, el PVP es el de 1 pack y el ahorro se
-  calcula con la primera variante (1 unidad), y asi se dice: nunca se
-  compara el precio de 3 packs con el PVP de uno.
+  Se calcula aqui, en el servidor, una linea por variante, y en el
+  navegador solo se ensena la de la variante elegida. Dawn avisa del cambio
+  de variante actualizando el campo name="id" del formulario y lanzando un
+  evento change (assets/product-info.js, updateVariantInputs).
+
+  Packs: el numero de packs sale del principio del nombre de la opcion
+  ("3 packs" -> 3). Con eso:
+  - En Apple = PVP de 1 pack x numero de packs.
+  - Frente a packs sueltos = precio de la primera variante x numero de packs.
+  Si el nombre no empieza por un numero se toma 1, y entonces una opcion de
+  varios packs no anuncia ningun ahorro: puede quedarse corto, nunca pasarse.
 {%- endcomment -%}
 {%- liquid
   assign pa = product.metafields.custom.pvp_apple.value
   if pa != blank
     assign pa_cents = pa | remove: '€' | remove: ' ' | remove: '.' | replace: ',', '.' | strip | times: 100 | round
     assign base = product.variants.first.price
-    assign ahorro = pa_cents | minus: base
-    assign pct = 0
-    if ahorro > 0
-      assign pct = ahorro | times: 100.0 | divided_by: pa_cents | floor
-    endif
+    assign actual = product.selected_or_first_available_variant.id
   endif
 -%}
 {%- if pa != blank -%}
-  <p class="pt-pvp">
-    <span>En Apple <s>{{ pa }}</s>{% unless product.has_only_default_variant %} cada pack{% endunless %}</span>
-    {%- if ahorro > 0 -%}
-      <span class="pt-pvp__save">{% if product.has_only_default_variant %}Ahorra{% else %}Con 1 pack ahorra{% endif %} {{ ahorro | money }} ({{ pct }} %)</span>
-    {%- endif -%}
-  </p>
+  <div class="pt-pvp" data-pt-pvp>
+    {%- for v in product.variants -%}
+      {%- liquid
+        assign n = 1
+        unless product.has_only_default_variant
+          assign n = v.option1 | split: ' ' | first | plus: 0
+          if n < 1
+            assign n = 1
+          endif
+        endunless
+        assign apple = pa_cents | times: n
+        assign ahorro = apple | minus: v.price
+        assign pct = 0
+        if ahorro > 0
+          assign pct = ahorro | times: 100.0 | divided_by: apple | floor
+        endif
+        assign sueltos = base | times: n
+        assign ahorro_q = sueltos | minus: v.price
+      -%}
+      <p class="pt-pvp__v" data-variante="{{ v.id }}"{% unless v.id == actual %} hidden{% endunless %}>
+        <span>En Apple <s>{{ apple | money }}</s>{% if n > 1 %} <small>({{ n }} × {{ pa }})</small>{% endif %}</span>
+        {%- if ahorro > 0 -%}<span class="pt-pvp__save">Ahorra {{ ahorro | money }} ({{ pct }} %)</span>{%- endif -%}
+        {%- if n > 1 and ahorro_q > 0 -%}<span class="pt-pvp__extra">Y {{ ahorro_q | money }} menos que comprar {{ n }} packs de 1</span>{%- endif -%}
+      </p>
+    {%- endfor -%}
+  </div>
+  <script>
+    (function () {
+      var caja = document.currentScript.previousElementSibling;
+      var form = caja.closest('.product') || document;
+      function ver(id) {
+        if (!id) return;
+        caja.querySelectorAll('[data-variante]').forEach(function (p) { p.hidden = p.getAttribute('data-variante') !== String(id); });
+      }
+      form.addEventListener('change', function (e) {
+        if (e.target && e.target.name === 'id') ver(e.target.value);
+      });
+      // Si se entra con ?variant= en la URL, Dawn ya pinta esa; por si acaso:
+      var id = new URLSearchParams(location.search).get('variant');
+      if (id) ver(id);
+    })();
+  </script>
 {%- endif -%}

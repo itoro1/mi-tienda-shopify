@@ -60,7 +60,7 @@
         "whatsapp": {
           "type": "custom_liquid",
           "settings": {
-            "custom_liquid": "<p class=\"pt-pvp\" style=\"margin-top:1.2rem\">¿Dudas con su modelo? <a href=\"https://wa.me/34641047539\" target=\"_blank\" rel=\"noopener\" style=\"color:inherit;font-weight:700\">Pregúntenos por WhatsApp</a></p>"
+            "custom_liquid": "<p class=\"pt-ayuda\">¿Dudas con su modelo? <a href=\"https://wa.me/34641047539\" target=\"_blank\" rel=\"noopener\">Pregúntenos por WhatsApp</a></p>"
           }
         }
       },
