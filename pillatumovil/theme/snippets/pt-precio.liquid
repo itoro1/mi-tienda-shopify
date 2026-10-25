@@ -27,6 +27,6 @@
   </span>
   {%- if pa != blank -%}
     <span class="pt-price__ref">En Apple <s>{{ pa }}</s></span>
-    {%- if ahorro > 0 and mostrar_ahorro != false -%}<span class="pt-save">Ahorra {{ ahorro | money }} ({{ pct }} %)</span>{%- endif -%}
+    {%- if ahorro > 0 and mostrar_ahorro != false -%}<span class="pt-save">Ahorra {{ ahorro | money_without_currency }} € ({{ pct }} %)</span>{%- endif -%}
   {%- endif -%}
 </div>
