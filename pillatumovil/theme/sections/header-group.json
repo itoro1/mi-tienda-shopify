@@ -2,52 +2,50 @@
   "name": "t:sections.header.name",
   "type": "header",
   "sections": {
-    "announcement-bar": {
-      "type": "announcement-bar",
+    "barra": {
+      "type": "ps-barra",
       "blocks": {
-        "a1": {
-          "type": "announcement",
+        "m1": {
+          "type": "mensaje",
           "settings": {
-            "text": "Envío gratis en todos los pedidos",
-            "link": ""
+            "icono": "envio",
+            "texto": "Lo recibe en casa en 24⁠-⁠48 h",
+            "enlace": "",
+            "destacado": true
           }
         },
-        "a2": {
-          "type": "announcement",
+        "m2": {
+          "type": "mensaje",
           "settings": {
-            "text": "Devolución gratis durante 14 días",
-            "link": ""
+            "icono": "devolucion",
+            "texto": "Envío y devolución gratis",
+            "enlace": "",
+            "destacado": false
           }
         },
-        "a3": {
-          "type": "announcement",
+        "m3": {
+          "type": "mensaje",
           "settings": {
-            "text": "Cargadores y cables originales de Apple, con 3 años de garantía",
-            "link": ""
+            "icono": "garantia",
+            "texto": "Originales de Apple, con 3 años de garantía",
+            "enlace": "",
+            "destacado": false
           }
         }
       },
       "block_order": [
-        "a1",
-        "a2",
-        "a3"
+        "m1",
+        "m2",
+        "m3"
       ],
-      "settings": {
-        "auto_rotate": true,
-        "change_slides_speed": 5,
-        "color_scheme": "scheme-5",
-        "show_line_separator": false,
-        "show_social": false,
-        "enable_country_selector": false,
-        "enable_language_selector": false
-      }
+      "settings": {}
     },
     "header": {
       "type": "header",
       "settings": {
-        "logo_position": "middle-left",
+        "logo_position": "middle-center",
         "mobile_logo_position": "center",
-        "menu": "main-menu",
+        "menu": "principal-estudio",
         "menu_type_desktop": "dropdown",
         "sticky_header_type": "always",
         "show_line_separator": true,
@@ -56,13 +54,13 @@
         "enable_country_selector": false,
         "enable_language_selector": false,
         "margin_bottom": 0,
-        "padding_top": 16,
-        "padding_bottom": 16
+        "padding_top": 20,
+        "padding_bottom": 20
       }
     }
   },
   "order": [
-    "announcement-bar",
+    "barra",
     "header"
   ]
 }

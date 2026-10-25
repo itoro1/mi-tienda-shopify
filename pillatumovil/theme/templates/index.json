@@ -5,15 +5,15 @@
       "settings": {
         "video_url": "https://cdn.shopify.com/s/files/1/1066/2182/9468/files/ps-estudio-portada.mp4?v=1792930763",
         "poster": "shopify://shop_images/ps-estudio-portada.jpg",
-        "titulo": "Cargador y cable.\nOriginales de Apple.",
-        "texto": "El pack completo de 20 W, nuevo y en su caja precintada. Con envío y devolución gratis.",
+        "titulo": "Cargador y cable.\nOriginales\nde Apple.",
+        "texto": "El pack completo de 20 W, nuevo y en su caja precintada. Lo recibe en casa en 24⁠-⁠48 horas, sin gastos de envío.",
         "producto": "pack-cargador-usb-c-20w-cable-usb-c-1m-apple-original",
         "boton": "Comprar el pack",
         "enlace": "#pack",
         "boton_2": "Ver todos los productos",
         "enlace_2": "shopify://collections/cargadores-y-cables",
-        "sello_1": "Envío gratis",
-        "sello_2": "Devolución gratis en 14 días",
+        "sello_1": "Lo recibe en 24⁠-⁠48 h",
+        "sello_2": "Envío y devolución gratis",
         "sello_3": "3 años de garantía"
       }
     },
@@ -59,22 +59,22 @@
         "c1": {
           "type": "cifra",
           "settings": {
-            "cifra": "0 €",
-            "texto": "de envío"
+            "cifra": "24⁠-⁠48 h",
+            "texto": "hasta su casa"
           }
         },
         "c2": {
           "type": "cifra",
           "settings": {
             "cifra": "0 €",
-            "texto": "por devolverlo"
+            "texto": "de envío"
           }
         },
         "c3": {
           "type": "cifra",
           "settings": {
-            "cifra": "14 días",
-            "texto": "para decidir"
+            "cifra": "14 días",
+            "texto": "para devolverlo gratis"
           }
         }
       },
@@ -84,7 +84,7 @@
         "c3"
       ],
       "settings": {
-        "titulo": "Envío gratis.\nDevolución, también.",
+        "titulo": "Envío gratis.\nEn su casa en 24⁠-⁠48 h.",
         "texto": "En todos los pedidos, sin importe mínimo. Y si no le convence, tiene 14 días para devolverlo sin pagar nada.",
         "imagen": "shopify://shop_images/ps-envio.jpg"
       }
@@ -134,7 +134,7 @@
     "carga": {
       "type": "ps-editorial",
       "settings": {
-        "imagen": "shopify://shop_images/ps-mesilla.jpg",
+        "imagen": "shopify://shop_images/ps-mesilla-v2.jpg",
         "foto_derecha": false,
         "fondo": "papel",
         "titulo": "Carga rápida de 20 W.",
@@ -147,8 +147,8 @@
     "video": {
       "type": "ps-video",
       "settings": {
-        "video_url": "https://cdn.shopify.com/s/files/1/1066/2182/9468/files/ps-unboxing_e42dfce4-9c4b-4cce-93d2-235c53f33b9b.mp4?v=1792930503",
-        "poster": "shopify://shop_images/ps-unboxing.jpg",
+        "video_url": "https://cdn.shopify.com/s/files/1/1066/2182/9468/files/ps-unboxing-v2.mp4?v=1792932252",
+        "poster": "shopify://shop_images/ps-unboxing-v2.jpg",
         "titulo": "Nuevo y precintado.\nLo abre usted.",
         "texto": "Le llega tal como sale de Apple: en su caja original, sin abrir.",
         "boton": "Comprar el pack",
@@ -227,8 +227,8 @@
         "q0": {
           "type": "pregunta",
           "settings": {
-            "pregunta": "¿Cuánto cuesta el envío?",
-            "respuesta": "<p>Nada. El envío es gratis en todos los pedidos, y la devolución también.</p>"
+            "pregunta": "¿Cuánto tarda y cuánto cuesta el envío?",
+            "respuesta": "<p>Lo recibe en casa en 24⁠-⁠48 horas y el envío es gratis en todos los pedidos. La devolución también es gratis.</p>"
           }
         }
       },

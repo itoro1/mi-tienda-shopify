@@ -59,7 +59,20 @@ en la portada (`pt-ventajas` sí está en la ficha y la colección). La portada
   texto en 400). Es una grotesca como la rotulación de las cajas. La Bodoni
   Moda queda solo en el **logo** (`marca/`, `tools/logo_firma.py`).
 - **Movimiento**: solo los dos vídeos. Nada de animaciones al hacer scroll.
-- **Barra superior** en oro con «Envío gratis…», cabecera y pie en noche.
+- **Barra superior** (`ps-barra`, sustituye a la de anuncios de Dawn): oro,
+  tres mensajes con icono en fila; en móvil van de uno en uno con un fundido.
+  El primero, en negrita: **«Lo recibe en casa en 24-48 h»** (plazo que da
+  el dueño, 25/10).
+- **Cabecera**: logo en el centro, menú a la izquierda (menú
+  `principal-estudio`, solo de Dawn: Cargador, Cables, Packs, ¿Qué cable
+  necesito? → `/#pack`), subrayado en oro al pasar y en la página activa,
+  burbuja del carrito en oro. **En la portada es transparente sobre el
+  vídeo** y al bajar se vuelve noche translúcida con desenfoque (en todas
+  las páginas). Los estilos van en `ps-barra.liquid` y se apoyan en lo que
+  ya pone Dawn: `--header-height` y la clase `.scrolled-past-header`.
+- En ordenador el vídeo de portada ocupa la parte derecha (desde el 38 %)
+  con el borde izquierdo fundido, y el titular va en tres líneas: así el
+  texto no pisa las cajas cuando la cámara se acerca. Pie en noche.
 
 ### Fotos y vídeos con IA (Higgsfield)
 
@@ -71,8 +84,8 @@ En `estudio-ia/` (y en Contenido > Archivos con el mismo nombre):
 | `ps-pack-usb-c.jpg`, `ps-pack-lightning.jpg` | El pack (mismo encuadre: al cambiar de iPhone solo cambia la caja del cable). La Lightning, también en Categorías > Packs |
 | `ps-envio.jpg` | Envío gratis |
 | `ps-cargador.jpg`, `ps-cable.jpg` | Categorías |
-| `ps-mesilla.jpg` | Carga rápida |
-| `ps-unboxing.mp4` / `.jpg` | Banda de vídeo (bucle con fundido de 0,75 s) |
+| `ps-mesilla.jpg` (en Archivos, `ps-mesilla-v2.jpg`) | Carga rápida |
+| `ps-unboxing.mp4` / `.jpg` (en Archivos, `ps-unboxing-v2.*`) | Banda de vídeo (bucle con fundido de 0,75 s) |
 | `ps-cable-en-su-caja.jpg` | «Tal como lo prepara Apple» |
 
 - Hechas con Nano Banana Pro (fotos, 2 créditos) y Kling 3.0 Pro (vídeo,
@@ -90,6 +103,12 @@ En `estudio-ia/` (y en Contenido > Archivos con el mismo nombre):
     «USB-C» / «60W Charge Cable (1 m)», «USB-C to Lightning Cable (1 m)»);
   - nada de **datos grabados inventados**: se descartó un primer plano de
     las clavijas porque la IA se inventó voltajes y añadió una tercera clavija;
+  - **el cargador como es**: laterales lisos sin nada escrito; la cara del
+    USB-C (la opuesta a las clavijas) es lisa, con el puerto en el centro y
+    sin letras (`fotos/reales/cargador-cara-usb-c.jpg`). Enchufado en la
+    pared va en **horizontal** y el cable sale del puerto del centro, de
+    frente. Se rehicieron el vídeo de las manos (salían letras en la cara
+    de abajo al girarlo: ahora no gira) y la foto de la mesilla;
   - **luz física**: se descartó un vídeo en el que la caja «brillaba» con
     bordes amarillos, como si emitiera luz. Delata que es artificial.
 - El vídeo anterior, hecho con las fotos de la caja montadas en 3D
@@ -109,6 +128,9 @@ En `estudio-ia/` (y en Contenido > Archivos con el mismo nombre):
   una tarjeta clara hay que darle color al título (`.ps-pre .ps-pre__nombre`).
 - **El euro en Bodoni Moda se lee como una «C»**: en las secciones `pt-` va
   en `<span class="pt-eur">`. Con Archivo en los titulares ya no hace falta.
+- **«24-48» se partía por el guion** en móvil: en los textos va con
+  separadores invisibles (U+2060) a los lados del guion y espacio duro antes
+  de «h» o «horas»; «14 días», con espacio duro.
 - **Un vídeo en bucle no deja que la página quede «inactiva»**: en las
   pruebas con Playwright hay que esperar a `load`, no a `networkidle`.
 
@@ -199,14 +221,18 @@ Todo se hace en *Tienda online → Temas → Dawn → Personalizar*:
   permiso para tocarlo.
 - Comprobar en *Configuración → Envío* que hay una tarifa para España: el
   descuento pone el envío a 0 €, pero necesita una tarifa a la que
-  aplicarse. Plazos de entrega: no se anuncian hasta conocerlos.
+  aplicarse.
+- Plazo de entrega **24-48 h** anunciado en la web desde el 25/10 (lo indica
+  el dueño). Conviene ponerlo también en la página «Envío, garantía y
+  devoluciones» y aclarar si son días laborables y a qué zonas (península,
+  Baleares, Canarias).
 - Sin sección de opiniones a propósito: la tienda es nueva y no tiene
   reseñas propias. No se copian las de ITorostore.
 - Opcional: añadir las fotos de estudio de `estudio-ia/` como fotos
   secundarias de cada producto (la principal sigue siendo la foto real
   sobre blanco). Cambia las fichas también en la tienda publicada.
 - Higgsfield: prueba de 3 días con renovación automática a 49 €/mes si no
-  se cancela. Quedan 31 créditos (25/10, 12:25).
+  se cancela. Quedan 9 créditos (25/10, 12:50).
 
 Capturas en `disenos/`: `estudio-*.jpg` es la portada actual; `cine-*.png`
 y `oro-*.jpg`, las anteriores.

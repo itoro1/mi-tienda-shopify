@@ -1,0 +1,91 @@
+{%- comment -%}
+  Barra superior (sustituye a la barra de anuncios de Dawn) y estilo de la
+  cabecera de toda la tienda.
+
+  - Barra: los mensajes en fila en ordenador; en movil, de uno en uno con un
+    fundido (el primero, el destacado, es el que queda fijo si el sistema
+    pide reducir el movimiento).
+  - Cabecera: menu con subrayado en oro, burbuja del carrito en oro y, en la
+    portada (la pagina que tiene PS · Portada con video), cabecera
+    transparente sobre el video que se oscurece al bajar. Dawn pone
+    --header-height y la clase .scrolled-past-header; aqui solo se pinta.
+{%- endcomment -%}
+{%- assign n = section.blocks.size -%}
+<div class="ps-barra" style="--ps-n:{{ n }}">
+  <ul class="ps-barra__lista" role="list">
+    {%- for block in section.blocks -%}
+      <li class="ps-barra__item{% if block.settings.destacado %} ps-barra__item--destacado{% endif %}" style="--i:{{ forloop.index0 }}" {{ block.shopify_attributes }}>
+        {%- render 'ps-icono', nombre: block.settings.icono, tam: 16 -%}
+        {%- if block.settings.enlace != blank -%}<a href="{{ block.settings.enlace }}">{{ block.settings.texto }}</a>{%- else -%}<span>{{ block.settings.texto }}</span>{%- endif -%}
+      </li>
+    {%- endfor -%}
+  </ul>
+</div>
+
+<style>
+  .ps-barra{position:relative;z-index:4;background:linear-gradient(90deg,#d9c08a 0%,#e6d3a8 50%,#d9c08a 100%);color:#0b0f1a;font-family:var(--font-body-family);font-size:13px;line-height:1.2;letter-spacing:.01em}
+  .ps-barra__lista{list-style:none;margin:0 auto;padding:0 20px;max-width:1360px;min-height:38px;display:flex;align-items:center;justify-content:center;gap:10px 48px}
+  .ps-barra__item{display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+  .ps-barra__item a{color:inherit;text-decoration:none}
+  .ps-barra__item--destacado{font-weight:700}
+  .ps-barra__item svg{flex:none}
+  @media (max-width:749px){
+    .ps-barra__lista{position:relative;min-height:36px}
+    .ps-barra__item{position:absolute;left:0;right:0;justify-content:center;opacity:0;animation:ps-barra calc(var(--ps-n) * 4s) infinite;animation-delay:calc(var(--i) * 4s)}
+    @keyframes ps-barra{
+      0%{opacity:0;transform:translateY(4px)}
+      {% if n > 0 %}{{ 100.0 | divided_by: n | times: 0.08 | round: 2 }}{% else %}3{% endif %}%{opacity:1;transform:none}
+      {% if n > 0 %}{{ 100.0 | divided_by: n | times: 0.92 | round: 2 }}{% else %}30{% endif %}%{opacity:1;transform:none}
+      {% if n > 0 %}{{ 100.0 | divided_by: n | round: 2 }}{% else %}33{% endif %}%{opacity:0;transform:translateY(-4px)}
+      100%{opacity:0}
+    }
+  }
+  @media (max-width:749px) and (prefers-reduced-motion:reduce){
+    .ps-barra__item{animation:none}
+    .ps-barra__item:first-child{opacity:1}
+  }
+
+  /* Cabecera */
+  .section-header .header-wrapper{transition:background-color .35s ease,border-color .35s ease}
+  .section-header .header__menu-item{font-size:14.5px;letter-spacing:.01em;color:rgba(244,241,234,.78);padding:1.2rem 1.5rem}
+  .section-header .header__menu-item:hover{color:#f4f1ea}
+  .section-header .header__menu-item span,
+  .section-header .header__menu-item:hover span,
+  .section-header .header__active-menu-item{position:relative;text-decoration:none}
+  .section-header .header__menu-item span::after{content:"";position:absolute;left:0;right:0;bottom:-7px;height:1.5px;border-radius:2px;background:#c9a86a;transform:scaleX(0);transform-origin:left center;transition:transform .3s ease}
+  .section-header .header__menu-item:hover span::after,
+  .section-header .header__menu-item .header__active-menu-item::after{transform:scaleX(1)}
+  .section-header .header__active-menu-item{color:#f4f1ea}
+  .section-header .header__icon{color:#f4f1ea}
+  .section-header .cart-count-bubble{background:#c9a86a;color:#0b0f1a;font-weight:700}
+  .section-header.scrolled-past-header .header-wrapper{background:rgba(11,15,26,.86);-webkit-backdrop-filter:saturate(1.3) blur(16px);backdrop-filter:saturate(1.3) blur(16px)}
+
+  /* Portada: cabecera transparente sobre el video */
+  body:has(.ps-hero) .section-header{margin-bottom:calc(var(--header-height, 84px) * -1)}
+  body:has(.ps-hero) .section-header:not(.scrolled-past-header) .header-wrapper{background:transparent;border-bottom-color:rgba(244,241,234,.0)}
+  body:has(.ps-hero) .ps-hero__media::before{content:"";position:absolute;inset:0 0 auto;height:calc(var(--header-height, 84px) + 60px);z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(11,15,26,.7),rgba(11,15,26,0))}
+</style>
+
+{% schema %}
+{
+  "name": "PS · Barra superior",
+  "tag": "div",
+  "class": "ps-section-barra",
+  "max_blocks": 4,
+  "blocks": [
+    {
+      "type": "mensaje",
+      "name": "Mensaje",
+      "settings": [
+        { "type": "select", "id": "icono", "label": "Icono", "default": "envio", "options": [
+          { "value": "envio", "label": "Furgoneta" }, { "value": "devolucion", "label": "Devolución" },
+          { "value": "garantia", "label": "Escudo" }, { "value": "original", "label": "Caja" } ] },
+        { "type": "text", "id": "texto", "label": "Texto", "default": "Lo recibe en casa en 24-48 h" },
+        { "type": "url", "id": "enlace", "label": "Enlace (opcional)" },
+        { "type": "checkbox", "id": "destacado", "label": "Destacado (en negrita)", "default": false }
+      ]
+    }
+  ],
+  "presets": [{ "name": "PS · Barra superior" }]
+}
+{% endschema %}

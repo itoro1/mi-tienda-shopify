@@ -77,25 +77,34 @@
 </section>
 
 {% stylesheet %}
-.ps-hero{position:relative;overflow:hidden;isolation:isolate;min-height:min(90svh,880px);display:flex}
+.ps-hero{position:relative;overflow:hidden;isolation:isolate;min-height:min(calc(100svh - 38px),940px);display:flex}
 .ps-hero__media{position:absolute;inset:0;z-index:-1;background:#0b0f1a}
-.ps-hero__video{width:100%;height:100%;object-fit:cover;object-position:60% 50%}
+.ps-hero__video{width:100%;height:100%;object-fit:cover;object-position:50% 50%}
 .ps-hero__velo{position:absolute;inset:0;background:
   linear-gradient(90deg,rgba(11,15,26,.82) 0%,rgba(11,15,26,.5) 34%,rgba(11,15,26,0) 58%),
   linear-gradient(0deg,rgba(11,15,26,.75) 0%,rgba(11,15,26,0) 26%)}
-.ps-hero__wrap{display:flex;flex-direction:column;justify-content:flex-end;padding-top:clamp(56px,8vw,120px);padding-bottom:28px}
+.ps-hero__wrap{display:flex;flex-direction:column;justify-content:flex-end;padding-top:calc(var(--header-height,84px) + clamp(32px,5vw,80px));padding-bottom:28px}
 .ps-hero__texto{max-width:600px;margin-bottom:auto;margin-top:auto}
 .ps-hero__texto .ps-lead{max-width:40ch}
 .ps-hero .ps-hero__precio{margin-top:30px}
-.ps-hero .ps-h1{font-size:clamp(40px,4.7vw,74px)}
+.ps-hero .ps-h1{font-size:clamp(40px,4.4vw,66px)}
 .ps-hero .ps-hero__sellos{margin-top:clamp(40px,6vw,72px);padding-top:20px;border-top:1px solid var(--ps-linea)}
-@media (max-width:749px){
+@media (min-width:990px){
+  .ps-hero__media{left:38%}
+  .ps-hero__video{object-position:85% 50%;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 9%);mask-image:linear-gradient(90deg,transparent 0,#000 9%)}
+  .ps-hero__velo{background:linear-gradient(0deg,rgba(11,15,26,.75) 0%,rgba(11,15,26,0) 26%)}
+}
+@media (max-width:989px){
   .ps-hero{display:block;min-height:0}
   .ps-hero__media{position:relative;z-index:0;aspect-ratio:1/1}
   .ps-hero__video{object-position:88% 50%}
   .ps-hero__velo{background:linear-gradient(0deg,#0b0f1a 0%,rgba(11,15,26,0) 34%)}
   .ps-hero__wrap{padding-top:0;margin-top:-56px;position:relative}
   .ps-hero .ps-hero__sellos{gap:10px 20px}
+}
+@media (min-width:750px) and (max-width:989px){
+  .ps-hero__media{aspect-ratio:16/10}
+  .ps-hero__video{object-position:75% 50%}
 }
 {% endstylesheet %}
 
