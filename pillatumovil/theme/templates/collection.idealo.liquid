@@ -1,0 +1,55 @@
+{%- layout none -%}
+{%- comment -%}
+  Feed de productos para idealo (CSV, una fila por variante).
+  URL: /collections/cargadores-y-cables?view=idealo
+  Formato: https://idealo.github.io/csv-importer/en/csv/ (coma, comillas,
+  punto decimal, listas con ";"). Se genera solo con los datos de Shopify:
+  precio, stock, fotos y EAN (campo "Código de barras" de la variante).
+
+  Lo que hay que confirmar antes de darlo de alta en idealo:
+  - transportista: el nombre de la columna deliveryCosts_<transportista>;
+  - hans (referencia del fabricante, p. ej. la de Apple): metacampo
+    custom.mpn del producto, si se crea.
+{%- endcomment -%}
+{%- liquid
+  assign transportista = 'correos'
+  assign plazo = '1-2 días laborables'
+  assign base = request.origin | default: shop.url
+-%}
+sku,title,url,price,delivery,deliveryCosts_{{ transportista }},paymentCosts_credit_card,paymentCosts_paypal,brand,categoryPath,eans,hans,imageUrls,description,packagingUnit,freeReturnDays,conditionType
+{% for p in collection.products -%}
+{%- for v in p.variants -%}
+{%- liquid
+  assign titulo = p.title
+  unless p.has_only_default_variant
+    assign titulo = titulo | append: ' (' | append: v.title | append: ')'
+  endunless
+  assign euros = v.price | divided_by: 100
+  assign cent = v.price | modulo: 100 | prepend: '00' | slice: -2, 2
+  assign unidades = 1
+  assign primero = v.title | split: ' ' | first | plus: 0
+  if primero > 0
+    assign unidades = primero
+  endif
+  assign categoria = 'Accesorios para móviles > Cargadores y cables'
+  if p.type == 'Cable'
+    assign categoria = 'Accesorios para móviles > Cables'
+  elsif p.type == 'Cargador'
+    assign categoria = 'Accesorios para móviles > Cargadores'
+  endif
+  assign fotos = ''
+  for img in p.images limit: 5
+    assign u = img | image_url: width: 1600 | prepend: 'https:'
+    if forloop.first
+      assign fotos = u
+    else
+      assign fotos = fotos | append: ';' | append: u
+    endif
+  endfor
+  assign desc = p.description | replace: '</h2>', ': ' | replace: '</h3>', ': ' | replace: '</h4>', ': ' | replace: '</li>', ' ' | replace: '</p>', ' ' | replace: '<br>', ' ' | strip_html | strip_newlines | split: ' ' | join: ' ' | replace: '.:', ':' | truncate: 990
+-%}
+{%- if v.available -%}
+"{{ v.sku | default: v.id }}","{{ titulo | replace: '"', '""' }}","{{ base }}{{ v.url }}",{{ euros }}.{{ cent }},"{{ plazo }}",0.00,0.00,0.00,"{{ p.vendor | replace: '"', '""' }}","{{ categoria }}","{{ v.barcode }}","{{ p.metafields.custom.mpn }}","{{ fotos }}","{{ desc | replace: '"', '""' }}",{{ unidades }},14,NEW
+{% endif -%}
+{%- endfor -%}
+{%- endfor -%}

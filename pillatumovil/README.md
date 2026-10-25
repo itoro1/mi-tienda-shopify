@@ -213,6 +213,30 @@ Todo se hace en *Tienda online → Temas → Dawn → Personalizar*:
 - **Los productos se eligen en el editor**, no por handle en el código como
   en las secciones `it-` de ITorostore: así se cambian sin programar.
 
+## idealo (comparador de precios)
+
+- **Feed**: `theme/templates/collection.idealo.liquid`. Se genera solo con los
+  datos de Shopify (precio, stock, fotos, EAN del campo «Código de barras»):
+  `https://<dominio>/collections/cargadores-y-cables?view=idealo`. CSV según
+  https://idealo.github.io/csv-importer/en/csv/ (coma, punto decimal, listas
+  con «;»). Una fila por variante con stock; los packs van con su número en
+  `packagingUnit`.
+- Hoy está **solo en Dawn** (sin publicar): idealo no puede leerlo hasta que
+  se publique Dawn, o hasta copiar la plantilla a Canyon.
+- Ejemplo de la salida en `idealo/feed-ejemplo-2026-10-25.csv`.
+- **Pendiente para darlo de alta**:
+  - cuenta de comerciante en idealo (la abre el dueño: datos fiscales y
+    forma de pago; idealo cobra por clic);
+  - transportista real para la columna `deliveryCosts_<transportista>` (ahora
+    `correos` de marcador, sin confirmar);
+  - comprobar que los EAN de las fichas (copiados de ITorostore) coinciden
+    con el código de barras de las cajas; los packs no tienen EAN y saldrán
+    con menos visibilidad;
+  - opcional: referencia de Apple (`hans`) en un metacampo `custom.mpn`;
+  - **páginas legales** que faltan en la tienda: aviso legal (titular, NIF,
+    domicilio, correo) y condiciones de venta. Solo existe la política de
+    privacidad.
+
 ## Pendiente
 
 - Publicar Dawn cuando se dé el visto bueno a la vista previa.
