@@ -4,9 +4,9 @@ Segunda tienda (`j2zukw-xp.myshopify.com`), separada de ITorostore.
 
 - Moneda: EUR. Acceso por API con la app del Dev Dashboard (variables
   `SHOPIFY_PTM_*`, token por *client credentials*, caduca a las 24 h).
-- Tema: **Dawn 16.1.0** (`207180497244`), **sin publicar**. Se publicó a
-  las 15:53 del 24/10 y se volvió a Canyon a las 16:22; la portada de cine
-  se hizo después, solo en Dawn. Vista previa:
+- Tema: **Dawn 16.1.0** (`207180497244`), **sin publicar** (la tienda sigue
+  con Canyon). Se publicó por error a las 15:53 del 24/10 y se volvió a
+  Canyon a las 16:22; todo lo posterior está solo en Dawn. Vista previa:
   `https://j2zukw-xp.myshopify.com/?preview_theme_id=207180497244`.
 - La tienda está **abierta al público** (sin contraseña) y los 5 productos
   están **activos**, así que ya se ven y se venden con el tema publicado.
@@ -21,64 +21,98 @@ Segunda tienda (`j2zukw-xp.myshopify.com`), separada de ITorostore.
 - Esta carpeta es el espejo de lo que hay en Dawn: si se cambia un fichero
   aquí, se sube al tema; si se cambia en el editor, se trae aquí.
 
-## Portada (25/10/2026, versión «noche y champán»)
+## Portada (25/10/2026, versión «estudio»)
+
+Rehecha de cero el 25/10 por la tarde: el cliente veía la anterior «pobre» y
+las cajas 3D en CSS «hechas por ordenador». Ahora la llevan **fotos y vídeos
+de estudio fotorrealistas** (Higgsfield, ver más abajo) y la interfaz se
+aparta, al estilo de Nomad. Secciones `ps-*` y hoja `assets/ps-base.css`.
 
 | Orden | Sección | Qué hace |
 |---|---|---|
-| 1 | `pt-oferta` · PT · Oferta del pack | Lo primero: el pack cargador + cable. Dos cajas 3D con volumen sobre una peana con filo de oro; se inclinan con el ratón o el dedo. Selector «Mi iPhone es del 15 al 18 / 8 al 14» que cambia caja del cable, precio, ahorro y botón |
-| 2 | `pt-envio` · PT · Envío gratis | Banner grande «Envío gratis.» y tres cifras (0 € envío, 0 € devolución, 14 días) |
-| 3 | `pt-categorias` · PT · Categorías | Cargador, Cables y Packs con foto y precio «desde» (colecciones `cables` y `packs`) |
-| 4 | `pt-video` · PT · Vídeo | Banda a todo el ancho con el vídeo de estudio en bucle |
-| 5 | `pt-historia` · PT · Historia de cine | Original / Seguro / Rápido, ligado al scroll |
-| 6 | `pt-productos` · PT · Lista de precios | Precio aquí y en Apple |
-| 7 | `pt-faq`, `pt-cta` | Preguntas y cierre |
+| 1 | `ps-hero` · PS · Portada con vídeo | Vídeo de estudio a todo el ancho (las dos cajas sobre piedra oscura, acercamiento lento de cámara, en bucle de ida y vuelta). Titular, precio del pack y PVP de Apple sacados del producto, botón «Comprar el pack» (baja a `#pack`) y tres garantías. En móvil, vídeo en cuadrado arriba y texto debajo |
+| 2 | `ps-pack` · PS · El pack | Foto de estudio del pack y compra directa. Selector «¿Qué iPhone tiene?» (15 o posterior / 8 a 14) que cambia foto, precio, ahorro y lo que incluye, sin JavaScript. «Añadir al carrito» añade 1 pack y lleva al carrito |
+| 3 | `ps-envio` · PS · Envío gratis | Titular grande «Envío gratis. Devolución, también.», tres cifras y la foto del paquete recién llegado |
+| 4 | `ps-categorias` · PS · Categorías | Cargador, Cables y Packs con foto de estudio y precio «desde» |
+| 5 | `ps-editorial` · PS · Foto y texto | La mesilla de noche: carga rápida de 20 W |
+| 6 | `ps-video` · PS · Vídeo | Manos abriendo la caja y sacando el cargador; solo se reproduce mientras se ve |
+| 7 | `ps-editorial` | «Tal como lo prepara Apple»: el cable enrollado con sus fajas, sobre noche |
+| 8 | `ps-precios` · PS · Precios | Los 5 productos en tarjetas con precio aquí y en Apple; añadir al carrito o elegir cantidad. Carrusel en móvil |
+| 9 | `ps-faq` · PS · Preguntas | Acordeón + FAQPage de schema.org |
+| 10 | `ps-cierre` · PS · Cierre | «¿No sabe qué cable necesita?» con WhatsApp |
 
-Siguen en el tema, sin usar en la portada: `pt-cine` (caja que gira 360°),
-`pt-hero`, `pt-buscador`, `pt-pack` y `pt-ventajas` (esta última sí está en
-la ficha de producto y en la colección).
+Las secciones `pt-*` de las versiones anteriores siguen en el tema sin usar
+en la portada (`pt-ventajas` sí está en la ficha y la colección). La portada
+«noche y champán» queda guardada en el historial de git
+(`templates/index.json` del commit anterior a esta versión).
 
 ### Identidad
 
-- **Paleta**: noche `#0B0F1A`, medianoche `#131A2B`, oro champán `#C9A86A`,
-  oro claro `#E7D3A6`, marfil `#F4EFE6`, y marfil cálido `#EDE8DF` como
-  fondo de las fotos de producto. No es el negro y oro de ITorostore: el
-  fondo es azul noche.
-- **Tipografía**: Bodoni Moda (titulares, precios grandes, logo) y Archivo
-  (texto y botones).
-- **Logo**: el nombre en Bodoni Moda con los puntos de las dos «i» en oro
-  (`marca/`, `tools/logo_firma.py`). Icono: una «P» con el punto en oro.
+- **Fondos sacados de las fotos**: noche `#0B0F1A` (el fondo del estudio
+  oscuro: portada, vídeo, cierre) y piedra `#E8E5DF` / papel `#F3F1EC` (el
+  papel gris cálido de los bodegones, para que las fotos se fundan con la
+  página). Tinta `#141824`, marfil `#F4F1EA`.
+- **Oro champán `#C9A86A`** solo como luz: botón principal, cifras y filetes.
+  Sin degradados en los textos. Oro oscuro `#7D5F28` para iconos y la
+  etiqueta de ahorro sobre fondo claro.
+- **Tipografía**: una sola familia, **Archivo** (titulares en 600, apretados;
+  texto en 400). Es una grotesca como la rotulación de las cajas. La Bodoni
+  Moda queda solo en el **logo** (`marca/`, `tools/logo_firma.py`).
+- **Movimiento**: solo los dos vídeos. Nada de animaciones al hacer scroll.
 - **Barra superior** en oro con «Envío gratis…», cabecera y pie en noche.
+
+### Fotos y vídeos con IA (Higgsfield)
+
+En `estudio-ia/` (y en Contenido > Archivos con el mismo nombre):
+
+| Fichero | Dónde |
+|---|---|
+| `ps-estudio-portada.mp4` / `.jpg` | Portada (vídeo 10 s en bucle de ida y vuelta, y foto de espera). También en el cierre |
+| `ps-pack-usb-c.jpg`, `ps-pack-lightning.jpg` | El pack (mismo encuadre: al cambiar de iPhone solo cambia la caja del cable). La Lightning, también en Categorías > Packs |
+| `ps-envio.jpg` | Envío gratis |
+| `ps-cargador.jpg`, `ps-cable.jpg` | Categorías |
+| `ps-mesilla.jpg` | Carga rápida |
+| `ps-unboxing.mp4` / `.jpg` | Banda de vídeo (bucle con fundido de 0,75 s) |
+| `ps-cable-en-su-caja.jpg` | «Tal como lo prepara Apple» |
+
+- Hechas con Nano Banana Pro (fotos, 2 créditos) y Kling 3.0 Pro (vídeo,
+  8,75 créditos cada 5 s), siempre con las **fotos reales** como referencia:
+  las de `fotos/` y las del cliente en `fotos/reales/`.
+- Los vídeos se suben como **archivo genérico** (sin recodificar, 1080p):
+  si se suben como vídeo, Shopify los deja en 720p.
+- **Reglas de fidelidad** (todo lo que no las cumpla se descarta):
+  - la **pestaña de colgar es de cartón blanco opaco**, nunca de plástico
+    transparente: el cliente avisa de que las transparentes son de cajas
+    falsas;
+  - **enchufe europeo** de dos clavijas redondas (la IA tiende a dibujar el
+    americano);
+  - textos de la caja como en la real («USB-C» / «20W Power Adapter»,
+    «USB-C» / «60W Charge Cable (1 m)», «USB-C to Lightning Cable (1 m)»);
+  - nada de **datos grabados inventados**: se descartó un primer plano de
+    las clavijas porque la IA se inventó voltajes y añadió una tercera clavija;
+  - **luz física**: se descartó un vídeo en el que la caja «brillaba» con
+    bordes amarillos, como si emitiera luz. Delata que es artificial.
+- El vídeo anterior, hecho con las fotos de la caja montadas en 3D
+  (`video/`, `tools/video/estudio.html` y `rodar.js`), queda para redes; en
+  la web se sustituyó porque se notaba hecho por ordenador.
 
 ### Trampas de Dawn que ya están resueltas (no deshacer)
 
 - **Dawn oculta los `div` vacíos** (`base.css`: `div:empty{display:none}`).
-  Las caras de las cajas 3D (laterales, tapa, trasera) son `div` vacíos que
-  se pintan con CSS: por eso la caja parecía «de papel». Se fuerzan con
-  `.pt-c3 > .pt-c3__f{display:block}` (y `.pt-box > .pt-box__cara`).
-- **El orden de carga de las hojas**: `pt-base.css` se carga después de los
-  `{% stylesheet %}` de las secciones; una regla de sección que quiera pisar
-  una de `pt-base` necesita más especificidad (ej. `.pt-of .pt-of__h1`).
-- **El euro en Bodoni Moda se lee como una «C»**: todos los «€» de las
-  secciones van en `<span class="pt-eur">` con la fuente de texto, y el
-  precio de la ficha de producto va en Archivo.
-- **La pestaña de colgar de las cajas** se recorta del frontal y se pinta en
-  el plano trasero (`.pt-c3__pestana`), que es de donde sale en la caja real.
+  Las caras de las cajas 3D de las secciones `pt-` son `div` vacíos que se
+  pintan con CSS; se fuerzan con `.pt-c3 > .pt-c3__f{display:block}`.
+- **El orden de carga de las hojas**: `pt-base.css` y `ps-base.css` se
+  cargan después de los `{% stylesheet %}` de las secciones; una regla de
+  sección que quiera pisar una de la hoja base necesita más especificidad
+  (ej. `.pt-of .pt-of__h1`, `.ps-env .ps-env__titulo`).
+- **Dawn pinta los `h3` con el color del esquema** (marfil sobre noche): en
+  una tarjeta clara hay que darle color al título (`.ps-pre .ps-pre__nombre`).
+- **El euro en Bodoni Moda se lee como una «C»**: en las secciones `pt-` va
+  en `<span class="pt-eur">`. Con Archivo en los titulares ya no hace falta.
+- **Un vídeo en bucle no deja que la página quede «inactiva»**: en las
+  pruebas con Playwright hay que esperar a `load`, no a `networkidle`.
 
-### Vídeo de estudio
-
-- `video/pillatumovil-estudio-web.mp4` (1600 × 900, 8 s en bucle) está
-  subido a Contenido > Archivos; la sección `pt-video` usa su versión 720p
-  del CDN de Shopify. `video/pillatumovil-estudio-reel.mp4` (1080 × 1920,
-  24 s) es para Reels, TikTok y Stories.
-- Se rueda con `tools/video/estudio.html` (la caja del adaptador girando
-  360° sobre la peana, con foco y barrido de luz) y `tools/video/rodar.js`,
-  que la fotografía fotograma a fotograma con Playwright; luego `ffmpeg`.
-  `estudio.html` espera `caja-cargador-frente.png` y `-trasera.png` (en
-  `fotos/cine/`) en su misma carpeta.
-- No es vídeo generado con IA ni material de Apple: son las fotos propias
-  de la caja montadas en 3D. Para clips con IA (Higgsfield u otro), el
-  vídeo se sube a Archivos y se pega su enlace en *PT · Vídeo*.
-
+## Resto de la tienda
 ## Resto de la tienda
 
 - **Ficha de producto** (`templates/product.json`): título, precio, precio
@@ -121,10 +155,9 @@ y no de una plantilla:
 
 Todo se hace en *Tienda online → Temas → Dawn → Personalizar*:
 
-- **Color de marca**: *Configuración del tema → Pillatumovil*. Usa un tono
-  oscuro: el texto de los botones es blanco.
-- **Batería**: en *PT · Portada* se elige hasta qué porcentaje se carga y
-  el texto de debajo, o se oculta.
+- **Vídeos**: en *PS · Portada con vídeo* y *PS · Vídeo* se pega el enlace
+  .mp4 del archivo subido en Contenido > Archivos.
+- **Fotos**: cada sección tiene su selector de imagen.
 - **Textos, botones y enlaces**: en cada sección.
 - **Productos**: cada sección tiene su selector. Foto, precio y PVP de
   Apple salen del producto: **no hay precios escritos a mano**.
@@ -169,5 +202,11 @@ Todo se hace en *Tienda online → Temas → Dawn → Personalizar*:
   aplicarse. Plazos de entrega: no se anuncian hasta conocerlos.
 - Sin sección de opiniones a propósito: la tienda es nueva y no tiene
   reseñas propias. No se copian las de ITorostore.
+- Opcional: añadir las fotos de estudio de `estudio-ia/` como fotos
+  secundarias de cada producto (la principal sigue siendo la foto real
+  sobre blanco). Cambia las fichas también en la tienda publicada.
+- Higgsfield: prueba de 3 días con renovación automática a 49 €/mes si no
+  se cancela. Quedan 31 créditos (25/10, 12:25).
 
-Capturas en `disenos/`: `cine-*.png` son las escenas de la portada de cine.
+Capturas en `disenos/`: `estudio-*.jpg` es la portada actual; `cine-*.png`
+y `oro-*.jpg`, las anteriores.

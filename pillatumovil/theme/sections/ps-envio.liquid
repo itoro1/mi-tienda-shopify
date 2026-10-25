@@ -1,0 +1,78 @@
+{%- comment -%}
+  Envio gratis: a un lado el titular grande y las cifras, al otro la foto del
+  paquete recien llegado. Las cifras son bloques editables.
+{%- endcomment -%}
+{{ 'ps-base.css' | asset_url | stylesheet_tag }}
+<section class="ps ps--noche ps-env">
+  <div class="ps-env__texto">
+    <div class="ps-env__caja">
+      <h2 class="ps-h2 ps-env__titulo">{{ section.settings.titulo | newline_to_br }}</h2>
+      {%- if section.settings.texto != blank -%}<p class="ps-lead">{{ section.settings.texto }}</p>{%- endif -%}
+      {%- if section.blocks.size > 0 -%}
+        <dl class="ps-env__cifras">
+          {%- for block in section.blocks -%}
+            <div {{ block.shopify_attributes }}><dt>{{ block.settings.cifra }}</dt><dd>{{ block.settings.texto }}</dd></div>
+          {%- endfor -%}
+        </dl>
+      {%- endif -%}
+    </div>
+  </div>
+  <div class="ps-env__foto">
+    {%- if section.settings.imagen != blank -%}
+      {{ section.settings.imagen | image_url: width: 1800 | image_tag: loading: 'lazy', widths: '700, 1000, 1400, 1800', sizes: '(min-width: 990px) 55vw, 100vw', alt: section.settings.imagen.alt | default: '' }}
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+.ps-env{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);min-height:min(80svh,760px)}
+.ps-env__texto{display:flex;align-items:center;justify-content:flex-end;padding:clamp(64px,8vw,120px) clamp(28px,5vw,88px)}
+.ps-env__caja{width:100%;max-width:560px}
+.ps-env .ps-env__titulo{font-size:clamp(44px,5.2vw,84px);line-height:.98;letter-spacing:-.04em}
+.ps-env__cifras{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:44px 0 0;border-top:1px solid var(--ps-linea)}
+.ps-env__cifras div{padding:20px 12px 0 0}
+.ps-env__cifras div + div{padding-left:16px;border-left:1px solid var(--ps-linea)}
+.ps-env__cifras dt{font-size:clamp(30px,2.8vw,42px);font-weight:700;letter-spacing:-.03em;line-height:1;color:var(--ps-oro-claro);font-variant-numeric:tabular-nums}
+.ps-env__cifras dd{margin:8px 0 0;font-size:14px;color:var(--ps-texto-2)}
+.ps-env__foto{position:relative;min-height:420px;background:#1a1410}
+.ps-env__foto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:60% 50%}
+@media (max-width:989px){
+  .ps-env{grid-template-columns:1fr;min-height:0}
+  .ps-env__foto{order:-1;min-height:0;aspect-ratio:4/3}
+  .ps-env__texto{justify-content:flex-start;padding:48px clamp(20px,4vw,56px) 64px}
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PS · Envío gratis",
+  "tag": "div",
+  "class": "ps-section",
+  "max_blocks": 4,
+  "settings": [
+    { "type": "textarea", "id": "titulo", "label": "Titular", "default": "Envío gratis.\nDevolución, también." },
+    { "type": "textarea", "id": "texto", "label": "Texto", "default": "En todos los pedidos, sin importe mínimo. Y si no le convence, tiene 14 días para devolverlo sin pagar nada." },
+    { "type": "image_picker", "id": "imagen", "label": "Foto" }
+  ],
+  "blocks": [
+    {
+      "type": "cifra",
+      "name": "Cifra",
+      "settings": [
+        { "type": "text", "id": "cifra", "label": "Cifra", "default": "0 €" },
+        { "type": "text", "id": "texto", "label": "Texto", "default": "de envío" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PS · Envío gratis",
+      "blocks": [
+        { "type": "cifra", "settings": { "cifra": "0 €", "texto": "de envío" } },
+        { "type": "cifra", "settings": { "cifra": "0 €", "texto": "por devolverlo" } },
+        { "type": "cifra", "settings": { "cifra": "14 días", "texto": "para decidir" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,166 @@
+{%- comment -%}
+  El pack (cargador + cable) con su foto de estudio y compra directa.
+
+  Cada opcion del selector "¿Qué iPhone tiene?" es un bloque con su pack, su
+  foto y lo que incluye. Al elegir cambian la foto, el precio, el ahorro y el
+  boton. Sin JavaScript: radios + :has(). Sin :has() se ven todas las
+  opciones seguidas, que sigue siendo correcto.
+
+  El boton anade 1 pack al carrito (primera variante disponible) y lleva al
+  carrito. Precio, PVP de Apple y ahorro salen del producto.
+{%- endcomment -%}
+{{ 'ps-base.css' | asset_url | stylesheet_tag }}
+<section id="pack" class="ps ps--piedra ps-sec ps-pack">
+  <div class="ps-wrap ps-pack__grid">
+    <div class="ps-pack__fotos">
+      {%- for block in section.blocks -%}
+        {%- if block.settings.imagen != blank -%}
+          <div class="ps-foto ps-pack__foto" data-foto="{{ block.id }}">
+            {{ block.settings.imagen | image_url: width: 1600 | image_tag: loading: 'lazy', widths: '600, 900, 1200, 1600', sizes: '(min-width: 990px) 50vw, 100vw', alt: block.settings.imagen.alt | default: block.settings.modelos }}
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
+    <div class="ps-pack__info">
+      <h2 class="ps-h2">{{ section.settings.titulo }}</h2>
+      {%- if section.settings.texto != blank -%}<p class="ps-lead">{{ section.settings.texto }}</p>{%- endif -%}
+
+      <fieldset class="ps-pack__sel">
+        <legend>{{ section.settings.pregunta }}</legend>
+        <div class="ps-pack__opciones">
+          {%- assign marcado = false -%}
+          {%- for block in section.blocks -%}
+            {%- if block.settings.pack == blank and request.design_mode == false -%}{%- continue -%}{%- endif -%}
+            <input class="ps-pack__in ps-visually-hidden" type="radio" name="ps-pack-{{ section.id }}" id="ps-pack-{{ block.id }}"{% unless marcado %} checked{% endunless %}>
+            {%- assign marcado = true -%}
+            <label class="ps-pack__op" for="ps-pack-{{ block.id }}" {{ block.shopify_attributes }}>
+              <span class="ps-pack__op-mod">{{ block.settings.modelos }}</span>
+              <span class="ps-pack__op-con">{{ block.settings.conector }}</span>
+            </label>
+          {%- endfor -%}
+        </div>
+      </fieldset>
+
+      {%- for block in section.blocks -%}
+        {%- assign p = block.settings.pack -%}
+        {%- if p == blank -%}
+          {%- if request.design_mode -%}<p class="ps-pack__panel" data-op="{{ block.id }}">Elige el pack de «{{ block.settings.modelos }}».</p>{%- endif -%}
+          {%- continue -%}
+        {%- endif -%}
+        {%- liquid
+          assign v = p.selected_or_first_available_variant
+          capture pa
+            render 'ps-pvp-centimos', product: p
+          endcapture
+          assign pa = pa | strip | plus: 0
+          assign ahorro = pa | minus: v.price
+          assign pct = 0
+          if ahorro > 0
+            assign pct = ahorro | times: 100.0 | divided_by: pa | floor
+          endif
+        -%}
+        <div class="ps-pack__panel" data-op="{{ block.id }}">
+          <p class="ps-precio">
+            <span class="ps-precio__aqui">{{ v.price | money_without_currency }} €</span>
+            {%- if pa > v.price -%}<span class="ps-precio__apple">En Apple <s>{{ pa | money_without_currency }} €</s> por separado</span>{%- endif -%}
+          </p>
+          {%- if ahorro > 0 -%}<p class="ps-ahorro">Ahorra {{ ahorro | money_without_currency }} € ({{ pct }} %)</p>{%- endif -%}
+
+          {%- assign lineas = block.settings.incluye | newline_to_br | split: '<br />' -%}
+          {%- if block.settings.incluye != blank -%}
+            <ul class="ps-lista" role="list">
+              {%- for l in lineas -%}{%- assign t = l | strip -%}{%- if t != blank -%}<li>{% render 'ps-icono', nombre: 'check' %}<span>{{ t }}</span></li>{%- endif -%}{%- endfor -%}
+            </ul>
+          {%- endif -%}
+
+          <form class="ps-pack__form" method="post" action="{{ routes.cart_add_url }}">
+            <input type="hidden" name="id" value="{{ v.id }}">
+            <input type="hidden" name="quantity" value="1">
+            <input type="hidden" name="return_to" value="{{ routes.cart_url }}">
+            <div class="ps-btns">
+              <button class="ps-btn ps-btn--tinta" type="submit"{% unless v.available %} disabled{% endunless %}>
+                {%- if v.available -%}{{ section.settings.boton }}{%- else -%}Sin stock ahora mismo{%- endif -%}
+              </button>
+              <a class="ps-link" href="{{ p.url }}">{{ section.settings.enlace_texto }}</a>
+            </div>
+          </form>
+        </div>
+      {%- endfor -%}
+
+      <ul class="ps-sellos ps-pack__sellos" role="list">
+        <li>{% render 'ps-icono', nombre: 'envio' %}Envío gratis</li>
+        <li>{% render 'ps-icono', nombre: 'devolucion' %}Devolución gratis en 14 días</li>
+        <li>{% render 'ps-icono', nombre: 'garantia' %}3 años de garantía</li>
+      </ul>
+    </div>
+  </div>
+
+  <style>
+    @supports selector(:has(*)) {
+      #shopify-section-{{ section.id }} .ps-pack__panel { display: none; }
+      #shopify-section-{{ section.id }} .ps-pack__foto { opacity: 0; }
+      {%- for block in section.blocks %}
+      #shopify-section-{{ section.id }} .ps-pack:has(#ps-pack-{{ block.id }}:checked) [data-op="{{ block.id }}"] { display: block; }
+      #shopify-section-{{ section.id }} .ps-pack:has(#ps-pack-{{ block.id }}:checked) [data-foto="{{ block.id }}"] { opacity: 1; }
+      {%- endfor %}
+    }
+  </style>
+</section>
+
+{% stylesheet %}
+.ps-pack__grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:clamp(32px,6vw,104px);align-items:center}
+.ps-pack__fotos{display:grid}
+.ps-pack__foto{grid-area:1/1;aspect-ratio:4/5;transition:opacity .45s ease}
+.ps-pack__info{max-width:560px}
+.ps-pack__sel{margin:36px 0 28px;padding:0;border:0;min-width:0}
+.ps-pack__sel legend{padding:0;margin-bottom:12px;font-size:15px;font-weight:700}
+.ps-pack__opciones{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ps-pack__op{display:flex;flex-direction:column;gap:2px;padding:14px 16px;border-radius:12px;cursor:pointer;
+  background:var(--ps-papel);box-shadow:inset 0 0 0 1px var(--ps-linea-cla);transition:box-shadow .2s ease}
+.ps-pack__op:hover{box-shadow:inset 0 0 0 1px var(--ps-tinta)}
+.ps-pack__op-mod{font-size:16px;font-weight:700;line-height:1.3}
+.ps-pack__op-con{font-size:14px;color:var(--ps-gris)}
+.ps-pack__in:checked + .ps-pack__op{box-shadow:inset 0 0 0 2px var(--ps-tinta);background:#fff}
+.ps-pack__in:focus-visible + .ps-pack__op{outline:2px solid var(--ps-oro-tinta);outline-offset:3px}
+.ps-pack__panel .ps-lista{margin-top:22px}
+.ps-pack__form .ps-btns{margin-top:30px}
+.ps-pack .ps-pack__sellos{margin-top:36px;padding-top:20px;border-top:1px solid var(--ps-linea)}
+@media (max-width:989px){
+  .ps-pack__grid{grid-template-columns:1fr}
+  .ps-pack__foto{aspect-ratio:1/1}
+}
+@media (max-width:749px){
+  .ps-pack__form .ps-btn{width:100%}
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PS · El pack",
+  "tag": "div",
+  "class": "ps-section",
+  "max_blocks": 4,
+  "settings": [
+    { "type": "text", "id": "titulo", "label": "Título", "default": "El pack completo" },
+    { "type": "textarea", "id": "texto", "label": "Texto", "default": "Adaptador de 20 W y cable de 1 m. Los dos originales de Apple, nuevos y en su caja." },
+    { "type": "text", "id": "pregunta", "label": "Pregunta del selector", "default": "¿Qué iPhone tiene?" },
+    { "type": "text", "id": "boton", "label": "Botón", "default": "Añadir al carrito" },
+    { "type": "text", "id": "enlace_texto", "label": "Enlace a la ficha", "default": "Ver el pack" }
+  ],
+  "blocks": [
+    {
+      "type": "opcion",
+      "name": "Opción",
+      "settings": [
+        { "type": "text", "id": "modelos", "label": "Modelos", "default": "iPhone 15 o posterior" },
+        { "type": "text", "id": "conector", "label": "Conector", "default": "Cable USB-C" },
+        { "type": "product", "id": "pack", "label": "Pack" },
+        { "type": "image_picker", "id": "imagen", "label": "Foto del pack" },
+        { "type": "textarea", "id": "incluye", "label": "Qué incluye (una línea por cosa)" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "PS · El pack" }]
+}
+{% endschema %}

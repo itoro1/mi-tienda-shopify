@@ -1,23 +1,186 @@
 {
   "sections": {
+    "portada": {
+      "type": "ps-hero",
+      "settings": {
+        "video_url": "https://cdn.shopify.com/s/files/1/1066/2182/9468/files/ps-estudio-portada.mp4?v=1792930763",
+        "poster": "shopify://shop_images/ps-estudio-portada.jpg",
+        "titulo": "Cargador y cable.\nOriginales de Apple.",
+        "texto": "El pack completo de 20 W, nuevo y en su caja precintada. Con envío y devolución gratis.",
+        "producto": "pack-cargador-usb-c-20w-cable-usb-c-1m-apple-original",
+        "boton": "Comprar el pack",
+        "enlace": "#pack",
+        "boton_2": "Ver todos los productos",
+        "enlace_2": "shopify://collections/cargadores-y-cables",
+        "sello_1": "Envío gratis",
+        "sello_2": "Devolución gratis en 14 días",
+        "sello_3": "3 años de garantía"
+      }
+    },
+    "pack": {
+      "type": "ps-pack",
+      "blocks": {
+        "usbc": {
+          "type": "opcion",
+          "settings": {
+            "modelos": "iPhone 15 o posterior",
+            "conector": "Cable USB-C a USB-C",
+            "pack": "pack-cargador-usb-c-20w-cable-usb-c-1m-apple-original",
+            "imagen": "shopify://shop_images/ps-pack-usb-c.jpg",
+            "incluye": "Adaptador de corriente USB-C de 20 W\nCable de carga USB-C de 60 W, trenzado (1 m)"
+          }
+        },
+        "lightning": {
+          "type": "opcion",
+          "settings": {
+            "modelos": "iPhone 8 a iPhone 14",
+            "conector": "Cable USB-C a Lightning",
+            "pack": "cargador-apple-usb-c",
+            "imagen": "shopify://shop_images/ps-pack-lightning.jpg",
+            "incluye": "Adaptador de corriente USB-C de 20 W\nCable USB-C a Lightning (1 m)"
+          }
+        }
+      },
+      "block_order": [
+        "usbc",
+        "lightning"
+      ],
+      "settings": {
+        "titulo": "El pack completo",
+        "texto": "Adaptador de 20 W y cable de 1 m. Los dos originales de Apple, nuevos y precintados.",
+        "pregunta": "¿Qué iPhone tiene?",
+        "boton": "Añadir al carrito",
+        "enlace_texto": "Ver el pack"
+      }
+    },
+    "envio": {
+      "type": "ps-envio",
+      "blocks": {
+        "c1": {
+          "type": "cifra",
+          "settings": {
+            "cifra": "0 €",
+            "texto": "de envío"
+          }
+        },
+        "c2": {
+          "type": "cifra",
+          "settings": {
+            "cifra": "0 €",
+            "texto": "por devolverlo"
+          }
+        },
+        "c3": {
+          "type": "cifra",
+          "settings": {
+            "cifra": "14 días",
+            "texto": "para decidir"
+          }
+        }
+      },
+      "block_order": [
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "settings": {
+        "titulo": "Envío gratis.\nDevolución, también.",
+        "texto": "En todos los pedidos, sin importe mínimo. Y si no le convence, tiene 14 días para devolverlo sin pagar nada.",
+        "imagen": "shopify://shop_images/ps-envio.jpg"
+      }
+    },
+    "categorias": {
+      "type": "ps-categorias",
+      "blocks": {
+        "cargador": {
+          "type": "categoria",
+          "settings": {
+            "titulo": "Cargador",
+            "texto": "Adaptador USB-C de 20 W. Sirve para cualquier iPhone.",
+            "imagen": "shopify://shop_images/ps-cargador.jpg",
+            "producto": "cargador-usb-c-20w-apple-original"
+          }
+        },
+        "cables": {
+          "type": "categoria",
+          "settings": {
+            "titulo": "Cables",
+            "texto": "USB-C a USB-C o USB-C a Lightning, de 1 m.",
+            "imagen": "shopify://shop_images/ps-cable.jpg",
+            "coleccion": "cables"
+          }
+        },
+        "packs": {
+          "type": "categoria",
+          "settings": {
+            "titulo": "Packs",
+            "texto": "Cargador y cable juntos, por menos.",
+            "imagen": "shopify://shop_images/ps-pack-lightning.jpg",
+            "coleccion": "packs"
+          }
+        }
+      },
+      "block_order": [
+        "cargador",
+        "cables",
+        "packs"
+      ],
+      "settings": {
+        "titulo": "Elija lo que necesita",
+        "texto": "Todo original de Apple, nuevo y en su caja.",
+        "fondo": "piedra"
+      }
+    },
+    "carga": {
+      "type": "ps-editorial",
+      "settings": {
+        "imagen": "shopify://shop_images/ps-mesilla.jpg",
+        "foto_derecha": false,
+        "fondo": "papel",
+        "titulo": "Carga rápida de 20 W.",
+        "texto": "<p>Con el adaptador de 20 W, un iPhone 8 o posterior carga hasta el 50 % en unos 30 minutos, según Apple.</p>",
+        "puntos": "Sirve para cualquier iPhone, con cable USB-C o Lightning\nCarga rápida desde el iPhone 8",
+        "boton": "Ver el cargador",
+        "enlace": "shopify://products/cargador-usb-c-20w-apple-original"
+      }
+    },
+    "video": {
+      "type": "ps-video",
+      "settings": {
+        "video_url": "https://cdn.shopify.com/s/files/1/1066/2182/9468/files/ps-unboxing_e42dfce4-9c4b-4cce-93d2-235c53f33b9b.mp4?v=1792930503",
+        "poster": "shopify://shop_images/ps-unboxing.jpg",
+        "titulo": "Nuevo y precintado.\nLo abre usted.",
+        "texto": "Le llega tal como sale de Apple: en su caja original, sin abrir.",
+        "boton": "Comprar el pack",
+        "enlace": "#pack"
+      }
+    },
+    "dentro": {
+      "type": "ps-editorial",
+      "settings": {
+        "imagen": "shopify://shop_images/ps-cable-en-su-caja.jpg",
+        "foto_derecha": true,
+        "fondo": "noche",
+        "titulo": "Tal como lo prepara Apple.",
+        "texto": "<p>Producto nuevo, sin abrir, con la garantía legal de 3 años desde la entrega.</p>",
+        "puntos": "Adaptador con su lámina protectora\nCable enrollado con sus fajas de papel\nCaja original con la lengüeta de apertura intacta",
+        "boton": "",
+        "enlace": ""
+      }
+    },
     "precios": {
-      "type": "pt-productos",
+      "type": "ps-precios",
       "settings": {
         "titulo": "Precio aquí y en Apple",
         "texto": "Los mismos productos originales, con el precio de Apple al lado.",
-        "productos": [
-          "cargador-usb-c-20w-apple-original",
-          "cable-usb-c-a-usb-c-1m-apple",
-          "cable-usb-c-a-lightning-1m-apple",
-          "pack-cargador-usb-c-20w-cable-usb-c-1m-apple-original",
-          "cargador-apple-usb-c"
-        ],
-        "maximo": 6,
-        "ver_todo": "Ver todos los productos"
+        "productos": [],
+        "coleccion": "cargadores-y-cables",
+        "ver_todo": "Ver todos los productos",
+        "fondo": "piedra"
       }
     },
     "faq": {
-      "type": "pt-faq",
+      "type": "ps-faq",
       "blocks": {
         "q1": {
           "type": "pregunta",
@@ -83,206 +246,31 @@
         "texto": "Las dudas más habituales. Si la suya no está, escríbanos.",
         "boton": "Escribir por WhatsApp",
         "enlace": "https://wa.me/34641047539",
-        "abrir_primera": true
+        "abrir_primera": true,
+        "fondo": "papel"
       }
     },
     "cierre": {
-      "type": "pt-cta",
+      "type": "ps-cierre",
       "settings": {
-        "titulo": "¿Aún no sabe cuál necesita?",
-        "texto": "Mire el puerto de carga de su iPhone y elija. O pregúntenos por WhatsApp y se lo decimos.",
-        "boton": "Elegir cargador",
-        "enlace": "#encuentra",
-        "boton_2": "Preguntar por WhatsApp",
-        "enlace_2": "https://wa.me/34641047539"
-      }
-    },
-    "historia": {
-      "type": "pt-historia",
-      "settings": {
-        "trasera": "shopify://shop_images/caja-cargador-trasera-cuerpo.jpg"
-      },
-      "blocks": {
-        "original": {
-          "type": "capitulo",
-          "settings": {
-            "tipo": "original",
-            "titulo": "Original.",
-            "texto": "Impreso por Apple en cada caja: fabricante, dirección y referencia de pieza. Al recibirla puede comprobarlo usted mismo.",
-            "dato": "Referencia del adaptador: 602-05566-A",
-            "alt": "Trasera de la caja con los datos de Apple Inc. y la referencia 602-05566-A",
-            "tope": 50,
-            "minutos": 30
-          }
-        },
-        "seguro": {
-          "type": "capitulo",
-          "settings": {
-            "tipo": "seguro",
-            "titulo": "Seguro.",
-            "texto": "El adaptador oficial de Apple, con su marcado CE europeo. Sin imitaciones de origen dudoso, y con 3 años de garantía legal.",
-            "dato": "",
-            "alt": "Marcado CE impreso en la caja del cargador de Apple",
-            "tope": 50,
-            "minutos": 30
-          }
-        },
-        "rapido": {
-          "type": "capitulo",
-          "settings": {
-            "tipo": "rapido",
-            "titulo": "Rápido.",
-            "texto": "Con el adaptador de 20 W, un iPhone 8 o posterior carga hasta el 50 % en unos 30 minutos, según Apple.",
-            "dato": "",
-            "alt": "",
-            "tope": 50,
-            "minutos": 30
-          }
-        }
-      },
-      "block_order": [
-        "original",
-        "seguro",
-        "rapido"
-      ]
-    },
-    "oferta": {
-      "type": "pt-oferta",
-      "settings": {
-        "etiqueta": "Oferta: pack completo",
-        "titulo": "Cargador y cable.\nOriginales de Apple.",
-        "texto": "El adaptador de 20 W y el cable que su iPhone necesita, nuevos y en su caja precintada. Por menos de lo que cuestan en Apple.",
-        "pregunta": "Mi iPhone es del",
-        "adaptador": "shopify://shop_images/caja-cargador-frente.png",
-        "boton_2": "Ver todos los productos",
-        "enlace_2": "shopify://collections/cargadores-y-cables",
-        "sello_1": "Envío gratis",
-        "sello_2": "Devolución gratis",
-        "sello_3": "Garantía de 3 años"
-      },
-      "blocks": {
-        "usbc": {
-          "type": "opcion",
-          "settings": {
-            "modelos": "15 al 18",
-            "conector": "USB-C",
-            "pack": "pack-cargador-usb-c-20w-cable-usb-c-1m-apple-original",
-            "cable": "shopify://shop_images/caja-cable-usbc-frente.png",
-            "incluye": "Adaptador de 20 W y cable USB-C de 1 m, originales de Apple.",
-            "boton": "Comprar el pack"
-          }
-        },
-        "lightning": {
-          "type": "opcion",
-          "settings": {
-            "modelos": "8 al 14",
-            "conector": "Lightning",
-            "pack": "cargador-apple-usb-c",
-            "cable": "shopify://shop_images/caja-cable-lightning-frente.png",
-            "incluye": "Adaptador de 20 W y cable USB-C a Lightning de 1 m, originales de Apple.",
-            "boton": "Comprar el pack"
-          }
-        }
-      },
-      "block_order": [
-        "usbc",
-        "lightning"
-      ]
-    },
-    "envio": {
-      "type": "pt-envio",
-      "settings": {
-        "titulo": "Envío\ngratis.",
-        "texto": "En todos los pedidos, sin importe mínimo. Y si no le convence, la devolución también es gratis."
-      },
-      "blocks": {
-        "c1": {
-          "type": "cifra",
-          "settings": {
-            "cifra": "0 €",
-            "texto": "de envío"
-          }
-        },
-        "c2": {
-          "type": "cifra",
-          "settings": {
-            "cifra": "0 €",
-            "texto": "por devolverlo"
-          }
-        },
-        "c3": {
-          "type": "cifra",
-          "settings": {
-            "cifra": "14",
-            "texto": "días para decidir"
-          }
-        }
-      },
-      "block_order": [
-        "c1",
-        "c2",
-        "c3"
-      ]
-    },
-    "categorias": {
-      "type": "pt-categorias",
-      "settings": {
-        "titulo": "Elija por categoría",
-        "texto": "Todo original de Apple, nuevo y en su caja precintada."
-      },
-      "blocks": {
-        "k1": {
-          "type": "categoria",
-          "settings": {
-            "titulo": "Cargador",
-            "texto": "Adaptador USB-C de 20 W, para cualquier iPhone.",
-            "imagen": "shopify://shop_images/cargador-usb-c-20w_shopify.jpg",
-            "producto": "cargador-usb-c-20w-apple-original"
-          }
-        },
-        "k2": {
-          "type": "categoria",
-          "settings": {
-            "titulo": "Cables",
-            "texto": "USB-C para el iPhone 15 o posterior; Lightning del 8 al 14.",
-            "imagen": "shopify://shop_images/cable-usb-c-usb-c-1m_shopify.jpg",
-            "coleccion": "cables"
-          }
-        },
-        "k3": {
-          "type": "categoria",
-          "settings": {
-            "titulo": "Packs",
-            "texto": "Cargador y cable juntos, por menos que por separado.",
-            "imagen": "shopify://shop_images/pack-cargador-cable-usb-c_shopify.jpg",
-            "coleccion": "packs"
-          }
-        }
-      },
-      "block_order": [
-        "k1",
-        "k2",
-        "k3"
-      ]
-    },
-    "video": {
-      "type": "pt-video",
-      "settings": {
-        "video_url": "https://cdn.shopify.com/videos/c/vp/b9f93471b2d84a36ad57a2d2cff74eb9/b9f93471b2d84a36ad57a2d2cff74eb9.HD-720p-1.6Mbps-98774598.mp4",
-        "poster": "shopify://shop_images/pillatumovil-estudio-portada.jpg",
-        "titulo": "Gírela. Es la de Apple.",
-        "texto": "Caja original y precintada, con la etiqueta del fabricante y su marcado CE. Lo que ve es lo que recibe.",
-        "boton": "Elegir mi pack",
-        "enlace": "#encuentra"
+        "titulo": "¿No sabe qué cable necesita?",
+        "texto": "Escríbanos por WhatsApp con el modelo de su iPhone y se lo decimos.",
+        "boton": "Preguntar por WhatsApp",
+        "enlace": "https://wa.me/34641047539",
+        "boton_2": "Ver el pack",
+        "enlace_2": "#pack",
+        "imagen": "shopify://shop_images/ps-estudio-portada.jpg"
       }
     }
   },
   "order": [
-    "oferta",
+    "portada",
+    "pack",
     "envio",
     "categorias",
+    "carga",
     "video",
-    "historia",
+    "dentro",
     "precios",
     "faq",
     "cierre"

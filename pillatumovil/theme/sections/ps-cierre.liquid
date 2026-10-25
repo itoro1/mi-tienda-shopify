@@ -1,0 +1,47 @@
+{%- comment -%}
+  Cierre de la portada: una duda frecuente y dos salidas, preguntar por
+  WhatsApp o comprar. Fondo noche, con la foto opcional a un lado.
+{%- endcomment -%}
+{{ 'ps-base.css' | asset_url | stylesheet_tag }}
+<section class="ps ps--noche ps-sec ps-cierre">
+  <div class="ps-wrap ps-cierre__grid">
+    <div>
+      <h2 class="ps-h2">{{ section.settings.titulo | newline_to_br }}</h2>
+      {%- if section.settings.texto != blank -%}<p class="ps-lead">{{ section.settings.texto }}</p>{%- endif -%}
+      <div class="ps-btns">
+        {%- if section.settings.boton != blank -%}<a class="ps-btn" href="{{ section.settings.enlace | default: 'https://wa.me/34641047539' }}">{% render 'ps-icono', nombre: 'whatsapp', tam: 20 %}{{ section.settings.boton }}</a>{%- endif -%}
+        {%- if section.settings.boton_2 != blank -%}<a class="ps-link" href="{{ section.settings.enlace_2 | default: '#pack' }}">{{ section.settings.boton_2 }}</a>{%- endif -%}
+      </div>
+    </div>
+    {%- if section.settings.imagen != blank -%}
+      <div class="ps-foto ps-cierre__foto">
+        {{ section.settings.imagen | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '500, 800, 1200', sizes: '(min-width: 990px) 40vw, 100vw', alt: '' }}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+.ps-cierre__grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:clamp(32px,6vw,96px);align-items:center}
+.ps-cierre .ps-cierre__foto{aspect-ratio:4/3;background:#141a2b}
+.ps-cierre__foto img{object-position:72% 50%}
+@media (max-width:989px){.ps-cierre__grid{grid-template-columns:1fr}}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PS · Cierre",
+  "tag": "div",
+  "class": "ps-section",
+  "settings": [
+    { "type": "textarea", "id": "titulo", "label": "Título", "default": "¿No sabe qué cable necesita?" },
+    { "type": "textarea", "id": "texto", "label": "Texto", "default": "Escríbanos por WhatsApp con el modelo de su iPhone y se lo decimos." },
+    { "type": "text", "id": "boton", "label": "Botón", "default": "Preguntar por WhatsApp" },
+    { "type": "url", "id": "enlace", "label": "Enlace del botón" },
+    { "type": "text", "id": "boton_2", "label": "Segundo enlace", "default": "Ver el pack" },
+    { "type": "url", "id": "enlace_2", "label": "Destino del segundo enlace" },
+    { "type": "image_picker", "id": "imagen", "label": "Foto (opcional)" }
+  ],
+  "presets": [{ "name": "PS · Cierre" }]
+}
+{% endschema %}

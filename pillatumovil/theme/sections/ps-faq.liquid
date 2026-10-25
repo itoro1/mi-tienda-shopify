@@ -1,0 +1,87 @@
+{%- comment -%}
+  Preguntas frecuentes en acordeon (details/summary, sin JavaScript). Cada
+  pregunta es un bloque. Escribe tambien el FAQPage de schema.org.
+{%- endcomment -%}
+{{ 'ps-base.css' | asset_url | stylesheet_tag }}
+<section class="ps ps--{{ section.settings.fondo }} ps-sec ps-faq">
+  <div class="ps-wrap ps-faq__grid">
+    <div class="ps-faq__intro">
+      <h2 class="ps-h2">{{ section.settings.titulo }}</h2>
+      {%- if section.settings.texto != blank -%}<p class="ps-lead">{{ section.settings.texto }}</p>{%- endif -%}
+      {%- if section.settings.boton != blank and section.settings.enlace != blank -%}
+        <div class="ps-btns"><a class="ps-btn ps-btn--tinta" href="{{ section.settings.enlace }}">{% render 'ps-icono', nombre: 'whatsapp', tam: 20 %}{{ section.settings.boton }}</a></div>
+      {%- endif -%}
+    </div>
+    <div class="ps-faq__lista">
+      {%- for block in section.blocks -%}
+        <details class="ps-faq__item" {{ block.shopify_attributes }}{% if forloop.first and section.settings.abrir_primera %} open{% endif %}>
+          <summary>{{ block.settings.pregunta }}<span class="ps-faq__mas" aria-hidden="true"></span></summary>
+          <div class="ps-faq__r">{{ block.settings.respuesta }}</div>
+        </details>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{%- if section.blocks.size > 0 -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {%- for block in section.blocks -%}
+    {
+      "@type": "Question",
+      "name": {{ block.settings.pregunta | json }},
+      "acceptedAnswer": { "@type": "Answer", "text": {{ block.settings.respuesta | strip_html | json }} }
+    }{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  ]
+}
+</script>
+{%- endif -%}
+
+{% stylesheet %}
+.ps-faq__grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(32px,7vw,120px);align-items:start}
+.ps-faq__intro{position:sticky;top:120px}
+.ps-faq__lista{border-top:1px solid var(--ps-linea)}
+.ps-faq__item{border-bottom:1px solid var(--ps-linea)}
+.ps-faq__item summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:24px 0;font-size:clamp(17px,1.4vw,20px);font-weight:700;line-height:1.35;letter-spacing:-.01em}
+.ps-faq__item summary::-webkit-details-marker{display:none}
+.ps-faq__mas{flex:none;position:relative;width:18px;height:18px}
+.ps-faq__mas::before,.ps-faq__mas::after{content:"";position:absolute;left:0;right:0;top:50%;height:1.6px;margin-top:-.8px;background:currentColor;border-radius:2px;transition:transform .2s ease}
+.ps-faq__mas::after{transform:rotate(90deg)}
+.ps-faq__item[open] .ps-faq__mas::after{transform:rotate(0)}
+.ps-faq__r{padding:0 40px 26px 0;font-size:16px;line-height:1.65;color:var(--ps-texto-2);max-width:64ch}
+.ps-faq__r p{margin:0 0 10px}.ps-faq__r p:last-child{margin:0}
+.ps-faq__r a{color:inherit;text-underline-offset:3px}
+@media (max-width:989px){.ps-faq__grid{grid-template-columns:1fr}.ps-faq__intro{position:static}}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PS · Preguntas",
+  "tag": "div",
+  "class": "ps-section",
+  "settings": [
+    { "type": "text", "id": "titulo", "label": "Título", "default": "Antes de comprar" },
+    { "type": "textarea", "id": "texto", "label": "Texto", "default": "Las dudas más habituales. Si la suya no está, escríbanos." },
+    { "type": "text", "id": "boton", "label": "Texto del botón", "default": "Escribir por WhatsApp" },
+    { "type": "url", "id": "enlace", "label": "Enlace del botón", "info": "Si lo dejas vacío, el botón no sale." },
+    { "type": "checkbox", "id": "abrir_primera", "label": "Primera pregunta abierta", "default": true },
+    { "type": "select", "id": "fondo", "label": "Fondo", "default": "papel", "options": [
+      { "value": "piedra", "label": "Piedra" }, { "value": "papel", "label": "Papel" }, { "value": "noche", "label": "Noche" } ] }
+  ],
+  "blocks": [
+    {
+      "type": "pregunta",
+      "name": "Pregunta",
+      "settings": [
+        { "type": "text", "id": "pregunta", "label": "Pregunta", "default": "Pregunta" },
+        { "type": "richtext", "id": "respuesta", "label": "Respuesta", "default": "<p>Respuesta</p>" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "PS · Preguntas" }]
+}
+{% endschema %}

@@ -1,0 +1,14 @@
+{%- comment -%}
+  Escribe el PVP de Apple del producto en centimos (0 si no tiene), a partir
+  del metacampo custom.pvp_apple ("19,00 €", texto). Uso:
+    {%- capture pa -%}{% render 'ps-pvp-centimos', product: p %}{%- endcapture -%}
+    {%- assign pa = pa | strip | plus: 0 -%}
+{%- endcomment -%}
+{%- liquid
+  assign texto = product.metafields.custom.pvp_apple.value
+  if texto != blank
+    echo texto | remove: '€' | remove: ' ' | remove: '.' | replace: ',', '.' | strip | times: 100 | round
+  else
+    echo 0
+  endif
+-%}

@@ -1,0 +1,123 @@
+{%- comment -%}
+  Portada: el video de estudio a todo el ancho (las cajas sobre la piedra,
+  con la luz dorada) y la oferta del pack encima, a la izquierda, sobre la
+  parte oscura del plano.
+
+  El precio y el PVP de Apple salen del producto elegido: no se escriben.
+  En movil el video va arriba, recortado en cuadrado sobre las cajas, y el
+  texto debajo.
+{%- endcomment -%}
+{{ 'ps-base.css' | asset_url | stylesheet_tag }}
+{%- liquid
+  assign p = section.settings.producto
+  assign poster = section.settings.poster
+  assign enlace = section.settings.enlace
+  if enlace == blank and p != blank
+    assign enlace = p.url
+  endif
+  assign pa = 0
+  assign precio = 0
+  if p != blank
+    capture pa
+      render 'ps-pvp-centimos', product: p
+    endcapture
+    assign pa = pa | strip | plus: 0
+    assign precio = p.selected_or_first_available_variant.price
+  endif
+-%}
+<section class="ps ps--noche ps-hero">
+  <div class="ps-hero__media">
+    {%- if section.settings.video_url != blank -%}
+      <video class="ps-hero__video" src="{{ section.settings.video_url }}"
+        {%- if poster != blank %} poster="{{ poster | image_url: width: 1920 }}"{% endif %}
+        autoplay muted loop playsinline preload="auto" aria-hidden="true" data-ps-video></video>
+    {%- elsif poster != blank -%}
+      {{ poster | image_url: width: 2400 | image_tag: class: 'ps-hero__video', loading: 'eager', fetchpriority: 'high', widths: '800, 1200, 1600, 2000, 2400', sizes: '100vw', alt: '' }}
+    {%- endif -%}
+    <span class="ps-hero__velo" aria-hidden="true"></span>
+  </div>
+
+  <div class="ps-wrap ps-hero__wrap">
+    <div class="ps-hero__texto">
+      <h1 class="ps-h1">{{ section.settings.titulo | newline_to_br }}</h1>
+      {%- if section.settings.texto != blank -%}<p class="ps-lead">{{ section.settings.texto }}</p>{%- endif -%}
+
+      {%- if p != blank -%}
+        <p class="ps-precio ps-hero__precio">
+          <span class="ps-precio__aqui">{{ precio | money_without_currency }} €</span>
+          {%- if pa > precio -%}<span class="ps-precio__apple">En Apple <s>{{ pa | money_without_currency }} €</s></span>{%- endif -%}
+        </p>
+      {%- endif -%}
+
+      <div class="ps-btns">
+        {%- if section.settings.boton != blank -%}<a class="ps-btn" href="{{ enlace | default: routes.all_products_collection_url }}">{{ section.settings.boton }}</a>{%- endif -%}
+        {%- if section.settings.boton_2 != blank -%}<a class="ps-link" href="{{ section.settings.enlace_2 | default: routes.all_products_collection_url }}">{{ section.settings.boton_2 }}</a>{%- endif -%}
+      </div>
+    </div>
+
+    <ul class="ps-sellos ps-hero__sellos" role="list">
+      {%- if section.settings.sello_1 != blank -%}<li>{% render 'ps-icono', nombre: 'envio' %}{{ section.settings.sello_1 }}</li>{%- endif -%}
+      {%- if section.settings.sello_2 != blank -%}<li>{% render 'ps-icono', nombre: 'devolucion' %}{{ section.settings.sello_2 }}</li>{%- endif -%}
+      {%- if section.settings.sello_3 != blank -%}<li>{% render 'ps-icono', nombre: 'garantia' %}{{ section.settings.sello_3 }}</li>{%- endif -%}
+    </ul>
+  </div>
+
+  <script>
+    (function () {
+      var v = document.currentScript.parentElement.querySelector('[data-ps-video]');
+      if (!v) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { v.removeAttribute('autoplay'); v.pause(); return; }
+      var jugar = function () { var p = v.play(); if (p && p.catch) p.catch(function () {}); };
+      jugar();
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) jugar(); else v.pause(); }); }).observe(v);
+      }
+    })();
+  </script>
+</section>
+
+{% stylesheet %}
+.ps-hero{position:relative;overflow:hidden;isolation:isolate;min-height:min(90svh,880px);display:flex}
+.ps-hero__media{position:absolute;inset:0;z-index:-1;background:#0b0f1a}
+.ps-hero__video{width:100%;height:100%;object-fit:cover;object-position:60% 50%}
+.ps-hero__velo{position:absolute;inset:0;background:
+  linear-gradient(90deg,rgba(11,15,26,.82) 0%,rgba(11,15,26,.5) 34%,rgba(11,15,26,0) 58%),
+  linear-gradient(0deg,rgba(11,15,26,.75) 0%,rgba(11,15,26,0) 26%)}
+.ps-hero__wrap{display:flex;flex-direction:column;justify-content:flex-end;padding-top:clamp(56px,8vw,120px);padding-bottom:28px}
+.ps-hero__texto{max-width:600px;margin-bottom:auto;margin-top:auto}
+.ps-hero__texto .ps-lead{max-width:40ch}
+.ps-hero .ps-hero__precio{margin-top:30px}
+.ps-hero .ps-h1{font-size:clamp(40px,4.7vw,74px)}
+.ps-hero .ps-hero__sellos{margin-top:clamp(40px,6vw,72px);padding-top:20px;border-top:1px solid var(--ps-linea)}
+@media (max-width:749px){
+  .ps-hero{display:block;min-height:0}
+  .ps-hero__media{position:relative;z-index:0;aspect-ratio:1/1}
+  .ps-hero__video{object-position:88% 50%}
+  .ps-hero__velo{background:linear-gradient(0deg,#0b0f1a 0%,rgba(11,15,26,0) 34%)}
+  .ps-hero__wrap{padding-top:0;margin-top:-56px;position:relative}
+  .ps-hero .ps-hero__sellos{gap:10px 20px}
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PS · Portada con vídeo",
+  "tag": "div",
+  "class": "ps-section",
+  "settings": [
+    { "type": "text", "id": "video_url", "label": "Enlace del vídeo (.mp4)", "info": "Sube el vídeo en Contenido > Archivos y pega aquí su enlace." },
+    { "type": "image_picker", "id": "poster", "label": "Foto mientras carga el vídeo" },
+    { "type": "textarea", "id": "titulo", "label": "Titular", "default": "Cargador y cable.\nOriginales de Apple." },
+    { "type": "textarea", "id": "texto", "label": "Texto", "default": "El pack completo, nuevo y en su caja precintada. Por menos de lo que cuesta en Apple." },
+    { "type": "product", "id": "producto", "label": "Producto del precio", "info": "Su precio y el PVP de Apple salen debajo del texto." },
+    { "type": "text", "id": "boton", "label": "Botón principal", "default": "Comprar el pack" },
+    { "type": "url", "id": "enlace", "label": "Enlace del botón principal", "info": "Si lo dejas vacío, lleva al producto." },
+    { "type": "text", "id": "boton_2", "label": "Segundo enlace", "default": "Ver todos los productos" },
+    { "type": "url", "id": "enlace_2", "label": "Destino del segundo enlace" },
+    { "type": "text", "id": "sello_1", "label": "Garantía 1 (envío)", "default": "Envío gratis" },
+    { "type": "text", "id": "sello_2", "label": "Garantía 2 (devolución)", "default": "Devolución gratis en 14 días" },
+    { "type": "text", "id": "sello_3", "label": "Garantía 3", "default": "3 años de garantía" }
+  ],
+  "presets": [{ "name": "PS · Portada con vídeo" }]
+}
+{% endschema %}

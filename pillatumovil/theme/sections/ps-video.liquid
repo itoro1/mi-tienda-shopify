@@ -1,0 +1,73 @@
+{%- comment -%}
+  Banda de video a todo el ancho con el texto abajo a la izquierda. El
+  video se sube en Contenido > Archivos y aqui se pega su enlace .mp4.
+  Silenciado, en bucle, sin controles, y solo se reproduce mientras se ve.
+  Con "reducir movimiento" se queda en la foto de espera.
+{%- endcomment -%}
+{{ 'ps-base.css' | asset_url | stylesheet_tag }}
+{%- liquid
+  assign poster = ''
+  if section.settings.poster != blank
+    assign poster = section.settings.poster | image_url: width: 1920
+  endif
+-%}
+<section class="ps ps--noche ps-vid">
+  {%- if section.settings.video_url != blank -%}
+    <video class="ps-vid__video" src="{{ section.settings.video_url }}"{% if poster != blank %} poster="{{ poster }}"{% endif %} muted loop playsinline preload="none" aria-hidden="true" data-ps-video-visible></video>
+  {%- elsif poster != blank -%}
+    <img class="ps-vid__video" src="{{ poster }}" alt="" loading="lazy">
+  {%- endif -%}
+  <span class="ps-vid__velo" aria-hidden="true"></span>
+  <div class="ps-wrap ps-vid__texto">
+    <h2 class="ps-h2">{{ section.settings.titulo | newline_to_br }}</h2>
+    {%- if section.settings.texto != blank -%}<p class="ps-lead">{{ section.settings.texto }}</p>{%- endif -%}
+    {%- if section.settings.boton != blank -%}
+      <div class="ps-btns"><a class="ps-btn ps-btn--borde" href="{{ section.settings.enlace | default: '#pack' }}">{{ section.settings.boton }}</a></div>
+    {%- endif -%}
+  </div>
+  <script>
+    (function () {
+      var v = document.currentScript.parentElement.querySelector('[data-ps-video-visible]');
+      if (!v || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (!('IntersectionObserver' in window)) { v.preload = 'auto'; v.play(); return; }
+      new IntersectionObserver(function (es) {
+        es.forEach(function (e) {
+          if (e.isIntersecting) { v.preload = 'auto'; var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+          else v.pause();
+        });
+      }, { rootMargin: '200px 0px' }).observe(v);
+    })();
+  </script>
+</section>
+
+{% stylesheet %}
+.ps-vid{position:relative;overflow:hidden;isolation:isolate;min-height:min(88svh,860px);display:flex;align-items:flex-end;padding:clamp(56px,7vw,104px) 0}
+.ps-vid__video{position:absolute;inset:0;z-index:-2;width:100%;height:100%;object-fit:cover}
+.ps-vid__velo{position:absolute;inset:0;z-index:-1;background:
+  linear-gradient(0deg,rgba(11,15,26,.88) 0%,rgba(11,15,26,.35) 38%,rgba(11,15,26,0) 60%),
+  linear-gradient(90deg,rgba(11,15,26,.72) 0%,rgba(11,15,26,.3) 42%,rgba(11,15,26,0) 62%)}
+.ps-vid__texto .ps-h2{max-width:14ch}
+@media (max-width:749px){
+  .ps-vid{min-height:auto;display:block;padding:0}
+  .ps-vid__video{position:relative;z-index:0;aspect-ratio:4/3;height:auto;object-position:65% 50%}
+  .ps-vid__velo{display:none}
+  .ps-vid__texto{padding-top:36px;padding-bottom:64px}
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PS · Vídeo",
+  "tag": "div",
+  "class": "ps-section",
+  "settings": [
+    { "type": "text", "id": "video_url", "label": "Enlace del vídeo (.mp4)", "info": "Sube el vídeo en Contenido > Archivos y pega aquí su enlace." },
+    { "type": "image_picker", "id": "poster", "label": "Foto mientras carga" },
+    { "type": "textarea", "id": "titulo", "label": "Título", "default": "Nuevo y precintado. Lo abre usted." },
+    { "type": "textarea", "id": "texto", "label": "Texto" },
+    { "type": "text", "id": "boton", "label": "Texto del botón" },
+    { "type": "url", "id": "enlace", "label": "Enlace del botón" }
+  ],
+  "presets": [{ "name": "PS · Vídeo" }]
+}
+{% endschema %}

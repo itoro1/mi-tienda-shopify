@@ -1,0 +1,106 @@
+/* Pillatumovil, portada "estudio" (25/10/2026).
+
+   La pagina la llevan las fotos y los videos de estudio; la interfaz se
+   aparta. Dos fondos que salen de las propias fotos:
+   - noche: el fondo azul del estudio oscuro (portada, video, cierre);
+   - piedra: el gris calido del papel de estudio de los bodegones, para que
+     las fotos claras se fundan con la pagina.
+   El oro es luz, no pintura: boton principal, cifras y filetes. Sin
+   degradados en los textos.
+
+   Una sola familia, la de texto del tema (Archivo): es una grotesca como la
+   rotulacion de las cajas. La serif solo vive en el logo. */
+.ps{
+  --ps-noche:#0b0f1a;
+  --ps-noche-2:#141a2b;
+  --ps-piedra:#e8e5df;
+  --ps-papel:#f3f1ec;
+  --ps-tinta:#141824;
+  --ps-gris:#585d6b;
+  --ps-niebla:#a9adb8;
+  --ps-marfil:#f4f1ea;
+  --ps-oro:var(--pt-accent,#c9a86a);
+  --ps-oro-claro:#e2cc9a;
+  --ps-oro-tinta:#7d5f28;
+  --ps-linea-osc:rgba(244,241,234,.14);
+  --ps-linea-cla:rgba(20,24,36,.13);
+  --ps-r-foto:14px;
+  --ps-sans:var(--font-body-family);
+  --ps-peso-tit:var(--font-heading-weight,600);
+  font-family:var(--ps-sans);
+  font-size:16px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+.ps *,.ps *::before,.ps *::after{box-sizing:border-box}
+.ps img,.ps video{display:block;max-width:100%}
+
+/* Fondos */
+.ps--noche{background:var(--ps-noche);color:var(--ps-marfil)}
+.ps--piedra{background:var(--ps-piedra);color:var(--ps-tinta)}
+.ps--papel{background:var(--ps-papel);color:var(--ps-tinta)}
+.ps--noche{--ps-texto-2:var(--ps-niebla);--ps-linea:var(--ps-linea-osc)}
+.ps--piedra,.ps--papel{--ps-texto-2:var(--ps-gris);--ps-linea:var(--ps-linea-cla)}
+
+.ps-wrap{width:100%;max-width:1360px;margin:0 auto;padding:0 clamp(20px,4vw,56px)}
+.ps-sec{padding:clamp(72px,9vw,136px) 0}
+
+/* Titulares: grotesca apretada, sin adornos. */
+.ps-h1,.ps-h2,.ps-h3{font-family:var(--ps-sans);font-weight:var(--ps-peso-tit);margin:0;color:inherit;text-wrap:balance}
+.ps-h1{font-size:clamp(40px,5.4vw,80px);line-height:1;letter-spacing:-.035em}
+.ps-h2{font-size:clamp(32px,3.7vw,56px);line-height:1.04;letter-spacing:-.03em}
+.ps-h3{font-size:clamp(20px,1.6vw,24px);line-height:1.2;letter-spacing:-.015em}
+.ps-lead{margin:20px 0 0;max-width:46ch;font-size:clamp(17px,1.25vw,19px);line-height:1.6;color:var(--ps-texto-2)}
+.ps-lead strong{color:inherit;font-weight:700}
+.ps--noche .ps-lead strong{color:var(--ps-marfil)}
+
+/* Botones */
+.ps-btns{display:flex;flex-wrap:wrap;align-items:center;gap:14px 28px;margin-top:36px}
+.ps-btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  min-height:56px;padding:0 32px;border:0;border-radius:999px;cursor:pointer;
+  font-family:var(--ps-sans);font-size:16px;font-weight:700;letter-spacing:0;text-decoration:none;
+  background:var(--ps-oro);color:var(--ps-noche);
+  transition:background-color .2s ease,color .2s ease,box-shadow .2s ease;
+}
+.ps-btn:hover{background:#d8bc84}
+.ps-btn--tinta{background:var(--ps-tinta);color:var(--ps-marfil)}
+.ps-btn--tinta:hover{background:#262c3d}
+.ps-btn--borde{background:transparent;color:inherit;box-shadow:inset 0 0 0 1.5px currentColor}
+.ps-btn--borde:hover{background:transparent;box-shadow:inset 0 0 0 1.5px var(--ps-oro);color:inherit}
+.ps-btn[disabled]{opacity:.45;cursor:not-allowed}
+.ps-btn svg{flex:none}
+.ps-link{font-weight:700;color:inherit;text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:6px;text-decoration-color:var(--ps-oro)}
+.ps-link:hover{text-decoration-color:currentColor}
+.ps :focus-visible{outline:2px solid var(--ps-oro);outline-offset:3px;border-radius:4px}
+
+/* Precios: el de Apple siempre con su etiqueta "En Apple" (Omnibus). */
+.ps-precio{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;margin:0}
+.ps-precio__aqui{font-size:clamp(34px,3.2vw,46px);font-weight:700;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+.ps-precio__apple{font-size:15px;color:var(--ps-texto-2)}
+.ps-precio__apple s{text-decoration-thickness:1px}
+.ps-ahorro{display:inline-block;margin:12px 0 0;padding:6px 12px;border-radius:999px;font-size:14px;font-weight:700;
+  background:rgba(201,168,106,.2);color:var(--ps-oro-tinta)}
+.ps--noche .ps-ahorro{background:rgba(201,168,106,.16);color:var(--ps-oro-claro)}
+
+/* Lista con marca */
+.ps-lista{list-style:none;margin:24px 0 0;padding:0;display:grid;gap:10px}
+.ps-lista li{display:grid;grid-template-columns:20px 1fr;gap:12px;align-items:start;font-size:16px;line-height:1.45}
+.ps-lista svg{margin-top:2px;color:var(--ps-oro)}
+.ps--piedra .ps-lista svg,.ps--papel .ps-lista svg{color:var(--ps-oro-tinta)}
+
+/* Garantias en fila (envio, devolucion, garantia) */
+.ps-sellos{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:12px 28px;font-size:14px;color:var(--ps-texto-2)}
+.ps-sellos li{display:inline-flex;align-items:center;gap:8px}
+.ps-sellos svg{color:var(--ps-oro);flex:none}
+.ps--piedra .ps-sellos svg,.ps--papel .ps-sellos svg{color:var(--ps-oro-tinta)}
+
+/* Fotos */
+.ps-foto{position:relative;overflow:hidden;border-radius:var(--ps-r-foto);background:var(--ps-piedra)}
+.ps-foto img{width:100%;height:100%;object-fit:cover}
+
+.ps-visually-hidden{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+@media (prefers-reduced-motion:reduce){
+  .ps *{transition:none!important;animation:none!important}
+}

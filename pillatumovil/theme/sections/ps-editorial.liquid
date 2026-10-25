@@ -1,0 +1,62 @@
+{%- comment -%}
+  Foto grande y texto al lado, como una pagina de revista. Sirve para la
+  carga rapida (la mesilla), para el detalle de lo que lleva grabado el
+  cargador, etc. Se elige el lado de la foto y el fondo.
+{%- endcomment -%}
+{{ 'ps-base.css' | asset_url | stylesheet_tag }}
+<section class="ps ps--{{ section.settings.fondo }} ps-sec ps-ed{% if section.settings.foto_derecha %} ps-ed--dcha{% endif %}">
+  <div class="ps-wrap ps-ed__grid">
+    <div class="ps-foto ps-ed__foto">
+      {%- if section.settings.imagen != blank -%}
+        {{ section.settings.imagen | image_url: width: 1600 | image_tag: loading: 'lazy', widths: '600, 900, 1200, 1600', sizes: '(min-width: 990px) 50vw, 100vw', alt: section.settings.imagen.alt | default: '' }}
+      {%- endif -%}
+    </div>
+    <div class="ps-ed__texto">
+      <h2 class="ps-h2">{{ section.settings.titulo | newline_to_br }}</h2>
+      {%- if section.settings.texto != blank -%}<div class="ps-lead ps-ed__lead">{{ section.settings.texto }}</div>{%- endif -%}
+      {%- assign lineas = section.settings.puntos | newline_to_br | split: '<br />' -%}
+      {%- if section.settings.puntos != blank -%}
+        <ul class="ps-lista" role="list">
+          {%- for l in lineas -%}{%- assign t = l | strip -%}{%- if t != blank -%}<li>{% render 'ps-icono', nombre: 'check' %}<span>{{ t }}</span></li>{%- endif -%}{%- endfor -%}
+        </ul>
+      {%- endif -%}
+      {%- if section.settings.boton != blank -%}
+        <div class="ps-btns"><a class="ps-link" href="{{ section.settings.enlace | default: routes.all_products_collection_url }}">{{ section.settings.boton }}</a></div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+.ps-ed__grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(32px,7vw,120px);align-items:center}
+.ps-ed--dcha .ps-ed__foto{order:2}
+.ps-ed__foto{aspect-ratio:4/5}
+.ps-ed__texto{max-width:520px}
+.ps-ed__lead p{margin:0 0 12px}.ps-ed__lead p:last-child{margin:0}
+.ps-ed .ps-lista{margin-top:28px}
+@media (max-width:989px){
+  .ps-ed__grid{grid-template-columns:1fr}
+  .ps-ed--dcha .ps-ed__foto{order:0}
+  .ps-ed__foto{aspect-ratio:4/5;max-height:80svh}
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PS · Foto y texto",
+  "tag": "div",
+  "class": "ps-section",
+  "settings": [
+    { "type": "image_picker", "id": "imagen", "label": "Foto (vertical 4:5)" },
+    { "type": "checkbox", "id": "foto_derecha", "label": "Foto a la derecha", "default": false },
+    { "type": "select", "id": "fondo", "label": "Fondo", "default": "papel", "options": [
+      { "value": "piedra", "label": "Piedra" }, { "value": "papel", "label": "Papel" }, { "value": "noche", "label": "Noche" } ] },
+    { "type": "textarea", "id": "titulo", "label": "Título", "default": "Carga rápida, de noche y de día." },
+    { "type": "richtext", "id": "texto", "label": "Texto" },
+    { "type": "textarea", "id": "puntos", "label": "Puntos (uno por línea)" },
+    { "type": "text", "id": "boton", "label": "Texto del enlace" },
+    { "type": "url", "id": "enlace", "label": "Destino del enlace" }
+  ],
+  "presets": [{ "name": "PS · Foto y texto" }]
+}
+{% endschema %}
