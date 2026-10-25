@@ -142,7 +142,8 @@ En `estudio-ia/` (y en Contenido > Archivos con el mismo nombre):
   desplegables («¿Qué cable necesita su iPhone?» y «Garantía y
   devoluciones»). Debajo, la etiqueta de garantías y productos relacionados.
 - **Colección** `cargadores-y-cables` con los 5 productos, orden manual.
-- **Páginas**: Contacto (WhatsApp + formulario) y Garantía y devoluciones.
+- **Páginas**: Contacto (WhatsApp + formulario) y «Envío, garantía y
+  devoluciones» (envío gratis, plazo 24-48 h laborables, devolución gratis).
 - **Menús**: principal (Inicio, Cargadores y cables, ¿Qué cargador
   necesito?, Contacto) y pie (Información).
 - **`assets/pt-dawn.css`**: lleva el estilo de la portada a las páginas de
@@ -222,10 +223,11 @@ Todo se hace en *Tienda online → Temas → Dawn → Personalizar*:
 - Comprobar en *Configuración → Envío* que hay una tarifa para España: el
   descuento pone el envío a 0 €, pero necesita una tarifa a la que
   aplicarse.
-- Plazo de entrega **24-48 h** anunciado en la web desde el 25/10 (lo indica
-  el dueño). Conviene ponerlo también en la página «Envío, garantía y
-  devoluciones» y aclarar si son días laborables y a qué zonas (península,
-  Baleares, Canarias).
+- Plazo de entrega **24-48 h** (lo indica el dueño, 25/10): en la barra
+  superior, la portada, las preguntas y la página «Envío, garantía y
+  devoluciones», donde se precisa «24 a 48 horas laborables (de lunes a
+  viernes, sin contar festivos)». Falta confirmar si vale para Baleares,
+  Canarias, Ceuta y Melilla y si hay hora de corte para el envío del día.
 - Sin sección de opiniones a propósito: la tienda es nueva y no tiene
   reseñas propias. No se copian las de ITorostore.
 - Opcional: añadir las fotos de estudio de `estudio-ia/` como fotos

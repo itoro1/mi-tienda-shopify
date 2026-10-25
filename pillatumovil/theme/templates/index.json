@@ -228,7 +228,7 @@
           "type": "pregunta",
           "settings": {
             "pregunta": "¿Cuánto tarda y cuánto cuesta el envío?",
-            "respuesta": "<p>Lo recibe en casa en 24⁠-⁠48 horas y el envío es gratis en todos los pedidos. La devolución también es gratis.</p>"
+            "respuesta": "<p>Lo recibe en casa en 24⁠-⁠48 horas laborables y el envío es gratis en todos los pedidos. La devolución también es gratis. Tiene los detalles en <a href=\"/pages/garantia-y-devoluciones\">Envío, garantía y devoluciones</a>.</p>"
           }
         }
       },
