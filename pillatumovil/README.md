@@ -213,6 +213,21 @@ Todo se hace en *Tienda online → Temas → Dawn → Personalizar*:
 - **Los productos se eligen en el editor**, no por handle en el código como
   en las secciones `it-` de ITorostore: así se cambian sin programar.
 
+## Precios (historial para la regla de los 30 días)
+
+El precio «antes» de una rebaja tiene que ser el más bajo cobrado en los 30
+días anteriores (Ómnibus). Por eso se apunta aquí cada cambio:
+
+| Desde | Cargador 20 W | Cables (USB-C y Lightning) | Pack 1 / 2 / 3 |
+|---|---|---|---|
+| 24/10/2026 (alta) | 14,99 € | 14,99 € | 25,99 / 46,99 / 62,99 € |
+| 26/10/2026 | 12,99 € | 10,99 € | 18,99 / 33,99 / 45,99 € |
+
+Los del 26/10 son los que tenía ITorostore hasta el 15/10 (sacados de sus
+pedidos); el pack de 3 no llegó a venderse entonces y lo fijó el dueño en
+45,99 €. Sin precio comparado («antes») en ningún producto. El PVP de Apple
+va aparte, siempre con su etiqueta «En Apple».
+
 ## idealo (comparador de precios)
 
 - **Feed**: `theme/templates/collection.idealo.liquid`. Se genera solo con los
