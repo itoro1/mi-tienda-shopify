@@ -29,12 +29,12 @@
         },
         "scheme-3": {
           "settings": {
-            "background": "#EDE8DF",
+            "background": "#E8E5DF",
             "background_gradient": "",
-            "text": "#0B0F1A",
-            "button": "#0B0F1A",
-            "button_label": "#EDE8DF",
-            "secondary_button_label": "#0B0F1A",
+            "text": "#141824",
+            "button": "#141824",
+            "button_label": "#F4F1EA",
+            "secondary_button_label": "#141824",
             "shadow": "#000000"
           }
         },
@@ -65,7 +65,7 @@
       "heading_scale": 100,
       "type_body_font": "archivo_n4",
       "body_scale": 100,
-      "page_width": 1200,
+      "page_width": 1300,
       "spacing_sections": 0,
       "spacing_grid_horizontal": 8,
       "spacing_grid_vertical": 8,
@@ -176,7 +176,7 @@
       "show_vendor": false,
       "show_cart_note": false,
       "cart_drawer_collection": "",
-      "cart_color_scheme": "scheme-1",
+      "cart_color_scheme": "scheme-3",
       "sections": {
         "main-password-header": {
           "type": "main-password-header",

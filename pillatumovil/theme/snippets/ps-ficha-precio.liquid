@@ -1,0 +1,70 @@
+{%- comment -%}
+  Precio de la ficha de producto (bloque "Liquid personalizado" de
+  main-product, en lugar del bloque de precio de Dawn):
+    {%- render 'ps-ficha-precio', product: product, section_id: section.id -%}
+
+  Lleva el id price-<seccion>, el mismo que el bloque de precio de Dawn, asi
+  que al cambiar de variante Dawn lo sustituye por el de la variante nueva
+  (assets/product-info.js, updateSourceFromDestination('price')). No hace
+  falta JavaScript propio.
+
+  - Precio de la variante elegida y, si es un pack de varios, lo que sale
+    cada uno.
+  - "En Apple": PVP de Apple (metacampo custom.pvp_apple) x numero de packs,
+    con su etiqueta, nunca como precio "antes" (Omnibus).
+  - Packs: el numero sale del principio del nombre de la opcion ("3 packs"
+    -> 3). Si no empieza por un numero se toma 1: el ahorro puede quedarse
+    corto, nunca pasarse.
+{%- endcomment -%}
+{%- liquid
+  assign v = product.selected_or_first_available_variant
+  capture pa
+    render 'ps-pvp-centimos', product: product
+  endcapture
+  assign pa = pa | strip | plus: 0
+  assign n = 1
+  unless product.has_only_default_variant
+    assign n = v.option1 | split: ' ' | first | plus: 0
+    if n < 1
+      assign n = 1
+    endif
+  endunless
+  assign apple = pa | times: n
+  assign ahorro = apple | minus: v.price
+  assign pct = 0
+  if ahorro > 0
+    assign pct = ahorro | times: 100.0 | divided_by: apple | floor
+  endif
+  assign sueltos = product.variants.first.price | times: n
+  assign ahorro_q = sueltos | minus: v.price
+  assign cada = v.price | divided_by: n
+-%}
+<div class="ps-fp" id="price-{{ section_id }}" role="status">
+  <p class="ps-fp__fila">
+    <span class="ps-fp__aqui">{{ v.price | money_without_currency }}&nbsp;€</span>
+    {%- if n > 1 -%}<span class="ps-fp__cada">{{ cada | money_without_currency }}&nbsp;€ cada pack</span>{%- endif -%}
+  </p>
+  {%- if apple > v.price -%}
+    <p class="ps-fp__apple">
+      <span>En Apple <s>{{ apple | money_without_currency }}&nbsp;€</s>{% if n > 1 %} <small>({{ n }} × {{ pa | money_without_currency }}&nbsp;€)</small>{% endif %}</span>
+      <b class="ps-fp__ahorro">Ahorra {{ ahorro | money_without_currency }}&nbsp;€ ({{ pct }}&nbsp;%)</b>
+    </p>
+  {%- endif -%}
+  {%- if n > 1 and ahorro_q > 0 -%}
+    <p class="ps-fp__extra">Y {{ ahorro_q | money_without_currency }}&nbsp;€ menos que comprar {{ n }} packs de 1.</p>
+  {%- endif -%}
+  <p class="ps-fp__iva">IVA incluido. Envío gratis.</p>
+</div>
+
+{% stylesheet %}
+.ps-fp{margin:18px 0 6px;color:var(--ps-tinta,#141824)}
+.ps-fp p{margin:0}
+.ps-fp__fila{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px}
+.ps-fp__aqui{font-size:clamp(34px,3vw,44px);font-weight:700;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+.ps-fp__cada{font-size:15px;color:#585d6b}
+.ps-fp__apple{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin-top:12px !important;font-size:15px;color:#585d6b}
+.ps-fp__apple small{font-size:13px}
+.ps-fp__ahorro{padding:5px 12px;border-radius:999px;background:#141824;color:#e2cc9a;font-size:14px;font-weight:700;letter-spacing:.005em}
+.ps-fp__extra{margin-top:10px !important;font-size:15px;font-weight:700;color:#7d5f28}
+.ps-fp__iva{margin-top:10px !important;font-size:14px;color:#585d6b}
+{% endstylesheet %}

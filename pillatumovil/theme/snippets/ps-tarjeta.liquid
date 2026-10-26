@@ -1,0 +1,65 @@
+{%- comment -%}
+  Tarjeta de producto de la tienda (portada, colecciones, relacionados).
+  Uso: {% render 'ps-tarjeta', p: producto %}
+
+  - Foto principal (la real, sobre blanco) y, al pasar el raton, la segunda
+    (la de estudio), si la hay.
+  - Precio aqui y el de Apple, con su etiqueta (nunca un "antes" inventado).
+  - Una sola variante: "Anadir al carrito" (abre el carrito lateral con
+    assets/ps-carrito.js; sin JavaScript va a la pagina del carrito).
+    Varias (packs de 1, 2 o 3): "Elegir cantidad", a la ficha.
+{%- endcomment -%}
+{%- liquid
+  assign v = p.selected_or_first_available_variant
+  capture pa
+    render 'ps-pvp-centimos', product: p
+  endcapture
+  assign pa = pa | strip | plus: 0
+  assign ahorro = pa | minus: v.price
+  assign segunda = p.images[1]
+-%}
+<li class="ps-tar">
+  <a class="ps-tar__foto{% if segunda %} ps-tar__foto--doble{% endif %}" href="{{ p.url }}" tabindex="-1" aria-hidden="true">
+    {%- if p.featured_image -%}
+      {{ p.featured_image | image_url: width: 800 | image_tag: loading: 'lazy', widths: '300, 500, 800', sizes: '(min-width: 990px) 22vw, (min-width: 600px) 45vw, 75vw', alt: '', class: 'ps-tar__img' }}
+    {%- endif -%}
+    {%- if segunda -%}
+      {{ segunda | image_url: width: 800 | image_tag: loading: 'lazy', widths: '300, 500, 800', sizes: '(min-width: 990px) 22vw, (min-width: 600px) 45vw, 75vw', alt: '', class: 'ps-tar__img ps-tar__img--2' }}
+    {%- endif -%}
+  </a>
+  <h3 class="ps-tar__nombre"><a href="{{ p.url }}">{{ p.title }}</a></h3>
+  <p class="ps-tar__precios">
+    <span class="ps-tar__aqui">{% if p.price_varies %}<small>Desde </small>{% endif %}{{ v.price | money_without_currency }} €</span>
+    {%- if pa > v.price -%}<span class="ps-tar__apple">En Apple <s>{{ pa | money_without_currency }} €</s> <b>Ahorra {{ ahorro | money_without_currency }} €</b></span>{%- endif -%}
+  </p>
+  {%- if p.has_only_default_variant -%}
+    <form method="post" action="{{ routes.cart_add_url }}" data-ps-anadir>
+      <input type="hidden" name="id" value="{{ v.id }}">
+      <input type="hidden" name="quantity" value="1">
+      <input type="hidden" name="return_to" value="{{ routes.cart_url }}">
+      <button class="ps-btn ps-btn--tinta ps-tar__btn" type="submit"{% unless v.available %} disabled{% endunless %}>{% if v.available %}Añadir al carrito{% else %}Sin stock{% endif %}</button>
+    </form>
+  {%- else -%}
+    <a class="ps-btn ps-btn--borde ps-tar__btn" href="{{ p.url }}">Elegir cantidad</a>
+  {%- endif -%}
+</li>
+
+{% stylesheet %}
+.ps-tar{display:flex;flex-direction:column;padding:12px 12px 18px;border-radius:18px;background:var(--ps-papel,#f3f1ec);color:var(--ps-tinta,#141824);--ps-texto-2:var(--ps-gris,#585d6b)}
+.ps--papel .ps-tar{background:#fff}
+.ps-tar__foto{position:relative;display:block;aspect-ratio:1/1;border-radius:10px;overflow:hidden;background:#fff}
+.ps-tar__img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;transition:opacity .45s ease}
+.ps-tar__img--2{object-fit:cover;opacity:0}
+.ps-tar__foto--doble:hover .ps-tar__img--2,.ps-tar:focus-within .ps-tar__img--2{opacity:1}
+.ps .ps-tar__nombre{margin:16px 6px 0;font-size:15px;font-weight:700;line-height:1.35;letter-spacing:-.005em;color:var(--ps-tinta,#141824)}
+.ps-tar__nombre a{color:inherit;text-decoration:none}
+.ps-tar__nombre a:hover{text-decoration:underline;text-underline-offset:3px}
+.ps-tar__precios{display:flex;flex-direction:column;gap:3px;margin:10px 6px 16px}
+.ps-tar__aqui{font-size:24px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.ps-tar__aqui small{font-size:14px;font-weight:400;color:var(--ps-texto-2)}
+.ps-tar__apple{font-size:14px;color:var(--ps-texto-2)}
+.ps-tar__apple b{white-space:nowrap;color:var(--ps-oro-tinta,#7d5f28);font-weight:700}
+.ps-tar form,.ps-tar__btn{margin-top:auto}
+.ps .ps-tar__btn{width:100%;min-height:48px;padding:0 16px;font-size:15px}
+.ps-tar__error{margin:8px 6px 0;font-size:14px;color:#9b2c2c}
+{% endstylesheet %}

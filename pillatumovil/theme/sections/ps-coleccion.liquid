@@ -1,0 +1,64 @@
+{%- comment -%}
+  Pagina de coleccion: titulo, descripcion y los productos en las mismas
+  tarjetas que la portada (snippets/ps-tarjeta.liquid), con el precio de
+  Apple y el boton de anadir. Debajo, las garantias.
+{%- endcomment -%}
+{{ 'ps-base.css' | asset_url | stylesheet_tag }}
+<section class="ps ps--piedra ps-col">
+  <div class="ps-wrap">
+    <header class="ps-col__cab">
+      <div>
+        <h1 class="ps-h1 ps-col__titulo">{{ collection.title }}</h1>
+        {%- if collection.description != blank -%}<div class="ps-lead ps-col__texto">{{ collection.description }}</div>{%- endif -%}
+      </div>
+      <p class="ps-col__n">{{ collection.products_count }} {% if collection.products_count == 1 %}producto{% else %}productos{% endif %}</p>
+    </header>
+
+    {%- paginate collection.products by section.settings.por_pagina -%}
+      {%- if collection.products.size > 0 -%}
+        <ul class="ps-col__lista" role="list">
+          {%- for p in collection.products -%}
+            {%- render 'ps-tarjeta', p: p -%}
+          {%- endfor -%}
+        </ul>
+      {%- else -%}
+        <p class="ps-col__vacia">Ahora mismo no hay productos en esta colección. <a class="ps-link" href="{{ routes.all_products_collection_url }}">Ver todos los productos</a></p>
+      {%- endif -%}
+      {%- if paginate.pages > 1 -%}
+        <nav class="ps-col__pag" aria-label="Páginas">{{ paginate | default_pagination: next: 'Siguiente', previous: 'Anterior' }}</nav>
+      {%- endif -%}
+    {%- endpaginate -%}
+
+    <ul class="ps-sellos ps-col__sellos" role="list">
+      <li>{% render 'ps-icono', nombre: 'envio' %}Lo recibe en 24&#8288;-&#8288;48&nbsp;h</li>
+      <li>{% render 'ps-icono', nombre: 'devolucion' %}Envío y devolución gratis</li>
+      <li>{% render 'ps-icono', nombre: 'garantia' %}Originales de Apple, con 3 años de garantía</li>
+    </ul>
+  </div>
+</section>
+
+{% stylesheet %}
+.ps-col{padding:clamp(40px,5vw,72px) 0 clamp(64px,8vw,112px)}
+.ps-col__cab{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px 40px;margin-bottom:clamp(28px,4vw,48px)}
+.ps-col .ps-col__titulo{font-size:clamp(36px,4.4vw,64px)}
+.ps-col__texto{margin-top:14px}
+.ps-col__texto p{margin:0}
+.ps-col__n{margin:0;font-size:15px;color:var(--ps-texto-2)}
+.ps-col__lista{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:clamp(14px,1.6vw,22px)}
+.ps-col__vacia{font-size:17px}
+.ps-col__pag{margin-top:32px;font-size:16px}
+.ps-col__pag a,.ps-col__pag span{display:inline-block;margin-right:12px;color:inherit}
+.ps-col .ps-col__sellos{margin-top:clamp(36px,5vw,56px);padding-top:20px;border-top:1px solid var(--ps-linea)}
+@media (max-width:599px){.ps-col__lista{grid-template-columns:1fr 1fr;gap:10px}.ps-col__lista .ps-tar{padding:8px 8px 14px}.ps-col__lista .ps-tar__aqui{font-size:20px}.ps-col__lista .ps-tar__apple b{display:block;margin:2px 0 0}}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PS · Colección",
+  "tag": "div",
+  "class": "ps-section",
+  "settings": [
+    { "type": "range", "id": "por_pagina", "label": "Productos por página", "min": 8, "max": 48, "step": 4, "default": 24 }
+  ]
+}
+{% endschema %}

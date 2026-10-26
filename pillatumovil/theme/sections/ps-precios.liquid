@@ -3,8 +3,8 @@
   productos se eligen a mano o salen de una coleccion. En movil, carrusel
   horizontal con el dedo.
 
-  Si el producto tiene una sola variante, el boton lo anade al carrito; si
-  tiene varias (packs de 1, 2 o 3), lleva a la ficha para elegir.
+  Las tarjetas son snippets/ps-tarjeta.liquid. En una ficha de producto no
+  sale el producto que se esta viendo.
 {%- endcomment -%}
 {{ 'ps-base.css' | asset_url | stylesheet_tag }}
 {%- liquid
@@ -23,37 +23,12 @@
       {%- if section.settings.ver_todo != blank -%}<a class="ps-link" href="{{ section.settings.coleccion.url | default: routes.all_products_collection_url }}">{{ section.settings.ver_todo }}</a>{%- endif -%}
     </div>
     <ul class="ps-pre__lista" role="list">
-      {%- for p in lista limit: 8 -%}
-        {%- liquid
-          assign v = p.selected_or_first_available_variant
-          capture pa
-            render 'ps-pvp-centimos', product: p
-          endcapture
-          assign pa = pa | strip | plus: 0
-          assign ahorro = pa | minus: v.price
-        -%}
-        <li class="ps-pre__item">
-          <a class="ps-pre__foto" href="{{ p.url }}" tabindex="-1" aria-hidden="true">
-            {%- if p.featured_image -%}
-              {{ p.featured_image | image_url: width: 700 | image_tag: loading: 'lazy', widths: '300, 500, 700', sizes: '(min-width: 990px) 20vw, 70vw', alt: '' }}
-            {%- endif -%}
-          </a>
-          <h3 class="ps-pre__nombre"><a href="{{ p.url }}">{{ p.title }}</a></h3>
-          <p class="ps-pre__precios">
-            <span class="ps-pre__aqui">{% if p.price_varies %}<small>Desde </small>{% endif %}{{ v.price | money_without_currency }} €</span>
-            {%- if pa > v.price -%}<span class="ps-pre__apple">En Apple <s>{{ pa | money_without_currency }} €</s></span>{%- endif -%}
-          </p>
-          {%- if p.has_only_default_variant -%}
-            <form method="post" action="{{ routes.cart_add_url }}">
-              <input type="hidden" name="id" value="{{ v.id }}">
-              <input type="hidden" name="quantity" value="1">
-              <input type="hidden" name="return_to" value="{{ routes.cart_url }}">
-              <button class="ps-btn ps-btn--tinta ps-pre__btn" type="submit"{% unless v.available %} disabled{% endunless %}>{% if v.available %}Añadir al carrito{% else %}Sin stock{% endif %}</button>
-            </form>
-          {%- else -%}
-            <a class="ps-btn ps-btn--borde ps-pre__btn" href="{{ p.url }}">Elegir cantidad</a>
-          {%- endif -%}
-        </li>
+      {%- assign n = 0 -%}
+      {%- for p in lista -%}
+        {%- if product and p.id == product.id -%}{%- continue -%}{%- endif -%}
+        {%- if n >= 8 -%}{%- break -%}{%- endif -%}
+        {%- assign n = n | plus: 1 -%}
+        {%- render 'ps-tarjeta', p: p -%}
       {%- endfor -%}
     </ul>
   </div>
@@ -62,23 +37,10 @@
 {% stylesheet %}
 .ps-pre__cab{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px 48px;margin-bottom:clamp(32px,4vw,56px)}
 .ps-pre__lista{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:clamp(14px,1.6vw,22px)}
-.ps-pre__item{display:flex;flex-direction:column;padding:12px 12px 18px;border-radius:18px;background:var(--ps-papel);color:var(--ps-tinta);--ps-texto-2:var(--ps-gris)}
-.ps--papel .ps-pre__item{background:#fff}
-.ps-pre__foto{display:block;aspect-ratio:1/1;border-radius:10px;overflow:hidden;background:#fff}
-.ps-pre__foto img{width:100%;height:100%;object-fit:contain}
-.ps-pre .ps-pre__nombre{color:var(--ps-tinta);margin:16px 6px 0;font-size:15px;font-weight:700;line-height:1.35;letter-spacing:-.005em}
-.ps-pre__nombre a{color:inherit;text-decoration:none}
-.ps-pre__nombre a:hover{text-decoration:underline;text-underline-offset:3px}
-.ps-pre__precios{display:flex;flex-direction:column;gap:2px;margin:10px 6px 16px}
-.ps-pre__aqui{font-size:24px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
-.ps-pre__aqui small{font-size:14px;font-weight:400;color:var(--ps-texto-2)}
-.ps-pre__apple{font-size:14px;color:var(--ps-texto-2)}
-.ps-pre__item form,.ps-pre__btn{margin-top:auto}
-.ps-pre .ps-pre__btn{width:100%;min-height:48px;padding:0 16px;font-size:15px}
 @media (max-width:749px){
   .ps-pre__lista{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 calc(clamp(20px,4vw,56px) * -1);padding:0 clamp(20px,4vw,56px) 8px;scrollbar-width:none}
   .ps-pre__lista::-webkit-scrollbar{display:none}
-  .ps-pre__item{flex:0 0 72%;scroll-snap-align:start}
+  .ps-pre__lista .ps-tar{flex:0 0 72%;scroll-snap-align:start}
 }
 {% endstylesheet %}
 

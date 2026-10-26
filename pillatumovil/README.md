@@ -87,6 +87,24 @@ En `estudio-ia/` (y en Contenido > Archivos con el mismo nombre):
 | `ps-mesilla.jpg` (en Archivos, `ps-mesilla-v2.jpg`) | Carga rápida |
 | `ps-unboxing.mp4` / `.jpg` (en Archivos, `ps-unboxing-v2.*`) | Banda de vídeo (bucle con fundido de 0,75 s) |
 | `ps-cable-en-su-caja.jpg` | «Tal como lo prepara Apple» |
+| `ps-cable-lightning.jpg` | Ficha del cable Lightning y del pack Lightning (cable liso, no trenzado, como el real) |
+| `ps-cargador-con-cable.jpg` | Ficha del pack USB-C (cargador en horizontal, cable USB-C trenzado en el puerto del centro) |
+
+**Galerías de las fichas** (26/10): la foto real sobre blanco sigue la
+primera y detrás van las de estudio, enlazadas desde Archivos sin copiarlas
+(`fileUpdate` con `referencesToAdd`), cada una con su texto alternativo:
+
+| Producto | Fotos de estudio, en orden |
+|---|---|
+| Cargador 20 W | `ps-cargador`, `ps-mesilla-v2`, `ps-unboxing-v2` |
+| Cable USB-C | `ps-cable`, `ps-cable-en-su-caja` |
+| Cable Lightning | `ps-cable-lightning` |
+| Pack USB-C | `ps-pack-usb-c`, `ps-cargador-con-cable`, `ps-estudio-portada`, `ps-unboxing-v2` |
+| Pack Lightning | `ps-pack-lightning`, `ps-cable-lightning`, `ps-mesilla-v2`, `ps-unboxing-v2` |
+
+Las fotos son del producto, no del tema: también salen en la tienda
+publicada. Al cargador suelto no se le puso la foto con cable, para no dar
+a entender que lo incluye.
 
 - Hechas con Nano Banana Pro (fotos, 2 créditos) y Kling 3.0 Pro (vídeo,
   8,75 créditos cada 5 s), siempre con las **fotos reales** como referencia:
@@ -133,21 +151,75 @@ En `estudio-ia/` (y en Contenido > Archivos con el mismo nombre):
   de «h» o «horas»; «14 días», con espacio duro.
 - **Un vídeo en bucle no deja que la página quede «inactiva»**: en las
   pruebas con Playwright hay que esperar a `load`, no a `networkidle`.
+- **`PUB_SUB_EVENTS` no cuelga de `window`**: en `constants.js` es un
+  `const` global. Se comprueba con `typeof PUB_SUB_EVENTS`, y como
+  `pubsub.js` va con `defer`, la suscripción se hace al cargar el DOM
+  (`ps-ficha-barra`).
+- **El precio de la ficha se refresca solo**: Dawn, al cambiar de variante,
+  sustituye el elemento con id `price-<sección>` por el recién pintado en el
+  servidor. `ps-ficha-precio` lleva ese id, así que no necesita JavaScript.
+- **Los botones del selector de cantidad heredan el fondo** de `.quantity`
+  y lo pintan cuadrado: el fondo va en `.quantity::before`, que es redondo.
+- **`.cart__ctas` es flex**: lo que se meta dentro se pone al lado del
+  botón de pago y lo aplasta. Las garantías del carrito van después.
+- **Ancho de página**: el ajuste de Dawn solo admite múltiplos de 100.
+  `ps-barra` fija `--page-width` a 1360 px y el mismo margen que `.ps-wrap`,
+  en línea y antes del contenido para que no salte. Menú, portada, ficha y
+  colección empiezan en la misma línea (96 px a 1440 de ancho).
+
+## Ficha, colección y carrito (26/10/2026, versión «estudio»)
+
+- **Ficha de producto** (`templates/product.json`, `main-product` de Dawn
+  con el esquema 3 = piedra). De arriba abajo:
+  - galería: la foto real primero, en grande sobre papel, y las de estudio
+    debajo de dos en dos, todas cuadradas (en móvil, carrusel);
+  - antetítulo «Original de Apple · Nuevo, en su caja», título;
+  - **precio** (`snippets/ps-ficha-precio.liquid`): el de la variante, lo
+    que sale cada pack, «En Apple» × número de packs, «Ahorra X € (n %)»
+    y, en los packs de 2 y 3, lo que se ahorra frente a packs de 1;
+  - packs de 1, 2 o 3 como tarjetas, cantidad y «Añadir al carrito» (sin
+    los botones de pago rápido);
+  - **garantías** (`ps-ficha-sellos`): 24-48 h, devolución gratis en 14
+    días, original con 3 años; y la ayuda por WhatsApp;
+  - descripción (subtítulos pequeños y listas con check) y los dos
+    desplegables;
+  - **barra fija de compra** (`ps-ficha-barra`): sale al pasar el botón de
+    compra, sigue a la variante elegida y pulsa el botón de la ficha.
+    Mientras se ve, el botón de WhatsApp sube.
+  - Debajo: vídeo «Nuevo y precintado», «Complete su carga» (las mismas
+    tarjetas de la portada, sin el producto que se está viendo) y las
+    preguntas.
+- **Tarjeta de producto** (`snippets/ps-tarjeta.liquid`), la misma en la
+  portada, las colecciones y la ficha: foto real y, al pasar el ratón, la
+  de estudio; precio, «En Apple» y ahorro; «Añadir al carrito» si el
+  producto tiene una sola variante, «Elegir cantidad» si es un pack.
+- **Colección** (`sections/ps-coleccion.liquid`, plantilla
+  `templates/collection.json`): título, descripción, número de productos,
+  tarjetas (2 columnas en móvil), garantías y el cierre de la portada.
+  `cargadores-y-cables` tiene los 5 productos, en orden manual.
+- **Carrito lateral** (`snippets/cart-drawer.liquid`, copia del de Dawn,
+  esquema 3): todo lo que se añade desde la portada, las colecciones, la
+  ficha o el propio carrito lo abre sin salir de la página
+  (`assets/ps-carrito.js` para los formularios `data-ps-anadir`). Lleva:
+  - el aviso «Envío gratis. Lo recibe en casa en 24-48 h»;
+  - **la sugerencia de lo que falta** (`snippets/ps-carrito-extra.liquid`):
+    con un cargador sin cable, los dos cables («¿Y el cable? Elija el de su
+    iPhone»); con un cable sin cargador, el cargador; con un pack, nada. Se
+    decide por la referencia (SKU `CHRG-`, `CBL-`, `PACK-`);
+  - las garantías bajo «Pagar pedido» y los precios como «12,99 €».
+  - Si se actualiza Dawn, hay que volver a copiar `cart-drawer.liquid` y
+    repetir los tres `render 'ps-carrito-extra'` (lo explica su cabecera).
+- **Textos de Dawn** (`locales/es.json`): «Añadir al carrito», «Su
+  carrito», «Su carrito está vacío», «IVA incluido. Envío gratis.» y el
+  resto del carrito tratando de usted.
 
 ## Resto de la tienda
-## Resto de la tienda
-
-- **Ficha de producto** (`templates/product.json`): título, precio, precio
-  de Apple, cantidades, compra, enlace a WhatsApp, descripción y dos
-  desplegables («¿Qué cable necesita su iPhone?» y «Garantía y
-  devoluciones»). Debajo, la etiqueta de garantías y productos relacionados.
-- **Colección** `cargadores-y-cables` con los 5 productos, orden manual.
 - **Páginas**: Contacto (WhatsApp + formulario) y «Envío, garantía y
   devoluciones» (envío gratis, plazo 24-48 h laborables, devolución gratis).
 - **Menús**: principal (Inicio, Cargadores y cables, ¿Qué cargador
   necesito?, Contacto) y pie (Información).
-- **`assets/pt-dawn.css`**: lleva el estilo de la portada a las páginas de
-  Dawn (títulos, precios, fotos sobre gris de caja). Lo carga `pt-whatsapp`.
+- **`assets/pt-dawn.css`**: lleva el estilo «estudio» a lo que sigue
+  siendo de Dawn (ficha, carrito, páginas de texto). Lo carga `pt-whatsapp`.
 - **Logo e icono** en `marca/`, generados con `tools/logo_firma.py`
   (Bodoni Moda, fuente OFL; el script la espera en `fuentes/BodoniModa.ttf`).
 - **Fotos de producto** en `fotos/` (2048 × 2048, fondo blanco, sin la
@@ -269,11 +341,10 @@ va aparte, siempre con su etiqueta «En Apple».
   Canarias, Ceuta y Melilla y si hay hora de corte para el envío del día.
 - Sin sección de opiniones a propósito: la tienda es nueva y no tiene
   reseñas propias. No se copian las de ITorostore.
-- Opcional: añadir las fotos de estudio de `estudio-ia/` como fotos
-  secundarias de cada producto (la principal sigue siendo la foto real
-  sobre blanco). Cambia las fichas también en la tienda publicada.
 - Higgsfield: prueba de 3 días con renovación automática a 49 €/mes si no
-  se cancela. Quedan 9 créditos (25/10, 12:50).
+  se cancela. Quedan 5 créditos (26/10, 13:45).
+- Secciones `pt-` antiguas que ya no usa ninguna plantilla de Dawn (hero,
+  oferta, ventajas, cta…): se pueden borrar cuando se publique Dawn.
 
 Capturas en `disenos/`: `estudio-*.jpg` es la portada actual; `cine-*.png`
 y `oro-*.jpg`, las anteriores.

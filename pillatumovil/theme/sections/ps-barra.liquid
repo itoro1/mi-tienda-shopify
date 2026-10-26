@@ -11,6 +11,7 @@
     --header-height y la clase .scrolled-past-header; aqui solo se pinta.
 {%- endcomment -%}
 {%- assign n = section.blocks.size -%}
+<script src="{{ 'ps-carrito.js' | asset_url }}" defer></script>
 <div class="ps-barra" style="--ps-n:{{ n }}">
   <ul class="ps-barra__lista" role="list">
     {%- for block in section.blocks -%}
@@ -45,7 +46,18 @@
     .ps-barra__item:first-child{opacity:1}
   }
 
+  /* Mismo ancho que las secciones ps- (.ps-wrap: 1360 px y margen
+     clamp(20px,4vw,56px)), para que el menu, la ficha y la portada empiecen
+     en la misma linea. Va aqui, en linea y antes del contenido, para que no
+     salte al cargar. */
+  :root{--page-width:136rem}
+  @media (min-width:750px){
+    .page-width:not(.page-width--narrow),
+    .header:not(.drawer-menu).page-width{padding-left:clamp(20px,4vw,56px);padding-right:clamp(20px,4vw,56px)}
+  }
+
   /* Cabecera */
+  .section-header .header__inline-menu{margin-left:-1.5rem}
   .section-header .header-wrapper{transition:background-color .35s ease,border-color .35s ease}
   .section-header .header__menu-item{font-size:14.5px;letter-spacing:.01em;color:rgba(244,241,234,.78);padding:1.2rem 1.5rem}
   .section-header .header__menu-item:hover{color:#f4f1ea}

@@ -1,0 +1,24 @@
+{%- comment -%}
+  Las tres garantias bajo el boton de compra de la ficha (bloque "Liquid
+  personalizado" de main-product): {%- render 'ps-ficha-sellos' -%}
+  Con "WhatsApp" debajo para quien dude de su modelo.
+{%- endcomment -%}
+<ul class="ps-fs" role="list">
+  <li>{% render 'ps-icono', nombre: 'envio', tam: 22 %}<p><b>Lo recibe en casa en 24&#8288;-&#8288;48&nbsp;h</b><span>Envío gratis en todos los pedidos</span></p></li>
+  <li>{% render 'ps-icono', nombre: 'devolucion', tam: 22 %}<p><b>14 días para devolverlo</b><span>La devolución también es gratis</span></p></li>
+  <li>{% render 'ps-icono', nombre: 'garantia', tam: 22 %}<p><b>Original de Apple</b><span>Nuevo, en su caja precintada, con 3 años de garantía</span></p></li>
+</ul>
+<p class="ps-fs__ayuda">{% render 'ps-icono', nombre: 'whatsapp', tam: 18 %}<span>¿Dudas con su modelo? <a href="https://wa.me/34641047539" target="_blank" rel="noopener">Pregúntenos por WhatsApp</a></span></p>
+
+{% stylesheet %}
+.ps-fs{list-style:none;margin:22px 0 0;padding:4px 18px;border-radius:16px;background:#f3f1ec;color:#141824}
+.ps-fs li{display:flex;align-items:flex-start;gap:14px;padding:14px 0}
+.ps-fs li + li{border-top:1px solid rgba(20,24,36,.1)}
+.ps-fs svg{flex:none;margin-top:1px;color:#7d5f28}
+.ps-fs p{display:flex;flex-direction:column;gap:2px;margin:0;font-size:14px;line-height:1.4;color:#585d6b}
+.ps-fs b{font-size:15px;color:#141824}
+.ps-fs__ayuda{display:flex;align-items:center;gap:10px;margin:16px 0 0;font-size:15px;color:#585d6b}
+.ps-fs__ayuda svg{flex:none;color:#1f9d55}
+.ps-fs__ayuda a{color:#141824;font-weight:700;text-decoration:underline;text-decoration-color:#c9a86a;text-decoration-thickness:1.5px;text-underline-offset:4px}
+.ps-fs__ayuda a:hover{text-decoration-color:currentColor}
+{% endstylesheet %}

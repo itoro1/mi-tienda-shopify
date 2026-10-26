@@ -7,10 +7,6 @@
           "type": "title",
           "settings": {}
         },
-        "price": {
-          "type": "price",
-          "settings": {}
-        },
         "variant_picker": {
           "type": "variant_picker",
           "settings": {
@@ -25,19 +21,13 @@
         "buy_buttons": {
           "type": "buy_buttons",
           "settings": {
-            "show_dynamic_checkout": true,
-            "show_gift_card_recipient": true
+            "show_dynamic_checkout": false,
+            "show_gift_card_recipient": false
           }
         },
         "description": {
           "type": "description",
           "settings": {}
-        },
-        "pvp": {
-          "type": "custom_liquid",
-          "settings": {
-            "custom_liquid": "{%- render 'pt-pvp', product: product -%}"
-          }
         },
         "ayuda_cable": {
           "type": "collapsible_tab",
@@ -57,117 +47,151 @@
             "page": "garantia-y-devoluciones"
           }
         },
-        "whatsapp": {
+        "sello": {
           "type": "custom_liquid",
           "settings": {
-            "custom_liquid": "<p class=\"pt-ayuda\">¿Dudas con su modelo? <a href=\"https://wa.me/34641047539\" target=\"_blank\" rel=\"noopener\">Pregúntenos por WhatsApp</a></p>"
+            "custom_liquid": "<p class=\"ps-fe\">Original de Apple · Nuevo, en su caja</p>"
+          }
+        },
+        "precio": {
+          "type": "custom_liquid",
+          "settings": {
+            "custom_liquid": "{%- render 'ps-ficha-precio', product: product, section_id: section.id -%}"
+          }
+        },
+        "sellos": {
+          "type": "custom_liquid",
+          "settings": {
+            "custom_liquid": "{%- render 'ps-ficha-sellos' -%}"
+          }
+        },
+        "barra": {
+          "type": "custom_liquid",
+          "settings": {
+            "custom_liquid": "{%- render 'ps-ficha-barra', product: product, section_id: section.id -%}"
           }
         }
       },
       "block_order": [
+        "sello",
         "title",
-        "price",
-        "pvp",
+        "precio",
         "variant_picker",
         "quantity_selector",
         "buy_buttons",
-        "whatsapp",
+        "sellos",
         "description",
         "ayuda_cable",
-        "garantia"
+        "garantia",
+        "barra"
       ],
       "settings": {
         "enable_sticky_info": true,
-        "color_scheme": "scheme-1",
+        "color_scheme": "scheme-3",
         "media_size": "medium",
-        "constrain_to_viewport": true,
-        "media_fit": "contain",
+        "constrain_to_viewport": false,
+        "media_fit": "cover",
         "gallery_layout": "stacked",
         "mobile_thumbnails": "hide",
         "media_position": "left",
         "image_zoom": "lightbox",
         "hide_variants": true,
         "enable_video_looping": false,
-        "padding_top": 28,
-        "padding_bottom": 12
+        "padding_top": 36,
+        "padding_bottom": 72
       }
     },
     "disclosures": {
       "type": "disclosures",
       "settings": {
-        "padding_top": 36,
-        "padding_bottom": 0
+        "color_scheme": "scheme-3",
+        "padding_top": 0,
+        "padding_bottom": 48
       }
     },
-    "related-products": {
-      "type": "related-products",
+    "video": {
+      "type": "ps-video",
       "settings": {
-        "heading": "También le puede interesar",
-        "heading_size": "h2",
-        "products_to_show": 4,
-        "columns_desktop": 4,
-        "columns_mobile": "2",
-        "color_scheme": "scheme-1",
-        "image_ratio": "square",
-        "image_shape": "default",
-        "show_secondary_image": false,
-        "show_vendor": false,
-        "show_rating": false,
-        "padding_top": 36,
-        "padding_bottom": 28
+        "video_url": "https://cdn.shopify.com/s/files/1/1066/2182/9468/files/ps-unboxing-v2.mp4?v=1792932252",
+        "poster": "shopify://shop_images/ps-unboxing-v2.jpg",
+        "titulo": "Nuevo y precintado.\nLo abre usted.",
+        "texto": "Le llega tal como sale de Apple: en su caja original, sin abrir. En 24⁠-⁠48 h y sin pagar envío.",
+        "boton": "",
+        "enlace": ""
       }
     },
-    "garantias": {
-      "type": "pt-ventajas",
+    "precios": {
+      "type": "ps-precios",
+      "settings": {
+        "titulo": "Complete su carga",
+        "texto": "Cargador y cables originales, con el precio de Apple al lado.",
+        "productos": [],
+        "coleccion": "cargadores-y-cables",
+        "ver_todo": "Ver todos los productos",
+        "fondo": "papel"
+      }
+    },
+    "faq": {
+      "type": "ps-faq",
       "blocks": {
-        "d1": {
-          "type": "dato",
+        "q2": {
+          "type": "pregunta",
           "settings": {
-            "dato": "Producto",
-            "valor": "Original de Apple",
-            "detalle": "Nuevo, en su caja precintada"
+            "pregunta": "¿Qué cargador necesita mi iPhone?",
+            "respuesta": "<p>El adaptador de 20 W sirve para cualquier iPhone. Lo que cambia es el cable: del iPhone 15 en adelante, USB-C a USB-C; del iPhone 8 al 14, USB-C a Lightning.</p>"
           }
         },
-        "d2": {
-          "type": "dato",
+        "q0": {
+          "type": "pregunta",
           "settings": {
-            "dato": "Garantía",
-            "valor": "3 años",
-            "detalle": "La legal para producto nuevo"
+            "pregunta": "¿Cuánto tarda y cuánto cuesta el envío?",
+            "respuesta": "<p>Lo recibe en casa en 24⁠-⁠48 horas laborables y el envío es gratis en todos los pedidos. La devolución también es gratis. Tiene los detalles en <a href=\"/pages/garantia-y-devoluciones\">Envío, garantía y devoluciones</a>.</p>"
           }
         },
-        "d3": {
-          "type": "dato",
+        "q3": {
+          "type": "pregunta",
           "settings": {
-            "dato": "Devolución",
-            "valor": "14 días, gratis",
-            "detalle": "Desde que lo recibe"
+            "pregunta": "¿Carga rápido?",
+            "respuesta": "<p>Sí. Con el adaptador de 20 W, el iPhone 8 o posterior admite carga rápida: según Apple, hasta el 50 % en unos 30 minutos.</p>"
           }
         },
-        "d4": {
-          "type": "dato",
+        "q1": {
+          "type": "pregunta",
           "settings": {
-            "dato": "Envío",
-            "valor": "Gratis",
-            "detalle": "En todos los pedidos"
+            "pregunta": "¿Son originales de Apple?",
+            "respuesta": "<p>Sí. Todo lo que vendemos es producto nuevo y original de Apple, en su caja precintada.</p>"
+          }
+        },
+        "q5": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Puedo devolver el pedido?",
+            "respuesta": "<p>Sí. Dispone de 14 días naturales desde que lo recibe para devolverlo sin necesidad de justificarlo. Tiene todos los detalles en <a href=\"/pages/garantia-y-devoluciones\">Garantía y devoluciones</a>.</p>"
           }
         }
       },
       "block_order": [
-        "d1",
-        "d2",
-        "d3",
-        "d4"
+        "q2",
+        "q0",
+        "q3",
+        "q1",
+        "q5"
       ],
       "settings": {
-        "margen_arriba": true
+        "titulo": "Antes de comprar",
+        "texto": "Las dudas más habituales. Si la suya no está, escríbanos.",
+        "boton": "Escribir por WhatsApp",
+        "enlace": "https://wa.me/34641047539",
+        "abrir_primera": false,
+        "fondo": "piedra"
       }
     }
   },
   "order": [
     "main",
-    "garantias",
     "disclosures",
-    "related-products"
+    "video",
+    "precios",
+    "faq"
   ]
 }

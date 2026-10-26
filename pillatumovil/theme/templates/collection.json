@@ -1,95 +1,26 @@
 {
   "sections": {
-    "banner": {
-      "type": "main-collection-banner",
+    "coleccion": {
+      "type": "ps-coleccion",
       "settings": {
-        "show_collection_description": true,
-        "show_collection_image": false,
-        "color_scheme": "scheme-1"
-      }
-    },
-    "product-grid": {
-      "type": "main-collection-product-grid",
-      "settings": {
-        "products_per_page": 24,
-        "columns_desktop": 3,
-        "color_scheme": "scheme-1",
-        "image_ratio": "square",
-        "image_shape": "default",
-        "show_secondary_image": false,
-        "show_vendor": false,
-        "show_rating": false,
-        "quick_add": "standard",
-        "enable_filtering": false,
-        "filter_type": "horizontal",
-        "enable_sorting": false,
-        "columns_mobile": "2",
-        "padding_top": 36,
-        "padding_bottom": 36
-      }
-    },
-    "garantias": {
-      "type": "pt-ventajas",
-      "blocks": {
-        "d1": {
-          "type": "dato",
-          "settings": {
-            "dato": "Producto",
-            "valor": "Original de Apple",
-            "detalle": "Nuevo, en su caja precintada"
-          }
-        },
-        "d2": {
-          "type": "dato",
-          "settings": {
-            "dato": "Garantía",
-            "valor": "3 años",
-            "detalle": "La legal para producto nuevo"
-          }
-        },
-        "d3": {
-          "type": "dato",
-          "settings": {
-            "dato": "Devolución",
-            "valor": "14 días, gratis",
-            "detalle": "Desde que lo recibe"
-          }
-        },
-        "d4": {
-          "type": "dato",
-          "settings": {
-            "dato": "Envío",
-            "valor": "Gratis",
-            "detalle": "En todos los pedidos"
-          }
-        }
-      },
-      "block_order": [
-        "d1",
-        "d2",
-        "d3",
-        "d4"
-      ],
-      "settings": {
-        "margen_arriba": true
+        "por_pagina": 24
       }
     },
     "cierre": {
-      "type": "pt-cta",
+      "type": "ps-cierre",
       "settings": {
-        "titulo": "¿Aún no sabe cuál necesita?",
-        "texto": "Mire el puerto de carga de su iPhone y elija. O pregúntenos por WhatsApp y se lo decimos.",
-        "boton": "Elegir cargador",
-        "enlace": "/#encuentra",
-        "boton_2": "Preguntar por WhatsApp",
-        "enlace_2": "https://wa.me/34641047539"
+        "titulo": "¿No sabe qué cable necesita?",
+        "texto": "Escríbanos por WhatsApp con el modelo de su iPhone y se lo decimos.",
+        "boton": "Preguntar por WhatsApp",
+        "enlace": "https://wa.me/34641047539",
+        "boton_2": "Ver los packs",
+        "enlace_2": "/#pack",
+        "imagen": "shopify://shop_images/ps-estudio-portada.jpg"
       }
     }
   },
   "order": [
-    "banner",
-    "product-grid",
-    "garantias",
+    "coleccion",
     "cierre"
   ]
 }

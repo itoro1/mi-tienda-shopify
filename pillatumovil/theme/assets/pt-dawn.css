@@ -1,36 +1,106 @@
-/* Pillatumovil — retoques globales sobre Dawn para que producto, coleccion
-   y contacto sigan el diseno de la portada. Colores, fuentes y radios salen
-   de los ajustes del tema; aqui solo va lo que Dawn no deja ajustar.
-   Lo carga sections/pt-whatsapp.liquid, que esta en todas las paginas. */
+/* Pillatumovil — retoques globales sobre Dawn para que la ficha de
+   producto, el carrito y las paginas de texto sigan el diseno "estudio" de
+   la portada. Colores, fuentes y radios salen de los ajustes del tema; aqui
+   solo va lo que Dawn no deja ajustar.
+   Lo carga sections/pt-whatsapp.liquid, que esta en todas las paginas, y
+   va despues de las hojas de Dawn: a igual especificidad, gana esta. */
 
 h1,h2,h3,.h0,.h1,.h2,.h3{letter-spacing:-.01em}
-.product__title h1{line-height:1.08}
-.price .price-item{font-weight:700}
-.product .price .price-item{font-family:var(--font-body-family);font-weight:700;font-size:3.2rem;letter-spacing:-.01em;color:#e7d3a6}
 .price__badge-sale,.price__badge-sold-out{border-radius:999px}
 
-/* Las fotos de producto tienen fondo blanco: sobre el gris de caja se
-   funden con multiply y el producto parece recortado. */
-.product__media-item .product-media-container,
+/* Tarjetas de Dawn que quedan (busqueda): las fotos tienen fondo blanco y
+   con multiply se funden con el gris de la tarjeta. */
 .card__inner .card__media{background:#ede8df}
-.product__media-item img,
 .card__media img{mix-blend-mode:multiply}
 .card__heading{font-weight:700;letter-spacing:-.005em}
 
-/* Precio de Apple bajo el precio de la ficha (snippets/pt-pvp.liquid). */
-.pt-pvp{margin:-.4rem 0 1.6rem}
-.pt-pvp__v{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin:0;font-size:1.5rem;color:#a3a8b4}
-.pt-pvp__v[hidden]{display:none}
-.pt-pvp__v small{font-size:1.3rem}
-.pt-pvp__save{padding:4px 11px;border-radius:999px;background:rgba(201,168,106,.14);box-shadow:inset 0 0 0 1px rgba(201,168,106,.4);color:#e7d3a6;font-size:1.35rem;font-weight:700}
-.pt-pvp__extra{flex-basis:100%;font-size:1.4rem;font-weight:600;color:#e7d3a6}
-.pt-ayuda{margin:1.2rem 0 0;font-size:1.5rem;color:#a3a8b4}
-.pt-ayuda a{color:inherit;font-weight:700}
+/* ------------------------------------------------------------------ */
+/* Ficha de producto (templates/product.json, esquema de color 3 =     */
+/* piedra). El precio, las garantias y la barra fija son snippets ps-. */
+/* ------------------------------------------------------------------ */
+[id^="MainProduct-"]{--f-tinta:#141824;--f-gris:#585d6b;--f-papel:#f3f1ec;--f-linea:rgba(20,24,36,.12);--f-oro-tinta:#7d5f28}
 
-/* Descripciones de producto: subtitulos con peso y listas comodas. */
-.product__description h3{margin:2.4rem 0 .6rem;font-size:2rem;color:#e7d3a6}
-.product__description ul{margin:0;padding-left:1.8rem}
-.product__description li{margin:.3rem 0}
+/* Galeria: todas cuadradas, para que la rejilla y el carrusel no salten.
+   La primera es la foto real sobre blanco: entera (contain) y fundida con
+   un fondo papel; las de estudio llenan su hueco. */
+[id^="MainProduct-"] .product__media-list .product-media-container{--ratio-percent:100%;background:var(--f-papel);border-radius:16px}
+[id^="MainProduct-"] .product__media-list .product__media-item:first-child .media > img{object-fit:contain;mix-blend-mode:multiply}
+[id^="MainProduct-"] .product__media-list .media{border-radius:16px}
+@media (min-width:990px){
+  [id^="MainProduct-"] .product--stacked .product__media-list{row-gap:var(--grid-desktop-horizontal-spacing)}
+  [id^="MainProduct-"] .product__media-list .product__media-item:first-child .product-media-container{--ratio-percent:80%}
+  [id^="MainProduct-"] .product__info-wrapper{padding-left:clamp(40px,4.5vw,72px)}
+  /* Si tras la primera queda una foto suelta, ocupa toda la fila. */
+  [id^="MainProduct-"] .product--stacked .product__media-item:nth-child(even):last-child{width:100%;max-width:100%}
+  [id^="MainProduct-"] .product--stacked .product__media-item:nth-child(even):last-child .product-media-container{--ratio-percent:80%}
+}
+[id^="MainProduct-"] .product__media-icon{background:#fff;border:0}
+
+/* Columna de compra */
+.ps-fe{margin:0 0 12px;font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#7d5f28}
+[id^="MainProduct-"] .product__info-container > .ps-fe{margin-bottom:0}
+[id^="MainProduct-"] .product__title{margin:0}
+[id^="MainProduct-"] .product__title h1{font-size:clamp(30px,2.7vw,42px);line-height:1.06;letter-spacing:-.03em;text-wrap:balance}
+
+/* Packs de 1, 2 o 3: tarjetas como el selector de la portada. */
+[id^="MainProduct-"] variant-selects{margin-top:22px}
+[id^="MainProduct-"] .product-form__input{margin-bottom:6px}
+[id^="MainProduct-"] .product-form__input .form__label{margin-bottom:8px;font-size:15px;font-weight:700;color:var(--f-tinta)}
+[id^="MainProduct-"] .product-form__input--pill input[type=radio] + label{min-width:104px;margin:0 8px 8px 0;padding:14px 18px;border:0;border-radius:12px;
+  background:var(--f-papel);box-shadow:inset 0 0 0 1px var(--f-linea);color:var(--f-tinta);font-size:15px;font-weight:700;letter-spacing:0;transition:box-shadow .2s ease,background-color .2s ease}
+[id^="MainProduct-"] .product-form__input--pill input[type=radio] + label:hover{box-shadow:inset 0 0 0 1px var(--f-tinta)}
+[id^="MainProduct-"] .product-form__input--pill input[type=radio]:checked + label{background:#fff;color:var(--f-tinta);box-shadow:inset 0 0 0 2px var(--f-tinta)}
+[id^="MainProduct-"] .product-form__input--pill input[type=radio]:focus-visible + label{outline:2px solid var(--f-oro-tinta);outline-offset:3px}
+
+[id^="MainProduct-"] .product-form__quantity .form__label{font-size:15px;font-weight:700;color:var(--f-tinta)}
+/* El fondo va en ::before, que es redondo: los botones de Dawn heredan el
+   fondo de .quantity y lo pintarian cuadrado. */
+[id^="MainProduct-"] .quantity{min-height:5.2rem;border-radius:999px}
+[id^="MainProduct-"] .quantity:after{border-radius:999px;box-shadow:inset 0 0 0 1px var(--f-linea)}
+[id^="MainProduct-"] .quantity:before{border-radius:999px;background:var(--f-papel)}
+
+[id^="MainProduct-"] .product-form{margin-top:4px}
+[id^="MainProduct-"] .product-form__submit{min-height:58px;font-size:16px;font-weight:700;letter-spacing:0}
+[id^="MainProduct-"] .product-form__error-message-wrapper{font-size:14px}
+
+/* Descripcion: entrada mas grande, subtitulos pequenos en mayusculas y
+   listas con check. */
+[id^="MainProduct-"] .product__description{margin-top:30px;padding-top:26px;border-top:1px solid var(--f-linea);font-size:16px;line-height:1.6;color:var(--f-gris)}
+[id^="MainProduct-"] .product__description > p:first-child{font-size:17px;color:var(--f-tinta)}
+[id^="MainProduct-"] .product__description h3{margin:26px 0 8px;font-family:var(--font-body-family);font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--f-oro-tinta)}
+[id^="MainProduct-"] .product__description ul{list-style:none;margin:0;padding:0}
+[id^="MainProduct-"] .product__description li{position:relative;margin:7px 0;padding-left:26px}
+[id^="MainProduct-"] .product__description li::before{content:"";position:absolute;left:3px;top:.42em;width:11px;height:6px;border-left:2px solid var(--f-oro-tinta);border-bottom:2px solid var(--f-oro-tinta);transform:rotate(-45deg)}
+[id^="MainProduct-"] .product__description a,[id^="MainProduct-"] .accordion__content a{color:var(--f-tinta);text-decoration-color:#c9a86a;text-underline-offset:4px}
+
+/* Desplegables */
+[id^="MainProduct-"] .product__accordion{border-color:var(--f-linea)}
+[id^="MainProduct-"] .product__accordion .accordion__title{font-size:16px;font-weight:700;color:var(--f-tinta)}
+[id^="MainProduct-"] .product__accordion .summary__title .icon{fill:var(--f-oro-tinta)}
+[id^="MainProduct-"] .accordion__content{font-size:15px;line-height:1.6;color:var(--f-gris)}
+
+/* Descripcion de Shopify (divulgaciones), cuando la hay */
+.product-disclosures{max-width:72ch}
+
+/* ------------------------------------------------------------------ */
+/* Carrito lateral (snippets/cart-drawer.liquid, esquema 3 = piedra)   */
+/* ------------------------------------------------------------------ */
+.drawer__inner{border-left:0;box-shadow:-24px 0 60px -30px rgba(11,15,26,.6)}
+.drawer__header{padding:2.4rem 0 1.2rem}
+.drawer__heading{font-size:24px;font-weight:600;letter-spacing:-.02em}
+.cart-drawer .cart-item__name{font-size:15px;font-weight:700;line-height:1.3;text-decoration:none}
+.cart-drawer .cart-item__name:hover{text-decoration:underline;text-underline-offset:3px}
+.cart-drawer .cart-item__image{border-radius:10px;background:#fff}
+.cart-drawer .cart-item__details > * + *{margin-top:.4rem}
+.cart-drawer .quantity{border-radius:999px}
+.cart-drawer .quantity:after,.cart-drawer .quantity:before{border-radius:999px}
+.cart-drawer .quantity:before{background:#f3f1ec}
+.cart-drawer .totals__total{font-size:16px;font-weight:700}
+.cart-drawer .totals__total-value{font-size:22px;font-weight:700;letter-spacing:-.02em}
+.cart-drawer .cart__checkout-button{min-height:58px;font-size:16px;font-weight:700;letter-spacing:0}
+.cart-drawer .tax-note{font-size:13px}
+.cart-drawer__empty-content .cart__empty-text{font-size:22px;font-weight:600;letter-spacing:-.02em}
+.cart-drawer__empty-content .button{min-height:52px;font-weight:700}
 
 /* Paginas de texto (garantia, contacto): medida de lectura comoda. */
 .main-page-title + .rte,.page-width--narrow .rte{max-width:68ch}

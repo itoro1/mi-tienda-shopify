@@ -6,8 +6,8 @@
   boton. Sin JavaScript: radios + :has(). Sin :has() se ven todas las
   opciones seguidas, que sigue siendo correcto.
 
-  El boton anade 1 pack al carrito (primera variante disponible) y lleva al
-  carrito. Precio, PVP de Apple y ahorro salen del producto.
+  El boton anade 1 pack al carrito (primera variante disponible) y abre el
+  carrito lateral (assets/ps-carrito.js); sin JavaScript lleva al carrito. Precio, PVP de Apple y ahorro salen del producto.
 {%- endcomment -%}
 {{ 'ps-base.css' | asset_url | stylesheet_tag }}
 <section id="pack" class="ps ps--piedra ps-sec ps-pack">
@@ -74,7 +74,7 @@
             </ul>
           {%- endif -%}
 
-          <form class="ps-pack__form" method="post" action="{{ routes.cart_add_url }}">
+          <form class="ps-pack__form" method="post" action="{{ routes.cart_add_url }}" data-ps-anadir>
             <input type="hidden" name="id" value="{{ v.id }}">
             <input type="hidden" name="quantity" value="1">
             <input type="hidden" name="return_to" value="{{ routes.cart_url }}">
