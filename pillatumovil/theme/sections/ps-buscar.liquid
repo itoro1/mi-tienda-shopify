@@ -1,0 +1,92 @@
+{%- comment -%}
+  Pagina de busqueda: el buscador y los resultados. Los productos salen con
+  la misma tarjeta que la portada y las colecciones (ps-tarjeta); las
+  paginas, como enlaces. Si no hay resultados, atajos a lo que suele
+  buscarse.
+{%- endcomment -%}
+{{ 'ps-base.css' | asset_url | stylesheet_tag }}
+<section class="ps ps--piedra ps-bus">
+  <div class="ps-wrap">
+    <h1 class="ps-h1 ps-bus__titulo">{% if search.performed %}Resultados{% else %}Buscar{% endif %}</h1>
+    <form class="ps-bus__form" action="{{ routes.search_url }}" method="get" role="search">
+      <label class="ps-visually-hidden" for="PsBuscar">Buscar en la tienda</label>
+      <input id="PsBuscar" type="search" name="q" value="{{ search.terms | escape }}" placeholder="Cargador, cable USB-C, Lightning…" autocomplete="off">
+      <input type="hidden" name="options[prefix]" value="last">
+      <button class="ps-btn ps-btn--tinta" type="submit">Buscar</button>
+    </form>
+
+    {%- if search.performed -%}
+      {%- paginate search.results by 24 -%}
+        {%- assign productos = search.results | where: 'object_type', 'product' -%}
+        {%- assign otros = search.results | where: 'object_type', 'page' -%}
+        <p class="ps-bus__n" role="status">
+          {%- if search.results_count == 0 -%}
+            No hay nada con «{{ search.terms | escape }}».
+          {%- else -%}
+            {{ search.results_count }} {% if search.results_count == 1 %}resultado{% else %}resultados{% endif %} para «{{ search.terms | escape }}»
+          {%- endif -%}
+        </p>
+        {%- if productos.size > 0 -%}
+          <ul class="ps-bus__lista" role="list">
+            {%- for p in productos -%}{%- render 'ps-tarjeta', p: p -%}{%- endfor -%}
+          </ul>
+        {%- endif -%}
+        {%- if otros.size > 0 -%}
+          <ul class="ps-bus__paginas" role="list">
+            {%- for pg in otros -%}<li><a class="ps-link" href="{{ pg.url }}">{{ pg.title }}</a></li>{%- endfor -%}
+          </ul>
+        {%- endif -%}
+        {%- if paginate.pages > 1 -%}
+          <nav class="ps-bus__pag" aria-label="Páginas">{{ paginate | default_pagination: next: 'Siguiente', previous: 'Anterior' }}</nav>
+        {%- endif -%}
+      {%- endpaginate -%}
+    {%- endif -%}
+
+    {%- if search.performed == false or search.results_count == 0 -%}
+      <div class="ps-bus__atajos">
+        <p>Lo más buscado</p>
+        <ul role="list">
+          <li><a href="{{ routes.collections_url }}/packs">Pack cargador + cable</a></li>
+          <li><a href="/products/cargador-usb-c-20w-apple-original">Cargador de 20 W</a></li>
+          <li><a href="{{ routes.collections_url }}/cables">Cables USB-C y Lightning</a></li>
+          <li><a href="/pages/que-cable-necesito">¿Qué cable necesito?</a></li>
+        </ul>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+.ps-bus{padding:clamp(40px,5vw,72px) 0 clamp(64px,8vw,112px);min-height:60vh}
+.ps-bus .ps-bus__titulo{font-size:clamp(36px,4.4vw,64px)}
+.ps-bus__form{display:flex;gap:10px;max-width:720px;margin-top:24px}
+.ps-bus__form input[type=search]{flex:1;min-width:0;height:58px;padding:0 22px;border:0;border-radius:999px;background:#fff;box-shadow:inset 0 0 0 1px var(--ps-linea);color:var(--ps-tinta);font:inherit;font-size:17px}
+.ps-bus__form input[type=search]:focus{outline:0;box-shadow:inset 0 0 0 2px var(--ps-tinta)}
+.ps-bus__form .ps-btn{min-height:58px}
+.ps-bus__n{margin:22px 0 26px;font-size:15px;color:var(--ps-gris)}
+.ps-bus__lista{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:clamp(14px,1.6vw,22px)}
+.ps-bus__paginas{list-style:none;margin:28px 0 0;padding:0}
+.ps-bus__paginas li + li{margin-top:10px}
+.ps-bus__pag{margin-top:32px}
+.ps-bus__atajos{margin-top:clamp(28px,4vw,48px)}
+.ps-bus__atajos p{margin:0 0 12px;font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ps-oro-tinta)}
+.ps-bus__atajos ul{display:flex;flex-wrap:wrap;gap:10px;list-style:none;margin:0;padding:0}
+.ps-bus__atajos a{display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border-radius:999px;background:var(--ps-papel);box-shadow:inset 0 0 0 1px var(--ps-linea);color:var(--ps-tinta);font-size:15px;font-weight:700;text-decoration:none}
+.ps-bus__atajos a:hover{box-shadow:inset 0 0 0 1.5px var(--ps-tinta)}
+@media (max-width:599px){
+  .ps-bus__form .ps-btn{padding:0 20px}
+  .ps-bus__lista{grid-template-columns:1fr 1fr;gap:10px}
+  .ps-bus__lista .ps-tar{padding:8px 8px 14px}
+  .ps-bus__lista .ps-tar__aqui{font-size:20px}
+  .ps-bus__lista .ps-tar__apple b{display:block;margin:2px 0 0}
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PS · Buscar",
+  "tag": "div",
+  "class": "ps-section",
+  "settings": []
+}
+{% endschema %}

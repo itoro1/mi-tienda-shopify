@@ -1,0 +1,11 @@
+{
+  "sections": {
+    "main": {
+      "type": "ps-buscar",
+      "settings": {}
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

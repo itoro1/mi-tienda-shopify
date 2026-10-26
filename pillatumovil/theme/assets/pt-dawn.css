@@ -102,6 +102,11 @@ h1,h2,h3,.h0,.h1,.h2,.h3{letter-spacing:-.01em}
 .cart-drawer__empty-content .cart__empty-text{font-size:22px;font-weight:600;letter-spacing:-.02em}
 .cart-drawer__empty-content .button{min-height:52px;font-weight:700}
 
+/* Con el menu movil o el carrito abiertos, el boton flotante de WhatsApp
+   se aparta: el menu ya lleva el suyo y tapaba los packs. */
+body:has(header-drawer details[open]) .pt-wa,
+body:has(cart-drawer.active) .pt-wa{opacity:0;pointer-events:none}
+
 /* Paginas de texto (garantia, contacto): medida de lectura comoda. */
 .main-page-title + .rte,.page-width--narrow .rte{max-width:68ch}
 .rte h2{letter-spacing:-.01em;margin-top:3.2rem}

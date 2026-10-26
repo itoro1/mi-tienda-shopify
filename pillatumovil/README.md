@@ -162,6 +162,14 @@ a entender que lo incluye.
   y lo pintan cuadrado: el fondo va en `.quantity::before`, que es redondo.
 - **`.cart__ctas` es flex**: lo que se meta dentro se pone al lado del
   botón de pago y lo aplasta. Las garantías del carrito van después.
+- **Un ajuste `url` no admite cualquier valor por defecto** (por ejemplo,
+  `/pages/contact` da error al subir): se deja vacío y se pone el valor en
+  Liquid con `default`.
+- **Los filtros no van dentro de `for`** (`for h in 'a,b' | split: ','` da
+  error de sintaxis): primero `assign`, luego `for`.
+- **El título y la descripción de la portada** no salen de los metacampos
+  `global.title_tag` / `global.description_tag` (probado: Shopify ya no los
+  lee). Se ponen en *Tienda online → Preferencias*.
 - **Ancho de página**: el ajuste de Dawn solo admite múltiplos de 100.
   `ps-barra` fija `--page-width` a 1360 px y el mismo margen que `.ps-wrap`,
   en línea y antes del contenido para que no salte. Menú, portada, ficha y
@@ -212,6 +220,38 @@ a entender que lo incluye.
 - **Textos de Dawn** (`locales/es.json`): «Añadir al carrito», «Su
   carrito», «Su carrito está vacío», «IVA incluido. Envío gratis.» y el
   resto del carrito tratando de usted.
+
+## El resto de páginas (26/10/2026, segunda ronda)
+
+Ya no queda ninguna página con el aspecto de Dawn de serie:
+
+| Página | Plantilla | Sección |
+|---|---|---|
+| Pie (todas) | `sections/footer-group.json` | `ps-pie`: frase, WhatsApp, menús «Tienda» y «Ayuda», contacto, boletín (formulario de cliente con etiqueta `newsletter`), pagos activos y políticas |
+| Menú móvil | `snippets/header-drawer.liquid` (copia de Dawn) | `ps-menu-extra`: enlaces grandes, los dos packs con foto y precio, garantías y WhatsApp |
+| ¿Qué cable necesito? | `page.guia.json` | `ps-guia`: los dos conectores dibujados (borde inferior del iPhone), modelos, compra directa del pack o el cable y el cargador |
+| Contacto | `page.contact.json` | `ps-contacto`: WhatsApp destacado, formulario (nombre, correo, teléfono, n.º de pedido, mensaje) y atajos |
+| Envío, garantía y devoluciones | `page.info.json` | `ps-pagina` con cuatro cifras (24-48 h, 0 €, 14 días, 3 años) |
+| Otras páginas de texto | `page.json` | `ps-pagina`: índice automático con los `<h2>` del texto y WhatsApp al lado |
+| Buscar | `search.json` | `ps-buscar`: tarjetas `ps-tarjeta` y atajos si no hay resultados |
+| No encontrada | `404.json` | `ps-404` + `ps-precios` |
+| /collections | `list-collections.json` | `ps-categorias` con el título como `h1` («Colecciones») |
+| /cart | `cart.json` | el de Dawn en claro + «Complete su carga» sin lo que ya lleva el carrito |
+
+Cambios en datos de la tienda (no en el tema), hechos por la API:
+
+- Página nueva **«¿Qué cable necesito?»** (`/pages/que-cable-necesito`,
+  plantilla `guia`). En Canyon sale con la plantilla normal y su texto.
+- La página de envío y garantía usa la plantilla `info`. Comprobado que en
+  Canyon, que no la tiene, se sigue viendo con la normal.
+- Menús nuevos: `pie-tienda`, `pie-ayuda` y `atajos-contacto`. El enlace
+  «¿Qué cable necesito?» del menú `principal-estudio` va ahora a la guía.
+  Los menús que usa Canyon (`main-menu`, `footer`) no se han tocado.
+
+**Vídeo de portada en móvil**: `estudio-ia/ps-estudio-portada-movil.mp4`,
+un corte cuadrado de 900 × 900 sobre las cajas (520 KB, frente a 2,5 MB del
+de 1080p). `ps-hero` elige el vídeo por el ancho de pantalla (ajuste «Vídeo
+para móvil»); sin JavaScript se queda la foto de espera.
 
 ## Resto de la tienda
 - **Páginas**: Contacto (WhatsApp + formulario) y «Envío, garantía y
@@ -341,6 +381,14 @@ va aparte, siempre con su etiqueta «En Apple».
   Canarias, Ceuta y Melilla y si hay hora de corte para el envío del día.
 - Sin sección de opiniones a propósito: la tienda es nueva y no tiene
   reseñas propias. No se copian las de ITorostore.
+- **Título y descripción de la portada para Google** (*Tienda online →
+  Preferencias*), propuesta: «Cargador y cable originales de Apple para
+  iPhone | Pillatumovil» y «Cargador USB-C de 20 W y cables USB-C y
+  Lightning originales de Apple, nuevos y precintados. Envío gratis, en su
+  casa en 24-48 h, y 3 años de garantía.» Hoy sale solo «Pillatumovil».
+- **Aviso de cookies** de Shopify: trata de tú («tu experiencia», «las
+  aceptes»). Se cambia en *Configuración → Privacidad del cliente →
+  Banner de cookies*.
 - Higgsfield: prueba de 3 días con renovación automática a 49 €/mes si no
   se cancela. Quedan 5 créditos (26/10, 13:45).
 - Secciones `pt-` antiguas que ya no usa ninguna plantilla de Dawn (hero,

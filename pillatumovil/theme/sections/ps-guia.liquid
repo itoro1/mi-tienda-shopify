@@ -1,0 +1,174 @@
+{%- comment -%}
+  Guia "¿Que cable necesito?" (plantilla templates/page.guia.json, pagina
+  /pages/que-cable-necesito).
+
+  Dos tarjetas, una por conector, con el dibujo del borde de abajo del
+  iPhone para que el cliente lo compare con el suyo, los modelos y la
+  compra directa (pack o solo el cable). Debajo, el cargador, que es el
+  mismo para los dos, y WhatsApp por si sigue con dudas.
+  Productos y precios salen de los productos elegidos en el editor.
+{%- endcomment -%}
+{{ 'ps-base.css' | asset_url | stylesheet_tag }}
+<section class="ps ps--piedra ps-guia">
+  <div class="ps-wrap">
+    <header class="ps-guia__cab">
+      <p class="ps-guia__ante">Guía rápida</p>
+      <h1 class="ps-h1">{{ section.settings.titulo | newline_to_br }}</h1>
+      <p class="ps-lead">{{ section.settings.texto }}</p>
+    </header>
+
+    <div class="ps-guia__dos">
+      {%- for i in (1..2) -%}
+        {%- liquid
+          if i == 1
+            assign tipo = 'usb-c'
+            assign nombre = 'USB-C'
+            assign modelos = section.settings.modelos_c
+            assign nota = section.settings.nota_c
+            assign pack = section.settings.pack_c
+            assign cable = section.settings.cable_c
+          else
+            assign tipo = 'lightning'
+            assign nombre = 'Lightning'
+            assign modelos = section.settings.modelos_l
+            assign nota = section.settings.nota_l
+            assign pack = section.settings.pack_l
+            assign cable = section.settings.cable_l
+          endif
+        -%}
+        <article class="ps-guia__tar" id="{{ tipo }}">
+          <svg class="ps-guia__borde" viewBox="0 0 240 80" role="img" aria-label="Borde inferior del iPhone con conector {{ nombre }}">
+            <rect x="8" y="18" width="224" height="54" rx="27" fill="none" stroke="currentColor" stroke-width="2"/>
+            {%- for x in (0..5) -%}<circle cx="{{ x | times: 8 | plus: 38 }}" cy="45" r="2.2" fill="currentColor" opacity=".55"/><circle cx="{{ x | times: 8 | plus: 162 }}" cy="45" r="2.2" fill="currentColor" opacity=".55"/>{%- endfor -%}
+            {%- if tipo == 'usb-c' -%}
+              <rect x="94" y="37" width="52" height="16" rx="8" fill="#141824"/>
+              <rect x="105" y="43.5" width="30" height="3" rx="1.5" fill="#c9a86a"/>
+            {%- else -%}
+              <rect x="99" y="40" width="42" height="10" rx="5" fill="#141824"/>
+            {%- endif -%}
+          </svg>
+          <h2 class="ps-h2 ps-guia__nombre">{{ nombre }}</h2>
+          <p class="ps-guia__forma">{% if tipo == 'usb-c' %}Ovalado y más ancho, con una lengüeta dentro.{% else %}Más estrecho y plano, sin nada dentro.{% endif %}</p>
+          <div class="ps-guia__modelos">{{ modelos }}</div>
+          {%- if nota != blank -%}<p class="ps-guia__nota">{{ nota }}</p>{%- endif -%}
+
+          <ul class="ps-guia__compra" role="list">
+            {%- for j in (1..2) -%}
+              {%- liquid
+                if j == 1
+                  assign p = pack
+                  assign etiqueta = 'Cargador de 20 W + cable'
+                else
+                  assign p = cable
+                  assign etiqueta = 'Solo el cable (1 m)'
+                endif
+              -%}
+              {%- if p == blank -%}{%- continue -%}{%- endif -%}
+              {%- assign v = p.selected_or_first_available_variant -%}
+              <li>
+                <a class="ps-guia__prod" href="{{ p.url }}">
+                  <span class="ps-guia__etiq">{{ etiqueta }}</span>
+                  <span class="ps-guia__precio">{% if p.price_varies %}<small>desde </small>{% endif %}{{ v.price | money_without_currency }}&nbsp;€</span>
+                </a>
+                {%- if p.has_only_default_variant -%}
+                  <form method="post" action="{{ routes.cart_add_url }}" data-ps-anadir>
+                    <input type="hidden" name="id" value="{{ v.id }}">
+                    <input type="hidden" name="quantity" value="1">
+                    <input type="hidden" name="return_to" value="{{ routes.cart_url }}">
+                    <button class="ps-btn ps-btn--tinta" type="submit"{% unless v.available %} disabled{% endunless %} aria-label="Añadir {{ p.title | escape }}">Añadir</button>
+                  </form>
+                {%- else -%}
+                  <a class="ps-btn ps-btn--tinta" href="{{ p.url }}" aria-label="Ver {{ p.title | escape }}">Ver packs</a>
+                {%- endif -%}
+              </li>
+            {%- endfor -%}
+          </ul>
+        </article>
+      {%- endfor -%}
+    </div>
+
+    {%- assign c = section.settings.cargador -%}
+    {%- if c != blank -%}
+      {%- assign v = c.selected_or_first_available_variant -%}
+      <div class="ps-guia__cargador">
+        {%- if c.featured_image -%}{{ c.featured_image | image_url: width: 240 | image_tag: loading: 'lazy', alt: '', class: 'ps-guia__cimg' }}{%- endif -%}
+        <div>
+          <h2 class="ps-h3">El cargador es el mismo para los dos</h2>
+          <p>El adaptador de 20 W de Apple carga rápido cualquier iPhone desde el 8, con el cable que corresponda.</p>
+        </div>
+        <form method="post" action="{{ routes.cart_add_url }}" data-ps-anadir>
+          <input type="hidden" name="id" value="{{ v.id }}">
+          <input type="hidden" name="quantity" value="1">
+          <input type="hidden" name="return_to" value="{{ routes.cart_url }}">
+          <span class="ps-guia__precio">{{ v.price | money_without_currency }}&nbsp;€</span>
+          <button class="ps-btn ps-btn--borde" type="submit"{% unless v.available %} disabled{% endunless %}>Añadir el cargador</button>
+        </form>
+      </div>
+    {%- endif -%}
+
+    <div class="ps-guia__duda">
+      <p><strong>¿No lo tiene claro?</strong> Mándenos una foto del conector de su iPhone por WhatsApp y le decimos cuál es.</p>
+      <a class="ps-btn" href="https://wa.me/{{ section.settings.whatsapp }}?text={{ 'Hola, ¿qué cable necesito para mi iPhone? Le envío una foto del conector.' | url_encode }}" target="_blank" rel="noopener">{% render 'ps-icono', nombre: 'whatsapp', tam: 18 %}Enviar foto por WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+.ps-guia{padding:clamp(40px,5vw,72px) 0 clamp(64px,8vw,112px)}
+.ps-guia__cab{max-width:760px;margin-bottom:clamp(32px,4vw,52px)}
+.ps-guia__ante{margin:0 0 14px;font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ps-oro-tinta)}
+.ps-guia__dos{display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,2vw,24px)}
+.ps-guia__tar{display:flex;flex-direction:column;padding:clamp(22px,2.6vw,36px);border-radius:22px;background:var(--ps-papel);scroll-margin-top:120px}
+.ps-guia__tar:target{box-shadow:inset 0 0 0 2px var(--ps-tinta)}
+.ps-guia__borde{width:100%;max-width:320px;height:auto;color:var(--ps-gris);margin-bottom:22px}
+.ps-guia .ps-guia__nombre{font-size:clamp(30px,3vw,44px)}
+.ps-guia__forma{margin:8px 0 0;font-size:15px;color:var(--ps-gris)}
+.ps-guia__modelos{margin-top:18px;font-size:17px;line-height:1.55}
+.ps-guia__modelos p{margin:0}
+.ps-guia__modelos strong{font-weight:700}
+.ps-guia__nota{margin:10px 0 0;font-size:14px;color:var(--ps-gris)}
+.ps-guia__compra{list-style:none;margin:auto 0 0;padding:24px 0 0}
+.ps-guia__compra li{display:flex;align-items:center;gap:14px;padding:12px 0;border-top:1px solid var(--ps-linea)}
+.ps-guia__compra form{margin:0}
+.ps-guia__prod{flex:1;display:flex;flex-direction:column;gap:2px;color:inherit;text-decoration:none}
+.ps-guia__prod:hover .ps-guia__etiq{text-decoration:underline;text-underline-offset:4px}
+.ps-guia__etiq{font-size:15px;font-weight:700}
+.ps-guia__precio{font-size:20px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.ps-guia__precio small{font-size:13px;font-weight:400;color:var(--ps-gris)}
+.ps-guia .ps-guia__compra .ps-btn{min-height:46px;padding:0 22px;font-size:15px}
+.ps-guia__cargador{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:20px 28px;margin-top:clamp(14px,2vw,24px);padding:clamp(18px,2vw,26px) clamp(20px,2.6vw,36px);border-radius:22px;background:#fff}
+.ps-guia__cimg{width:84px;height:84px;object-fit:contain}
+.ps-guia__cargador p{margin:6px 0 0;color:var(--ps-gris)}
+.ps-guia__cargador form{display:flex;align-items:center;gap:16px;margin:0}
+.ps-guia__cargador .ps-btn{min-height:50px}
+.ps-guia__duda{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:18px 32px;margin-top:clamp(28px,4vw,48px);padding-top:clamp(24px,3vw,36px);border-top:1px solid var(--ps-linea)}
+.ps-guia__duda p{margin:0;max-width:52ch;font-size:17px}
+@media (max-width:749px){
+  .ps-guia__dos{grid-template-columns:1fr}
+  .ps-guia__cargador{grid-template-columns:auto 1fr}
+  .ps-guia__cargador form{grid-column:1/-1;justify-content:space-between}
+  .ps-guia__duda .ps-btn{width:100%}
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PS · Guía de cables",
+  "tag": "div",
+  "class": "ps-section",
+  "settings": [
+    { "type": "textarea", "id": "titulo", "label": "Título", "default": "¿Qué cable necesita su iPhone?" },
+    { "type": "textarea", "id": "texto", "label": "Texto", "default": "Mire el conector de la parte de abajo de su iPhone. Solo hay dos." },
+    { "type": "richtext", "id": "modelos_c", "label": "Modelos USB-C", "default": "<p><strong>iPhone 15 o posterior</strong>, en todas sus versiones.</p>" },
+    { "type": "text", "id": "nota_c", "label": "Nota USB-C" },
+    { "type": "product", "id": "pack_c", "label": "Pack USB-C" },
+    { "type": "product", "id": "cable_c", "label": "Cable USB-C" },
+    { "type": "richtext", "id": "modelos_l", "label": "Modelos Lightning", "default": "<p><strong>iPhone 8 al iPhone 14</strong>, en todas sus versiones, y el iPhone SE de 2.ª y 3.ª generación.</p>" },
+    { "type": "text", "id": "nota_l", "label": "Nota Lightning" },
+    { "type": "product", "id": "pack_l", "label": "Pack Lightning" },
+    { "type": "product", "id": "cable_l", "label": "Cable Lightning" },
+    { "type": "product", "id": "cargador", "label": "Cargador" },
+    { "type": "text", "id": "whatsapp", "label": "WhatsApp (con prefijo, sin +)", "default": "34641047539" }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,15 @@
+{
+  "sections": {
+    "main": {
+      "type": "ps-pagina",
+      "settings": {
+        "entrada": "",
+        "indice": true,
+        "whatsapp": "34641047539"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

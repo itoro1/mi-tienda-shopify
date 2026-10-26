@@ -23,9 +23,19 @@
       {%- if section.settings.ver_todo != blank -%}<a class="ps-link" href="{{ section.settings.coleccion.url | default: routes.all_products_collection_url }}">{{ section.settings.ver_todo }}</a>{%- endif -%}
     </div>
     <ul class="ps-pre__lista" role="list">
-      {%- assign n = 0 -%}
+      {%- liquid
+        assign n = 0
+        # En la pagina del carrito no se sugiere lo que ya lleva.
+        assign en_carro = ','
+        if template.name == 'cart'
+          assign ids = cart.items | map: 'product_id' | join: ','
+          assign en_carro = ',' | append: ids | append: ','
+        endif
+      -%}
       {%- for p in lista -%}
         {%- if product and p.id == product.id -%}{%- continue -%}{%- endif -%}
+        {%- assign marca = ',' | append: p.id | append: ',' -%}
+        {%- if en_carro contains marca -%}{%- continue -%}{%- endif -%}
         {%- if n >= 8 -%}{%- break -%}{%- endif -%}
         {%- assign n = n | plus: 1 -%}
         {%- render 'ps-tarjeta', p: p -%}

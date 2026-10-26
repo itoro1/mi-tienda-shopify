@@ -1,0 +1,50 @@
+{
+  "sections": {
+    "main": {
+      "type": "ps-categorias",
+      "blocks": {
+        "cargador": {
+          "type": "categoria",
+          "settings": {
+            "titulo": "Cargador",
+            "texto": "Adaptador USB-C de 20 W. Sirve para cualquier iPhone.",
+            "imagen": "shopify://shop_images/ps-cargador.jpg",
+            "producto": "cargador-usb-c-20w-apple-original"
+          }
+        },
+        "cables": {
+          "type": "categoria",
+          "settings": {
+            "titulo": "Cables",
+            "texto": "USB-C a USB-C o USB-C a Lightning, de 1 m.",
+            "imagen": "shopify://shop_images/ps-cable.jpg",
+            "coleccion": "cables"
+          }
+        },
+        "packs": {
+          "type": "categoria",
+          "settings": {
+            "titulo": "Packs",
+            "texto": "Cargador y cable juntos, por menos.",
+            "imagen": "shopify://shop_images/ps-pack-lightning.jpg",
+            "coleccion": "packs"
+          }
+        }
+      },
+      "block_order": [
+        "cargador",
+        "cables",
+        "packs"
+      ],
+      "settings": {
+        "titulo": "Colecciones",
+        "texto": "Cargador, cables y packs. Todo original de Apple, nuevo y en su caja.",
+        "fondo": "piedra",
+        "es_titulo": true
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

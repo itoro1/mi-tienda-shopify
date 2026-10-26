@@ -1,0 +1,72 @@
+{
+  "sections": {
+    "guia": {
+      "type": "ps-guia",
+      "settings": {
+        "titulo": "¿Qué cable necesita\nsu iPhone?",
+        "texto": "Mire el conector de la parte de abajo de su iPhone. Solo hay dos, y el cargador de 20 W sirve para los dos.",
+        "modelos_c": "<p><strong>iPhone 15 o posterior</strong>, en todas sus versiones.</p>",
+        "nota_c": "",
+        "pack_c": "pack-cargador-usb-c-20w-cable-usb-c-1m-apple-original",
+        "cable_c": "cable-usb-c-a-usb-c-1m-apple",
+        "modelos_l": "<p><strong>iPhone 8 al iPhone 14</strong>, en todas sus versiones, y el iPhone SE de 2.ª y 3.ª generación.</p>",
+        "nota_l": "También carga los iPhone anteriores con Lightning, aunque sin carga rápida.",
+        "pack_l": "cargador-apple-usb-c",
+        "cable_l": "cable-usb-c-a-lightning-1m-apple",
+        "cargador": "cargador-usb-c-20w-apple-original",
+        "whatsapp": "34641047539"
+      }
+    },
+    "faq": {
+      "type": "ps-faq",
+      "blocks": {
+        "q3": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Carga rápido?",
+            "respuesta": "<p>Sí. Con el adaptador de 20 W, el iPhone 8 o posterior admite carga rápida: según Apple, hasta el 50 % en unos 30 minutos.</p>"
+          }
+        },
+        "q0": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Cuánto tarda y cuánto cuesta el envío?",
+            "respuesta": "<p>Lo recibe en casa en 24⁠-⁠48 horas laborables y el envío es gratis en todos los pedidos. La devolución también es gratis. Tiene los detalles en <a href=\"/pages/garantia-y-devoluciones\">Envío, garantía y devoluciones</a>.</p>"
+          }
+        },
+        "q4": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Qué garantía tienen?",
+            "respuesta": "<p>La garantía legal de 3 años que corresponde a un producto nuevo, desde la entrega.</p>"
+          }
+        },
+        "q5": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Puedo devolver el pedido?",
+            "respuesta": "<p>Sí. Dispone de 14 días naturales desde que lo recibe para devolverlo sin necesidad de justificarlo. Tiene todos los detalles en <a href=\"/pages/garantia-y-devoluciones\">Garantía y devoluciones</a>.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q3",
+        "q0",
+        "q4",
+        "q5"
+      ],
+      "settings": {
+        "titulo": "Más dudas",
+        "texto": "Si la suya no está, escríbanos.",
+        "boton": "Escribir por WhatsApp",
+        "enlace": "https://wa.me/34641047539",
+        "abrir_primera": false,
+        "fondo": "papel"
+      }
+    }
+  },
+  "order": [
+    "guia",
+    "faq"
+  ]
+}

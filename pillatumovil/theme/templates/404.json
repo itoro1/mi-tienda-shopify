@@ -1,0 +1,26 @@
+{
+  "sections": {
+    "main": {
+      "type": "ps-404",
+      "settings": {
+        "titulo": "Esta página no existe.",
+        "texto": "Puede que el enlace esté mal escrito o que la página se haya movido. Lo que sí tenemos, aquí abajo."
+      }
+    },
+    "precios": {
+      "type": "ps-precios",
+      "settings": {
+        "titulo": "Cargadores y cables originales",
+        "texto": "Con el precio de Apple al lado.",
+        "productos": [],
+        "coleccion": "cargadores-y-cables",
+        "ver_todo": "Ver todos los productos",
+        "fondo": "papel"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "precios"
+  ]
+}

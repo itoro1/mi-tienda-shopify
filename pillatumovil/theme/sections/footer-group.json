@@ -2,43 +2,6 @@
   "name": "t:sections.footer.name",
   "type": "footer",
   "sections": {
-    "footer": {
-      "type": "footer",
-      "settings": {
-        "color_scheme": "scheme-2",
-        "newsletter_enable": true,
-        "newsletter_heading": "Reciba novedades y ofertas",
-        "enable_follow_on_shop": false,
-        "show_social": false,
-        "enable_country_selector": false,
-        "enable_language_selector": false,
-        "payment_enable": true,
-        "show_policy": true,
-        "margin_top": 0,
-        "padding_top": 48,
-        "padding_bottom": 32
-      },
-      "blocks": {
-        "marca": {
-          "type": "text",
-          "settings": {
-            "heading": "Pillatumovil",
-            "subtext": "<p>Cargadores y cables originales de Apple, nuevos y con garantía legal de 3 años.</p><p>WhatsApp: <a href=\"https://wa.me/34641047539\">+34 641 04 75 39</a></p>"
-          }
-        },
-        "info": {
-          "type": "link_list",
-          "settings": {
-            "heading": "Información",
-            "menu": "footer"
-          }
-        }
-      },
-      "block_order": [
-        "marca",
-        "info"
-      ]
-    },
     "whatsapp": {
       "type": "pt-whatsapp",
       "settings": {
@@ -47,10 +10,24 @@
         "etiqueta": "Consúltenos",
         "mensaje": "Hola, quería hacer una consulta sobre un cargador."
       }
+    },
+    "pie": {
+      "type": "ps-pie",
+      "settings": {
+        "frase": "Originales de Apple.\nEn su casa en 24⁠-⁠48 h.",
+        "whatsapp": "34641047539",
+        "whatsapp_texto": "+34 641 04 75 39",
+        "nota_contacto": "Le respondemos por WhatsApp. Si nos escribe por un pedido, indíquenos su número.",
+        "menu_1": "pie-tienda",
+        "menu_2": "pie-ayuda",
+        "boletin": true,
+        "boletin_titulo": "Ofertas",
+        "boletin_texto": "Le avisamos cuando bajemos precios. Sin más correos que esos."
+      }
     }
   },
   "order": [
-    "footer",
+    "pie",
     "whatsapp"
   ]
 }

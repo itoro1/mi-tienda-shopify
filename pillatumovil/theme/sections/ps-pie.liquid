@@ -1,0 +1,169 @@
+{%- comment -%}
+  Pie de pagina de la tienda (en lugar del de Dawn).
+
+  Arriba, la promesa y WhatsApp. Debajo, dos menus (se eligen en el editor:
+  "Tienda" y "Ayuda"), la direccion de contacto y el boletin. Abajo del
+  todo, el logo, los medios de pago que tiene activos la tienda, el (c) y
+  las politicas legales que existan (Configuracion > Politicas).
+
+  El boletin es el formulario de cliente de Shopify con la etiqueta
+  "newsletter", igual que el de Dawn: las altas aparecen en Clientes.
+{%- endcomment -%}
+{{ 'ps-base.css' | asset_url | stylesheet_tag }}
+<footer class="ps ps--noche ps-pie">
+  <div class="ps-wrap">
+    <div class="ps-pie__cab">
+      <p class="ps-pie__frase">{{ section.settings.frase | newline_to_br }}</p>
+      <div class="ps-pie__cta">
+        {%- if section.settings.whatsapp != blank -%}
+          <a class="ps-btn ps-btn--borde" href="https://wa.me/{{ section.settings.whatsapp | remove: ' ' | remove: '+' }}" target="_blank" rel="noopener">{% render 'ps-icono', nombre: 'whatsapp', tam: 18 %}Escribir por WhatsApp</a>
+        {%- endif -%}
+        <ul class="ps-pie__sellos" role="list">
+          <li>{% render 'ps-icono', nombre: 'envio', tam: 16 %}Lo recibe en 24&#8288;-&#8288;48&nbsp;h</li>
+          <li>{% render 'ps-icono', nombre: 'devolucion', tam: 16 %}Envío y devolución gratis</li>
+          <li>{% render 'ps-icono', nombre: 'garantia', tam: 16 %}3 años de garantía</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ps-pie__cols">
+      {%- for i in (1..2) -%}
+        {%- assign clave = 'menu_' | append: i -%}
+        {%- assign menu = section.settings[clave] -%}
+        {%- if menu != blank -%}
+          <nav class="ps-pie__col" aria-label="{{ menu.title | escape }}">
+            <h2 class="ps-pie__tit">{{ menu.title }}</h2>
+            <ul role="list">
+              {%- for link in menu.links -%}
+                <li><a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title }}</a></li>
+              {%- endfor -%}
+            </ul>
+          </nav>
+        {%- endif -%}
+      {%- endfor -%}
+
+      <div class="ps-pie__col">
+        <h2 class="ps-pie__tit">Contacto</h2>
+        <ul role="list">
+          {%- if section.settings.whatsapp != blank -%}
+            <li><a href="https://wa.me/{{ section.settings.whatsapp | remove: ' ' | remove: '+' }}" target="_blank" rel="noopener">WhatsApp {{ section.settings.whatsapp_texto }}</a></li>
+          {%- endif -%}
+          <li><a href="{{ section.settings.contacto | default: '/pages/contact' }}">Formulario de contacto</a></li>
+        </ul>
+        {%- if section.settings.nota_contacto != blank -%}<p class="ps-pie__nota">{{ section.settings.nota_contacto }}</p>{%- endif -%}
+      </div>
+
+      {%- if section.settings.boletin -%}
+        <div class="ps-pie__col ps-pie__boletin">
+          <h2 class="ps-pie__tit">{{ section.settings.boletin_titulo }}</h2>
+          <p class="ps-pie__nota">{{ section.settings.boletin_texto }}</p>
+          {%- form 'customer', id: 'PsPieBoletin', class: 'ps-pie__form' -%}
+            <input type="hidden" name="contact[tags]" value="newsletter">
+            <label class="ps-visually-hidden" for="PsPieCorreo">Correo electrónico</label>
+            <div class="ps-pie__campo">
+              <input id="PsPieCorreo" type="email" name="contact[email]" value="{{ form.email }}" autocomplete="email" placeholder="Su correo electrónico" required{% if form.errors %} aria-invalid="true" aria-describedby="PsPieBoletin-msg"{% endif %}>
+              <button type="submit">Apuntarme</button>
+            </div>
+            {%- if form.errors -%}
+              <p class="ps-pie__msg ps-pie__msg--error" id="PsPieBoletin-msg" role="alert">{{ form.errors.translated_fields.email | capitalize }} {{ form.errors.messages.email }}</p>
+            {%- elsif form.posted_successfully? -%}
+              <p class="ps-pie__msg" role="status">Hecho. Le avisaremos de las ofertas.</p>
+            {%- endif -%}
+          {%- endform -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="ps-pie__base">
+      <a class="ps-pie__logo" href="{{ routes.root_url }}">
+        {%- if settings.logo -%}
+          {{ settings.logo | image_url: width: 360 | image_tag: width: 150, height: nil, alt: shop.name, loading: 'lazy' }}
+        {%- else -%}
+          {{ shop.name }}
+        {%- endif -%}
+      </a>
+      {%- if shop.enabled_payment_types.size > 0 -%}
+        <ul class="ps-pie__pagos" role="list" aria-label="Formas de pago">
+          {%- for type in shop.enabled_payment_types -%}
+            <li>{{ type | payment_type_svg_tag }}</li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+      <div class="ps-pie__legal">
+        <small>© {{ 'now' | date: '%Y' }} {{ shop.name }}</small>
+        {%- for policy in shop.policies -%}
+          {%- if policy != blank -%}<a href="{{ policy.url }}">{{ policy.title }}</a>{%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+</footer>
+
+{% stylesheet %}
+.ps-pie{padding:clamp(56px,7vw,96px) 0 28px;border-top:1px solid var(--ps-linea-osc)}
+.ps-pie__cab{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:28px 48px;padding-bottom:clamp(40px,5vw,64px);border-bottom:1px solid var(--ps-linea-osc)}
+.ps .ps-pie__frase{margin:0;max-width:22ch;font-size:clamp(30px,3.4vw,50px);font-weight:var(--ps-peso-tit);line-height:1.04;letter-spacing:-.03em;color:var(--ps-marfil);text-wrap:balance}
+.ps-pie__cta{display:flex;flex-direction:column;align-items:flex-start;gap:18px}
+.ps-pie__cta .ps-btn{min-height:52px}
+.ps-pie__sellos{display:flex;flex-wrap:wrap;gap:8px 22px;list-style:none;margin:0;padding:0;font-size:14px;color:var(--ps-niebla)}
+.ps-pie__sellos li{display:flex;align-items:center;gap:8px}
+.ps-pie__sellos svg{color:var(--ps-oro)}
+.ps-pie__cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) minmax(0,1.5fr);gap:36px 40px;padding:clamp(36px,5vw,56px) 0}
+.ps .ps-pie__tit{margin:0 0 16px;font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ps-oro-claro)}
+.ps-pie__col ul{list-style:none;margin:0;padding:0}
+.ps-pie__col li + li{margin-top:10px}
+.ps-pie__col a{color:var(--ps-marfil);font-size:15px;text-decoration:none;opacity:.86}
+.ps-pie__col a:hover,.ps-pie__col a[aria-current]{opacity:1;text-decoration:underline;text-decoration-color:var(--ps-oro);text-underline-offset:5px}
+.ps-pie__nota{margin:14px 0 0;max-width:42ch;font-size:14px;line-height:1.5;color:var(--ps-niebla)}
+.ps-pie__boletin .ps-pie__nota{margin-top:0}
+.ps-pie__form{margin-top:16px}
+.ps-pie__campo{display:flex;align-items:center;max-width:440px;padding:5px;border-radius:999px;background:rgba(244,241,234,.06);box-shadow:inset 0 0 0 1px rgba(244,241,234,.22)}
+.ps-pie__campo:focus-within{box-shadow:inset 0 0 0 1.5px var(--ps-oro)}
+.ps-pie__campo input{flex:1;min-width:0;height:46px;padding:0 16px;border:0;background:transparent;color:var(--ps-marfil);font:inherit;font-size:15px}
+.ps-pie__campo input::placeholder{color:var(--ps-niebla)}
+.ps-pie__campo input:focus{outline:0}
+.ps-pie__campo button{flex:none;height:46px;padding:0 22px;border:0;border-radius:999px;background:var(--ps-oro);color:var(--ps-noche);font:inherit;font-size:15px;font-weight:700;cursor:pointer}
+.ps-pie__campo button:hover{background:#d8bc84}
+.ps-pie__msg{margin:10px 0 0;font-size:14px;color:var(--ps-oro-claro)}
+.ps-pie__msg--error{color:#f2a7a7}
+.ps-pie__base{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px 32px;padding-top:28px;border-top:1px solid var(--ps-linea-osc)}
+.ps-pie__logo{display:block;color:var(--ps-marfil);text-decoration:none;font-size:22px}
+.ps-pie__logo img{width:150px;height:auto}
+.ps-pie__pagos{display:flex;flex-wrap:wrap;gap:8px;list-style:none;margin:0;padding:0}
+.ps-pie__pagos svg{display:block;width:38px;height:24px}
+.ps-pie__legal{display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px;font-size:13px;color:var(--ps-niebla)}
+.ps-pie__legal a{color:inherit;text-decoration:none}
+.ps-pie__legal a:hover{color:var(--ps-marfil);text-decoration:underline;text-underline-offset:4px}
+@media (max-width:989px){
+  .ps-pie__cols{grid-template-columns:1fr 1fr}
+  .ps-pie__boletin{grid-column:1/-1}
+}
+@media (max-width:599px){
+  .ps-pie__cab{align-items:flex-start}
+  .ps-pie__cta,.ps-pie__cta .ps-btn{width:100%}
+  .ps-pie__cols{gap:32px 20px}
+  .ps-pie__cols > .ps-pie__col:nth-child(3){grid-column:1/-1}
+  .ps-pie__col a{display:inline-block;padding:3px 0}
+  .ps-pie__base{flex-direction:column;align-items:flex-start}
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PS · Pie de página",
+  "tag": "div",
+  "class": "ps-section",
+  "settings": [
+    { "type": "textarea", "id": "frase", "label": "Frase", "default": "Originales de Apple.\nEn su casa en 24-48 h." },
+    { "type": "text", "id": "whatsapp", "label": "WhatsApp (con prefijo, sin +)", "default": "34641047539" },
+    { "type": "text", "id": "whatsapp_texto", "label": "WhatsApp como se lee", "default": "+34 641 04 75 39" },
+    { "type": "url", "id": "contacto", "label": "Página de contacto", "info": "Si se deja vacío, /pages/contact." },
+    { "type": "textarea", "id": "nota_contacto", "label": "Nota bajo el contacto" },
+    { "type": "link_list", "id": "menu_1", "label": "Menú 1 (Tienda)" },
+    { "type": "link_list", "id": "menu_2", "label": "Menú 2 (Ayuda)" },
+    { "type": "checkbox", "id": "boletin", "label": "Boletín", "default": true },
+    { "type": "text", "id": "boletin_titulo", "label": "Título del boletín", "default": "Ofertas" },
+    { "type": "textarea", "id": "boletin_texto", "label": "Texto del boletín", "default": "Le avisamos cuando bajemos precios. Sin más correos que esos." }
+  ]
+}
+{% endschema %}

@@ -6,7 +6,11 @@
 <section class="ps ps--{{ section.settings.fondo }} ps-sec ps-cat">
   <div class="ps-wrap">
     <div class="ps-cat__cab">
-      <h2 class="ps-h2">{{ section.settings.titulo }}</h2>
+      {%- if section.settings.es_titulo -%}
+        <h1 class="ps-h2">{{ section.settings.titulo }}</h1>
+      {%- else -%}
+        <h2 class="ps-h2">{{ section.settings.titulo }}</h2>
+      {%- endif -%}
       {%- if section.settings.texto != blank -%}<p class="ps-lead">{{ section.settings.texto }}</p>{%- endif -%}
     </div>
     <ul class="ps-cat__lista" role="list">
@@ -71,6 +75,7 @@
   "settings": [
     { "type": "text", "id": "titulo", "label": "Título", "default": "Elija lo que necesita" },
     { "type": "textarea", "id": "texto", "label": "Texto" },
+    { "type": "checkbox", "id": "es_titulo", "label": "Es el título de la página (h1)", "default": false },
     { "type": "select", "id": "fondo", "label": "Fondo", "default": "piedra", "options": [
       { "value": "piedra", "label": "Piedra" }, { "value": "papel", "label": "Papel" }, { "value": "noche", "label": "Noche" } ] }
   ],

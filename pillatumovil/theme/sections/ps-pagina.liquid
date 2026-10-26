@@ -1,0 +1,127 @@
+{%- comment -%}
+  Pagina de texto (envio y garantia, avisos legales...) en estilo estudio.
+
+  - Titulo de la pagina y, si se ponen, cifras clave (bloques "Cifra").
+  - El texto de la pagina (se edita en Tienda online > Paginas) en una
+    columna de lectura.
+  - Indice: sale solo de los titulos <h2> del texto. A cada uno se le pone
+    un id a partir de su texto para poder enlazarlo.
+  - Al lado, WhatsApp por si quedan dudas.
+{%- endcomment -%}
+{{ 'ps-base.css' | asset_url | stylesheet_tag }}
+{%- liquid
+  assign contenido = page.content
+  assign trozos = page.content | split: '<h2>'
+  assign titulos = ''
+  for t in trozos offset: 1
+    assign titulo = t | split: '</h2>' | first
+    assign slug = titulo | strip_html | handleize
+    assign de = '<h2>' | append: titulo | append: '</h2>'
+    assign a = '<h2 id="' | append: slug | append: '">' | append: titulo | append: '</h2>'
+    assign contenido = contenido | replace_first: de, a
+    assign titulos = titulos | append: slug | append: '|' | append: titulo | append: '§'
+  endfor
+  assign titulos = titulos | split: '§'
+-%}
+<section class="ps ps--piedra ps-pag">
+  <div class="ps-wrap">
+    <header class="ps-pag__cab">
+      <h1 class="ps-h1">{{ page.title }}</h1>
+      {%- if section.settings.entrada != blank -%}<p class="ps-lead">{{ section.settings.entrada }}</p>{%- endif -%}
+    </header>
+
+    {%- if section.blocks.size > 0 -%}
+      <ul class="ps-pag__cifras" role="list">
+        {%- for block in section.blocks -%}
+          <li {{ block.shopify_attributes }}><b>{{ block.settings.cifra }}</b><span>{{ block.settings.texto }}</span></li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+
+    <div class="ps-pag__cuerpo">
+      <aside class="ps-pag__lado">
+        {%- if section.settings.indice and titulos.size > 1 -%}
+          <nav class="ps-pag__indice" aria-label="En esta página">
+            <p>En esta página</p>
+            <ul role="list">
+              {%- for par in titulos -%}
+                {%- assign trozo = par | split: '|' -%}
+                <li><a href="#{{ trozo[0] }}">{{ trozo[1] | strip_html }}</a></li>
+              {%- endfor -%}
+            </ul>
+          </nav>
+        {%- endif -%}
+        <div class="ps-pag__ayuda">
+          <p><strong>¿Le queda alguna duda?</strong> Escríbanos y se lo explicamos.</p>
+          <a class="ps-btn ps-btn--tinta" href="https://wa.me/{{ section.settings.whatsapp }}" target="_blank" rel="noopener">{% render 'ps-icono', nombre: 'whatsapp', tam: 18 %}WhatsApp</a>
+        </div>
+      </aside>
+      <div class="ps-pag__texto">{{ contenido }}</div>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+.ps-pag{padding:clamp(40px,5vw,72px) 0 clamp(64px,8vw,112px)}
+.ps-pag__cab{max-width:820px}
+.ps-pag__cifras{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;list-style:none;margin:clamp(28px,4vw,44px) 0 0;padding:0}
+.ps-pag__cifras li{display:flex;flex-direction:column;gap:4px;padding:20px 22px;border-radius:18px;background:var(--ps-tinta);color:var(--ps-marfil)}
+.ps-pag__cifras b{font-size:clamp(28px,2.6vw,38px);font-weight:700;letter-spacing:-.03em;line-height:1;color:var(--ps-oro-claro);white-space:nowrap}
+.ps-pag__cifras span{font-size:15px;color:var(--ps-niebla)}
+.ps-pag__cuerpo{display:grid;grid-template-columns:minmax(220px,300px) minmax(0,760px);gap:clamp(28px,5vw,80px);margin-top:clamp(32px,4.5vw,56px);align-items:start}
+.ps-pag__lado{position:sticky;top:calc(var(--header-height,84px) + 24px);display:flex;flex-direction:column;gap:18px}
+.ps-pag__indice p{margin:0 0 10px;font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ps-oro-tinta)}
+.ps-pag__indice ul{list-style:none;margin:0;padding:0;border-left:1px solid var(--ps-linea)}
+.ps-pag__indice a{display:block;padding:7px 0 7px 16px;margin-left:-1px;border-left:2px solid transparent;color:var(--ps-gris);font-size:15px;text-decoration:none}
+.ps-pag__indice a:hover{color:var(--ps-tinta);border-left-color:var(--ps-oro)}
+.ps-pag__ayuda{padding:20px;border-radius:18px;background:var(--ps-papel)}
+.ps-pag__ayuda p{margin:0 0 14px;font-size:15px;line-height:1.5;color:var(--ps-gris)}
+.ps-pag__ayuda strong{color:var(--ps-tinta)}
+.ps-pag .ps-pag__ayuda .ps-btn{min-height:46px;padding:0 22px;font-size:15px}
+.ps-pag__texto{padding:clamp(24px,3.4vw,48px);border-radius:22px;background:var(--ps-papel);font-size:17px;line-height:1.65;color:#2b303d}
+.ps-pag__texto > :first-child{margin-top:0}
+.ps-pag__texto h2{margin:44px 0 12px;padding-top:28px;border-top:1px solid var(--ps-linea);font-family:var(--ps-sans);font-size:clamp(24px,2vw,30px);font-weight:var(--ps-peso-tit);letter-spacing:-.025em;line-height:1.15;color:var(--ps-tinta);scroll-margin-top:calc(var(--header-height,84px) + 24px)}
+.ps-pag__texto > h2:first-child{padding-top:0;border-top:0}
+.ps-pag__texto h3{margin:28px 0 8px;font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ps-oro-tinta)}
+.ps-pag__texto p{margin:0 0 14px}
+.ps-pag__texto strong{color:var(--ps-tinta)}
+.ps-pag__texto a{color:var(--ps-tinta);font-weight:600;text-decoration:underline;text-decoration-color:var(--ps-oro);text-decoration-thickness:1.5px;text-underline-offset:4px}
+.ps-pag__texto ul,.ps-pag__texto ol{margin:0 0 14px;padding-left:22px}
+.ps-pag__texto li{margin:6px 0;padding-left:4px}
+.ps-pag__texto ol li::marker{font-weight:700;color:var(--ps-oro-tinta)}
+@media (max-width:599px){
+  .ps-pag__cifras{grid-template-columns:1fr 1fr;gap:10px}
+  .ps-pag__cifras li{padding:16px}
+  .ps-pag__cifras span{font-size:14px}
+}
+@media (max-width:989px){
+  .ps-pag__cuerpo{grid-template-columns:1fr}
+  .ps-pag__lado{position:static;order:2}
+  .ps-pag__indice{display:none}
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PS · Página de texto",
+  "tag": "div",
+  "class": "ps-section",
+  "settings": [
+    { "type": "textarea", "id": "entrada", "label": "Entrada bajo el título" },
+    { "type": "checkbox", "id": "indice", "label": "Índice con los apartados", "default": true },
+    { "type": "text", "id": "whatsapp", "label": "WhatsApp (con prefijo, sin +)", "default": "34641047539" }
+  ],
+  "blocks": [
+    {
+      "type": "cifra",
+      "name": "Cifra",
+      "settings": [
+        { "type": "text", "id": "cifra", "label": "Cifra", "default": "24-48 h" },
+        { "type": "text", "id": "texto", "label": "Texto", "default": "hasta su casa" }
+      ]
+    }
+  ],
+  "max_blocks": 4,
+  "presets": [{ "name": "PS · Página de texto" }]
+}
+{% endschema %}

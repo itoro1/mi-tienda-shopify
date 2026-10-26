@@ -1,0 +1,51 @@
+{
+  "sections": {
+    "main": {
+      "type": "ps-pagina",
+      "blocks": {
+        "c1": {
+          "type": "cifra",
+          "settings": {
+            "cifra": "24⁠-⁠48 h",
+            "texto": "hasta su casa"
+          }
+        },
+        "c2": {
+          "type": "cifra",
+          "settings": {
+            "cifra": "0 €",
+            "texto": "de envío, en todos los pedidos"
+          }
+        },
+        "c3": {
+          "type": "cifra",
+          "settings": {
+            "cifra": "14 días",
+            "texto": "para devolverlo, gratis"
+          }
+        },
+        "c4": {
+          "type": "cifra",
+          "settings": {
+            "cifra": "3 años",
+            "texto": "de garantía legal"
+          }
+        }
+      },
+      "block_order": [
+        "c1",
+        "c2",
+        "c3",
+        "c4"
+      ],
+      "settings": {
+        "entrada": "Todo lo que pasa desde que hace el pedido: cuándo le llega, cómo devolverlo y qué cubre la garantía.",
+        "indice": true,
+        "whatsapp": "34641047539"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

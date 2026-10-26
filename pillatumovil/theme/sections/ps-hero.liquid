@@ -28,7 +28,11 @@
 <section class="ps ps--noche ps-hero">
   <div class="ps-hero__media">
     {%- if section.settings.video_url != blank -%}
-      <video class="ps-hero__video" src="{{ section.settings.video_url }}"
+      {%- comment -%} El src lo pone el script de abajo: en movil el corte
+        cuadrado (mucho mas ligero), en el resto el de 1080p. Sin JavaScript
+        se queda la foto de espera. {%- endcomment -%}
+      <video class="ps-hero__video" data-src="{{ section.settings.video_url }}"
+        {%- if section.settings.video_movil != blank %} data-src-movil="{{ section.settings.video_movil }}"{% endif %}
         {%- if poster != blank %} poster="{{ poster | image_url: width: 1920 }}"{% endif %}
         autoplay muted loop playsinline preload="auto" aria-hidden="true" data-ps-video></video>
     {%- elsif poster != blank -%}
@@ -67,6 +71,8 @@
       var v = document.currentScript.parentElement.querySelector('[data-ps-video]');
       if (!v) return;
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { v.removeAttribute('autoplay'); v.pause(); return; }
+      var movil = v.getAttribute('data-src-movil');
+      v.src = movil && window.matchMedia('(max-width: 749px)').matches ? movil : v.getAttribute('data-src');
       var jugar = function () { var p = v.play(); if (p && p.catch) p.catch(function () {}); };
       jugar();
       if ('IntersectionObserver' in window) {
@@ -115,6 +121,7 @@
   "class": "ps-section",
   "settings": [
     { "type": "text", "id": "video_url", "label": "Enlace del vídeo (.mp4)", "info": "Sube el vídeo en Contenido > Archivos y pega aquí su enlace." },
+    { "type": "text", "id": "video_movil", "label": "Vídeo para móvil (.mp4, cuadrado)", "info": "Opcional. Un corte cuadrado más ligero; si no hay, el móvil usa el de arriba." },
     { "type": "image_picker", "id": "poster", "label": "Foto mientras carga el vídeo" },
     { "type": "textarea", "id": "titulo", "label": "Titular", "default": "Cargador y cable.\nOriginales de Apple." },
     { "type": "textarea", "id": "texto", "label": "Texto", "default": "El pack completo, nuevo y en su caja precintada. Por menos de lo que cuesta en Apple." },

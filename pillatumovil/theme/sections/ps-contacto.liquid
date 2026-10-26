@@ -1,0 +1,121 @@
+{%- comment -%}
+  Pagina de contacto: WhatsApp en grande (es lo mas rapido) y, al lado, el
+  formulario de contacto de Shopify, que llega al correo de la tienda.
+  El texto de la izquierda es el de la pagina (Tienda online > Paginas).
+{%- endcomment -%}
+{{ 'ps-base.css' | asset_url | stylesheet_tag }}
+<section class="ps ps--piedra ps-con">
+  <div class="ps-wrap ps-con__grid">
+    <div class="ps-con__info">
+      <h1 class="ps-h1">{{ section.settings.titulo | default: page.title }}</h1>
+      <div class="ps-con__texto">{{ page.content }}</div>
+
+      <div class="ps-con__wa">
+        <p class="ps-con__wa-tit">{% render 'ps-icono', nombre: 'whatsapp', tam: 22 %}WhatsApp</p>
+        <p class="ps-con__wa-num">{{ section.settings.whatsapp_texto }}</p>
+        <p class="ps-con__wa-nota">{{ section.settings.whatsapp_nota }}</p>
+        <a class="ps-btn" href="https://wa.me/{{ section.settings.whatsapp }}" target="_blank" rel="noopener">Abrir WhatsApp</a>
+      </div>
+
+      {%- if section.settings.enlaces != blank -%}
+        <nav class="ps-con__atajos" aria-label="Antes de escribir">
+          <p>Quizá le sirva</p>
+          <ul role="list">
+            {%- for link in section.settings.enlaces.links -%}
+              <li><a class="ps-link" href="{{ link.url }}">{{ link.title }}</a></li>
+            {%- endfor -%}
+          </ul>
+        </nav>
+      {%- endif -%}
+    </div>
+
+    <div class="ps-con__form">
+      <h2 class="ps-h3">{{ section.settings.form_titulo }}</h2>
+      {%- form 'contact', id: 'PsContacto' -%}
+        {%- if form.posted_successfully? -%}
+          <p class="ps-con__ok" role="status" tabindex="-1">{% render 'ps-icono', nombre: 'check', tam: 20 %}Mensaje enviado. Le responderemos lo antes posible.</p>
+        {%- elsif form.errors -%}
+          <p class="ps-con__err" role="alert">Revise el correo electrónico: {{ form.errors.messages.email | default: 'falta o no es válido' }}.</p>
+        {%- endif -%}
+        <div class="ps-con__campos">
+          <label class="ps-con__campo">
+            <span>Nombre</span>
+            <input type="text" name="contact[Nombre]" autocomplete="name" value="{{ form.name }}">
+          </label>
+          <label class="ps-con__campo">
+            <span>Correo electrónico <em>(obligatorio)</em></span>
+            <input type="email" name="contact[email]" autocomplete="email" required value="{{ form.email }}"{% if form.errors contains 'email' %} aria-invalid="true"{% endif %}>
+          </label>
+          <label class="ps-con__campo">
+            <span>Teléfono</span>
+            <input type="tel" name="contact[Teléfono]" autocomplete="tel" pattern="[0-9\-\+\s]*" value="{{ form.phone }}">
+          </label>
+          <label class="ps-con__campo">
+            <span>Número de pedido, si lo tiene</span>
+            <input type="text" name="contact[Pedido]" inputmode="numeric">
+          </label>
+          <label class="ps-con__campo ps-con__campo--ancho">
+            <span>Mensaje</span>
+            <textarea name="contact[body]" rows="6">{{ form.body }}</textarea>
+          </label>
+        </div>
+        <button class="ps-btn ps-btn--tinta" type="submit">Enviar mensaje</button>
+        <p class="ps-con__legal">Usamos sus datos solo para responderle. Más información en la <a href="{{ shop.privacy_policy.url | default: '/policies/privacy-policy' }}">política de privacidad</a>.</p>
+      {%- endform -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+.ps-con{padding:clamp(40px,5vw,72px) 0 clamp(64px,8vw,112px)}
+.ps-con__grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:clamp(32px,6vw,96px);align-items:start}
+.ps-con__texto{margin-top:20px;max-width:46ch;font-size:17px;line-height:1.6;color:var(--ps-gris)}
+.ps-con__texto p{margin:0 0 12px}
+.ps-con__texto a{color:var(--ps-tinta)}
+.ps-con__wa{margin-top:28px;padding:clamp(22px,2.6vw,32px);border-radius:22px;background:var(--ps-noche);color:var(--ps-marfil)}
+.ps-con__wa-tit{display:flex;align-items:center;gap:10px;margin:0;font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ps-oro-claro)}
+.ps-con__wa-num{margin:12px 0 0;font-size:clamp(28px,2.8vw,40px);font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.ps-con__wa-nota{margin:6px 0 20px;font-size:15px;color:var(--ps-niebla)}
+.ps-con__atajos{margin-top:28px}
+.ps-con__atajos p{margin:0 0 10px;font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ps-oro-tinta)}
+.ps-con__atajos ul{list-style:none;margin:0;padding:0}
+.ps-con__atajos li + li{margin-top:12px}
+.ps-con__form{padding:clamp(22px,3vw,40px);border-radius:22px;background:var(--ps-papel)}
+.ps-con__campos{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0 22px}
+.ps-con__campo{display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:700;color:var(--ps-tinta)}
+.ps-con__campo em{font-style:normal;font-weight:400;color:var(--ps-gris)}
+.ps-con__campo--ancho{grid-column:1/-1}
+.ps-con__campo input,.ps-con__campo textarea{width:100%;padding:13px 14px;border:0;border-radius:12px;background:#fff;box-shadow:inset 0 0 0 1px var(--ps-linea);color:var(--ps-tinta);font:inherit;font-size:16px;font-weight:400}
+.ps-con__campo textarea{resize:vertical;min-height:140px}
+.ps-con__campo input:focus,.ps-con__campo textarea:focus{outline:0;box-shadow:inset 0 0 0 2px var(--ps-tinta)}
+.ps-con__campo [aria-invalid="true"]{box-shadow:inset 0 0 0 2px #b42318}
+.ps-con__form .ps-btn{width:100%}
+.ps-con__legal{margin:14px 0 0;font-size:13px;color:var(--ps-gris)}
+.ps-con__legal a{color:inherit}
+.ps-con__ok,.ps-con__err{display:flex;align-items:center;gap:10px;margin:16px 0 0;padding:14px 16px;border-radius:12px;font-size:15px;font-weight:700}
+.ps-con__ok{background:#e7f2ea;color:#1d5b33}
+.ps-con__err{background:#fbeaea;color:#8a1f17}
+@media (max-width:899px){
+  .ps-con__grid{grid-template-columns:1fr}
+}
+@media (max-width:599px){
+  .ps-con__campos{grid-template-columns:1fr}
+  .ps-con__wa .ps-btn{width:100%}
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PS · Contacto",
+  "tag": "div",
+  "class": "ps-section",
+  "settings": [
+    { "type": "text", "id": "titulo", "label": "Título (si se deja vacío, el de la página)" },
+    { "type": "text", "id": "whatsapp", "label": "WhatsApp (con prefijo, sin +)", "default": "34641047539" },
+    { "type": "text", "id": "whatsapp_texto", "label": "WhatsApp como se lee", "default": "+34 641 04 75 39" },
+    { "type": "text", "id": "whatsapp_nota", "label": "Nota bajo el número", "default": "Es la forma más rápida de hablar con nosotros." },
+    { "type": "link_list", "id": "enlaces", "label": "Atajos (menú)" },
+    { "type": "text", "id": "form_titulo", "label": "Título del formulario", "default": "O escríbanos aquí" }
+  ]
+}
+{% endschema %}

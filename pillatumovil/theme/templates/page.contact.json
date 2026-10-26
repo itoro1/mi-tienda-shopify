@@ -1,0 +1,18 @@
+{
+  "sections": {
+    "main": {
+      "type": "ps-contacto",
+      "settings": {
+        "titulo": "Hablemos",
+        "whatsapp": "34641047539",
+        "whatsapp_texto": "+34 641 04 75 39",
+        "whatsapp_nota": "Es la forma más rápida de hablar con nosotros.",
+        "enlaces": "atajos-contacto",
+        "form_titulo": "O escríbanos aquí"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}
