@@ -343,26 +343,63 @@ va aparte, siempre con su etiqueta «En Apple».
 ## idealo (comparador de precios)
 
 - **Feed**: `theme/templates/collection.idealo.liquid`. Se genera solo con los
-  datos de Shopify (precio, stock, fotos, EAN del campo «Código de barras»):
+  datos de Shopify (precio, stock, fotos, EAN del campo «Código de barras»,
+  referencia de Apple del metacampo `custom.mpn`):
   `https://pillatumovil.com/collections/cargadores-y-cables?view=idealo`. CSV según
   https://idealo.github.io/csv-importer/en/csv/ (coma, punto decimal, listas
-  con «;»). Una fila por variante con stock; los packs van con su número en
-  `packagingUnit`.
+  con «;»). Una fila por variante con stock (9 hoy); los packs van con su
+  número en `packagingUnit`. Ejemplo de la salida en
+  `idealo/feed-ejemplo-2026-10-27.csv`.
+- **Revisado el 27/10** contra la documentación de idealo:
+  - título con la marca delante y sin «Original» (idealo no quiere reclamos);
+  - EAN de 13 cifras (los 12 de la caja, UPC, con un 0 delante);
+  - comentario de envío «Envío gratis. Entrega en 24-48 h laborables.»;
+  - fotos en JPG, la real primero.
+- **EAN comprobados** (dígito de control y distribuidores que los listan con
+  la misma referencia de Apple):
+
+  | Producto | EAN | Referencia (`hans`) |
+  |---|---|---|
+  | Cargador 20 W | 0195949121296 | MUVV3ZM/A (la nueva del cargador europeo; la antigua era MHJE3ZM/A, EAN 0194252157022) |
+  | Cable USB-C 60 W 1 m | 0195949371905 | MW493ZM/A |
+  | Cable USB-C a Lightning 1 m | 0195949085611 | MUQ93ZM/A |
+
+  Las cajas de las fotos reales son de 2025 (códigos de envase 602-06727-B
+  y 602-06556-A), que cuadra con estas referencias nuevas. Conviene
+  confirmarlo con la etiqueta de abajo de una caja de cada. Los packs no
+  tienen EAN (son lotes nuestros): idealo los listará con menos visibilidad.
+- **Transportista**: Correos (es el de todos los pedidos de ITorostore). La
+  lista de transportistas de idealo para `deliveryCosts_<transportista>` es la
+  alemana y no trae Correos; se deja `deliveryCosts_correos` (0.00) y se
+  confirma con idealo al darse de alta.
 - Hoy está **solo en Dawn** (sin publicar): idealo no puede leerlo hasta que
-  se publique Dawn, o hasta copiar la plantilla a Canyon.
-- Ejemplo de la salida en `idealo/feed-ejemplo-2026-10-25.csv`.
-- **Pendiente para darlo de alta**:
-  - cuenta de comerciante en idealo (la abre el dueño: datos fiscales y
-    forma de pago; idealo cobra por clic);
-  - transportista real para la columna `deliveryCosts_<transportista>` (ahora
-    `correos` de marcador, sin confirmar);
-  - comprobar que los EAN de las fichas (copiados de ITorostore) coinciden
-    con el código de barras de las cajas; los packs no tienen EAN y saldrán
-    con menos visibilidad;
-  - opcional: referencia de Apple (`hans`) en un metacampo `custom.mpn`;
-  - **páginas legales** que faltan en la tienda: aviso legal (titular, NIF,
-    domicilio, correo) y condiciones de venta. Solo existe la política de
-    privacidad.
+  se publique Dawn o se copie la plantilla al tema publicado (Canyon). Copiarla
+  no cambia nada que vea el cliente, pero es tocar la tienda en vivo y lo
+  decide el dueño.
+- **Para darse de alta** (lo hace el dueño): cuenta de comerciante en idealo
+  (datos fiscales y forma de pago; idealo cobra por clic) y las **páginas
+  legales**. Borradores listos en `legal/` (ver abajo).
+
+## Páginas legales (borradores, 27/10/2026)
+
+En `legal/`, en HTML para pegar en *Configuración → Políticas* (botón «<>»
+del editor). Al guardarlas salen solas en el pie (`ps-pie` recorre
+`shop.policies`) y en la pantalla de pago:
+
+| Fichero | Política de Shopify |
+|---|---|
+| `aviso-legal.html` | Aviso legal (LSSI-CE art. 10, marcas de Apple, sitio independiente) |
+| `condiciones-de-venta.html` | Términos del servicio (precios, pago, envío con Correos, desistimiento de 14 días con el formulario oficial, garantía de 3 años) |
+| `informacion-de-contacto.html` | Información de contacto |
+
+Falta rellenar lo que va entre [CORCHETES] (titular, NIF, domicilio, correo y
+zonas de envío) y conviene que lo revise un asesor. ITorostore tiene ya sus
+políticas con los datos del dueño; si el titular de Pillatumovil es el mismo,
+sirven esos datos. En el aviso legal de ITorostore el titular figura como
+«Itorostore»: si es autónomo, ahí debe ir su nombre y apellidos.
+
+El pie lleva además la nota «Apple, iPhone y Lightning son marcas de Apple
+Inc. Pillatumovil es un comercio independiente, no afiliado a Apple.»
 
 ## Dominio
 

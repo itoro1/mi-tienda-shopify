@@ -6,21 +6,29 @@
   punto decimal, listas con ";"). Se genera solo con los datos de Shopify:
   precio, stock, fotos y EAN (campo "Código de barras" de la variante).
 
-  Lo que hay que confirmar antes de darlo de alta en idealo:
-  - transportista: el nombre de la columna deliveryCosts_<transportista>;
-  - hans (referencia del fabricante, p. ej. la de Apple): metacampo
-    custom.mpn del producto, si se crea.
+  - Transportista: Correos (el de los pedidos de ITorostore). La lista de
+    idealo para la columna deliveryCosts_<transportista> es la alemana y no
+    trae Correos: se deja "correos" y se confirma con idealo al darse de alta.
+  - hans (referencia de Apple, p. ej. MW493ZM/A): metacampo custom.mpn.
+  - Titulo: marca delante y sin "Original" (idealo no quiere textos de
+    reclamo en el titulo).
+  - Fotos en JPG (idealo admite PNG o JPG de hasta 3 MB).
+  - EAN de 13 cifras: los codigos de 12 (UPC) llevan un 0 delante.
 {%- endcomment -%}
 {%- liquid
   assign transportista = 'correos'
   assign plazo = '1-2 días laborables'
+  assign comentario = 'Envío gratis. Entrega en 24-48 h laborables.'
   assign base = request.origin | default: shop.url
 -%}
-sku,title,url,price,delivery,deliveryCosts_{{ transportista }},paymentCosts_credit_card,paymentCosts_paypal,brand,categoryPath,eans,hans,imageUrls,description,packagingUnit,freeReturnDays,conditionType
+sku,title,url,price,delivery,deliveryComment,deliveryCosts_{{ transportista }},paymentCosts_credit_card,paymentCosts_paypal,brand,categoryPath,eans,hans,imageUrls,description,packagingUnit,freeReturnDays,conditionType
 {% for p in collection.products -%}
 {%- for v in p.variants -%}
 {%- liquid
-  assign titulo = p.title
+  assign titulo = p.title | remove: ' — Apple Original' | remove: ' Apple Original' | strip
+  unless titulo contains 'Apple'
+    assign titulo = 'Apple ' | append: titulo
+  endunless
   unless p.has_only_default_variant
     assign titulo = titulo | append: ' (' | append: v.title | append: ')'
   endunless
@@ -31,6 +39,10 @@ sku,title,url,price,delivery,deliveryCosts_{{ transportista }},paymentCosts_cred
   if primero > 0
     assign unidades = primero
   endif
+  assign ean = v.barcode | strip
+  if ean.size == 12
+    assign ean = '0' | append: ean
+  endif
   assign categoria = 'Accesorios para móviles > Cargadores y cables'
   if p.type == 'Cable'
     assign categoria = 'Accesorios para móviles > Cables'
@@ -39,7 +51,7 @@ sku,title,url,price,delivery,deliveryCosts_{{ transportista }},paymentCosts_cred
   endif
   assign fotos = ''
   for img in p.images limit: 5
-    assign u = img | image_url: width: 1600 | prepend: 'https:'
+    assign u = img | image_url: width: 1600, format: 'jpg' | prepend: 'https:'
     if forloop.first
       assign fotos = u
     else
@@ -49,7 +61,7 @@ sku,title,url,price,delivery,deliveryCosts_{{ transportista }},paymentCosts_cred
   assign desc = p.description | replace: '</h2>', ': ' | replace: '</h3>', ': ' | replace: '</h4>', ': ' | replace: '</li>', ' ' | replace: '</p>', ' ' | replace: '<br>', ' ' | strip_html | strip_newlines | split: ' ' | join: ' ' | replace: '.:', ':' | truncate: 990
 -%}
 {%- if v.available -%}
-"{{ v.sku | default: v.id }}","{{ titulo | replace: '"', '""' }}","{{ base }}{{ v.url }}",{{ euros }}.{{ cent }},"{{ plazo }}",0.00,0.00,0.00,"{{ p.vendor | replace: '"', '""' }}","{{ categoria }}","{{ v.barcode }}","{{ p.metafields.custom.mpn }}","{{ fotos }}","{{ desc | replace: '"', '""' }}",{{ unidades }},14,NEW
+"{{ v.sku | default: v.id }}","{{ titulo | replace: '"', '""' }}","{{ base }}{{ v.url }}",{{ euros }}.{{ cent }},"{{ plazo }}","{{ comentario }}",0.00,0.00,0.00,"{{ p.vendor | replace: '"', '""' }}","{{ categoria }}","{{ ean }}","{{ p.metafields.custom.mpn }}","{{ fotos }}","{{ desc | replace: '"', '""' }}",{{ unidades }},14,NEW
 {% endif -%}
 {%- endfor -%}
 {%- endfor -%}

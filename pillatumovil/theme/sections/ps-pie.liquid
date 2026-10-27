@@ -96,6 +96,7 @@
         {%- endfor -%}
       </div>
     </div>
+    {%- if section.settings.marcas != blank -%}<p class="ps-pie__marcas">{{ section.settings.marcas }}</p>{%- endif -%}
   </div>
 </footer>
 
@@ -132,6 +133,7 @@
 .ps-pie__pagos{display:flex;flex-wrap:wrap;gap:8px;list-style:none;margin:0;padding:0}
 .ps-pie__pagos svg{display:block;width:38px;height:24px}
 .ps-pie__legal{display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px;font-size:13px;color:var(--ps-niebla)}
+.ps-pie__marcas{margin:18px 0 0;font-size:12px;line-height:1.5;color:rgba(169,173,184,.8)}
 .ps-pie__legal a{color:inherit;text-decoration:none}
 .ps-pie__legal a:hover{color:var(--ps-marfil);text-decoration:underline;text-underline-offset:4px}
 @media (max-width:989px){
@@ -161,6 +163,7 @@
     { "type": "textarea", "id": "nota_contacto", "label": "Nota bajo el contacto" },
     { "type": "link_list", "id": "menu_1", "label": "Menú 1 (Tienda)" },
     { "type": "link_list", "id": "menu_2", "label": "Menú 2 (Ayuda)" },
+    { "type": "textarea", "id": "marcas", "label": "Nota de marcas", "default": "Apple, iPhone y Lightning son marcas de Apple Inc. Pillatumovil es un comercio independiente, no afiliado a Apple." },
     { "type": "checkbox", "id": "boletin", "label": "Boletín", "default": true },
     { "type": "text", "id": "boletin_titulo", "label": "Título del boletín", "default": "Ofertas" },
     { "type": "textarea", "id": "boletin_texto", "label": "Texto del boletín", "default": "Le avisamos cuando bajemos precios. Sin más correos que esos." }
