@@ -344,7 +344,7 @@ va aparte, siempre con su etiqueta «En Apple».
 
 - **Feed**: `theme/templates/collection.idealo.liquid`. Se genera solo con los
   datos de Shopify (precio, stock, fotos, EAN del campo «Código de barras»):
-  `https://<dominio>/collections/cargadores-y-cables?view=idealo`. CSV según
+  `https://pillatumovil.com/collections/cargadores-y-cables?view=idealo`. CSV según
   https://idealo.github.io/csv-importer/en/csv/ (coma, punto decimal, listas
   con «;»). Una fila por variante con stock; los packs van con su número en
   `packagingUnit`.
@@ -363,6 +363,17 @@ va aparte, siempre con su etiqueta «En Apple».
   - **páginas legales** que faltan en la tienda: aviso legal (titular, NIF,
     domicilio, correo) y condiciones de venta. Solo existe la política de
     privacidad.
+
+## Dominio
+
+- **pillatumovil.com**, comprado en Shopify el 27/10/2026 (registrador
+  Tucows, DNS de Shopify en Google Cloud DNS; caduca el 27/10/2027).
+- Es el dominio principal de la tienda: `j2zukw-xp.myshopify.com` y
+  `http://` redirigen a `https://pillatumovil.com`; `www` es un alias
+  (`shops.myshopify.com`) y `account.pillatumovil.com` es el de las cuentas
+  de cliente.
+- El tema no tiene ningún dominio escrito a mano: enlaces, canónicas y el
+  feed de idealo salen de `shop.url` / `request.origin`.
 
 ## Pendiente
 
