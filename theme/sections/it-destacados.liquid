@@ -1,0 +1,163 @@
+{%- comment -%}
+  Ofertas destacadas: unidades concretas con foto real, justo debajo del hero.
+
+  Cada bloque apunta a un producto y a UNA variante (su ID). Precio, stock y
+  enlace salen de esa variante, asi que cambiar el precio en Shopify basta: la
+  tarjeta se actualiza sola.
+
+  Omnibus: no se pinta el "precio comparado" de Shopify. Si se rellena
+  "Precio de referencia", se muestra con su etiqueta visible al lado (p. ej.
+  "en otros colores"), que es una comparacion real y comprobable, no un
+  "antes costaba" inventado. Tampoco se ensenan unidades restantes.
+{%- endcomment -%}
+{%- if section.blocks.size > 0 -%}
+<section class="it-dest" aria-labelledby="it-dest-h-{{ section.id }}">
+  <div class="it-dest__in">
+    <div class="it-dest__head">
+      <span class="it-dest__eyebrow"><span class="it-dest__dot"></span>{{ section.settings.eyebrow }}</span>
+      <h2 class="it-dest__title" id="it-dest-h-{{ section.id }}">{{ section.settings.title }}</h2>
+      {%- if section.settings.subtitle != blank -%}<p class="it-dest__sub">{{ section.settings.subtitle }}</p>{%- endif -%}
+    </div>
+
+    <div class="it-dest__grid">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign p = block.settings.product
+          if p == blank
+            continue
+          endif
+          assign vid = block.settings.variant_id | strip | plus: 0
+          assign v = p.selected_or_first_available_variant
+          for x in p.variants
+            if x.id == vid
+              assign v = x
+              break
+            endif
+          endfor
+          assign img = block.settings.image | default: v.featured_image | default: p.featured_image
+          assign img2 = block.settings.image2
+          assign ref = block.settings.ref_price | strip | remove: '.' | replace: ',', '.' | times: 100 | round
+          assign ahorro = 0
+          if ref > v.price
+            assign ahorro = ref | minus: v.price
+          endif
+          assign en_stock = false
+          if v.inventory_management != 'shopify' or v.inventory_quantity > 0
+            assign en_stock = true
+          endif
+        -%}
+        <a href="{{ p.url }}?variant={{ v.id }}" class="it-dest__card it-dest__card--{{ block.settings.tone }}" {{ block.shopify_attributes }}>
+          <div class="it-dest__media{% if img2 != blank %} it-dest__media--swap{% endif %}">
+            {%- if block.settings.badge != blank -%}<span class="it-dest__badge">{{ block.settings.badge }}</span>{%- endif -%}
+            {%- if ahorro > 0 -%}<span class="it-dest__save">&minus;{{ ahorro | money_without_trailing_zeros }}</span>{%- endif -%}
+            {%- if img != blank -%}
+              {{ img | image_url: width: 900 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '(min-width: 990px) 460px, 50vw', widths: '360, 540, 720, 900', class: 'it-dest__img', alt: block.settings.title }}
+            {%- endif -%}
+            {%- if img2 != blank -%}
+              {{ img2 | image_url: width: 900 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 460px, 50vw', widths: '360, 540, 720, 900', class: 'it-dest__img it-dest__img--2', alt: block.settings.title }}
+            {%- endif -%}
+          </div>
+          <div class="it-dest__body">
+            <h3 class="it-dest__name">{{ block.settings.title | default: p.title }}</h3>
+            {%- if block.settings.specs != blank -%}<p class="it-dest__specs">{{ block.settings.specs }}</p>{%- endif -%}
+            <div class="it-dest__price">
+              <span class="it-dest__now">{{ v.price | money_without_trailing_zeros }}</span>
+              {%- if ahorro > 0 -%}
+                <span class="it-dest__ref">{{ ref | money_without_trailing_zeros }} {{ block.settings.ref_label }}</span>
+              {%- endif -%}
+            </div>
+            <p class="it-dest__stock{% unless en_stock %} is-pedido{% endunless %}">
+              <span></span>{% if en_stock %}En stock &middot; env&iacute;o 24&ndash;48 h{% else %}Env&iacute;o en 3&ndash;5 d&iacute;as{% endif %}
+            </p>
+            <span class="it-dest__cta">Comprar ahora
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </span>
+          </div>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+<style>
+.it-dest{background:var(--it-bg,#fff);padding:28px 0 8px}
+.it-dest__in{max-width:1100px;margin:0 auto;padding:0 16px}
+.it-dest__head{text-align:center;margin:0 auto 18px;max-width:560px}
+.it-dest__eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:10.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--it-accent,#b8860b);margin-bottom:8px}
+.it-dest__dot{width:7px;height:7px;border-radius:50%;background:var(--it-accent,#d4af37);box-shadow:0 0 0 4px rgba(212,175,55,.18);animation:itDestPulse 2.4s ease-in-out infinite}
+@keyframes itDestPulse{50%{box-shadow:0 0 0 7px rgba(212,175,55,0)}}
+.it-dest__title{font-size:clamp(22px,3.2vw,32px);font-weight:700;letter-spacing:-.02em;line-height:1.15;color:var(--it-text,#0a0a0a);margin:0 0 6px}
+.it-dest__sub{font-size:13.5px;color:var(--it-muted,#636360);margin:0;line-height:1.55}
+.it-dest__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.it-dest__card{position:relative;display:flex;flex-direction:column;text-decoration:none;color:inherit;background:var(--it-surface,#fff);border:0.5px solid var(--it-border,rgba(0,0,0,.09));border-radius:18px;overflow:hidden;transition:transform .25s cubic-bezier(.4,0,.2,1),box-shadow .3s,border-color .25s}
+.it-dest__card:hover{transform:translateY(-4px);border-color:rgba(212,175,55,.45);box-shadow:0 18px 44px rgba(0,0,0,.14)}
+.it-dest__media{position:relative;aspect-ratio:4/5;overflow:hidden;background:#f2f2f4}
+.it-dest__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.4,0,.2,1),opacity .45s}
+.it-dest__card:hover .it-dest__img{transform:scale(1.04)}
+.it-dest__img--2{opacity:0}
+@media(hover:hover){.it-dest__media--swap:hover .it-dest__img--2{opacity:1}}
+.it-dest__badge{position:absolute;top:10px;left:10px;z-index:2;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:5px 10px;border-radius:999px;color:#fff;background:#15803d;box-shadow:0 4px 14px rgba(0,0,0,.18)}
+.it-dest__card--azul .it-dest__badge{background:#1d4ed8}
+.it-dest__card--oro .it-dest__badge{background:#0b0c0f;color:#d4af37;border:1px solid rgba(212,175,55,.5)}
+.it-dest__save{position:absolute;top:10px;right:10px;z-index:2;font-size:12px;font-weight:800;padding:5px 10px;border-radius:999px;background:#d4af37;color:#0b0c0f;box-shadow:0 4px 14px rgba(0,0,0,.18)}
+.it-dest__body{display:flex;flex-direction:column;gap:6px;padding:12px 12px 14px;flex:1}
+.it-dest__name{font-size:15px;font-weight:700;letter-spacing:-.01em;line-height:1.2;margin:0;color:var(--it-text,#0a0a0a)}
+.it-dest__specs{font-size:12px;color:var(--it-muted,#636360);margin:0;line-height:1.4}
+.it-dest__price{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 8px;margin-top:2px}
+.it-dest__now{font-size:22px;font-weight:800;letter-spacing:-.02em;color:var(--it-text,#0a0a0a);font-variant-numeric:tabular-nums}
+.it-dest__ref{font-size:11.5px;color:var(--it-muted,#636360)}
+.it-dest__stock{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:#15803d;margin:0}
+.it-dest__stock span{width:7px;height:7px;border-radius:50%;background:#16a34a;box-shadow:0 0 0 3px rgba(22,163,74,.16);flex-shrink:0}
+.it-dest__stock.is-pedido{color:#b45309}
+.it-dest__stock.is-pedido span{background:#d97706;box-shadow:0 0 0 3px rgba(217,119,6,.16)}
+.it-dest__cta{margin-top:auto;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:0 14px;border-radius:12px;background:var(--it-text,#0a0a0a);color:var(--it-bg,#fff);font-size:13.5px;font-weight:700;transition:opacity .2s}
+.it-dest__card:hover .it-dest__cta{opacity:.9}
+[data-theme="dark"] .it-dest__media{background:#141416}
+[data-theme="dark"] .it-dest__now{color:var(--it-accent,#d4af37)}
+[data-theme="dark"] .it-dest__cta{background:var(--it-accent,#d4af37);color:#0b0c0f}
+@media(min-width:750px){
+  .it-dest{padding:44px 0 16px}
+  .it-dest__grid{gap:22px;max-width:960px;margin:0 auto}
+  .it-dest__body{padding:18px 20px 20px;gap:8px}
+  .it-dest__name{font-size:19px}
+  .it-dest__specs{font-size:13.5px}
+  .it-dest__now{font-size:30px}
+  .it-dest__ref{font-size:13px}
+  .it-dest__stock{font-size:12.5px}
+  .it-dest__badge,.it-dest__save{top:14px;font-size:11.5px;padding:6px 12px}
+  .it-dest__badge{left:14px}.it-dest__save{right:14px}
+}
+@media(prefers-reduced-motion:reduce){.it-dest__dot{animation:none}.it-dest__card,.it-dest__img{transition:none}}
+</style>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Ofertas destacadas",
+  "settings": [
+    {"type":"text","id":"eyebrow","label":"Etiqueta superior","default":"Ofertas de la semana"},
+    {"type":"text","id":"title","label":"Título","default":"iPhone destacados"},
+    {"type":"text","id":"subtitle","label":"Subtítulo","default":"Unidades reales, fotografiadas por nosotros. Envío gratis con seguimiento."}
+  ],
+  "blocks": [
+    {
+      "type": "iphone",
+      "name": "iPhone",
+      "settings": [
+        {"type":"product","id":"product","label":"Producto"},
+        {"type":"text","id":"variant_id","label":"ID de la variante (precio, stock y enlace salen de aquí)"},
+        {"type":"text","id":"title","label":"Nombre en la tarjeta"},
+        {"type":"text","id":"specs","label":"Detalle (capacidad, color, estado)"},
+        {"type":"text","id":"badge","label":"Etiqueta sobre la foto"},
+        {"type":"select","id":"tone","label":"Color de la etiqueta","default":"verde","options":[{"value":"verde","label":"Verde"},{"value":"azul","label":"Azul"},{"value":"oro","label":"Negro y oro"}]},
+        {"type":"image_picker","id":"image","label":"Foto principal"},
+        {"type":"image_picker","id":"image2","label":"Segunda foto (al pasar el ratón)"},
+        {"type":"text","id":"ref_price","label":"Precio de referencia (opcional, p. ej. 1249)"},
+        {"type":"text","id":"ref_label","label":"Texto junto al precio de referencia","default":"en otros colores"}
+      ]
+    }
+  ],
+  "max_blocks": 4,
+  "presets": [{"name": "Ofertas destacadas"}]
+}
+{% endschema %}

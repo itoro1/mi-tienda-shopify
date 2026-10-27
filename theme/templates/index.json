@@ -174,11 +174,56 @@
       "type": "it-compra-banner",
       "name": "Compramos tu iPhone",
       "settings": {}
+    },
+    "it_destacados_q7Lm2x": {
+      "type": "it-destacados",
+      "name": "iPhone destacados",
+      "blocks": {
+        "b17pm": {
+          "type": "iphone",
+          "settings": {
+            "product": "iphone-17-pro-max",
+            "variant_id": "57856140607813",
+            "title": "iPhone 17 Pro Max",
+            "specs": "256 GB · Azul Profundo · Nuevo, precintado",
+            "badge": "Precintado",
+            "tone": "oro",
+            "image": "shopify://shop_images/itoro-17-pro-max-azul-profundo-precintado.jpg",
+            "ref_price": "1249",
+            "ref_label": "en otros colores"
+          }
+        },
+        "b16": {
+          "type": "iphone",
+          "settings": {
+            "product": "iphone-16",
+            "variant_id": "57856135790917",
+            "title": "iPhone 16",
+            "specs": "128 GB · Rosa · Segunda mano en buen estado",
+            "badge": "Segunda mano",
+            "tone": "azul",
+            "image": "shopify://shop_images/itoro-iphone-16-rosa-128.jpg",
+            "image2": "shopify://shop_images/itoro-iphone-16-rosa-lateral.jpg",
+            "ref_price": "",
+            "ref_label": "en otros colores"
+          }
+        }
+      },
+      "block_order": [
+        "b17pm",
+        "b16"
+      ],
+      "settings": {
+        "eyebrow": "Ofertas de la semana",
+        "title": "iPhone destacados",
+        "subtitle": "Unidades reales, fotografiadas por nosotros. Envío gratis con seguimiento."
+      }
     }
   },
   "order": [
     "it_slider_kXp2Mw",
     "it_hero_aX9kQm",
+    "it_destacados_q7Lm2x",
     "it_trust_strip_jK3mXw",
     "it_categorias_nQ4xZr",
     "it_finder_pX8mNq",
