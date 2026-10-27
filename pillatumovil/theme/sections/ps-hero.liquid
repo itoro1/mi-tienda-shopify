@@ -73,7 +73,19 @@
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { v.removeAttribute('autoplay'); v.pause(); return; }
       var movil = v.getAttribute('data-src-movil');
       v.src = movil && window.matchMedia('(max-width: 749px)').matches ? movil : v.getAttribute('data-src');
-      var jugar = function () { var p = v.play(); if (p && p.catch) p.catch(function () {}); };
+      // Si el navegador no deja reproducir (iOS en bajo consumo), la foto de
+      // espera ocupa el sitio del video: sin boton de play encima.
+      var parado = false;
+      var foto = function () {
+        if (parado || !v.poster || !v.parentNode) return;
+        parado = true;
+        var img = new Image();
+        img.src = v.poster; img.alt = ''; img.className = v.className;
+        img.setAttribute('aria-hidden', 'true');
+        v.parentNode.replaceChild(img, v);
+      };
+      var noDeja = function (e) { if (e && e.name === 'NotAllowedError') foto(); };
+      var jugar = function () { if (parado) return; var p = v.play(); if (p && p.catch) p.catch(noDeja); };
       jugar();
       if ('IntersectionObserver' in window) {
         new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) jugar(); else v.pause(); }); }).observe(v);

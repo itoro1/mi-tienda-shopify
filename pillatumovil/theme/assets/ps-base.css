@@ -34,6 +34,15 @@
 }
 .ps *,.ps *::before,.ps *::after{box-sizing:border-box}
 .ps img,.ps video{display:block;max-width:100%}
+/* iOS en modo de bajo consumo (y algunos navegadores con ahorro de datos) no
+   reproduce videos solos y pinta su boton de play encima. Los videos de la
+   tienda son de fondo: nunca llevan controles. Si no se pueden reproducir,
+   los scripts de ps-hero y ps-video ponen la foto de espera en su lugar. */
+.ps video::-webkit-media-controls,
+.ps video::-webkit-media-controls-panel,
+.ps video::-webkit-media-controls-play-button,
+.ps video::-webkit-media-controls-start-playback-button,
+.ps video::-webkit-media-controls-overlay-play-button{display:none !important;-webkit-appearance:none}
 
 /* Fondos */
 .ps--noche{background:var(--ps-noche);color:var(--ps-marfil)}

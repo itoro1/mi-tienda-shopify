@@ -151,6 +151,11 @@ a entender que lo incluye.
   de «h» o «horas»; «14 días», con espacio duro.
 - **Un vídeo en bucle no deja que la página quede «inactiva»**: en las
   pruebas con Playwright hay que esperar a `load`, no a `networkidle`.
+- **iOS en modo de bajo consumo no reproduce videos solos** y pinta un botón
+  de play encima (lo vio el dueño en su iPhone). `ps-base.css` oculta los
+  controles nativos de los `video` de la tienda y, si `play()` falla con
+  `NotAllowedError`, `ps-hero` y `ps-video` cambian el video por su foto de
+  espera. Probado simulando el bloqueo: sale la foto, sin botón.
 - **`PUB_SUB_EVENTS` no cuelga de `window`**: en `constants.js` es un
   `const` global. Se comprueba con `typeof PUB_SUB_EVENTS`, y como
   `pubsub.js` va con `defer`, la suscripción se hace al cargar el DOM
@@ -372,10 +377,9 @@ va aparte, siempre con su etiqueta «En Apple».
   lista de transportistas de idealo para `deliveryCosts_<transportista>` es la
   alemana y no trae Correos; se deja `deliveryCosts_correos` (0.00) y se
   confirma con idealo al darse de alta.
-- Hoy está **solo en Dawn** (sin publicar): idealo no puede leerlo hasta que
-  se publique Dawn o se copie la plantilla al tema publicado (Canyon). Copiarla
-  no cambia nada que vea el cliente, pero es tocar la tienda en vivo y lo
-  decide el dueño.
+- **Público desde el 27/10**: Dawn es el tema publicado y el feed responde en
+  `https://pillatumovil.com/collections/cargadores-y-cables?view=idealo`
+  (comprobado: 9 filas). Es la dirección que hay que dar a idealo.
 - **Para darse de alta** (lo hace el dueño): cuenta de comerciante en idealo
   (datos fiscales y forma de pago; idealo cobra por clic) y las **páginas
   legales**. Borradores listos en `legal/` (ver abajo).
@@ -393,7 +397,11 @@ del editor). Al guardarlas salen solas en el pie (`ps-pie` recorre
 | `informacion-de-contacto.html` | Información de contacto |
 
 Falta rellenar lo que va entre [CORCHETES] (titular, NIF, domicilio, correo y
-zonas de envío) y conviene que lo revise un asesor. ITorostore tiene ya sus
+zonas de envío) y conviene que lo revise un asesor. El titular es el mismo que
+el de ITorostore (lo confirmó el dueño y coincide la dirección de facturación
+de las dos tiendas). Las versiones rellenadas con su NIF y domicilio **no se
+guardan en el repositorio** (mismo motivo que las facturas): se le entregan
+para pegarlas en Shopify. ITorostore tiene ya sus
 políticas con los datos del dueño; si el titular de Pillatumovil es el mismo,
 sirven esos datos. En el aviso legal de ITorostore el titular figura como
 «Itorostore»: si es autónomo, ahí debe ir su nombre y apellidos.
@@ -414,7 +422,9 @@ Inc. Pillatumovil es un comercio independiente, no afiliado a Apple.»
 
 ## Pendiente
 
-- Publicar Dawn cuando se dé el visto bueno a la vista previa.
+- ~~Publicar Dawn~~: publicado por el dueño el 27/10/2026 (Canyon y Horizon
+  quedan sin publicar). Desde entonces, subir un fichero a Dawn es cambiar la
+  tienda en vivo.
 - Formato de moneda de la tienda: sale «€25,99»; en España se escribe
   «25,99 €». Se cambia en *Configuración → General → Moneda de la tienda →
   Cambiar formato* (`{{amount_with_comma_separator}} €`). La app no tiene
