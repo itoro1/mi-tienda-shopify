@@ -190,7 +190,8 @@
             "tone": "oro",
             "image": "shopify://shop_images/itoro-17-pro-max-azul-profundo-precintado.jpg",
             "ref_price": "1249",
-            "ref_label": "en otros colores"
+            "ref_label": "en otros colores",
+            "image2": "shopify://shop_images/itoro-17-pro-max-azul-profundo-trasera.jpg"
           }
         },
         "b16": {
@@ -202,8 +203,23 @@
             "specs": "128 GB · Rosa · Segunda mano en buen estado",
             "badge": "Segunda mano",
             "tone": "azul",
-            "image": "shopify://shop_images/itoro-iphone-16-rosa-128.jpg",
-            "image2": "shopify://shop_images/itoro-iphone-16-rosa-lateral.jpg",
+            "image": "shopify://shop_images/itoro-iphone-16-rosa-lateral.jpg",
+            "image2": "shopify://shop_images/itoro-iphone-16-rosa-128.jpg",
+            "ref_price": "",
+            "ref_label": "en otros colores"
+          }
+        },
+        "b17": {
+          "type": "iphone",
+          "settings": {
+            "product": "iphone-17",
+            "variant_id": "57856139198789",
+            "title": "iPhone 17",
+            "specs": "256 GB · Negro · Nuevo, precintado",
+            "badge": "Precintado",
+            "tone": "verde",
+            "image": "shopify://shop_images/itoro-iphone-17-negro-256-precintado.jpg",
+            "image2": "shopify://shop_images/itoro-iphone-17-negro-256-trasera.jpg",
             "ref_price": "",
             "ref_label": "en otros colores"
           }
@@ -211,6 +227,7 @@
       },
       "block_order": [
         "b17pm",
+        "b17",
         "b16"
       ],
       "settings": {
