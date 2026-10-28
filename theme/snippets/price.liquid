@@ -158,7 +158,7 @@
       Solo en la ficha (use_variant). Ver assets/it-fotos.js.
     {%- endcomment -%}
     {%- if use_variant and product.metafields.custom.fotos_reales.value != blank -%}
-      <script type="application/json" class="it-fotos-data">{{ product.metafields.custom.fotos_reales.value | json }}</script>
+      <script type="application/json" class="it-fotos-data" style="display:none!important">{{ product.metafields.custom.fotos_reales.value | json }}</script>
       <script src="{{ 'it-fotos.js' | asset_url }}" defer="defer"></script>
     {%- endif -%}
 
@@ -202,7 +202,7 @@
             <span class="it-cheap__go">Ver &rarr;</span>
           </a>
         {%- endif -%}
-        <span class="it-cheap-data" hidden data-color="{{ it_cheap.option2 | escape }}" data-diff="&minus;{{ it_diff | money_without_trailing_zeros }}"></span>
+        <span class="it-cheap-data" hidden style="display:none!important" data-color="{{ it_cheap.option2 | escape }}" data-diff="&minus;{{ it_diff | money_without_trailing_zeros }}"></span>
         <script src="{{ 'it-cheap.js' | asset_url }}" defer="defer"></script>
       {%- endif -%}
     {%- endif -%}
