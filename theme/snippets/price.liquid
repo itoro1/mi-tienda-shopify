@@ -154,6 +154,15 @@
       endif
     -%}
     {%- comment -%}
+      ITORO - Fotos reales de una unidad concreta (metacampo custom.fotos_reales).
+      Solo en la ficha (use_variant). Ver assets/it-fotos.js.
+    {%- endcomment -%}
+    {%- if use_variant and product.metafields.custom.fotos_reales.value != blank -%}
+      <script type="application/json" class="it-fotos-data">{{ product.metafields.custom.fotos_reales.value | json }}</script>
+      <script src="{{ 'it-fotos.js' | asset_url }}" defer="defer"></script>
+    {%- endif -%}
+
+    {%- comment -%}
       ITORO - Color mas barato dentro de la misma capacidad.
 
       Si un color esta mas barato que el resto (p. ej. el 17 Pro Max Azul
