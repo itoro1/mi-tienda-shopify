@@ -153,6 +153,51 @@
         endif
       endif
     -%}
+    {%- comment -%}
+      ITORO - Color mas barato dentro de la misma capacidad.
+
+      Si un color esta mas barato que el resto (p. ej. el 17 Pro Max Azul
+      Profundo a 1.199 frente a 1.249), se avisa en la ficha AUNQUE el cliente
+      tenga elegido otro color, con un enlace directo a esa variante. Si ya lo
+      tiene elegido, se le confirma cuanto ahorra. Solo compara precios
+      actuales entre variantes: no es un "antes costaba", asi que no choca con
+      Omnibus. Dawn repinta este bloque al cambiar de variante.
+    {%- endcomment -%}
+    {%- if use_variant and target.option2 != blank -%}
+      {%- liquid
+        assign it_cheap = nil
+        assign it_max = 0
+        for x in product.variants
+          if x.option1 == target.option1
+            if it_cheap == nil or x.price < it_cheap.price
+              assign it_cheap = x
+            endif
+            if x.price > it_max
+              assign it_max = x.price
+            endif
+          endif
+        endfor
+        assign it_diff = it_max | minus: it_cheap.price
+      -%}
+      {%- if it_cheap and it_diff > 0 -%}
+        {{ 'it-pvp.css' | asset_url | stylesheet_tag }}
+        {%- if it_cheap.id == target.id -%}
+          <p class="it-cheap it-cheap--ok">
+            <span class="it-cheap__ic">&#10003;</span>
+            <span>Has elegido el color m&aacute;s barato: <strong>ahorras {{ it_diff | money_without_trailing_zeros }}</strong> frente a otros colores</span>
+          </p>
+        {%- else -%}
+          <a class="it-cheap" href="{{ product.url }}?variant={{ it_cheap.id }}">
+            <span class="it-cheap__ic">&#9733;</span>
+            <span>En <strong>{{ it_cheap.option2 }}</strong> est&aacute; m&aacute;s barato: <strong>{{ it_cheap.price | money_without_trailing_zeros }}</strong> ({{ it_diff | money_without_trailing_zeros }} menos)</span>
+            <span class="it-cheap__go">Ver &rarr;</span>
+          </a>
+        {%- endif -%}
+        <span class="it-cheap-data" hidden data-color="{{ it_cheap.option2 | escape }}" data-diff="&minus;{{ it_diff | money_without_trailing_zeros }}"></span>
+        <script src="{{ 'it-cheap.js' | asset_url }}" defer="defer"></script>
+      {%- endif -%}
+    {%- endif -%}
+
     {%- if pvp_ahorro > 0 -%}
       {{ 'it-pvp.css' | asset_url | stylesheet_tag }}
       <p class="it-pvp">
