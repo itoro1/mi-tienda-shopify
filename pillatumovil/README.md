@@ -454,6 +454,24 @@ Shopify (*Configuración → Marca*). Hay una versión con anillo dorado
 (`perfil-pillatumovil-anillo.png`) y una muestra en `muestra-perfil.png`.
 Se rehace con `tools/perfil.py` (necesita `BodoniModa.ttf`).
 
+## Facebook e Instagram (catálogo de Meta, 29/10/2026)
+
+- El canal **Facebook & Instagram** está instalado y los 5 productos
+  publicados en él (activos, con stock, marca Apple, categoría de la
+  taxonomía de Shopify, EAN en los tres sueltos y la foto real sobre blanco
+  de 2048 px como principal).
+- Meta compara el catálogo con la web: el precio y la disponibilidad de los
+  datos estructurados (JSON-LD de Dawn) coinciden con el catálogo.
+- `snippets/meta-tags.liquid` (copia del de Dawn): `og:price:amount` sale
+  con punto decimal (`18.99`). Con el formato de moneda de la tienda salía
+  `18,99` y Meta puede leerlo como precio distinto.
+- Lo que hace el dueño en la app (no tiene API): conectar página, Instagram,
+  cuenta publicitaria y píxel **de Pillatumovil** (no los de ITorostore),
+  compartir datos en **Máximo** (API de conversiones), un **catálogo nuevo**
+  para esta tienda, y verificar el dominio `pillatumovil.com` en el
+  Business Manager (registro TXT en *Configuración → Dominios* de Shopify,
+  o la etiqueta meta en el tema).
+
 ## Dominio
 
 - **pillatumovil.com**, comprado en Shopify el 27/10/2026 (registrador
