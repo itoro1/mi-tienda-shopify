@@ -345,6 +345,15 @@ pedidos); el pack de 3 no llegó a venderse entonces y lo fijó el dueño en
 45,99 €. Sin precio comparado («antes») en ningún producto. El PVP de Apple
 va aparte, siempre con su etiqueta «En Apple».
 
+### Códigos de descuento
+
+| Código | Desde | Qué hace |
+|---|---|---|
+| `PACK1799` | 29/10/2026, sin fecha de fin ni límite de usos | 1 € menos en los packs (USB-C y Lightning), una vez por pedido: el pack de 1 sale a 17,99 €, el de 2 a 32,99 € y el de 3 a 44,99 €. Se combina con el envío gratis automático; no con otros códigos. Probado con carritos reales. |
+
+Un código no cambia el precio publicado, así que no cuenta para el historial
+de precios de arriba (Ómnibus).
+
 ## idealo (comparador de precios)
 
 - **Feed**: `theme/templates/collection.idealo.liquid`. Se genera solo con los
