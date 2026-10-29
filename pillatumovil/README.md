@@ -418,6 +418,42 @@ sirven esos datos. En el aviso legal de ITorostore el titular figura como
 El pie lleva además la nota «Apple, iPhone y Lightning son marcas de Apple
 Inc. Pillatumovil es un comercio independiente, no afiliado a Apple.»
 
+## Anuncios de Meta (29/10/2026)
+
+En `anuncios/`:
+
+- `estudio-anuncios-2026-10.md`: qué hace vender a un anuncio. Datos de
+  Motion/Runneth (578.750 anuncios, 1.290 M$), Google ABCD y TikTok, y lo que
+  lleva meses funcionando en España en la Biblioteca de anuncios de Meta
+  (Phonemad, Back Market, Zona Phone…).
+- `meta-2026-10/`: las imágenes finales (feed 4:5, Stories/Reels 9:16 y
+  cuadrado 1:1) de dos versiones para probar a la vez:
+  - **A**: «Menos de la mitad que en Apple.» con la foto de estudio de las
+    cajas (gancho de ancla de precio, el que más gana en los datos);
+  - **B**: «Mismo cargador. Misma caja. Mitad de precio.» con la foto de la
+    mesilla (estilo Back Market).
+  Las dos llevan la cinta «Ganamos menos por cada pack. A propósito.» (el
+  porqué del precio, que dio el dueño), 18,99 €, «En Apple, por separado:
+  38 €» y la lista de confianza (envío 24-48 h, 3 años, 14 días).
+- `meta-2026-10/textos-meta.md`: texto principal, titular, descripción,
+  botón y URL con UTM para cada versión.
+- `fuente/`: los scripts que pintan las imágenes (HTML + Playwright, letra
+  Archivo de Google Fonts); `python3 fuente/anuncio.py` y `anuncio_b.py`.
+
+Decisiones: sin «Black Friday» (no hay rebaja real y sería publicidad
+engañosa), sin código de descuento en la imagen (lo pidió el dueño), sin
+urgencia ni reseñas inventadas. Los precios de Apple se comprobaron en
+apple.com/es el 29/10/2026 (19 € cada producto); si cambian, rehacer.
+
+## Foto de perfil (29/10/2026)
+
+`marca/perfil-pillatumovil.png` (1080 × 1080): el monograma «P» del favicon
+con su punto de oro, recolocado para que quepa entero en el círculo de
+WhatsApp, Instagram y Facebook. Sirve también como *logo cuadrado* de
+Shopify (*Configuración → Marca*). Hay una versión con anillo dorado
+(`perfil-pillatumovil-anillo.png`) y una muestra en `muestra-perfil.png`.
+Se rehace con `tools/perfil.py` (necesita `BodoniModa.ttf`).
+
 ## Dominio
 
 - **pillatumovil.com**, comprado en Shopify el 27/10/2026 (registrador
