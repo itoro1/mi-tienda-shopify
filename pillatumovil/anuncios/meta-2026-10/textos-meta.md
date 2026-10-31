@@ -4,6 +4,43 @@ Mismo texto para las versiones A y B; cambia solo la primera línea. Se monta
 un conjunto de anuncios con las dos y Meta reparte el dinero hacia la que más
 vende (ver `../estudio-anuncios-2026-10.md`).
 
+## ANUNCIO DEFINITIVO (D, 31/10/2026): el que se pone
+
+Imagen pensada para leerse en un segundo: «CARGADOR iPhone / ORIGINAL APPLE»,
+la foto real del pack en grande, pegatina dorada «18,99 € el pack» pegada al
+producto, «En Apple: 38 €» al lado y «ENVÍO GRATIS · En su casa en 24-48 h».
+Poco texto en la imagen; la explicación va en el texto del anuncio.
+
+| Ubicación | Imagen |
+|---|---|
+| Feed de Facebook e Instagram | `pillatumovil-D-definitivo_feed-4x5.jpg` |
+| Stories y Reels | `pillatumovil-D-definitivo_stories-9x16.jpg` |
+| Resto (columna derecha, Marketplace…) | `pillatumovil-D-definitivo_cuadrado-1x1.jpg` |
+
+**Texto principal**
+
+> Cargador + cable originales de Apple por 18,99 €. En Apple, por separado, 38 €.
+>
+> 🚚 Envío gratis: en su casa en 24-48 h
+> ✅ Nuevo y precintado · 3 años de garantía
+> 📱 USB-C (iPhone 15 o posterior) o Lightning (iPhone 8 al 14)
+>
+> ¿Por qué tan barato? Ganamos menos por cada pack. A propósito.
+
+| Campo | Texto |
+|---|---|
+| Titular | Cargador iPhone original: 18,99 € |
+| Descripción | Envío gratis · En casa en 24-48 h |
+| Botón | Comprar |
+| URL | https://pillatumovil.com/collections/packs?utm_source=meta&utm_medium=paid_social&utm_campaign=pack_1899&utm_content=D |
+
+Con poco presupuesto diario, mejor **un solo anuncio** (este) que repartir
+el dinero entre varios: Meta necesita datos de un anuncio para aprender.
+
+---
+
+## Versiones anteriores (A, B y C)
+
 ## Texto principal
 
 **A** (imagen «Menos de la mitad que en Apple»):

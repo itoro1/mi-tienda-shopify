@@ -432,6 +432,13 @@ En `anuncios/`:
     cajas (gancho de ancla de precio, el que más gana en los datos);
   - **B**: «Mismo cargador. Misma caja. Mitad de precio.» con la foto de la
     mesilla (estilo Back Market).
+  - **D, el definitivo** (31/10): rehecho porque A-C no convencían al dueño
+    («más visual, que se sepa al momento que es cargador de Apple, buen
+    precio y envío gratis»). Tres bandas: «CARGADOR iPhone / ORIGINAL
+    APPLE» arriba, la foto real del pack sobre blanco con la pegatina
+    «18,99 € el pack» y «En Apple: 38 €», y «ENVÍO GRATIS · 24-48 h» abajo.
+    Script: `anuncios/fuente/anuncio_d.py`. Textos al principio de
+    `textos-meta.md`.
   - **C** (31/10): la foto **real** del stock del dueño (`fotos/reales/`),
     con etiquetas de texto al estilo de Instagram; el estudio dice que lo
     «lo-fi» es el 42 % de los anuncios que más gastan. Recortada para que
