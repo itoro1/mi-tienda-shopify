@@ -25,6 +25,13 @@ línea cambia por
 
 y el resto igual.
 
+**C** (foto real del stock, estilo nativo): la primera línea cambia por
+
+> Así llegan: cargador de 20 W + cable originales de Apple, nuevos y precintados. 18,99 € el pack (en Apple, por separado, 38 €).
+
+y el resto igual. La foto es real (`fotos/reales/cajas-frente-usb-c.jpg`),
+recortada para que no salga la caja de iPhone que había al lado.
+
 ## Resto de campos
 
 | Campo | Texto |
@@ -34,6 +41,7 @@ y el resto igual.
 | Botón | Comprar |
 | URL A | https://pillatumovil.com/collections/packs?utm_source=meta&utm_medium=paid_social&utm_campaign=pack_1899&utm_content=A |
 | URL B | https://pillatumovil.com/collections/packs?utm_source=meta&utm_medium=paid_social&utm_campaign=pack_1899&utm_content=B |
+| URL C | https://pillatumovil.com/collections/packs?utm_source=meta&utm_medium=paid_social&utm_campaign=pack_1899&utm_content=C |
 
 ## Imágenes
 
@@ -42,6 +50,8 @@ y el resto igual.
 | Feed de Facebook e Instagram | `pillatumovil-A-mitad-que-en-apple_feed-4x5.jpg` | `pillatumovil-B-mismo-cargador_feed-4x5.jpg` |
 | Stories y Reels | `pillatumovil-A-mitad-que-en-apple_stories-9x16.jpg` | `pillatumovil-B-mismo-cargador_stories-9x16.jpg` |
 | Columna derecha, Marketplace, búsqueda | `pillatumovil-A-mitad-que-en-apple_cuadrado-1x1.jpg` | `pillatumovil-B-mismo-cargador_cuadrado-1x1.jpg` |
+
+Versión C: `pillatumovil-C-foto-real_feed-4x5.jpg`, `pillatumovil-C-foto-real_stories-9x16.jpg` y `pillatumovil-C-foto-real_cuadrado-1x1.jpg`.
 
 En Meta se sube cada versión con «Personalizar por ubicación» para que use la
 4:5 en el feed, la 9:16 en Stories y Reels y la 1:1 en el resto.

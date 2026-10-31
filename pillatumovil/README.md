@@ -432,6 +432,10 @@ En `anuncios/`:
     cajas (gancho de ancla de precio, el que más gana en los datos);
   - **B**: «Mismo cargador. Misma caja. Mitad de precio.» con la foto de la
     mesilla (estilo Back Market).
+  - **C** (31/10): la foto **real** del stock del dueño (`fotos/reales/`),
+    con etiquetas de texto al estilo de Instagram; el estudio dice que lo
+    «lo-fi» es el 42 % de los anuncios que más gastan. Recortada para que
+    no salga la caja de iPhone de al lado.
   Las dos llevan la cinta «Ganamos menos por cada pack. A propósito.» (el
   porqué del precio, que dio el dueño), 18,99 €, «En Apple, por separado:
   38 €» y la lista de confianza (envío 24-48 h, 3 años, 14 días).
