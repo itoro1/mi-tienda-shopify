@@ -4,7 +4,46 @@ Mismo texto para las versiones A y B; cambia solo la primera línea. Se monta
 un conjunto de anuncios con las dos y Meta reparte el dinero hacia la que más
 vende (ver `../estudio-anuncios-2026-10.md`).
 
-## ANUNCIO DEFINITIVO (D, 31/10/2026): el que se pone
+## ANUNCIO ACTUAL (E, 01/11/2026): el que se pone
+
+Los dos packs a la vez, cada uno con su etiqueta de iPhone, para que cada
+cual vea el suyo: «CARGADOR iPhone / ORIGINAL APPLE», cinta «PRECIO DE
+LANZAMIENTO · HASTA FIN DE EXISTENCIAS», «ELIJA SU CABLE», pack USB-C
+(iPhone 15 o posterior) y pack Lightning (iPhone 8 al 14), pegatina
+«18,99 € cada pack», «En Apple: 38 €» y «ENVÍO GRATIS · 24-48 h».
+
+«Precio de lanzamiento hasta fin de existencias» lo pidió el dueño
+(01/11): es verdad mientras suba el precio al acabarse las unidades
+actuales. Cuando suba, hay que **cambiar o pausar este anuncio**. No se puso
+«la oferta caduca en 48 h» porque no había ninguna oferta que caducara.
+
+| Ubicación | Imagen |
+|---|---|
+| Feed de Facebook e Instagram | `pillatumovil-E-dos-cables_feed-4x5.jpg` |
+| Stories y Reels | `pillatumovil-E-dos-cables_stories-9x16.jpg` |
+| Resto (columna derecha, Marketplace…) | `pillatumovil-E-dos-cables_cuadrado-1x1.jpg` |
+
+**Texto principal**
+
+> Precio de lanzamiento: cargador + cable originales de Apple por 18,99 €, hasta fin de existencias. En Apple, por separado, 38 €.
+>
+> Elija su cable:
+> 📱 USB-C → iPhone 15 o posterior
+> 📱 Lightning → iPhone 8 al 14
+>
+> 🚚 Envío gratis: en su casa en 24-48 h
+> ✅ Nuevo y precintado · 3 años de garantía
+
+| Campo | Texto |
+|---|---|
+| Titular | Cargador iPhone original: 18,99 € |
+| Descripción | Precio de lanzamiento · Envío gratis |
+| Botón | Comprar |
+| URL | https://pillatumovil.com/collections/packs?utm_source=meta&utm_medium=paid_social&utm_campaign=pack_1899&utm_content=E |
+
+---
+
+## Anuncio D (31/10/2026), sustituido por E
 
 Imagen pensada para leerse en un segundo: «CARGADOR iPhone / ORIGINAL APPLE»,
 la foto real del pack en grande, pegatina dorada «18,99 € el pack» pegada al

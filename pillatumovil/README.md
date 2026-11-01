@@ -432,7 +432,12 @@ En `anuncios/`:
     cajas (gancho de ancla de precio, el que más gana en los datos);
   - **B**: «Mismo cargador. Misma caja. Mitad de precio.» con la foto de la
     mesilla (estilo Back Market).
-  - **D, el definitivo** (31/10): rehecho porque A-C no convencían al dueño
+  - **E, el actual** (01/11): como D, pero con **los dos packs** (USB-C para
+    iPhone 15 o posterior y Lightning para iPhone 8 al 14) y la cinta
+    «Precio de lanzamiento · Hasta fin de existencias» (verdad mientras el
+    dueño suba el precio al acabarse las unidades; entonces hay que cambiar
+    el anuncio). Script: `anuncios/fuente/anuncio_e.py`.
+  - **D** (31/10): rehecho porque A-C no convencían al dueño
     («más visual, que se sepa al momento que es cargador de Apple, buen
     precio y envío gratis»). Tres bandas: «CARGADOR iPhone / ORIGINAL
     APPLE» arriba, la foto real del pack sobre blanco con la pegatina
