@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080" width="1080" height="1080">
+<defs>
+  <radialGradient id="fondo" cx="50%" cy="42%" r="62%">
+    <stop offset="0" stop-color="#1d2740"/><stop offset=".55" stop-color="#111829"/><stop offset="1" stop-color="#070a12"/>
+  </radialGradient>
+  <linearGradient id="oro" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#f3e2b5"/><stop offset=".35" stop-color="#d9bb7c"/><stop offset=".7" stop-color="#b8954f"/><stop offset="1" stop-color="#e9d3a0"/>
+  </linearGradient>
+  <linearGradient id="marfil" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#fbf8f2"/><stop offset="1" stop-color="#e6dfd2"/>
+  </linearGradient>
+  <linearGradient id="clavija" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#9a7b3e"/><stop offset=".45" stop-color="#f3e2b5"/><stop offset="1" stop-color="#a8864a"/>
+  </linearGradient>
+  <filter id="sombra" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#000" flood-opacity=".45"/>
+  </filter>
+</defs>
+<rect width="1080" height="1080" fill="url(#fondo)"/>
+<circle cx="540" cy="540" r="468" fill="none" stroke="url(#oro)" stroke-width="10"/>
+<circle cx="540" cy="540" r="440" fill="none" stroke="url(#oro)" stroke-width="2.5" opacity=".7"/>
+<circle cx="540" cy="540" r="318" fill="none" stroke="url(#oro)" stroke-width="2.5" opacity=".7"/>
+<path id="arribaT" d="M 162 540 A 378 378 0 0 1 918 540" fill="none"/>
+<path id="abajoT" d="M 140 540 A 400 400 0 0 0 940 540" fill="none"/>
+<text font-family="Archivo" font-weight="800" font-size="66" letter-spacing="14" fill="#f4efe6">
+  <textPath href="#arribaT" startOffset="50%" text-anchor="middle">PILLATUMOVIL</textPath></text>
+<text font-family="Archivo" font-weight="700" font-size="40" letter-spacing="9" fill="url(#oro)">
+  <textPath href="#abajoT" startOffset="50%" text-anchor="middle">CARGADORES ORIGINALES</textPath></text>
+<path transform="translate(116,540) scale(.42) translate(-40,-80)" d="M54 0 L0 88 H40 L16 162 L88 60 H46 L74 0 Z" fill="url(#oro)"/>
+<path transform="translate(964,540) scale(.42) translate(-40,-80)" d="M54 0 L0 88 H40 L16 162 L88 60 H46 L74 0 Z" fill="url(#oro)"/>
+
+<g transform="translate(540,548) scale(0.78) translate(-329,-328)" filter="url(#sombra)">
+  <!-- asta -->
+  <rect x="150" y="40" width="108" height="432" rx="18" fill="url(#marfil)"/>
+  <!-- panza de la P -->
+  <path d="M204 92 H350 A132 132 0 0 1 350 356 H204" fill="none" stroke="url(#marfil)" stroke-width="104"/>
+  <!-- cuerpo del enchufe al pie del asta -->
+  <rect x="124" y="452" width="160" height="60" rx="22" fill="url(#marfil)"/>
+  <!-- clavijas del enchufe europeo -->
+  <rect x="158" y="506" width="26" height="110" rx="13" fill="url(#clavija)"/>
+  <rect x="224" y="506" width="26" height="110" rx="13" fill="url(#clavija)"/>
+  <!-- rayo de carga, dentro del hueco de la P -->
+  <path transform="translate(309,160) scale(.79)" d="M54 0 L0 88 H40 L16 162 L88 60 H46 L74 0 Z" fill="url(#oro)"/>
+</g>
+</svg>

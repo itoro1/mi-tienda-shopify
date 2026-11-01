@@ -492,6 +492,22 @@ Se rehace con `tools/perfil.py` (necesita `BodoniModa.ttf`).
   Business Manager (registro TXT en *Configuración → Dominios* de Shopify,
   o la etiqueta meta en el tema).
 
+## Foto de perfil «currada» (01/11/2026)
+
+El dueño pidió algo más trabajado que la P sola. Nueva marca: **la P
+dibujada como un cargador** (el asta acaba en el cuerpo de un enchufe con
+las dos clavijas europeas en oro, y dentro del hueco de la P un rayo de
+carga dorado), sobre el azul noche con luz en el centro. Dos versiones en
+`marca/` (PNG 1080 × 1080 y SVG):
+
+- `perfil-pillatumovil-emblema`: con anillo dorado y «PILLATUMOVIL ·
+  CARGADORES ORIGINALES» alrededor, como un sello. Para Instagram y Facebook.
+- `perfil-pillatumovil-marca`: solo la P-cargador, grande; se lee mejor en
+  pequeño. Para WhatsApp y el logo cuadrado de Shopify.
+
+Muestra en círculo a 420, 96 y 48 px: `muestra-perfil-emblema.png`. Se
+rehacen con `python3 tools/perfil_emblema.py marca/`.
+
 ## Dominio
 
 - **pillatumovil.com**, comprado en Shopify el 27/10/2026 (registrador
