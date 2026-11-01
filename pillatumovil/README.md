@@ -575,6 +575,25 @@ El anuncio de Meta que se usa (E, normal y «con marco») ya lleva el logo nuevo
 - `PROMPT-rediseno.md`: el encargo completo para rehacer la tienda en un
   chat nuevo, sobre una copia del tema y sin tocar el publicado.
 
+## Rediseño 2026 (en curso desde el 01/11/2026)
+
+- Se trabaja en una **copia sin publicar**: «Dawn — Rediseño 2026»
+  (`207801942364`), duplicada de Dawn con `themeDuplicate`. Vista previa:
+  `https://pillatumovil.com/?preview_theme_id=207801942364`. Dawn
+  (`207180497244`) sigue publicado y no se toca. Se publica solo cuando lo
+  diga el dueño, y antes se compara `settings_data.json` y los grupos de
+  cabecera y pie con los de Dawn por si cambió algo en el editor.
+- Fase 1 (auditoría y dirección): `disenos/rediseno-2026/01-direccion.md`,
+  capturas del antes en `disenos/rediseno-2026/antes/`. Dirección
+  «El objeto, grande» (`hero-object`, seed 2052516145) con la paleta y la
+  letra de la marca. Idea: la caja enorme de la portada cambia cuando el
+  cliente toca su iPhone (Lightning hasta el 14, USB-C desde el 15).
+- **Letra**: Unbounded (titulares) + Archivo (texto), para unir la web con el
+  logo. Dos familias como máximo.
+- **Choques entre skills** (manda `design-taste-frontend`): sin cristal ni
+  desenfoque en la cabecera (lo pedía `apple-design`); papel y piedra se
+  quedan aunque el inspector los llame «crema», porque son de la marca.
+
 ## Dominio
 
 - **pillatumovil.com**, comprado en Shopify el 27/10/2026 (registrador
