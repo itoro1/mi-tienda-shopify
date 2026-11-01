@@ -565,6 +565,16 @@ como cuadrado y `movil-p_logo-horizontal-claro-transparente.png` como logo),
 y la foto de WhatsApp, Instagram y Facebook con `movil-p_perfil-oro.png`.
 El anuncio de Meta que se usa (E, normal y «con marco») ya lleva el logo nuevo al pie (01/11); los retirados (A a D) siguen con la firma antigua.
 
+## Herramienta de la API y prompt del rediseño (01/11/2026)
+
+- `tools/shopify/ptm.py`: todo lo que antes vivía en scripts sueltos de la
+  sesión. Pide el token solo (variables `SHOPIFY_PTM_*`), lista temas, baja
+  y sube archivos del tema (de uno en uno, enseñando el error de cada uno)
+  y sube fotos y vídeos a *Contenido → Archivos*. Ejemplo:
+  `python3 tools/shopify/ptm.py subir 207180497244 sections/ps-hero.liquid`.
+- `PROMPT-rediseno.md`: el encargo completo para rehacer la tienda en un
+  chat nuevo, sobre una copia del tema y sin tocar el publicado.
+
 ## Dominio
 
 - **pillatumovil.com**, comprado en Shopify el 27/10/2026 (registrador
