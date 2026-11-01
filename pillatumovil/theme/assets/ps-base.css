@@ -1,115 +1,200 @@
-/* Pillatumovil, portada "estudio" (25/10/2026).
+/* Pillatumovil · sistema 2026 (rediseño, 01/11/2026).
 
-   La pagina la llevan las fotos y los videos de estudio; la interfaz se
-   aparta. Dos fondos que salen de las propias fotos:
-   - noche: el fondo azul del estudio oscuro (portada, video, cierre);
-   - piedra: el gris calido del papel de estudio de los bodegones, para que
-     las fotos claras se fundan con la pagina.
-   El oro es luz, no pintura: boton principal, cifras y filetes. Sin
-   degradados en los textos.
+   Dirección «El objeto, grande»: la caja real de Apple, grande, sobre un
+   campo plano. La interfaz se aparta y deja hablar al producto.
 
-   Una sola familia, la de texto del tema (Archivo): es una grotesca como la
-   rotulacion de las cajas. La serif solo vive en el logo. */
+   Letra: Unbounded (titulares y precios, la misma del logo) + Archivo
+   (texto). Cinco tamaños: titular, subtítulo, entradilla/titulillo, texto,
+   pequeño. El seguimiento (tracking) depende del tamaño: negativo en lo
+   grande, cero en el texto.
+
+   Color: un campo (papel o noche), una tinta, un acento. El oro solo en el
+   botón principal y en el «tu» del logo. El texto corrido va en la tinta
+   entera; el gris solo para notas.
+
+   Formas: botones redondos del todo (decidido una vez para toda la tienda);
+   fotos y teselas con esquinas rectas. Sin sombras en reposo, sin
+   degradados (salvo el velo neutro bajo un texto sobre foto), sin filetes:
+   las superficies se separan con un escalón de tono.
+
+   Las variables antiguas (--ps-gris, --ps-niebla, --ps-linea...) siguen
+   existiendo para no romper las secciones que aún no se han rehecho. */
+
+/* ---------- Base de toda la tienda (también lo que es de Dawn) ---------- */
+html{-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{background:#f3f1ec}
+::selection{background:#c9a86a;color:#0b0f1a}
+input,select,textarea{font-size:max(16px,1em)}
+a,button,[role="button"],summary,label[for]{touch-action:manipulation}
+button,[role="button"],.button,.ps-btn,summary{-webkit-user-select:none;user-select:none}
+:focus-visible{outline:2px solid #c9a86a;outline-offset:3px}
+html{scrollbar-color:#9a9585 #f3f1ec}
+/* Dawn: titulares con Unbounded apretada (Dawn les da tracking positivo). */
+h1,h2,h3,.h0,.h1,.h2,.h3{letter-spacing:-.02em}
+h4,h5,.h4,.h5{letter-spacing:-.01em}
+
+/* ---------- Ámbito de las secciones ps- ---------- */
 .ps{
+  /* Marca */
   --ps-noche:#0b0f1a;
-  --ps-noche-2:#141a2b;
+  --ps-noche-2:#151b2c;
   --ps-piedra:#e8e5df;
   --ps-papel:#f3f1ec;
-  --ps-tinta:#141824;
-  --ps-gris:#585d6b;
-  --ps-niebla:#a9adb8;
   --ps-marfil:#f4f1ea;
-  --ps-oro:var(--pt-accent,#c9a86a);
-  --ps-oro-claro:#e2cc9a;
-  --ps-oro-tinta:#7d5f28;
+  --ps-tinta:#141824;
+  --ps-oro:#c9a86a;
+  --ps-oro-texto:#d9bb7c;   /* oro para texto sobre noche (8,9:1) */
+  --ps-oro-tinta:#7d5f28;   /* oro para texto sobre claro (5,4:1 en papel) */
+  --ps-oro-pulsado:#d6b97f;
+  /* Texto secundario */
+  --ps-tinta-2:#474c59;     /* 7,9:1 en papel */
+  --ps-marfil-2:#b9bcc6;    /* 9,8:1 en noche */
+  /* Compatibilidad con las secciones anteriores */
+  --ps-gris:var(--ps-tinta-2);
+  --ps-niebla:var(--ps-marfil-2);
+  --ps-oro-claro:var(--ps-oro-texto);
   --ps-linea-osc:rgba(244,241,234,.14);
   --ps-linea-cla:rgba(20,24,36,.13);
-  --ps-r-foto:14px;
+  --ps-r-foto:0px;
+
+  /* Letra */
+  --ps-display:var(--font-heading-family);
   --ps-sans:var(--font-body-family);
-  --ps-peso-tit:var(--font-heading-weight,600);
+  --ps-peso-tit:600;
+  --ps-t1:clamp(38px,5.4vw,84px);   /* titular */
+  --ps-t2:clamp(28px,3.1vw,48px);   /* subtítulo de sección */
+  --ps-t3:clamp(19px,1.45vw,22px);  /* titulillo y entradilla */
+  --ps-t4:17px;                     /* texto */
+  --ps-t5:14px;                     /* pequeño (nunca menos de 13) */
+
+  /* Espacio */
+  --ps-margen:clamp(16px,4vw,56px);
+  --ps-sec:clamp(96px,11vw,176px);
+
+  /* Movimiento */
+  --ps-ease-out:cubic-bezier(.23,1,.32,1);
+  --ps-ease-in-out:cubic-bezier(.77,0,.175,1);
+
   font-family:var(--ps-sans);
-  font-size:16px;
+  font-size:var(--ps-t4);
   line-height:1.55;
   -webkit-font-smoothing:antialiased;
+  font-kerning:normal;
 }
 .ps *,.ps *::before,.ps *::after{box-sizing:border-box}
 .ps img,.ps video{display:block;max-width:100%}
-/* iOS en modo de bajo consumo (y algunos navegadores con ahorro de datos) no
-   reproduce videos solos y pinta su boton de play encima. Los videos de la
-   tienda son de fondo: nunca llevan controles. Si no se pueden reproducir,
-   los scripts de ps-hero y ps-video ponen la foto de espera en su lugar. */
+/* iOS en bajo consumo pinta su botón de play encima de los vídeos de fondo:
+   se ocultan los controles nativos; ps-hero y ps-video ponen la foto de
+   espera si play() falla. */
 .ps video::-webkit-media-controls,
 .ps video::-webkit-media-controls-panel,
 .ps video::-webkit-media-controls-play-button,
 .ps video::-webkit-media-controls-start-playback-button,
 .ps video::-webkit-media-controls-overlay-play-button{display:none !important;-webkit-appearance:none}
 
-/* Fondos */
-.ps--noche{background:var(--ps-noche);color:var(--ps-marfil)}
-.ps--piedra{background:var(--ps-piedra);color:var(--ps-tinta)}
-.ps--papel{background:var(--ps-papel);color:var(--ps-tinta)}
-.ps--noche{--ps-texto-2:var(--ps-niebla);--ps-linea:var(--ps-linea-osc)}
-.ps--piedra,.ps--papel{--ps-texto-2:var(--ps-gris);--ps-linea:var(--ps-linea-cla)}
+/* Campos */
+.ps--noche{background:var(--ps-noche);color:var(--ps-marfil);--ps-texto-2:var(--ps-marfil-2);--ps-linea:var(--ps-linea-osc);--ps-campo-2:var(--ps-noche-2)}
+.ps--piedra{background:var(--ps-piedra);color:var(--ps-tinta);--ps-texto-2:var(--ps-tinta-2);--ps-linea:var(--ps-linea-cla);--ps-campo-2:var(--ps-papel)}
+.ps--papel{background:var(--ps-papel);color:var(--ps-tinta);--ps-texto-2:var(--ps-tinta-2);--ps-linea:var(--ps-linea-cla);--ps-campo-2:var(--ps-piedra)}
+.ps--marfil{background:var(--ps-marfil);color:var(--ps-tinta);--ps-texto-2:var(--ps-tinta-2);--ps-linea:var(--ps-linea-cla);--ps-campo-2:var(--ps-piedra)}
 
-.ps-wrap{width:100%;max-width:1360px;margin:0 auto;padding:0 clamp(20px,4vw,56px)}
-.ps-sec{padding:clamp(72px,9vw,136px) 0}
+.ps-wrap{width:100%;max-width:1360px;margin:0 auto;padding:0 var(--ps-margen)}
+.ps-sec{padding:var(--ps-sec) 0}
 
-/* Titulares: grotesca apretada, sin adornos. */
-.ps-h1,.ps-h2,.ps-h3{font-family:var(--ps-sans);font-weight:var(--ps-peso-tit);margin:0;color:inherit;text-wrap:balance}
-.ps-h1{font-size:clamp(40px,5.4vw,80px);line-height:1;letter-spacing:-.035em}
-.ps-h2{font-size:clamp(32px,3.7vw,56px);line-height:1.04;letter-spacing:-.03em}
-.ps-h3{font-size:clamp(20px,1.6vw,24px);line-height:1.2;letter-spacing:-.015em}
-.ps-lead{margin:20px 0 0;max-width:46ch;font-size:clamp(17px,1.25vw,19px);line-height:1.6;color:var(--ps-texto-2)}
-.ps-lead strong{color:inherit;font-weight:700}
-.ps--noche .ps-lead strong{color:var(--ps-marfil)}
+/* ---------- Letra ---------- */
+.ps-h1,.ps-h2,.ps-h3{font-family:var(--ps-display);font-weight:var(--ps-peso-tit);margin:0;color:inherit;text-wrap:balance;font-optical-sizing:auto}
+.ps-h1{font-size:var(--ps-t1);line-height:1.02;letter-spacing:-.035em}
+.ps-h2{font-size:var(--ps-t2);line-height:1.08;letter-spacing:-.025em}
+.ps-h3{font-size:var(--ps-t3);line-height:1.25;letter-spacing:-.01em}
+.ps-lead{margin:24px 0 0;max-width:44ch;font-size:var(--ps-t3);line-height:1.5;color:inherit;text-wrap:pretty}
+.ps-lead strong{font-weight:700}
+.ps-texto{max-width:62ch;font-size:var(--ps-t4);line-height:1.6;text-wrap:pretty}
+.ps-nota{font-size:var(--ps-t5);line-height:1.5;color:var(--ps-texto-2)}
+.ps-num{font-variant-numeric:tabular-nums}
 
-/* Botones */
+/* ---------- Botones ---------- */
 .ps-btns{display:flex;flex-wrap:wrap;align-items:center;gap:14px 28px;margin-top:36px}
 .ps-btn{
   display:inline-flex;align-items:center;justify-content:center;gap:10px;
-  min-height:56px;padding:0 32px;border:0;border-radius:999px;cursor:pointer;
-  font-family:var(--ps-sans);font-size:16px;font-weight:700;letter-spacing:0;text-decoration:none;
+  min-height:56px;padding:0 30px;border:0;border-radius:999px;cursor:pointer;
+  font-family:var(--ps-sans);font-size:var(--ps-t4);font-weight:700;line-height:1.1;letter-spacing:0;text-decoration:none;
   background:var(--ps-oro);color:var(--ps-noche);
-  transition:background-color .2s ease,color .2s ease,box-shadow .2s ease;
+  transition:transform 120ms var(--ps-ease-out),background-color 160ms ease,color 160ms ease,box-shadow 160ms ease;
 }
-.ps-btn:hover{background:#d8bc84}
+.ps-btn:active{transform:scale(.97);background:var(--ps-oro-pulsado)}
 .ps-btn--tinta{background:var(--ps-tinta);color:var(--ps-marfil)}
-.ps-btn--tinta:hover{background:#262c3d}
-.ps-btn--borde{background:transparent;color:inherit;box-shadow:inset 0 0 0 1.5px currentColor}
-.ps-btn--borde:hover{background:transparent;box-shadow:inset 0 0 0 1.5px var(--ps-oro);color:inherit}
-.ps-btn[disabled]{opacity:.45;cursor:not-allowed}
+.ps-btn--tinta:active{background:#262c3d}
+.ps--noche .ps-btn--tinta{background:var(--ps-marfil);color:var(--ps-noche)}
+.ps-btn--borde{background:transparent;color:inherit;box-shadow:inset 0 0 0 2px currentColor}
+.ps-btn--borde:active{background:rgba(127,127,127,.12)}
+.ps-btn--ancho{width:100%}
+.ps-btn[disabled],.ps-btn[aria-disabled="true"]{opacity:.45;cursor:not-allowed;transform:none}
 .ps-btn svg{flex:none}
-.ps-link{font-weight:700;color:inherit;text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:6px;text-decoration-color:var(--ps-oro)}
-.ps-link:hover{text-decoration-color:currentColor}
+.ps-btn[aria-busy="true"]{cursor:progress}
+.ps-link{font-weight:700;color:inherit;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:6px;text-decoration-color:var(--ps-oro);transition:text-decoration-color 160ms ease}
+.ps-link:active{opacity:.7}
+@media (hover:hover) and (pointer:fine){
+  .ps-btn:hover{background:var(--ps-oro-pulsado)}
+  .ps-btn--tinta:hover{background:#262c3d}
+  .ps--noche .ps-btn--tinta:hover{background:#fff}
+  .ps-btn--borde:hover{background:transparent;box-shadow:inset 0 0 0 2px var(--ps-oro)}
+  .ps-link:hover{text-decoration-color:currentColor}
+}
 .ps :focus-visible{outline:2px solid var(--ps-oro);outline-offset:3px;border-radius:4px}
+.ps--papel :focus-visible,.ps--piedra :focus-visible,.ps--marfil :focus-visible{outline-color:var(--ps-oro-tinta)}
 
-/* Precios: el de Apple siempre con su etiqueta "En Apple" (Omnibus). */
-.ps-precio{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;margin:0}
-.ps-precio__aqui{font-size:clamp(34px,3.2vw,46px);font-weight:700;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
-.ps-precio__apple{font-size:15px;color:var(--ps-texto-2)}
-.ps-precio__apple s{text-decoration-thickness:1px}
-.ps-ahorro{display:inline-block;margin:12px 0 0;padding:6px 12px;border-radius:999px;font-size:14px;font-weight:700;
-  background:rgba(201,168,106,.2);color:var(--ps-oro-tinta)}
-.ps--noche .ps-ahorro{background:rgba(201,168,106,.16);color:var(--ps-oro-claro)}
+/* ---------- Precios ---------- */
+/* El de Apple va siempre con su etiqueta «En Apple» y la fecha (Omnibus):
+   un tachado suelto se leería como una rebaja nuestra. */
+.ps-precio{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 16px;margin:0}
+.ps-precio__aqui{font-family:var(--ps-display);font-weight:var(--ps-peso-tit);font-size:clamp(34px,3.4vw,52px);letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+.ps-precio__apple{font-size:var(--ps-t5);color:var(--ps-texto-2)}
+.ps-precio__apple s{text-decoration-thickness:1.5px}
+.ps-ahorro{display:inline-block;margin:12px 0 0;padding:6px 12px;border-radius:999px;font-size:var(--ps-t5);font-weight:700;
+  background:rgba(201,168,106,.22);color:var(--ps-oro-tinta)}
+.ps--noche .ps-ahorro{background:rgba(201,168,106,.16);color:var(--ps-oro-texto)}
 
-/* Lista con marca */
-.ps-lista{list-style:none;margin:24px 0 0;padding:0;display:grid;gap:10px}
-.ps-lista li{display:grid;grid-template-columns:20px 1fr;gap:12px;align-items:start;font-size:16px;line-height:1.45}
+/* ---------- Listas y garantías ---------- */
+.ps-lista{list-style:none;margin:24px 0 0;padding:0;display:grid;gap:12px}
+.ps-lista li{display:grid;grid-template-columns:20px 1fr;gap:12px;align-items:start;font-size:var(--ps-t4);line-height:1.45}
 .ps-lista svg{margin-top:2px;color:var(--ps-oro)}
-.ps--piedra .ps-lista svg,.ps--papel .ps-lista svg{color:var(--ps-oro-tinta)}
-
-/* Garantias en fila (envio, devolucion, garantia) */
-.ps-sellos{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:12px 28px;font-size:14px;color:var(--ps-texto-2)}
+.ps--piedra .ps-lista svg,.ps--papel .ps-lista svg,.ps--marfil .ps-lista svg{color:var(--ps-oro-tinta)}
+.ps-sellos{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:12px 28px;font-size:var(--ps-t5);color:inherit}
 .ps-sellos li{display:inline-flex;align-items:center;gap:8px}
 .ps-sellos svg{color:var(--ps-oro);flex:none}
-.ps--piedra .ps-sellos svg,.ps--papel .ps-sellos svg{color:var(--ps-oro-tinta)}
+.ps--piedra .ps-sellos svg,.ps--papel .ps-sellos svg,.ps--marfil .ps-sellos svg{color:var(--ps-oro-tinta)}
 
-/* Fotos */
+/* ---------- Fotos ---------- */
 .ps-foto{position:relative;overflow:hidden;border-radius:var(--ps-r-foto);background:var(--ps-piedra)}
 .ps-foto img{width:100%;height:100%;object-fit:cover}
+/* Las fotos de producto llevan fondo blanco: sobre papel o piedra se funden. */
+.ps-multiply{mix-blend-mode:multiply}
 
 .ps-visually-hidden{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
-@media (prefers-reduced-motion:reduce){
-  .ps *{transition:none!important;animation:none!important}
+/* ---------- Entradas al hacer scroll (fase de movimiento) ----------
+   Solo si el sistema no pide menos movimiento y solo si el script está
+   activo (.ps-js en <html>): sin script, todo se ve desde el principio. */
+@media (prefers-reduced-motion:no-preference){
+  .ps-js [data-ps-entra]{opacity:0;transform:translateY(24px);transition:opacity 700ms var(--ps-ease-out),transform 700ms var(--ps-ease-out);transition-delay:calc(var(--ps-i,0) * 70ms)}
+  .ps-js [data-ps-entra].ps-dentro{opacity:1;transform:none}
 }
+@media (prefers-reduced-motion:reduce){
+  .ps *{transition-duration:1ms!important;animation:none!important}
+}
+
+/* ---------- Buscador de Dawn (cabecera) ----------
+   Nombres en la letra de texto (Unbounded es para titulares), precio a la
+   vista, sin etiquetas en mayúsculas espaciadas ni filetes, fotos sobre
+   papel. La hoja de Dawn se carga después: de ahí el prefijo
+   predictive-search, para ganar en especificidad. */
+predictive-search .predictive-search{border:0}
+predictive-search .predictive-search__heading{font-size:15px;letter-spacing:0;text-transform:none;font-weight:700;color:rgba(244,241,234,.75);border-bottom:0;padding-bottom:4px}
+predictive-search .predictive-search__item-heading.h5{font-family:var(--font-body-family);font-size:17px;font-weight:500;letter-spacing:0;line-height:1.3}
+predictive-search .predictive-search__item-query-result mark{color:inherit;font-weight:700}
+predictive-search .predictive-search__item{transition:background-color 120ms ease}
+predictive-search .predictive-search__item:active{background:rgba(244,241,234,.08)}
+predictive-search .predictive-search__image{background:#f3f1ec;object-fit:contain}
+predictive-search .predictive-search__item .price{font-size:15px;letter-spacing:0;color:#d9bb7c}
+predictive-search .predictive-search__search-for-button{border-top:0}
+predictive-search .predictive-search__list-item:nth-last-child(1){border:0}

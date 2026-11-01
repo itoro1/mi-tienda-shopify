@@ -1,0 +1,43 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "name": "t:sections.footer.name",
+  "type": "footer",
+  "sections": {
+    "whatsapp": {
+      "type": "pt-whatsapp",
+      "settings": {
+        "mostrar": true,
+        "numero": "34641047539",
+        "etiqueta": "Consúltenos",
+        "mensaje": "Hola, quería hacer una consulta sobre un cargador."
+      }
+    },
+    "pie": {
+      "type": "ps-pie",
+      "settings": {
+        "frase": "Originales de Apple.\nEn su casa en 24⁠-⁠48 h.",
+        "whatsapp": "34641047539",
+        "whatsapp_texto": "+34 641 04 75 39",
+        "nota_contacto": "Le respondemos por WhatsApp. Si nos escribe por un pedido, indíquenos su número.",
+        "menu_1": "pie-tienda",
+        "menu_2": "pie-ayuda",
+        "boletin": true,
+        "boletin_titulo": "Ofertas",
+        "boletin_texto": "Le avisamos cuando bajemos precios. Sin más correos que esos.",
+        "marcas": "Apple, iPhone y Lightning son marcas de Apple Inc. Pillatumovil es un comercio independiente, no afiliado a Apple."
+      }
+    }
+  },
+  "order": [
+    "pie",
+    "whatsapp"
+  ]
+}

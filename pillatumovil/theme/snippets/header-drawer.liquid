@@ -4,6 +4,7 @@
   @param {boolean} [show_country_selector] - Whether to show the country selector. Defaults to `false`.
   @param {boolean} [show_language_selector] - Whether to show the language selector. Defaults to `false`.
   @param {boolean} [show_social_links] - Whether to show links for configured social accounts. Defaults to `false`.
+  @param {object} [ps_ajustes] - Ajustes de la cabecera (packs y WhatsApp del menú móvil, rediseño 2026).
 
   @param {object} [section] - The current header section context, supplied implicitly when rendered from that section and used for menu settings.
 
@@ -152,7 +153,7 @@
               {%- endfor -%}
             </ul>
           </nav>
-          {%- render 'ps-menu-extra' -%}
+          {%- render 'ps-menu-extra', ajustes: ps_ajustes -%}
           <div class="menu-drawer__utility-links">
             {%- if show_country_selector or show_language_selector -%}
               <div class="menu-drawer__localization header-localization">

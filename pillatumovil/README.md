@@ -592,7 +592,38 @@ El anuncio de Meta que se usa (E, normal y «con marco») ya lleva el logo nuevo
   logo. Dos familias como máximo.
 - **Choques entre skills** (manda `design-taste-frontend`): sin cristal ni
   desenfoque en la cabecera (lo pedía `apple-design`); papel y piedra se
-  quedan aunque el inspector los llame «crema», porque son de la marca.
+  quedan aunque el inspector los llame «crema», porque son de la marca. El
+  logo lleva degradados propios: es de la marca y se deja como está (el
+  inspector se pasa con `--allow` para eso). El botón flotante de WhatsApp
+  lleva sombra porque flota de verdad.
+- `PRODUCT.md` (para la skill `impeccable`): escrito con el encargo y este
+  README, sin entrevista (el dueño pidió no preguntar lo decidible).
+
+### Fase 2: sistema, cabecera y pie (01/11/2026)
+
+| Qué | Dónde | Cómo se cambia |
+|---|---|---|
+| Letra, colores, botones, precios, foco, selección, campos de 16 px, sin destello al tocar | `assets/ps-base.css` (cargada en `layout/theme.liquid` para toda la tienda) | Código. La letra de titulares es **Unbounded** (ajuste *Tipografía → Encabezados* = `unbounded_n6`, de la biblioteca de Shopify) y la de texto Archivo |
+| Notch y barra de estado | `layout/theme.liquid`: `viewport-fit=cover` y `theme-color` noche | Código |
+| Entradas al hacer scroll | Script al final de `layout/theme.liquid` + `[data-ps-entra]` en `ps-base.css` | Se usan en las secciones nuevas (fase 7). Sin script o con movimiento reducido, todo se ve |
+| Barra superior | `sections/ps-barra.liquid`: oro plano (antes con degradado), 14 px | Editor: *PS · Barra superior* (mensajes) |
+| Cabecera | Estilos en `ps-barra.liquid`; Dawn `header` con logo a la izquierda, sin línea, se esconde al bajar y vuelve al subir; menú **`principal-2026`** (Packs, Cargador, Cables, ¿Qué cable necesito?), creado nuevo para no tocar el de la tienda publicada | Editor: *Cabecera*. En la portada el logo ya no va en `<h1>` |
+| Menú móvil | Pantalla completa en noche, enlaces grandes en Unbounded, los dos packs con foto, para qué iPhone y precio, garantías y WhatsApp (`snippets/ps-menu-extra.liquid`) | Editor: *Cabecera → Rediseño 2026 · Menú del móvil* (packs, a qué iPhone van, WhatsApp). Los ajustes se añadieron al esquema de `sections/header.liquid` |
+| Buscador | Dawn, con precio en cada resultado (`predictive_search_show_price`), nombres en letra de texto, sin mayúsculas espaciadas | Estilos al final de `ps-base.css` |
+| Pie | `sections/ps-pie.liquid`: la foto de la mesilla a todo el ancho con «¿Dudas? Escríbanos.», WhatsApp y el **logo a todo el ancho** (`assets/ps-logo-oscuro.svg`); debajo, menús, boletín, pagos, políticas y «no está afiliado a Apple» | Editor: *PS · Pie de página* (foto, titular, texto, WhatsApp, menús, boletín, nota de marcas) |
+| Botón de WhatsApp | `sections/pt-whatsapp.liquid`: noche con el símbolo verde; se aparta con el buscador, el menú o el carrito abiertos; respeta la barra de inicio del iPhone | Editor: *PT · WhatsApp* |
+| Esquemas de color de Dawn | `config/settings_data.json`: marfil exacto `#F4F1EA`; el esquema claro (3) pasa a papel `#F3F1EC` con botón oro | Editor: *Configuración del tema → Colores* |
+
+Contrastes medidos: tinta/papel 15,7; tinta-2/papel 7,6; oro oscuro/papel
+5,3; marfil-2/noche 10,1; oro texto/noche 10,3; noche sobre oro 8,5.
+
+Trampa nueva: **un `| default` dentro de los argumentos de `image_tag` se
+come los argumentos siguientes** (`alt: x | default: '', class: 'y'` deja la
+imagen sin clase). El texto alternativo se asigna antes con `assign`.
+
+Comprobado en la vista previa: el feed de idealo sale idéntico al publicado
+(9 filas), añadir al carrito abre el panel con el producto, el buscador
+encuentra los 5 productos y el enlace de WhatsApp es el de siempre.
 
 ## Dominio
 

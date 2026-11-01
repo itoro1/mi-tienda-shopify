@@ -1,0 +1,75 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "name": "t:sections.header.name",
+  "type": "header",
+  "sections": {
+    "barra": {
+      "type": "ps-barra",
+      "blocks": {
+        "m1": {
+          "type": "mensaje",
+          "settings": {
+            "icono": "envio",
+            "texto": "Lo recibe en casa en 24⁠-⁠48 h",
+            "enlace": "",
+            "destacado": true
+          }
+        },
+        "m2": {
+          "type": "mensaje",
+          "settings": {
+            "icono": "devolucion",
+            "texto": "Envío y devolución gratis",
+            "enlace": "",
+            "destacado": false
+          }
+        },
+        "m3": {
+          "type": "mensaje",
+          "settings": {
+            "icono": "garantia",
+            "texto": "Originales de Apple, con 3 años de garantía",
+            "enlace": "",
+            "destacado": false
+          }
+        }
+      },
+      "block_order": [
+        "m1",
+        "m2",
+        "m3"
+      ],
+      "settings": {}
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "logo_position": "middle-center",
+        "mobile_logo_position": "center",
+        "menu": "principal-estudio",
+        "menu_type_desktop": "dropdown",
+        "sticky_header_type": "always",
+        "show_line_separator": true,
+        "color_scheme": "scheme-1",
+        "menu_color_scheme": "scheme-2",
+        "enable_country_selector": false,
+        "enable_language_selector": false,
+        "margin_bottom": 0,
+        "padding_top": 20,
+        "padding_bottom": 20
+      }
+    }
+  },
+  "order": [
+    "barra",
+    "header"
+  ]
+}

@@ -19,10 +19,17 @@
 {%- endif -%}
 
 {% stylesheet %}
-.pt-wa{position:fixed;right:20px;bottom:20px;z-index:40;display:flex;align-items:center;gap:10px;height:56px;padding:0 20px 0 16px;border-radius:28px;background:#25d366;color:#0b3d1f;font-family:var(--font-body-family);font-size:15px;font-weight:700;text-decoration:none;box-shadow:0 10px 28px -10px rgba(0,0,0,.45);transition:transform .15s ease}
-.pt-wa:hover{transform:translateY(-2px)}
-.pt-wa:focus-visible{outline:3px solid #1b2230;outline-offset:3px}
-@media (max-width:749px){.pt-wa{right:14px;bottom:14px;width:56px;padding:0;justify-content:center}.pt-wa__txt{display:none}}
+/* Rediseño 2026: noche con el símbolo en verde de WhatsApp (se reconoce sin
+   gritar), sombra solo porque flota, respuesta al pulsar y fuera de la zona
+   de la barra de inicio del iPhone. */
+.pt-wa{position:fixed;right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:40;display:flex;align-items:center;gap:10px;height:56px;padding:0 22px 0 16px;border-radius:999px;background:#0b0f1a;color:#f4f1ea;font-family:var(--font-body-family);font-size:16px;font-weight:700;text-decoration:none;box-shadow:0 12px 32px -12px rgba(11,15,26,.55),0 0 0 1px rgba(244,241,234,.12);transition:transform 120ms cubic-bezier(.23,1,.32,1),bottom 300ms cubic-bezier(.23,1,.32,1);touch-action:manipulation;-webkit-user-select:none;user-select:none}
+.pt-wa svg{color:#25d366;flex:none}
+.pt-wa:active{transform:scale(.95)}
+.pt-wa:focus-visible{outline:2px solid #c9a86a;outline-offset:3px}
+@media (hover:hover) and (pointer:fine){.pt-wa:hover{transform:translateY(-2px)}}
+@media (max-width:749px){.pt-wa{width:56px;padding:0;justify-content:center}.pt-wa__txt{display:none}}
+/* Mientras está abierto el buscador, el menú o el carrito, el botón se aparta. */
+body:has(details-modal > details[open], details.menu-drawer-container[open], cart-drawer.active) .pt-wa{opacity:0;pointer-events:none;transform:scale(.9);transition:opacity 160ms ease,transform 160ms ease}
 @media print{.pt-wa{display:none}}
 {% endstylesheet %}
 

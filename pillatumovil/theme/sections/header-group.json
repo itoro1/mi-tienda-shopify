@@ -27,7 +27,7 @@
           "type": "mensaje",
           "settings": {
             "icono": "garantia",
-            "texto": "Originales de Apple, con 3 años de garantía",
+            "texto": "Original de Apple, 3 años de garantía",
             "enlace": "",
             "destacado": false
           }
@@ -43,19 +43,26 @@
     "header": {
       "type": "header",
       "settings": {
-        "logo_position": "middle-center",
+        "logo_position": "middle-left",
         "mobile_logo_position": "center",
-        "menu": "principal-estudio",
+        "menu": "principal-2026",
         "menu_type_desktop": "dropdown",
-        "sticky_header_type": "always",
-        "show_line_separator": true,
+        "sticky_header_type": "on-scroll-up",
+        "show_line_separator": false,
         "color_scheme": "scheme-1",
-        "menu_color_scheme": "scheme-2",
+        "menu_color_scheme": "scheme-1",
         "enable_country_selector": false,
         "enable_language_selector": false,
         "margin_bottom": 0,
-        "padding_top": 20,
-        "padding_bottom": 20
+        "padding_top": 12,
+        "padding_bottom": 12,
+        "ps_pack_1_para": "iPhone 15 o posterior",
+        "ps_pack_2_para": "iPhone 8 al 14",
+        "ps_whatsapp": "34641047539",
+        "ps_packs": [
+          "pack-cargador-usb-c-20w-cable-usb-c-1m-apple-original",
+          "cargador-apple-usb-c"
+        ]
       }
     }
   },
