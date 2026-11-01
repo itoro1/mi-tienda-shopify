@@ -9,7 +9,7 @@
           "type": "mensaje",
           "settings": {
             "icono": "envio",
-            "texto": "Lo recibe en casa en 24⁠-⁠48 h",
+            "texto": "Envío gratis en todos los pedidos",
             "enlace": "",
             "destacado": true
           }
@@ -18,7 +18,7 @@
           "type": "mensaje",
           "settings": {
             "icono": "devolucion",
-            "texto": "Envío y devolución gratis",
+            "texto": "14 días para devolverlo",
             "enlace": "",
             "destacado": false
           }
@@ -27,7 +27,7 @@
           "type": "mensaje",
           "settings": {
             "icono": "garantia",
-            "texto": "Original de Apple, 3 años de garantía",
+            "texto": "Originales de Apple, con garantía",
             "enlace": "",
             "destacado": false
           }

@@ -32,10 +32,16 @@
     assign tipo = 'cargador'
   elsif sku contains 'CBL-'
     assign tipo = 'cable'
+  elsif sku contains 'IPH-' or product.type == 'Smartphone'
+    assign tipo = 'movil'
   endif
   assign conector = 'usbc'
-  if sku contains 'LTN'
+  if sku contains 'LTN' or product.tags contains 'lightning'
     assign conector = 'lightning'
+  endif
+  assign nuevo = false
+  if product.tags contains 'nuevo'
+    assign nuevo = true
   endif
   capture nombre
     render 'ps-dato', p: product, campo: 'nombre'
@@ -55,7 +61,7 @@
     assign varios = false
   endif
 -%}
-<section class="ps ps--papel ps-fi" data-ps-ficha data-section="{{ section.id }}">
+<section class="ps ps--papel ps-fi ps-fi--{{ tipo }}" data-ps-ficha data-section="{{ section.id }}">
   <div class="ps-wrap ps-fi__grid">
 
     {%- comment -%} Galería {%- endcomment -%}
@@ -64,7 +70,7 @@
         {%- for m in product.media -%}
           {%- if m.media_type != 'image' -%}{%- continue -%}{%- endif -%}
           {%- assign alt_m = m.alt | default: product.title | escape -%}
-          <li class="ps-fi__foto{% if forloop.first %} ps-fi__foto--1{% endif %}">
+          <li class="ps-fi__foto{% if forloop.first %} ps-fi__foto--1{% endif %}" data-media="{{ m.id }}">
             {%- if forloop.first -%}
               {{ m | image_url: width: 1600 | image_tag: loading: 'eager', fetchpriority: 'high', widths: '500,800,1100,1400,1600', sizes: '(min-width: 990px) 56vw, 100vw', alt: alt_m, class: 'ps-fi__img ps-multiply' }}
             {%- else -%}
@@ -81,21 +87,53 @@
     {%- comment -%} Compra {%- endcomment -%}
     <div class="ps-fi__compra">
       <h1 class="ps-fi__h1">{{ nombre }}</h1>
-      <p class="ps-fi__sub">{% if que != blank %}{{ que }}. {% endif %}{% if para != blank %}Para {{ para | downcase | replace: 'iphone', 'iPhone' }}.{% endif %}</p>
+      {%- if tipo == 'movil' -%}
+        <p class="ps-fi__sub">{% if nuevo %}{{ section.settings.movil_nuevo }}{% else %}{{ section.settings.movil_usado }}{% endif %}</p>
+      {%- else -%}
+        <p class="ps-fi__sub">{% if que != blank %}{{ que }}. {% endif %}{% if para != blank %}Para {{ para | downcase | replace: 'iphone', 'iPhone' }}.{% endif %}</p>
+      {%- endif -%}
 
       <div class="ps-fi__precios">
         {%- for x in product.variants -%}
-          {%- assign n = x.title | split: ' ' | first | plus: 0 -%}
+          {%- assign n = 1 -%}
+          {%- if tipo == 'pack' -%}{%- assign n = x.title | split: ' ' | first | plus: 0 -%}{%- endif -%}
           {%- if n < 1 -%}{%- assign n = 1 -%}{%- endif -%}
           <div class="ps-fi__precio" data-v="{{ x.id }}"{% unless x.id == v.id %} hidden{% endunless %}>
             {%- render 'ps-comparacion', precio: x.price, producto: product, unidades: n, tam: 'grande' -%}
           </div>
         {%- endfor -%}
-        {%- if settings.ps_lanzamiento -%}<p class="ps-fi__lanzamiento">{{ settings.ps_lanzamiento_texto }}</p>{%- endif -%}
+        {%- if settings.ps_lanzamiento and tipo != 'movil' -%}<p class="ps-fi__lanzamiento">{{ settings.ps_lanzamiento_texto }}</p>{%- endif -%}
       </div>
 
       {%- form 'product', product, class: 'ps-fi__form', id: 'PsFichaForm', data-ps-anadir: '' -%}
-        {%- if varios -%}
+        {%- if varios and tipo != 'pack' -%}
+          {%- comment -%}
+            Productos con opciones (capacidad y color de un móvil): una
+            fila de botones por opción. El JavaScript busca la variante que
+            coincide y la pone en el desplegable (que es lo que se envía).
+            Sin JavaScript, el desplegable se ve y basta.
+          {%- endcomment -%}
+          <div class="ps-fi__opciones" data-ps-opciones hidden>
+            {%- for op in product.options_with_values -%}
+              <fieldset class="ps-fi__opcion">
+                <legend class="ps-fi__legend">{{ op.name }}: <span class="ps-fi__elegido" data-ps-elegido="{{ forloop.index0 }}">{{ op.selected_value }}</span></legend>
+                {%- for val in op.values -%}
+                  <label class="ps-fi__op">
+                    <input type="radio" name="ps-op-{{ forloop.parentloop.index0 }}" value="{{ val | escape }}" data-i="{{ forloop.parentloop.index0 }}"{% if val == op.selected_value %} checked{% endif %}>
+                    <span>{{ val | replace: 'GB', '&nbsp;GB' }}</span>
+                  </label>
+                {%- endfor -%}
+              </fieldset>
+            {%- endfor -%}
+            <p class="ps-fi__nodispo" data-ps-nodispo hidden>Esa combinación no la tenemos. Elija otro color o capacidad.</p>
+          </div>
+          <label class="ps-fi__legend ps-fi__sel-l" for="PsVar-{{ section.id }}" data-ps-sinjs>Elija la versión</label>
+          <select class="ps-fi__sel" id="PsVar-{{ section.id }}" name="id" data-ps-sinjs>
+            {%- for x in product.variants -%}
+              <option value="{{ x.id }}"{% if x.id == v.id %} selected{% endif %}{% unless x.available %} disabled{% endunless %} data-precio="{{ x.price | money_without_currency }}&nbsp;€" data-media="{{ x.featured_media.id }}" data-ops="{{ x.options | join: '|' | escape }}">{{ x.title | replace: ' / ', ' · ' }} — {{ x.price | money_without_currency }}&nbsp;€{% unless x.available %} (agotado){% endunless %}</option>
+            {%- endfor -%}
+          </select>
+        {%- elsif varios -%}
           <fieldset class="ps-fi__packs">
             <legend class="ps-fi__legend">{{ section.settings.texto_packs }}</legend>
             {%- for x in product.variants -%}
@@ -128,9 +166,15 @@
       {%- endform -%}
 
       <ul class="ps-fi__promesas" role="list">
-        <li>{% render 'ps-icono', nombre: 'envio', tam: 20 %}<span><b>En su casa en 24&#8288;-&#8288;48&nbsp;h.</b> Envío gratis.</span></li>
-        <li>{% render 'ps-icono', nombre: 'devolucion', tam: 20 %}<span><b>14&nbsp;días para devolverlo.</b> Gratis.</span></li>
-        <li>{% render 'ps-icono', nombre: 'garantia', tam: 20 %}<span><b>{{ section.settings.sello }}</b> 3&nbsp;años de garantía.</span></li>
+        {%- if tipo == 'movil' -%}
+          <li>{% render 'ps-icono', nombre: 'envio', tam: 20 %}<span><b>Envío gratis.</b> {{ section.settings.movil_plazo }}</span></li>
+          <li>{% render 'ps-icono', nombre: 'devolucion', tam: 20 %}<span><b>14&nbsp;días para devolverlo.</b></span></li>
+          <li>{% render 'ps-icono', nombre: 'garantia', tam: 20 %}<span><b>{% if nuevo %}3&nbsp;años de garantía.{% else %}1&nbsp;año de garantía.{% endif %}</b> {% if nuevo %}Original de Apple, precintado.{% else %}Revisado y 100&nbsp;% funcional.{% endif %}</span></li>
+        {%- else -%}
+          <li>{% render 'ps-icono', nombre: 'envio', tam: 20 %}<span><b>En su casa en 24&#8288;-&#8288;48&nbsp;h.</b> Envío gratis.</span></li>
+          <li>{% render 'ps-icono', nombre: 'devolucion', tam: 20 %}<span><b>14&nbsp;días para devolverlo.</b> Gratis.</span></li>
+          <li>{% render 'ps-icono', nombre: 'garantia', tam: 20 %}<span><b>{{ section.settings.sello }}</b> 3&nbsp;años de garantía.</span></li>
+        {%- endif -%}
       </ul>
       {%- if wa != blank -%}
         <p class="ps-fi__ayuda">{% render 'ps-icono', nombre: 'whatsapp', tam: 18 %}<span>¿Dudas con su modelo? <a href="https://wa.me/{{ wa }}?text={{ 'Hola, una duda sobre: ' | append: nombre | url_encode }}" target="_blank" rel="noopener">Pregúntenos por WhatsApp</a></span></p>
@@ -139,7 +183,18 @@
   </div>
 
   {%- comment -%} ¿Es para su iPhone? y En la caja {%- endcomment -%}
-  {%- if tipo != 'otro' -%}
+  {%- if tipo == 'movil' -%}
+    <div class="ps-wrap ps-fi__mas">
+      <div class="ps-fi__bloque">
+        <h2 class="ps-h2">Lo que debe saber</h2>
+        <div class="ps-fi__desc">{{ product.description }}</div>
+      </div>
+      <div class="ps-fi__bloque">
+        <h2 class="ps-h2">Para cargarlo</h2>
+        <p class="ps-fi__nota">{% if conector == 'lightning' %}{{ section.settings.movil_carga_lightning }}{% else %}{{ section.settings.movil_carga_usbc }}{% endif %}</p>
+      </div>
+    </div>
+  {%- elsif tipo != 'otro' -%}
     <div class="ps-wrap ps-fi__mas">
       <div class="ps-fi__bloque">
         <h2 class="ps-h2">¿Es para su iPhone?</h2>
@@ -212,6 +267,10 @@
           assign vale = true
         elsif tipo == 'cable' and qs contains 'PACK-' and qcon == conector
           assign vale = true
+        elsif tipo == 'movil' and qs contains 'PACK-' and qcon == conector
+          assign vale = true
+        elsif tipo == 'movil' and qs contains 'CHRG-'
+          assign vale = true
         endif
         if vale
           assign sug = sug | append: q.handle | append: ','
@@ -230,7 +289,9 @@
             {%- liquid
               assign qs = q.variants.first.sku | upcase
               assign motivo = ''
-              if tipo == 'pack'
+              if tipo == 'movil'
+                assign motivo = section.settings.motivo_movil
+              elsif tipo == 'pack'
                 assign motivo = section.settings.motivo_pack
               elsif tipo == 'cargador'
                 assign motivo = section.settings.motivo_cargador
@@ -268,9 +329,37 @@
         if (e.target.name !== 'id') return;
         var id = e.target.value;
         s.querySelectorAll('.ps-fi__precio').forEach(function (p) { p.hidden = p.getAttribute('data-v') !== id; });
-        var bp = s.querySelector('[data-ps-barra-p]'); if (bp) bp.innerHTML = e.target.getAttribute('data-precio');
+        var fuente = e.target.tagName === 'SELECT' ? e.target.options[e.target.selectedIndex] : e.target;
+        var bp = s.querySelector('[data-ps-barra-p]'); if (bp && fuente) bp.innerHTML = fuente.getAttribute('data-precio');
         try { var u = new URL(location.href); u.searchParams.set('variant', id); history.replaceState(null, '', u); } catch (err) {}
       });
+      // Opciones de un móvil (capacidad, color): buscan la variante y la ponen
+      // en el desplegable; cambian precio, foto y disponibilidad.
+      var ops = s.querySelector('[data-ps-opciones]'), sel = s.querySelector('select[name="id"]');
+      if (ops && sel) {
+        ops.hidden = false;
+        s.querySelectorAll('[data-ps-sinjs]').forEach(function (x) { x.classList.add('ps-visually-hidden'); x.tabIndex = -1; });
+        var nodispo = s.querySelector('[data-ps-nodispo]'), btn = s.querySelector('[data-ps-principal]');
+        ops.addEventListener('change', function () {
+          var elegidos = [];
+          ops.querySelectorAll('fieldset').forEach(function (f, i) {
+            var r = f.querySelector('input:checked'); elegidos[i] = r ? r.value : '';
+            var t = s.querySelector('[data-ps-elegido="' + i + '"]'); if (t) t.textContent = elegidos[i];
+          });
+          var o = Array.prototype.find.call(sel.options, function (x) { return x.getAttribute('data-ops') === elegidos.join('|'); });
+          nodispo.hidden = !!o;
+          if (!o) { btn.disabled = true; return; }
+          btn.disabled = o.disabled; btn.textContent = o.disabled ? 'Agotado por ahora' : 'Añadir al carrito';
+          sel.value = o.value;
+          sel.dispatchEvent(new Event('change', { bubbles: true }));
+          var m = o.getAttribute('data-media'), li = m && s.querySelector('.ps-fi__foto[data-media="' + m + '"]');
+          if (li) {
+            var lista = li.parentNode;
+            if (window.matchMedia('(max-width: 989px)').matches) lista.scrollTo({ left: li.offsetLeft, behavior: 'smooth' });
+            else if (lista.firstElementChild !== li) { lista.firstElementChild.classList.remove('ps-fi__foto--1'); lista.insertBefore(li, lista.firstElementChild); li.classList.add('ps-fi__foto--1'); }
+          }
+        });
+      }
       // Cantidad
       var q = s.querySelector('input[name="quantity"]');
       s.querySelectorAll('[data-ps-cant]').forEach(function (b) {
@@ -364,6 +453,22 @@
 .ps-fi__sug-in{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:40px clamp(32px,5vw,88px);align-items:start}
 .ps-fi__sug-lista{max-width:640px;--ps-cols:2}
 .ps-fi__barra{display:none}
+.ps-fi__opciones{display:grid;gap:20px;margin-bottom:20px}
+.ps-fi__opcion{border:0;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.ps-fi__opcion .ps-fi__legend{width:100%;margin-bottom:8px}
+.ps-fi__elegido{font-weight:400}
+.ps-fi__op{position:relative;cursor:pointer}
+.ps-fi__op input{position:absolute;opacity:0;width:1px;height:1px}
+.ps-fi__op span{display:inline-flex;align-items:center;min-height:48px;padding:0 18px;border-radius:999px;background:var(--ps-piedra);font-size:16px;transition:transform 120ms var(--ps-ease-out),background-color 160ms ease,color 160ms ease;-webkit-user-select:none;user-select:none}
+.ps-fi__op:active span{transform:scale(.96)}
+.ps-fi__op input:checked + span{background:var(--ps-noche);color:var(--ps-marfil)}
+.ps-fi__op input:focus-visible + span{outline:2px solid var(--ps-oro-tinta);outline-offset:3px}
+.ps-fi__nodispo{margin:0;font-size:var(--ps-t5);font-weight:700;color:#8a1f17}
+.ps-fi__sel{width:100%;min-height:52px;margin:0 0 20px;padding:0 16px;border:0;border-radius:12px;background:var(--ps-piedra);color:var(--ps-tinta);font:inherit;font-size:16px}
+.ps-fi__sel-l{display:block;margin-bottom:8px}
+.ps-fi--movil .ps-fi__foto{background:#fff}
+.ps-fi--movil .ps-fi__img{object-fit:contain;padding:6%}
+@media (hover:hover) and (pointer:fine){.ps-fi__op:hover span{background:#dcd8d0}.ps-fi__op input:checked + span{background:var(--ps-noche)}}
 @media (hover:hover) and (pointer:fine){.ps-fi__pack:hover{background:#dcd8d0}.ps-fi__pack:has(input:checked):hover{background:var(--ps-noche)}}
 @media (max-width:989px){
   .ps-fi{padding-top:0}
@@ -404,6 +509,13 @@
     { "type": "text", "id": "sello", "label": "Promesa de origen (junto a la garantía)", "default": "Original de Apple, nuevo y precintado." },
     { "type": "text", "id": "texto_packs", "label": "Título de los packs", "default": "¿Cuántos packs?" },
     { "type": "text", "id": "whatsapp", "label": "WhatsApp (con prefijo, sin +)", "default": "34641047539" },
+    { "type": "header", "content": "Móviles" },
+    { "type": "text", "id": "movil_nuevo", "label": "Frase bajo el nombre (nuevos)", "default": "Nuevo y precintado de fábrica. Original de Apple." },
+    { "type": "text", "id": "movil_usado", "label": "Frase bajo el nombre (segunda mano)", "default": "De segunda mano, revisado y verificado: 100 % funcional." },
+    { "type": "text", "id": "movil_plazo", "label": "Plazo de entrega", "default": "Si está en stock, sale en 24-48 h; si no, en 3-5 días hábiles." },
+    { "type": "textarea", "id": "movil_carga_usbc", "label": "Carga (móviles USB-C)", "default": "Carga por USB-C. Si no tiene cargador, el adaptador de 20 W de Apple le da carga rápida; el pack USB-C trae adaptador y cable." },
+    { "type": "textarea", "id": "movil_carga_lightning", "label": "Carga (móviles Lightning)", "default": "Carga por Lightning. Si no tiene cargador, el pack Lightning trae el adaptador de 20 W de Apple y el cable." },
+    { "type": "text", "id": "motivo_movil", "label": "Motivo de la sugerencia, con un móvil", "default": "Para cargarlo rápido" },
     { "type": "header", "content": "¿Es para su iPhone?" },
     { "type": "textarea", "id": "modelos_lightning", "label": "Modelos con Lightning, separados por comas", "default": "iPhone 8 y 8 Plus, iPhone X, iPhone XR y XS, iPhone 11, iPhone SE (2020 y 2022), iPhone 12, iPhone 13, iPhone 14" },
     { "type": "textarea", "id": "modelos_usbc", "label": "Modelos con USB-C, separados por comas", "default": "iPhone 15, iPhone 16, iPhone 16e, iPhone 17, iPhone Air" },

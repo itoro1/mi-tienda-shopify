@@ -20,6 +20,7 @@
     assign n = collection.products_count
     assign tipos = ''
     assign conectores = ''
+    assign estados = ''
     for p in collection.products
       assign sku = p.variants.first.sku | upcase
       if sku contains 'PACK-'
@@ -28,6 +29,17 @@
         assign t = 'cargador'
       elsif sku contains 'CBL-'
         assign t = 'cable'
+      elsif sku contains 'IPH-' or p.type == 'Smartphone'
+        assign t = 'movil'
+        if p.tags contains 'nuevo'
+          unless estados contains 'nuevo'
+            assign estados = estados | append: 'nuevo,'
+          endunless
+        else
+          unless estados contains 'segunda-mano'
+            assign estados = estados | append: 'segunda-mano,'
+          endunless
+        endif
       else
         assign t = 'otro'
       endif
@@ -47,6 +59,7 @@
       endif
     endfor
     assign lista_tipos = tipos | split: ','
+    assign lista_est = estados | split: ','
     assign lista_con = conectores | split: ','
     assign cols = 4
     if n <= 2
@@ -65,7 +78,7 @@
         </div>
       </div>
 
-      {%- if lista_con.size > 1 or lista_tipos.size > 1 -%}
+      {%- if lista_con.size > 1 or lista_tipos.size > 1 or lista_est.size > 1 -%}
         <div class="ps-co__filtros" data-ps-filtros>
           {%- if lista_con.size > 1 -%}
             <div class="ps-co__grupo" role="group" aria-labelledby="PsCoIph-{{ section.id }}">
@@ -73,6 +86,14 @@
               <button type="button" class="ps-co__chip" data-f="conector" data-v="" aria-pressed="true">Todos</button>
               <button type="button" class="ps-co__chip" data-f="conector" data-v="usbc" aria-pressed="false">iPhone 15 o posterior</button>
               <button type="button" class="ps-co__chip" data-f="conector" data-v="lightning" aria-pressed="false">iPhone 8 al 14</button>
+            </div>
+          {%- endif -%}
+          {%- if lista_est.size > 1 -%}
+            <div class="ps-co__grupo" role="group" aria-labelledby="PsCoEst-{{ section.id }}">
+              <p class="ps-co__gtit" id="PsCoEst-{{ section.id }}">Estado</p>
+              <button type="button" class="ps-co__chip" data-f="estado" data-v="" aria-pressed="true">Todos</button>
+              <button type="button" class="ps-co__chip" data-f="estado" data-v="nuevo" aria-pressed="false">Nuevos y precintados</button>
+              <button type="button" class="ps-co__chip" data-f="estado" data-v="segunda-mano" aria-pressed="false">Segunda mano</button>
             </div>
           {%- endif -%}
           {%- if lista_tipos.size > 1 -%}
@@ -114,14 +135,14 @@
         var s = document.currentScript.closest('[data-ps-coleccion]');
         var f = s && s.querySelector('[data-ps-filtros]');
         if (!f) return;
-        var estado = { conector: '', tipo: '' };
+        var estado = { conector: '', tipo: '', estado: '' };
         var tarjetas = s.querySelectorAll('.ps-co__lista > .ps-tar');
         var n = s.querySelector('[data-ps-n]'), nt = s.querySelector('[data-ps-n-txt]'), vacio = s.querySelector('[data-ps-vacio]');
         function aplicar() {
           var vistos = 0;
           tarjetas.forEach(function (t) {
-            var c = t.getAttribute('data-conector'), ti = t.getAttribute('data-tipo');
-            var ok = (!estado.conector || c === estado.conector || c === 'todos') && (!estado.tipo || ti === estado.tipo);
+            var c = t.getAttribute('data-conector'), ti = t.getAttribute('data-tipo'), es = t.getAttribute('data-estado');
+            var ok = (!estado.conector || c === estado.conector || c === 'todos') && (!estado.tipo || ti === estado.tipo) && (!estado.estado || es === estado.estado);
             t.hidden = !ok; if (ok) vistos++;
           });
           n.textContent = vistos; nt.textContent = vistos === 1 ? 'producto' : 'productos';
@@ -134,7 +155,7 @@
           var b = e.target.closest('.ps-co__chip'); if (!b) return;
           estado[b.getAttribute('data-f')] = b.getAttribute('data-v'); aplicar();
         });
-        s.addEventListener('click', function (e) { if (e.target.closest('[data-ps-limpiar]')) { estado = { conector: '', tipo: '' }; aplicar(); } });
+        s.addEventListener('click', function (e) { if (e.target.closest('[data-ps-limpiar]')) { estado = { conector: '', tipo: '', estado: '' }; aplicar(); } });
         f.classList.add('ps-co__filtros--vivo');
       })();
     </script>

@@ -732,6 +732,56 @@ encuentra los 5 productos y el enlace de WhatsApp es el de siempre.
 - Comprobado: adaptador → sugiere los dos cables → añadir uno → +1 cantidad
   (34,97 €) → página del carrito → «Pagar pedido» abre el pago de Shopify.
 
+## iPhone en Pillatumovil (01/11/2026)
+
+Lo pidió el dueño a mitad del rediseño: los mismos iPhone que IToroStore.
+
+- **18 productos** creados con `tools/shopify/moviles.py` (productSet por
+  handle: se puede volver a lanzar para actualizar). Datos copiados de
+  IToroStore por la API el 01/11/2026: modelos, capacidades, colores, precios
+  y fotos. 209 variantes, referencias `IPH-<modelo>-<GB>-<COLOR>`.
+- Decisiones del dueño:
+  - **mismos precios** que IToroStore, **sin precio «antes»** (IToroStore
+    tiene `compareAt`, p. ej. 429 → 279 €; aquí no se copia: Omnibus);
+  - **pago completo online** (no la reserva de 50 € de IToroStore);
+  - **garantía**: 3 años nuevos, **1 año segunda mano** (mínimo legal si se
+    dice claro, y se dice en la ficha y el carrito);
+  - **10 unidades por variante** (no es el stock real de IToroStore: hay
+    que vigilar no vender dos veces la misma unidad);
+  - **plazo**: «si está en stock, sale en 24-48 h; si no, en 3-5 días
+    hábiles», como IToroStore;
+  - **fotos**: las mismas de IToroStore, que son **renders oficiales de
+    Apple**. Va contra la regla de la marca («sin imágenes oficiales de
+    Apple»); lo decidió el dueño. No se copiaron las fotos reales de
+    IToroStore porque llevan su tarjeta.
+- Nombres que dicen el estado: «iPhone 13 de segunda mano», «iPhone 17
+  nuevo». Descripciones de usted, con estado, entrega y lo que incluye. Se
+  quitaron frases que ya no son verdad en noviembre de 2026 («el iPhone más
+  potente», «el diseño más fino», «la generación actual»).
+- Publicados **solo en la tienda online** (no en Facebook e Instagram ni en
+  Shop): se ven ya también con el tema publicado.
+- **Colección «iPhone»** (`/collections/iphone`), automática por tipo de
+  producto `Smartphone`, ordenada por precio. En el menú `principal-2026`,
+  la primera.
+- **Tema**:
+  - ficha (`ps-ficha`): en los móviles, botones de capacidad y de color que
+    buscan la variante (sin JavaScript, un desplegable); la foto pasa a la
+    del color elegido; plazo, devolución y garantía según nuevo o segunda
+    mano; «Lo que debe saber» (la descripción) y «Para cargarlo»; sugiere el
+    pack de su conector y el adaptador. El «Precio de lanzamiento» no sale
+    en los móviles (era solo para los cargadores);
+  - tarjeta: «Nuevo y precintado» o «De segunda mano, revisado», «Desde
+    279,00 €» y «Elegir capacidad y color»;
+  - colección: filtro **Estado** (nuevos y precintados / segunda mano);
+  - carrito: con un iPhone y sin cargador sugiere el adaptador; el aviso de
+    envío y la garantía cambian cuando hay un móvil;
+  - barra superior: «Envío gratis en todos los pedidos · 14 días para
+    devolverlo · Originales de Apple, con garantía» (lo de 24-48 h y 3 años
+    ya no vale para todo).
+- Comprobado: iPhone 15, 256 GB y Azul → 499,00 € y `?variant=`; añadir →
+  carrito con «¿Necesita cargador para el iPhone?»; colección con 18 y 5
+  nuevos con el filtro.
+
 ## Dominio
 
 - **pillatumovil.com**, comprado en Shopify el 27/10/2026 (registrador

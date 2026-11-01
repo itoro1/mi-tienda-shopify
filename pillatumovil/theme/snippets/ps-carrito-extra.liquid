@@ -8,6 +8,7 @@
   - Cargador (CHRG-) sin cable ni pack: los dos cables, para que elija el de
     su iPhone.
   - Cable (CBL-) sin cargador ni pack: el cargador de 20 W.
+  - Móvil (IPH-) sin cargador ni pack: el adaptador de 20 W.
   - Si ya hay un pack o estan las dos cosas, nada.
   Los botones son formularios data-ps-anadir (assets/ps-carrito.js): anaden
   sin salir y el carrito se vuelve a pintar entero, sugerencia incluida.
@@ -15,7 +16,13 @@
 {%- case zona -%}
   {%- when 'aviso' -%}
     {%- unless cart == empty -%}
-      <p class="ps-ca">{% render 'ps-icono', nombre: 'envio', tam: 20 %}<span><b>Envío gratis.</b> Lo recibe en casa en 24&#8288;-&#8288;48&nbsp;h.</span></p>
+      {%- assign con_movil = false -%}
+      {%- for item in cart.items -%}{%- if item.sku contains 'IPH-' -%}{%- assign con_movil = true -%}{%- endif -%}{%- endfor -%}
+      {%- if con_movil -%}
+        <p class="ps-ca">{% render 'ps-icono', nombre: 'envio', tam: 20 %}<span><b>Envío gratis.</b> Los iPhone en stock salen en 24&#8288;-&#8288;48&nbsp;h; si no, en 3-5 días hábiles.</span></p>
+      {%- else -%}
+        <p class="ps-ca">{% render 'ps-icono', nombre: 'envio', tam: 20 %}<span><b>Envío gratis.</b> Lo recibe en casa en 24&#8288;-&#8288;48&nbsp;h.</span></p>
+      {%- endif -%}
     {%- endunless -%}
 
   {%- when 'sugerencia' -%}
@@ -23,6 +30,7 @@
       assign hay_cargador = false
       assign hay_cable = false
       assign hay_pack = false
+      assign hay_movil = false
       for item in cart.items
         if item.sku contains 'CHRG-'
           assign hay_cargador = true
@@ -30,6 +38,8 @@
           assign hay_cable = true
         elsif item.sku contains 'PACK-'
           assign hay_pack = true
+        elsif item.sku contains 'IPH-'
+          assign hay_movil = true
         endif
       endfor
       assign sug = ''
@@ -37,6 +47,9 @@
         if hay_cargador and hay_cable == false
           assign sug = 'cable-usb-c-a-usb-c-1m-apple,cable-usb-c-a-lightning-1m-apple'
           assign titulo = '¿Y el cable? Elija el de su iPhone'
+        elsif hay_movil and hay_cargador == false
+          assign sug = 'cargador-usb-c-20w-apple-original'
+          assign titulo = '¿Necesita cargador para el iPhone?'
         elsif hay_cable and hay_cargador == false
           assign sug = 'cargador-usb-c-20w-apple-original'
           assign titulo = '¿Le falta el cargador?'
@@ -82,9 +95,11 @@
     {%- endif -%}
 
   {%- when 'pie' -%}
+    {%- assign con_movil = false -%}
+    {%- for item in cart.items -%}{%- if item.sku contains 'IPH-' -%}{%- assign con_movil = true -%}{%- endif -%}{%- endfor -%}
     <ul class="ps-cp" role="list">
-      <li>{% render 'ps-icono', nombre: 'garantia', tam: 16 %}Original de Apple, 3&nbsp;años de garantía</li>
-      <li>{% render 'ps-icono', nombre: 'devolucion', tam: 16 %}14&nbsp;días para devolverlo, gratis</li>
+      <li>{% render 'ps-icono', nombre: 'garantia', tam: 16 %}{% if con_movil %}Garantía: 3&nbsp;años los nuevos, 1&nbsp;año los de segunda mano{% else %}Original de Apple, 3&nbsp;años de garantía{% endif %}</li>
+      <li>{% render 'ps-icono', nombre: 'devolucion', tam: 16 %}14&nbsp;días para devolverlo{% unless con_movil %}, gratis{% endunless %}</li>
     </ul>
 {%- endcase -%}
 

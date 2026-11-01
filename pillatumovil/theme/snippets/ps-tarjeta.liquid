@@ -34,10 +34,22 @@
     assign tipo = 'cargador'
   elsif sku contains 'CBL-'
     assign tipo = 'cable'
+  elsif sku contains 'IPH-'
+    assign tipo = 'movil'
   else
     assign ptipo = p.type | downcase
-    if ptipo contains 'móvil' or ptipo contains 'movil' or ptipo contains 'iphone'
+    if ptipo contains 'móvil' or ptipo contains 'movil' or ptipo contains 'iphone' or ptipo contains 'smartphone'
       assign tipo = 'movil'
+    endif
+  endif
+  assign estado = ''
+  if tipo == 'movil'
+    if p.tags contains 'nuevo'
+      assign estado = 'nuevo'
+      assign para = 'Nuevo y precintado'
+    else
+      assign estado = 'segunda-mano'
+      assign para = 'De segunda mano, revisado'
     endif
   endif
   assign conector = ''
@@ -51,7 +63,7 @@
     endif
   endif
 -%}
-<li class="ps-tar" data-tipo="{{ tipo }}" data-conector="{{ conector }}">
+<li class="ps-tar ps-tar--{{ tipo }}" data-tipo="{{ tipo }}" data-conector="{{ conector }}" data-estado="{{ estado }}">
   <a class="ps-tar__foto{% if segunda %} ps-tar__foto--doble{% endif %}" href="{{ p.url }}" tabindex="-1" aria-hidden="true">
     {%- if p.featured_image -%}
       {{ p.featured_image | image_url: width: 800 | image_tag: loading: 'lazy', widths: '300,500,800', sizes: '(min-width: 990px) 22vw, (min-width: 600px) 45vw, 50vw', alt: '', class: 'ps-tar__img' }}
@@ -64,7 +76,11 @@
     {%- if motivo != blank -%}<p class="ps-tar__motivo">{{ motivo }}</p>{%- endif -%}
     <h3 class="ps-tar__nombre"><a href="{{ p.url }}">{{ nombre | strip }}</a></h3>
     {%- if para != blank -%}<p class="ps-tar__para">{{ para | strip }}</p>{%- endif -%}
-    {%- render 'ps-comparacion', precio: v.price, producto: p, sin_ahorro: true -%}
+    {%- if tipo == 'movil' and p.price_varies -%}
+      <p class="ps-tar__desde"><span>Desde</span> <span class="ps-cmp__aqui ps-num">{{ p.price_min | money_without_currency }}&nbsp;€</span></p>
+    {%- else -%}
+      {%- render 'ps-comparacion', precio: v.price, producto: p, sin_ahorro: true -%}
+    {%- endif -%}
   </div>
   <div class="ps-tar__accion">
     {%- if p.available == false -%}
@@ -76,7 +92,11 @@
         <button class="ps-btn ps-btn--tinta ps-btn--ancho ps-tar__btn" type="submit" aria-label="Añadir al carrito: {{ nombre | strip | escape }}">Añadir al carrito</button>
       {%- endform -%}
     {%- else -%}
-      <a class="ps-btn ps-btn--borde ps-btn--ancho ps-tar__btn" href="{{ p.url }}" aria-label="Elegir cantidad: {{ nombre | strip | escape }}">Elegir cantidad</a>
+      {%- if tipo == 'movil' -%}
+        <a class="ps-btn ps-btn--borde ps-btn--ancho ps-tar__btn" href="{{ p.url }}" aria-label="Elegir capacidad y color: {{ nombre | strip | escape }}">Elegir capacidad y color</a>
+      {%- else -%}
+        <a class="ps-btn ps-btn--borde ps-btn--ancho ps-tar__btn" href="{{ p.url }}" aria-label="Elegir cantidad: {{ nombre | strip | escape }}">Elegir cantidad</a>
+      {%- endif -%}
     {%- endif -%}
   </div>
 </li>
