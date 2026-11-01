@@ -1,0 +1,430 @@
+{%- comment -%}
+  Rediseño 2026 · PS · Ficha de producto (sustituye a main-product de Dawn
+  en templates/product.json).
+
+  De arriba abajo:
+  - galería grande (en el móvil, carrusel con el dedo y contador);
+  - nombre corto (h1), «Original de Apple, nuevo y precintado», precio con
+    «En Apple» y su fecha, y el ahorro;
+  - packs de 1, 2 o 3 como tarjetas con lo que sale cada uno (radios: funciona
+    sin JavaScript), cantidad y «Añadir al carrito» (abre el carrito lateral
+    con assets/ps-carrito.js; sin JavaScript va al carrito);
+  - envío, devolución y garantía en una línea cada uno; ayuda por WhatsApp;
+  - «¿Es para su iPhone?», «En la caja», detalles (la descripción de
+    Shopify) y «Quizá también necesite»;
+  - barra fija de compra en el móvil, cuando el botón principal ya no se ve.
+
+  Qué es cada producto sale de su referencia (SKU): PACK-, CHRG- (adaptador)
+  o CBL- (cable); el conector, de «LTN» en la referencia (Lightning) o, si
+  no, USB-C. Un producto con otra referencia (p. ej. un móvil, en el futuro)
+  no enseña los bloques de compatibilidad ni de la caja.
+
+  JSON-LD de producto: el de Shopify ({{ product | structured_data }}), como
+  en Dawn. Lo leen Google y el catálogo de Meta.
+{%- endcomment -%}
+{%- liquid
+  assign v = product.selected_or_first_available_variant
+  assign sku = product.variants.first.sku | upcase
+  assign tipo = 'otro'
+  if sku contains 'PACK-'
+    assign tipo = 'pack'
+  elsif sku contains 'CHRG-'
+    assign tipo = 'cargador'
+  elsif sku contains 'CBL-'
+    assign tipo = 'cable'
+  endif
+  assign conector = 'usbc'
+  if sku contains 'LTN'
+    assign conector = 'lightning'
+  endif
+  capture nombre
+    render 'ps-dato', p: product, campo: 'nombre'
+  endcapture
+  assign nombre = nombre | strip
+  capture para
+    render 'ps-dato', p: product, campo: 'para'
+  endcapture
+  assign para = para | strip
+  capture que
+    render 'ps-dato', p: product, campo: 'que'
+  endcapture
+  assign que = que | strip
+  assign wa = section.settings.whatsapp | remove: ' ' | remove: '+'
+  assign varios = true
+  if product.has_only_default_variant
+    assign varios = false
+  endif
+-%}
+<section class="ps ps--papel ps-fi" data-ps-ficha data-section="{{ section.id }}">
+  <div class="ps-wrap ps-fi__grid">
+
+    {%- comment -%} Galería {%- endcomment -%}
+    <div class="ps-fi__galeria">
+      <ul class="ps-fi__fotos" role="list" aria-label="Fotos de {{ nombre | escape }}" tabindex="0">
+        {%- for m in product.media -%}
+          {%- if m.media_type != 'image' -%}{%- continue -%}{%- endif -%}
+          {%- assign alt_m = m.alt | default: product.title | escape -%}
+          <li class="ps-fi__foto{% if forloop.first %} ps-fi__foto--1{% endif %}">
+            {%- if forloop.first -%}
+              {{ m | image_url: width: 1600 | image_tag: loading: 'eager', fetchpriority: 'high', widths: '500,800,1100,1400,1600', sizes: '(min-width: 990px) 56vw, 100vw', alt: alt_m, class: 'ps-fi__img ps-multiply' }}
+            {%- else -%}
+              {{ m | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '500,800,1200', sizes: '(min-width: 990px) 28vw, 100vw', alt: alt_m, class: 'ps-fi__img' }}
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+      {%- if product.images.size > 1 -%}
+        <p class="ps-fi__contador ps-num" aria-hidden="true"><span data-ps-n>1</span> / {{ product.images.size }}</p>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Compra {%- endcomment -%}
+    <div class="ps-fi__compra">
+      <h1 class="ps-fi__h1">{{ nombre }}</h1>
+      <p class="ps-fi__sub">{% if que != blank %}{{ que }}. {% endif %}{% if para != blank %}Para {{ para | downcase | replace: 'iphone', 'iPhone' }}.{% endif %}</p>
+
+      <div class="ps-fi__precios">
+        {%- for x in product.variants -%}
+          {%- assign n = x.title | split: ' ' | first | plus: 0 -%}
+          {%- if n < 1 -%}{%- assign n = 1 -%}{%- endif -%}
+          <div class="ps-fi__precio" data-v="{{ x.id }}"{% unless x.id == v.id %} hidden{% endunless %}>
+            {%- render 'ps-comparacion', precio: x.price, producto: product, unidades: n, tam: 'grande' -%}
+          </div>
+        {%- endfor -%}
+        {%- if settings.ps_lanzamiento -%}<p class="ps-fi__lanzamiento">{{ settings.ps_lanzamiento_texto }}</p>{%- endif -%}
+      </div>
+
+      {%- form 'product', product, class: 'ps-fi__form', id: 'PsFichaForm', data-ps-anadir: '' -%}
+        {%- if varios -%}
+          <fieldset class="ps-fi__packs">
+            <legend class="ps-fi__legend">{{ section.settings.texto_packs }}</legend>
+            {%- for x in product.variants -%}
+              {%- assign n = x.title | split: ' ' | first | plus: 0 -%}
+              {%- if n < 1 -%}{%- assign n = 1 -%}{%- endif -%}
+              {%- assign unidad = x.price | times: 1.0 | divided_by: n | round -%}
+              <label class="ps-fi__pack">
+                <input type="radio" name="id" value="{{ x.id }}"{% if x.id == v.id %} checked{% endif %}{% unless x.available %} disabled{% endunless %} data-precio="{{ x.price | money_without_currency }}&nbsp;€">
+                <span class="ps-fi__pack-n">{{ x.title }}</span>
+                <span class="ps-fi__pack-p ps-num">{{ x.price | money_without_currency }}&nbsp;€</span>
+                <span class="ps-fi__pack-u">{% if x.available %}{% if n > 1 %}{{ unidad | money_without_currency }}&nbsp;€ cada uno{% else %}&nbsp;{% endif %}{% else %}Agotado{% endif %}</span>
+              </label>
+            {%- endfor -%}
+          </fieldset>
+        {%- else -%}
+          <input type="hidden" name="id" value="{{ v.id }}">
+        {%- endif -%}
+
+        <div class="ps-fi__fila">
+          <div class="ps-fi__cant">
+            <label class="ps-visually-hidden" for="PsCant-{{ section.id }}">Cantidad</label>
+            <button type="button" class="ps-fi__cant-b" data-ps-cant="-1" aria-label="Quitar uno">−</button>
+            <input id="PsCant-{{ section.id }}" type="number" name="quantity" value="1" min="1" max="20" inputmode="numeric">
+            <button type="button" class="ps-fi__cant-b" data-ps-cant="1" aria-label="Añadir uno">+</button>
+          </div>
+          <button class="ps-btn ps-fi__btn" type="submit" data-ps-principal{% unless product.available %} disabled{% endunless %}>
+            {%- if product.available -%}Añadir al carrito{%- else -%}Agotado por ahora{%- endif -%}
+          </button>
+        </div>
+      {%- endform -%}
+
+      <ul class="ps-fi__promesas" role="list">
+        <li>{% render 'ps-icono', nombre: 'envio', tam: 20 %}<span><b>En su casa en 24&#8288;-&#8288;48&nbsp;h.</b> Envío gratis.</span></li>
+        <li>{% render 'ps-icono', nombre: 'devolucion', tam: 20 %}<span><b>14&nbsp;días para devolverlo.</b> Gratis.</span></li>
+        <li>{% render 'ps-icono', nombre: 'garantia', tam: 20 %}<span><b>{{ section.settings.sello }}</b> 3&nbsp;años de garantía.</span></li>
+      </ul>
+      {%- if wa != blank -%}
+        <p class="ps-fi__ayuda">{% render 'ps-icono', nombre: 'whatsapp', tam: 18 %}<span>¿Dudas con su modelo? <a href="https://wa.me/{{ wa }}?text={{ 'Hola, una duda sobre: ' | append: nombre | url_encode }}" target="_blank" rel="noopener">Pregúntenos por WhatsApp</a></span></p>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- comment -%} ¿Es para su iPhone? y En la caja {%- endcomment -%}
+  {%- if tipo != 'otro' -%}
+    <div class="ps-wrap ps-fi__mas">
+      <div class="ps-fi__bloque">
+        <h2 class="ps-h2">¿Es para su iPhone?</h2>
+        {%- liquid
+          if tipo == 'cargador'
+            assign si = section.settings.modelos_lightning | append: ', ' | append: section.settings.modelos_usbc
+            assign nota = section.settings.nota_cargador
+          elsif conector == 'lightning'
+            assign si = section.settings.modelos_lightning
+            assign nota = section.settings.nota_lightning
+          else
+            assign si = section.settings.modelos_usbc
+            assign nota = section.settings.nota_usbc
+          endif
+          assign lista = si | split: ','
+        -%}
+        <ul class="ps-fi__modelos" role="list">
+          {%- for m in lista -%}<li>{% render 'ps-icono', nombre: 'check', tam: 18 %}{{ m | strip }}</li>{%- endfor -%}
+        </ul>
+        {%- if nota != blank -%}<div class="ps-fi__nota">{{ nota }}</div>{%- endif -%}
+      </div>
+
+      <div class="ps-fi__bloque">
+        <h2 class="ps-h2">En la caja</h2>
+        <ul class="ps-fi__caja" role="list">
+          {%- if tipo == 'pack' or tipo == 'cargador' -%}<li>{{ section.settings.caja_adaptador }}</li>{%- endif -%}
+          {%- if tipo == 'pack' or tipo == 'cable' -%}
+            <li>{% if conector == 'lightning' %}{{ section.settings.caja_cable_lightning }}{% else %}{{ section.settings.caja_cable_usbc }}{% endif %}</li>
+          {%- endif -%}
+        </ul>
+        <p class="ps-fi__caja-nota">
+          {%- case tipo -%}
+            {%- when 'pack' -%}{{ section.settings.caja_nota_pack }}
+            {%- when 'cargador' -%}{{ section.settings.caja_nota_cargador }}
+            {%- when 'cable' -%}{{ section.settings.caja_nota_cable }}
+          {%- endcase -%}
+        </p>
+        {%- if product.description != blank -%}
+          <details class="ps-fi__detalles">
+            <summary>Más detalles<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
+            <div class="ps-fi__desc">{{ product.description }}</div>
+          </details>
+        {%- endif -%}
+      </div>
+    </div>
+  {%- elsif product.description != blank -%}
+    <div class="ps-wrap ps-fi__mas"><div class="ps-fi__desc ps-fi__bloque">{{ product.description }}</div></div>
+  {%- endif -%}
+
+  {%- comment -%} Quizá también necesite {%- endcomment -%}
+  {%- liquid
+    assign sug = ''
+    assign coleccion = section.settings.coleccion
+    if coleccion != blank and tipo != 'otro'
+      for q in coleccion.products
+        if q.id == product.id
+          continue
+        endif
+        assign qs = q.variants.first.sku | upcase
+        assign qcon = 'usbc'
+        if qs contains 'LTN'
+          assign qcon = 'lightning'
+        endif
+        assign vale = false
+        if tipo == 'pack' and qs contains 'CBL-' and qcon == conector
+          assign vale = true
+        elsif tipo == 'cargador' and qs contains 'CBL-'
+          assign vale = true
+        elsif tipo == 'cable' and qs contains 'CHRG-'
+          assign vale = true
+        elsif tipo == 'cable' and qs contains 'PACK-' and qcon == conector
+          assign vale = true
+        endif
+        if vale
+          assign sug = sug | append: q.handle | append: ','
+        endif
+      endfor
+    endif
+    assign sug = sug | split: ','
+  -%}
+  {%- if sug.size > 0 -%}
+    <div class="ps ps--piedra ps-fi__sug">
+      <div class="ps-wrap ps-fi__sug-in">
+        <h2 class="ps-h2">{{ section.settings.sug_titulo }}</h2>
+        <ul class="ps-tarjetas ps-fi__sug-lista" role="list" style="--ps-cols:2">
+          {%- for h in sug -%}
+            {%- assign q = all_products[h] -%}
+            {%- liquid
+              assign qs = q.variants.first.sku | upcase
+              assign motivo = ''
+              if tipo == 'pack'
+                assign motivo = section.settings.motivo_pack
+              elsif tipo == 'cargador'
+                assign motivo = section.settings.motivo_cargador
+              elsif qs contains 'CHRG-'
+                assign motivo = section.settings.motivo_cable_cargador
+              else
+                assign motivo = section.settings.motivo_cable_pack
+              endif
+            -%}
+            {%- render 'ps-tarjeta', p: q, motivo: motivo -%}
+          {%- endfor -%}
+        </ul>
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- comment -%} Barra fija de compra (móvil) {%- endcomment -%}
+  <div class="ps-fi__barra" data-ps-barra aria-hidden="true">
+    <div class="ps-fi__barra-in">
+      <span class="ps-fi__barra-txt"><span class="ps-fi__barra-n">{{ nombre }}</span><span class="ps-fi__barra-p ps-num" data-ps-barra-p>{{ v.price | money_without_currency }}&nbsp;€</span></span>
+      <button class="ps-btn ps-fi__barra-btn" type="submit" form="PsFichaForm" tabindex="-1"{% unless product.available %} disabled{% endunless %}>Añadir</button>
+    </div>
+  </div>
+
+  <script type="application/ld+json">
+    {{ product | structured_data }}
+  </script>
+
+  <script>
+    (function () {
+      var s = document.currentScript.closest('[data-ps-ficha]');
+      if (!s) return;
+      // Packs: cambia el precio grande, la barra y la dirección (?variant=).
+      s.addEventListener('change', function (e) {
+        if (e.target.name !== 'id') return;
+        var id = e.target.value;
+        s.querySelectorAll('.ps-fi__precio').forEach(function (p) { p.hidden = p.getAttribute('data-v') !== id; });
+        var bp = s.querySelector('[data-ps-barra-p]'); if (bp) bp.innerHTML = e.target.getAttribute('data-precio');
+        try { var u = new URL(location.href); u.searchParams.set('variant', id); history.replaceState(null, '', u); } catch (err) {}
+      });
+      // Cantidad
+      var q = s.querySelector('input[name="quantity"]');
+      s.querySelectorAll('[data-ps-cant]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          var n = Math.max(1, Math.min(20, (parseInt(q.value, 10) || 1) + parseInt(b.getAttribute('data-ps-cant'), 10)));
+          q.value = n;
+        });
+      });
+      // Contador de fotos en el carrusel del móvil
+      var lista = s.querySelector('.ps-fi__fotos'), num = s.querySelector('[data-ps-n]');
+      if (lista && num) lista.addEventListener('scroll', function () {
+        var w = lista.clientWidth || 1; num.textContent = Math.round(lista.scrollLeft / w) + 1;
+      }, { passive: true });
+      // Barra fija: sale cuando el botón principal ya no se ve
+      var barra = s.querySelector('[data-ps-barra]'), btn = s.querySelector('[data-ps-principal]');
+      if (barra && btn && 'IntersectionObserver' in window) {
+        new IntersectionObserver(function (es) {
+          var fuera = !es[0].isIntersecting && es[0].boundingClientRect.top < 0;
+          barra.classList.toggle('ps-fi__barra--ve', fuera);
+          barra.setAttribute('aria-hidden', fuera ? 'false' : 'true');
+          barra.querySelector('button').tabIndex = fuera ? 0 : -1;
+          document.documentElement.classList.toggle('ps-con-barra', fuera);
+        }).observe(btn);
+      }
+    })();
+  </script>
+</section>
+
+{% stylesheet %}
+.ps-fi{padding-top:clamp(24px,3vw,48px)}
+.ps-fi__grid{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(32px,5vw,88px);align-items:start}
+.ps-fi__fotos{display:grid;grid-template-columns:1fr 1fr;gap:10px;list-style:none;margin:0;padding:0}
+.ps-fi__foto{aspect-ratio:1/1;overflow:hidden;background:var(--ps-piedra)}
+.ps-fi__foto--1{grid-column:1 / -1;background:var(--ps-piedra)}
+.ps-fi__img{width:100%;height:100%;object-fit:cover}
+.ps-fi__foto--1 .ps-fi__img{object-fit:contain;padding:6%}
+.ps-fi__contador{display:none}
+.ps-fi__compra{position:sticky;top:calc(var(--header-height,72px) + 24px)}
+.ps .ps-fi__h1{margin:0;font-family:var(--ps-display);font-weight:600;font-size:clamp(26px,2.6vw,40px);line-height:1.1;letter-spacing:-.025em;text-wrap:balance}
+.ps-fi__sub{margin:12px 0 0;font-size:var(--ps-t3);line-height:1.4}
+.ps-fi__sello{display:flex;align-items:center;gap:8px;margin:10px 0 0;font-size:var(--ps-t5);color:var(--ps-tinta-2)}
+.ps-fi__sello svg{color:var(--ps-oro-tinta);flex:none}
+.ps-fi__precios{margin-top:28px}
+.ps-fi__precios .ps-cmp--grande .ps-cmp__aqui{font-size:clamp(36px,4.6vw,72px)}
+@media (max-width:989px){.ps-fi__precios .ps-cmp--grande .ps-cmp__aqui{font-size:min(56px,12.5vw)}}
+.ps-fi__lanzamiento{margin:12px 0 0;font-size:var(--ps-t5);font-weight:700;color:var(--ps-oro-tinta)}
+.ps-fi__form{margin-top:28px}
+.ps-fi__packs{border:0;margin:0 0 20px;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,104px),1fr));gap:8px}
+.ps-fi__legend{grid-column:1/-1;margin-bottom:12px;padding:0;font-size:var(--ps-t4);font-weight:700}
+.ps-fi__pack{position:relative;display:flex;flex-direction:column;gap:2px;padding:14px 14px 12px;background:var(--ps-piedra);cursor:pointer;transition:transform 120ms var(--ps-ease-out),background-color 160ms ease,color 160ms ease;-webkit-user-select:none;user-select:none}
+.ps-fi__pack input{position:absolute;opacity:0;width:1px;height:1px}
+.ps-fi__pack:active{transform:scale(.97)}
+.ps-fi__pack-n{font-weight:700;overflow-wrap:anywhere}
+.ps-fi__pack-p{font-family:var(--ps-display);font-weight:600;font-size:20px;letter-spacing:-.02em}
+.ps-fi__pack-u{font-size:var(--ps-t5);color:var(--ps-tinta-2);min-height:1.4em}
+.ps-fi__pack:has(input:checked){background:var(--ps-noche);color:var(--ps-marfil)}
+.ps-fi__pack:has(input:checked) .ps-fi__pack-u{color:var(--ps-oro-texto)}
+.ps-fi__pack:has(input:focus-visible){outline:2px solid var(--ps-oro-tinta);outline-offset:3px}
+.ps-fi__pack:has(input:disabled){opacity:.5;cursor:not-allowed}
+.ps-fi__fila{display:flex;gap:10px}
+.ps-fi__cant{display:flex;align-items:center;flex:none;height:56px;border-radius:999px;background:var(--ps-piedra)}
+.ps-fi__cant input{width:40px;height:100%;border:0;background:transparent;text-align:center;font:inherit;font-size:17px;font-weight:700;-moz-appearance:textfield}
+.ps-fi__cant input::-webkit-outer-spin-button,.ps-fi__cant input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.ps-fi__cant-b{width:48px;height:100%;border:0;background:transparent;font-size:22px;color:inherit;cursor:pointer;border-radius:999px;transition:transform 120ms var(--ps-ease-out)}
+.ps-fi__cant-b:active{transform:scale(.9)}
+.ps-fi__btn{flex:1}
+.ps-fi__promesas{list-style:none;margin:28px 0 0;padding:0;display:grid;gap:10px;font-size:var(--ps-t4)}
+.ps-fi__promesas li{display:flex;gap:12px;align-items:flex-start}
+.ps-fi__promesas svg{flex:none;margin-top:2px;color:var(--ps-oro-tinta)}
+.ps-fi__promesas b{font-weight:700}
+.ps-fi__ayuda{display:flex;gap:12px;align-items:center;margin:20px 0 0;font-size:var(--ps-t4)}
+.ps-fi__ayuda svg{flex:none;color:#128c4a}
+.ps-fi__ayuda a{color:inherit;font-weight:700;text-decoration-color:var(--ps-oro);text-decoration-thickness:2px;text-underline-offset:4px}
+.ps-fi .ps-fi__mas{display:grid;grid-template-columns:1fr 1fr;gap:48px clamp(32px,5vw,88px);padding-top:var(--ps-sec);padding-bottom:var(--ps-sec)}
+.ps-fi__modelos{display:grid;grid-template-columns:1fr 1fr;gap:10px 24px;list-style:none;margin:28px 0 0;padding:0;font-size:var(--ps-t4)}
+.ps-fi__modelos li{display:flex;gap:10px;align-items:center}
+.ps-fi__modelos svg{flex:none;color:var(--ps-oro-tinta)}
+.ps-fi__nota{margin-top:24px;max-width:46ch;font-size:var(--ps-t4)}
+.ps-fi__nota p{margin:0}
+.ps-fi__nota a,.ps-fi__desc a{color:inherit;font-weight:700;text-decoration-color:var(--ps-oro);text-decoration-thickness:2px;text-underline-offset:4px}
+.ps-fi__caja{list-style:none;margin:28px 0 0;padding:0;display:grid;gap:12px}
+.ps-fi__caja li{padding:18px 20px;background:var(--ps-piedra);font-size:var(--ps-t3);line-height:1.4}
+.ps-fi__caja-nota{margin:16px 0 0;font-size:var(--ps-t4);color:var(--ps-tinta-2)}
+.ps-fi__detalles{margin-top:28px}
+.ps-fi__detalles summary{display:inline-flex;align-items:center;gap:8px;min-height:44px;cursor:pointer;list-style:none;font-weight:700}
+.ps-fi__detalles summary::-webkit-details-marker{display:none}
+.ps-fi__detalles[open] summary svg{transform:rotate(180deg)}
+.ps-fi__desc{max-width:62ch;font-size:var(--ps-t4);line-height:1.6}
+.ps-fi__desc h2,.ps-fi__desc h3,.ps-fi__desc h4{font-family:var(--ps-sans);font-size:var(--ps-t4);font-weight:700;letter-spacing:0;margin:20px 0 6px}
+.ps-fi__sug{padding:var(--ps-sec) 0}
+.ps-fi__sug-in{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:40px clamp(32px,5vw,88px);align-items:start}
+.ps-fi__sug-lista{max-width:640px}
+.ps-fi__barra{display:none}
+@media (hover:hover) and (pointer:fine){.ps-fi__pack:hover{background:#dcd8d0}.ps-fi__pack:has(input:checked):hover{background:var(--ps-noche)}}
+@media (max-width:989px){
+  .ps-fi{padding-top:0}
+  .ps .ps-fi__h1{font-size:clamp(30px,6.4vw,40px)}
+  .ps-fi__grid{grid-template-columns:1fr;gap:28px}
+  .ps-fi .ps-wrap.ps-fi__grid{padding-left:0;padding-right:0}
+  .ps-fi__galeria{position:relative}
+  .ps-fi__fotos{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:0;scrollbar-width:none;overscroll-behavior-x:contain}
+  .ps-fi__fotos::-webkit-scrollbar{display:none}
+  .ps-fi__foto{flex:0 0 100%;scroll-snap-align:start}
+  .ps-fi__contador{display:block;position:absolute;right:16px;bottom:16px;margin:0;padding:4px 10px;border-radius:999px;background:rgba(11,15,26,.72);color:#f4f1ea;font-size:var(--ps-t5)}
+  .ps-fi__compra{position:static;padding:0 var(--ps-margen)}
+  .ps-fi .ps-fi__mas{grid-template-columns:1fr}
+  .ps-fi__sug-in{grid-template-columns:1fr}
+  .ps-fi__barra{display:block;position:fixed;left:0;right:0;bottom:0;z-index:30;padding:10px var(--ps-margen) calc(10px + env(safe-area-inset-bottom,0px));background:var(--ps-noche);color:var(--ps-marfil);transform:translateY(110%);transition:transform 260ms var(--ps-ease-out)}
+  .ps-fi__barra--ve{transform:none}
+  .ps-fi__barra-in{display:flex;align-items:center;gap:12px}
+  .ps-fi__barra-txt{display:flex;flex-direction:column;flex:1;min-width:0}
+  .ps-fi__barra-n{font-size:var(--ps-t5);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ps-marfil-2)}
+  .ps-fi__barra-p{font-family:var(--ps-display);font-weight:600;font-size:20px}
+  .ps-fi__barra-btn{min-height:48px;padding:0 28px}
+  html.ps-con-barra .pt-wa{bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+}
+@media (max-width:599px){
+  .ps-fi__pack{padding:12px 10px 10px}
+  .ps-fi__pack-p{font-size:17px}
+  .ps-fi__modelos{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){.ps-fi__barra{transition:none}}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PS · Ficha de producto",
+  "tag": "div",
+  "class": "ps-section",
+  "settings": [
+    { "type": "text", "id": "sello", "label": "Promesa de origen (junto a la garantía)", "default": "Original de Apple, nuevo y precintado." },
+    { "type": "text", "id": "texto_packs", "label": "Título de los packs", "default": "¿Cuántos packs?" },
+    { "type": "text", "id": "whatsapp", "label": "WhatsApp (con prefijo, sin +)", "default": "34641047539" },
+    { "type": "header", "content": "¿Es para su iPhone?" },
+    { "type": "textarea", "id": "modelos_lightning", "label": "Modelos con Lightning, separados por comas", "default": "iPhone 8 y 8 Plus, iPhone X, iPhone XR y XS, iPhone 11, iPhone SE (2020 y 2022), iPhone 12, iPhone 13, iPhone 14" },
+    { "type": "textarea", "id": "modelos_usbc", "label": "Modelos con USB-C, separados por comas", "default": "iPhone 15, iPhone 16, iPhone 16e, iPhone 17, iPhone Air" },
+    { "type": "richtext", "id": "nota_lightning", "label": "Nota en productos Lightning", "default": "<p>¿Su iPhone es el 15 o posterior? Necesita el <a href=\"/products/pack-cargador-usb-c-20w-cable-usb-c-1m-apple-original\">pack USB-C</a>.</p>" },
+    { "type": "richtext", "id": "nota_usbc", "label": "Nota en productos USB-C", "default": "<p>¿Su iPhone es del 8 al 14? Necesita el <a href=\"/products/cargador-apple-usb-c\">pack Lightning</a>.</p>" },
+    { "type": "richtext", "id": "nota_cargador", "label": "Nota en el adaptador", "default": "<p>Sirve para todos: lo que cambia es el cable. <a href=\"/pages/que-cable-necesito\">¿Qué cable necesita?</a></p>" },
+    { "type": "header", "content": "En la caja" },
+    { "type": "text", "id": "caja_adaptador", "label": "Adaptador", "default": "Adaptador de corriente USB-C de 20 W de Apple, con enchufe europeo" },
+    { "type": "text", "id": "caja_cable_usbc", "label": "Cable USB-C", "default": "Cable de carga USB-C de Apple (60 W), trenzado, de 1 m" },
+    { "type": "text", "id": "caja_cable_lightning", "label": "Cable Lightning", "default": "Cable de USB-C a Lightning de Apple, de 1 m" },
+    { "type": "text", "id": "caja_nota_pack", "label": "Nota en los packs", "default": "Cada uno en su caja original de Apple, precintada." },
+    { "type": "text", "id": "caja_nota_cargador", "label": "Nota en el adaptador", "default": "En su caja original, precintada. No incluye cable." },
+    { "type": "text", "id": "caja_nota_cable", "label": "Nota en los cables", "default": "En su caja original, precintada. No incluye adaptador." },
+    { "type": "header", "content": "Quizá también necesite" },
+    { "type": "collection", "id": "coleccion", "label": "Colección de donde salen las sugerencias", "info": "Se eligen solas: con un pack, el cable de repuesto de su conector; con el adaptador, los cables; con un cable, el adaptador y su pack." },
+    { "type": "text", "id": "sug_titulo", "label": "Título", "default": "Quizá también necesite" },
+    { "type": "text", "id": "motivo_pack", "label": "Motivo, con un pack", "default": "Un cable de repuesto, para el coche o la oficina" },
+    { "type": "text", "id": "motivo_cargador", "label": "Motivo, con el adaptador", "default": "El adaptador no lleva cable" },
+    { "type": "text", "id": "motivo_cable_cargador", "label": "Motivo del adaptador, con un cable", "default": "El cable no lleva adaptador" },
+    { "type": "text", "id": "motivo_cable_pack", "label": "Motivo del pack, con un cable", "default": "Adaptador y cable juntos, por menos" }
+  ],
+  "presets": [{ "name": "PS · Ficha de producto" }]
+}
+{% endschema %}

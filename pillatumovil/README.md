@@ -663,6 +663,48 @@ encuentra los 5 productos y el enlace de WhatsApp es el de siempre.
   siguen en el tema por si se quieren recuperar, pero la portada nueva no
   las usa.
 
+### Fase 4: ficha de producto (01/11/2026)
+
+- **«Precio de lanzamiento, hasta fin de existencias» encendido** (lo
+  confirmó el dueño el 01/11/2026). Sale en la portada y en la ficha. Hay que
+  apagarlo en cuanto se acaben estas unidades o suba el precio:
+  *Configuración del tema → Pillatumovil → Precio de lanzamiento*.
+- `templates/product.json` usa ahora **`sections/ps-ficha.liquid`** (PS ·
+  Ficha de producto) en lugar de `main-product` de Dawn, más los avisos
+  legales de Shopify (`disclosures`) y las preguntas. De arriba abajo:
+  galería (carrusel con contador en el móvil), nombre corto, qué es y para
+  qué iPhone, precio con «En Apple» y su fecha y el ahorro, packs de 1, 2 o
+  3 con lo que sale cada uno (radios: funciona sin JavaScript y cambia
+  `?variant=`), cantidad, «Añadir al carrito» (carrito lateral), envío,
+  devolución y garantía en una línea cada uno, WhatsApp con el producto ya
+  escrito, «¿Es para su iPhone?», «En la caja», «Más detalles» (la
+  descripción de Shopify), «Quizá también necesite» y la barra fija de
+  compra en el móvil.
+- **Qué es cada producto** sale de su referencia: `PACK-`, `CHRG-`, `CBL-`, y
+  el conector de `LTN`. Un producto con otra referencia (un móvil, en el
+  futuro) no enseña la compatibilidad ni la caja: solo su descripción.
+- **«Quizá también necesite» con sentido**: con un pack, el cable de
+  repuesto de su conector; con el adaptador, los dos cables; con un cable, el
+  adaptador y el pack de su conector. Cada tarjeta dice por qué.
+- **Nombres cortos** (`snippets/ps-dato.liquid`): ajuste global
+  *Pillatumovil → Nombres cortos* (handle | nombre | para qué iPhone | qué
+  es). El nombre largo de Shopify no se toca: lo usan Google, Meta e idealo.
+  «USB-C» va con separadores invisibles para que no se parta en el guion.
+- **Tarjeta nueva** `snippets/ps-tarjeta.liquid` (sin caja ni sombra; foto
+  fundida con su tesela; nombre corto; para qué iPhone; precio y «En Apple»;
+  añadir o elegir cantidad; agotado). Estilos en `ps-base.css`.
+- El precio por unidad se redondea al céntimo (33,99 / 2 = 17,00 €, no
+  16,99).
+- Comprobado: 2 packs cambian a 33,99 € y «En Apple, 76,00 € (2 × 38,00 €)»;
+  cantidad 2 y «Añadir» abre el carrito con 2 × 2 packs; la barra fija sale
+  al pasar el botón; JSON-LD de producto (ProductGroup) y `og:price:amount`
+  18.99 siguen saliendo.
+- `break-ui` (peor caso, pensando ya en móviles: nombre de 80 caracteres,
+  1.299,99 €, variantes «Titanio del desierto / 1 TB», agotado, cantidad 20) a
+  320, 390 y 1440. Arreglado: guionado en titulares, tarjetas de variante que
+  pasan a 2 o 1 columna, precio grande que cabe a 320, «En Apple…, precio
+  del…» con coma en vez de «·» al principio de línea.
+
 ## Dominio
 
 - **pillatumovil.com**, comprado en Shopify el 27/10/2026 (registrador

@@ -33,7 +33,7 @@
 <div class="ps-cmp{% if tam == 'grande' %} ps-cmp--grande{% endif %}">
   <p class="ps-cmp__aqui ps-num">{{ precio | money_without_currency }}&nbsp;€</p>
   {%- if pa > precio -%}
-    <p class="ps-cmp__apple">En Apple, {{ pa | money_without_currency }}&nbsp;€{% if u > 1 %} ({{ u }}&nbsp;×&nbsp;{{ pa | divided_by: u | money_without_currency }}&nbsp;€){% endif %} <span class="ps-cmp__fecha">· precio del {{ settings.ps_fecha_apple }}</span></p>
+    <p class="ps-cmp__apple">En Apple, {{ pa | money_without_currency }}&nbsp;€{% if u > 1 %} ({{ u }}&nbsp;×&nbsp;{{ pa | divided_by: u | money_without_currency }}&nbsp;€){% endif %}, <span class="ps-cmp__fecha">precio del {{ settings.ps_fecha_apple }}</span></p>
     {%- unless sin_ahorro -%}
       <p class="ps-cmp__ahorro">Ahorra {{ ahorro | money_without_currency }}&nbsp;€ ({{ pct }}&nbsp;%)</p>
     {%- endunless -%}

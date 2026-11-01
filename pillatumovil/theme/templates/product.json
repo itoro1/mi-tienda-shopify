@@ -1,104 +1,9 @@
 {
   "sections": {
     "main": {
-      "type": "main-product",
-      "blocks": {
-        "title": {
-          "type": "title",
-          "settings": {}
-        },
-        "variant_picker": {
-          "type": "variant_picker",
-          "settings": {
-            "picker_type": "button",
-            "swatch_shape": "circle"
-          }
-        },
-        "quantity_selector": {
-          "type": "quantity_selector",
-          "settings": {}
-        },
-        "buy_buttons": {
-          "type": "buy_buttons",
-          "settings": {
-            "show_dynamic_checkout": false,
-            "show_gift_card_recipient": false
-          }
-        },
-        "description": {
-          "type": "description",
-          "settings": {}
-        },
-        "ayuda_cable": {
-          "type": "collapsible_tab",
-          "settings": {
-            "heading": "¿Qué cable necesita su iPhone?",
-            "icon": "question_mark",
-            "content": "<p>Del iPhone 15 en adelante, USB-C. Del iPhone 8 al 14, Lightning. El adaptador de 20 W sirve para los dos.</p>",
-            "page": ""
-          }
-        },
-        "garantia": {
-          "type": "collapsible_tab",
-          "settings": {
-            "heading": "Garantía y devoluciones",
-            "icon": "check_mark",
-            "content": "<p>Producto nuevo y original de Apple, con garantía legal de 3 años. Dispone de 14 días desde que lo recibe para devolverlo.</p>",
-            "page": "garantia-y-devoluciones"
-          }
-        },
-        "sello": {
-          "type": "custom_liquid",
-          "settings": {
-            "custom_liquid": "<p class=\"ps-fe\">Original de Apple · Nuevo, en su caja</p>"
-          }
-        },
-        "precio": {
-          "type": "custom_liquid",
-          "settings": {
-            "custom_liquid": "{%- render 'ps-ficha-precio', product: product, section_id: section.id -%}"
-          }
-        },
-        "sellos": {
-          "type": "custom_liquid",
-          "settings": {
-            "custom_liquid": "{%- render 'ps-ficha-sellos' -%}"
-          }
-        },
-        "barra": {
-          "type": "custom_liquid",
-          "settings": {
-            "custom_liquid": "{%- render 'ps-ficha-barra', product: product, section_id: section.id -%}"
-          }
-        }
-      },
-      "block_order": [
-        "sello",
-        "title",
-        "precio",
-        "variant_picker",
-        "quantity_selector",
-        "buy_buttons",
-        "sellos",
-        "description",
-        "ayuda_cable",
-        "garantia",
-        "barra"
-      ],
+      "type": "ps-ficha",
       "settings": {
-        "enable_sticky_info": true,
-        "color_scheme": "scheme-3",
-        "media_size": "medium",
-        "constrain_to_viewport": false,
-        "media_fit": "cover",
-        "gallery_layout": "stacked",
-        "mobile_thumbnails": "hide",
-        "media_position": "left",
-        "image_zoom": "lightbox",
-        "hide_variants": true,
-        "enable_video_looping": false,
-        "padding_top": 36,
-        "padding_bottom": 72
+        "coleccion": "cargadores-y-cables"
       }
     },
     "disclosures": {
@@ -107,28 +12,6 @@
         "color_scheme": "scheme-3",
         "padding_top": 0,
         "padding_bottom": 48
-      }
-    },
-    "video": {
-      "type": "ps-video",
-      "settings": {
-        "video_url": "https://cdn.shopify.com/s/files/1/1066/2182/9468/files/ps-unboxing-v2.mp4?v=1792932252",
-        "poster": "shopify://shop_images/ps-unboxing-v2.jpg",
-        "titulo": "Nuevo y precintado.\nLo abre usted.",
-        "texto": "Le llega tal como sale de Apple: en su caja original, sin abrir. En 24⁠-⁠48 h y sin pagar envío.",
-        "boton": "",
-        "enlace": ""
-      }
-    },
-    "precios": {
-      "type": "ps-precios",
-      "settings": {
-        "titulo": "Complete su carga",
-        "texto": "Cargador y cables originales, con el precio de Apple al lado.",
-        "productos": [],
-        "coleccion": "cargadores-y-cables",
-        "ver_todo": "Ver todos los productos",
-        "fondo": "papel"
       }
     },
     "faq": {
@@ -179,19 +62,17 @@
       ],
       "settings": {
         "titulo": "Antes de comprar",
-        "texto": "Las dudas más habituales. Si la suya no está, escríbanos.",
+        "texto": "¿Su duda no está?",
         "boton": "Escribir por WhatsApp",
         "enlace": "https://wa.me/34641047539",
         "abrir_primera": false,
-        "fondo": "piedra"
+        "fondo": "papel"
       }
     }
   },
   "order": [
     "main",
     "disclosures",
-    "video",
-    "precios",
     "faq"
   ]
 }

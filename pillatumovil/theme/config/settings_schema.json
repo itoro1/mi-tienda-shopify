@@ -48,6 +48,17 @@
         "id": "ps_lanzamiento_texto",
         "label": "Texto",
         "default": "Precio de lanzamiento, hasta fin de existencias"
+      },
+      {
+        "type": "header",
+        "content": "Nombres cortos"
+      },
+      {
+        "type": "textarea",
+        "id": "ps_nombres",
+        "label": "Nombre corto, para qué iPhone y qué es, por producto",
+        "default": "pack-cargador-usb-c-20w-cable-usb-c-1m-apple-original | Pack USB⁠-⁠C | iPhone 15 o posterior | Adaptador de 20 W y cable USB⁠-⁠C de 1 m\ncargador-apple-usb-c | Pack Lightning | iPhone 8 al 14 | Adaptador de 20 W y cable Lightning de 1 m\ncargador-usb-c-20w-apple-original | Adaptador USB⁠-⁠C de 20 W | Todos los iPhone | Sin cable: use el de su iPhone\ncable-usb-c-a-usb-c-1m-apple | Cable USB⁠-⁠C a USB⁠-⁠C | iPhone 15 o posterior | Trenzado, de 1 m\ncable-usb-c-a-lightning-1m-apple | Cable USB⁠-⁠C a Lightning | iPhone 8 al 14 | De 1 m",
+        "info": "Una línea por producto: identificador (handle) | nombre corto | para qué iPhone | qué es. Salen en las tarjetas, la ficha y el carrito. El nombre largo de Shopify se queda para Google, Meta e idealo. Un producto que no esté aquí usa su nombre de Shopify."
       }
     ]
   },

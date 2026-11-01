@@ -1,0 +1,29 @@
+{%- comment -%}
+  Rediseño 2026 · nombre corto o «para qué iPhone» de un producto, sacados del
+  ajuste global *Configuración del tema → Pillatumovil → Nombres cortos*
+  (una línea por producto: handle | nombre corto | para qué iPhone).
+  Uso: {% render 'ps-dato', p: producto, campo: 'nombre' %}  (o campo: 'para' o 'que')
+  Si el producto no está en la lista: su nombre de Shopify, o nada.
+{%- endcomment -%}
+{%- liquid
+  assign hallado = ''
+  assign lineas = settings.ps_nombres | newline_to_br | split: '<br />'
+  for l in lineas
+    assign partes = l | split: '|'
+    assign h = partes[0] | strip
+    if h == p.handle
+      if campo == 'para'
+        assign hallado = partes[2] | strip
+      elsif campo == 'que'
+        assign hallado = partes[3] | strip
+      else
+        assign hallado = partes[1] | strip
+      endif
+      break
+    endif
+  endfor
+  if hallado == blank and campo == 'nombre'
+    assign hallado = p.title
+  endif
+  echo hallado
+-%}
