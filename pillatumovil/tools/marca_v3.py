@@ -185,6 +185,25 @@ def svg_horizontal(simbolo, oscuro, fondo=True):
     return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W:.0f} {H:.0f}" width="{W:.0f}" height="{H:.0f}">{defs}'
             f'{fondo_svg}{sim}{pal}{lema}</svg>'), round(W), round(H)
 
+def svg_cabecera(simbolo, oscuro=True):
+    """Logo de la cabecera de la tienda: simbolo + pilla(tu)movil, sin lema
+    (a 200 px de ancho el lema no se leeria), sin sombra y sin margen."""
+    tema = 'noche' if oscuro else 'claro'
+    g, caja = SIMBOLOS[simbolo](tema)
+    g = re.sub(r' filter="url\(#[^)]*\)"', '', g, count=1)
+    tinta = MARFIL if oscuro else TINTA; oro = ORO_TXT if oscuro else ORO_OSCURO
+    T = 236
+    _, w_pal, (a1, b1) = texto_trazos(700, [('pilla', tinta), ('tu', oro), ('movil', tinta)], T, 0, 0, -0.035)
+    # el simbolo va de lo alto de la "l" a lo bajo de la "p", un poco mas grande
+    alto_s = (b1 - a1) * 1.12; s = alto_s / (caja[3] - caja[1]); ancho_s = (caja[2] - caja[0]) * s
+    pad = 12; y_s = pad; base = y_s + alto_s / 2 - (a1 + b1) / 2
+    x_txt = pad + ancho_s + T * 0.3
+    pal, w_pal, _ = texto_trazos(700, [('pilla', tinta), ('tu', oro), ('movil', tinta)], T, x_txt, base, -0.035)
+    W = x_txt + w_pal + pad; H = alto_s + 2 * pad
+    sim = f'<g transform="translate({pad},{y_s:.1f}) scale({s:.4f}) translate({-caja[0]:.1f},{-caja[1]:.1f})">{g}</g>'
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W:.0f} {H:.0f}" width="{W:.0f}" height="{H:.0f}">{DEFS}'
+            f'{sim}{pal}</svg>'), round(W), round(H)
+
 def svg_simbolo(simbolo, tema):
     """Solo el simbolo, fondo transparente, cuadrado 1000 (favicon, marca de agua)."""
     g, caja = SIMBOLOS[simbolo](tema)
@@ -272,6 +291,8 @@ if __name__ == '__main__':
             svg, w, h = svg_horizontal(clave, oscuro, fondo=False)
             pieza(f'{clave}_logo-horizontal-{nombre}-transparente', svg, w, h, True)
         pieza(f'{clave}_simbolo-transparente', svg_simbolo(clave, 'oro'), 1000, 1000, True)
+        for oscuro, nombre in ((True, 'oscuro'), (False, 'claro')):
+            pieza(f'{clave}_logo-cabecera-{nombre}', *svg_cabecera(clave, oscuro), True)
     ruta = os.path.join(tmp, 'muestra.html'); open(ruta, 'w').write(muestra(piezas))
     trabajos.append((ruta, os.path.join(salida, 'muestra-marca-v3.png'), 1600, 1000, False))
     pintar(trabajos)

@@ -2,7 +2,7 @@
   "current": "Dawn",
   "presets": {
     "Dawn": {
-      "logo_width": 170,
+      "logo_width": 240,
       "customer_account_menu": "customer-account-main-menu",
       "color_schemes": {
         "scheme-1": {
@@ -192,8 +192,8 @@
         }
       },
       "pt_accent": "#C9A86A",
-      "logo": "shopify://shop_images/logo-pillatumovil-firma.png",
-      "favicon": "shopify://shop_images/favicon-pillatumovil-p.png"
+      "logo": "shopify://shop_images/logo-pillatumovil-cabecera-v3.png",
+      "favicon": "shopify://shop_images/favicon-pillatumovil-v3.png"
     }
   }
 }

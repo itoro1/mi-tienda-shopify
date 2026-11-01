@@ -56,8 +56,10 @@ en la portada (`pt-ventajas` sí está en la ficha y la colección). La portada
   Sin degradados en los textos. Oro oscuro `#7D5F28` para iconos y la
   etiqueta de ahorro sobre fondo claro.
 - **Tipografía**: una sola familia, **Archivo** (titulares en 600, apretados;
-  texto en 400). Es una grotesca como la rotulación de las cajas. La Bodoni
-  Moda queda solo en el **logo** (`marca/`, `tools/logo_firma.py`).
+  texto en 400). Es una grotesca como la rotulación de las cajas. El
+  **logo** va aparte: el móvil-P con «pilla**tu**movil» en Unbounded (ver
+  «Marca nueva, v3»). La firma en Bodoni Moda (`tools/logo_firma.py`) quedó
+  retirada el 01/11/2026.
 - **Movimiento**: solo los dos vídeos. Nada de animaciones al hacer scroll.
 - **Barra superior** (`ps-barra`, sustituye a la de anuncios de Dawn): oro,
   tres mensajes con icono en fila; en móvil van de uno en uno con un fundido.
@@ -511,17 +513,18 @@ rehacen con `python3 tools/perfil_emblema.py marca/`.
 **El dueño la descartó** (01/11): parecía hecha en dos minutos y solo
 hablaba de cargadores, y la tienda venderá también móviles.
 
-## Marca nueva, v3 (01/11/2026): pendiente de elegir
+## Marca nueva, v3 (01/11/2026): elegido el móvil-P
 
 Lo que pidió el dueño: que sea **reconocible**, que **llame la atención**,
 que valga para **móviles y accesorios** y que se vea profesional. Dos
 propuestas en `marca/v3/`, con los colores de la tienda (noche `#0B0F1A`,
 oro champán y marfil):
 
-1. **El móvil-P** (`movil-p_*`, la recomendada): la P de Pillatumovil hecha
+1. **El móvil-P** (`movil-p_*`, **la elegida** el 01/11 con la foto de
+   perfil en oro y el logo con letras): la P de Pillatumovil hecha
    con un móvil. El móvil es el asta y la panza de la P sale de su costado.
    Es una silueta propia y se reconoce aunque se vea muy pequeña.
-2. **El abanico** (`abanico_*`): tres móviles abiertos como cartas (oro,
+2. **El abanico** (`abanico_*`, descartada): tres móviles abiertos como cartas (oro,
    titanio y el de delante con la pantalla). Se entiende al momento que es
    una tienda de móviles.
 
@@ -540,13 +543,27 @@ aunque la letra no esté instalada.
 | `*_logo-horizontal-claro-transparente.png` | Cabecera de la tienda sobre fondo claro, facturas, correos |
 | `*_logo-horizontal-oscuro-transparente.png` | Cabecera o pie sobre fondo noche, vídeos |
 | `*_logo-horizontal-claro.png` / `-oscuro.png` | Con fondo, para portadas y banners |
-| `*_simbolo-transparente.png` | Favicon, marca de agua en fotos |
+| `*_simbolo-transparente.png` | Marca de agua en fotos |
+| `movil-p_logo-cabecera-oscuro.png` | **Puesto en la cabecera y el pie de la tienda** (sin lema: a 240 px no se leería) |
+| `movil-p_logo-cabecera-claro.png` | Lo mismo, para fondo claro |
+| `movil-p_favicon-512.png` | **Puesto como icono de la pestaña** (el perfil oro a 512 px) |
 | `muestra-marca-v3.png` | Las dos propuestas lado a lado, con una lista de chats para verlas a tamaño real |
 
 Se rehacen con `python3 tools/marca_v3.py marca/v3` (necesita
 `pip install fonttools uharfbuzz`; la letra se descarga sola la primera
-vez). Cuando el dueño elija, se pone en la tienda (*Configuración → Marca*:
-logo, logo cuadrado y favicon) y se actualiza la identidad de arriba.
+vez).
+
+**En la tienda (01/11/2026)**, tema Dawn publicado, `config/settings_data.json`:
+`logo` → `logo-pillatumovil-cabecera-v3.png` (texto alternativo
+«Pillatumovil»), `logo_width` 170 → **240** (en móvil Dawn lo deja en unos
+155 px) y `favicon` → `favicon-pillatumovil-v3.png`. El pie (`ps-pie`) usa
+el mismo logo. Comprobado en escritorio y móvil.
+
+Lo que hace el dueño a mano: *Configuración → Marca* (logo y logo cuadrado
+que usan el pago, los correos y la app Shop: subir `movil-p_perfil-oro.png`
+como cuadrado y `movil-p_logo-horizontal-claro-transparente.png` como logo),
+y la foto de WhatsApp, Instagram y Facebook con `movil-p_perfil-oro.png`.
+Los anuncios de Meta (A a E) llevan todavía la firma antigua al pie.
 
 ## Dominio
 
