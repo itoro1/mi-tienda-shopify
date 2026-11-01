@@ -17,11 +17,19 @@ LANZAMIENTO · HASTA FIN DE EXISTENCIAS», «ELIJA SU CABLE», pack USB-C
 actuales. Cuando suba, hay que **cambiar o pausar este anuncio**. No se puso
 «la oferta caduca en 48 h» porque no había ninguna oferta que caducara.
 
+**Imágenes para subir: las «con marco»** (01/11). Al subir a Meta, la foto
+se recortaba arriba y abajo (Meta la pasa a cuadrado en varias ubicaciones).
+En estas, todo lo importante está en un cuadrado central con margen azul
+alrededor: se puede recortar a 1:1, 4:5 o 9:16 sin perder nada.
+
 | Ubicación | Imagen |
 |---|---|
-| Feed de Facebook e Instagram | `pillatumovil-E-dos-cables_feed-4x5.jpg` |
-| Stories y Reels | `pillatumovil-E-dos-cables_stories-9x16.jpg` |
-| Resto (columna derecha, Marketplace…) | `pillatumovil-E-dos-cables_cuadrado-1x1.jpg` |
+| Feed de Facebook e Instagram | `pillatumovil-E-con-marco_feed-4x5.jpg` |
+| Stories y Reels | `pillatumovil-E-con-marco_stories-9x16.jpg` |
+| Resto (columna derecha, Marketplace…) | `pillatumovil-E-con-marco_cuadrado-1x1.jpg` |
+
+Las versiones sin marco (`pillatumovil-E-dos-cables_*`) llenan toda la
+imagen, pero Meta les recorta arriba y abajo.
 
 **Texto principal**
 

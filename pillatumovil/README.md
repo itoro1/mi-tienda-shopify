@@ -436,7 +436,11 @@ En `anuncios/`:
     iPhone 15 o posterior y Lightning para iPhone 8 al 14) y la cinta
     «Precio de lanzamiento · Hasta fin de existencias» (verdad mientras el
     dueño suba el precio al acabarse las unidades; entonces hay que cambiar
-    el anuncio). Script: `anuncios/fuente/anuncio_e.py`.
+    el anuncio). Script: `anuncios/fuente/anuncio_e.py`. Para subir se usan
+    las **«con marco»** (`pillatumovil-E-con-marco_*`): el diseño cuadrado
+    centrado con margen azul, porque Meta recortaba arriba y abajo. Se
+    hacen pegando `anuncio-e-cuadrado.png` (pintado a 2x) a 960 px sobre un
+    lienzo de 1080 × 1350 o 1080 × 1920, y a 900 px sobre 1080 × 1080.
   - **D** (31/10): rehecho porque A-C no convencían al dueño
     («más visual, que se sepa al momento que es cargador de Apple, buen
     precio y envío gratis»). Tres bandas: «CARGADOR iPhone / ORIGINAL
