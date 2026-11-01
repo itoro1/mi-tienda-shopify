@@ -94,7 +94,9 @@ h4,h5,.h4,.h5{letter-spacing:-.01em}
 
 /* Dawn pinta h1-h6 con el color de su esquema (marfil sobre noche): en las
    secciones ps- los titulares heredan el color de su campo. */
-.ps h1,.ps h2,.ps h3,.ps h4,.ps h5,.ps h6{color:inherit;hyphens:auto;-webkit-hyphens:auto;overflow-wrap:break-word}
+.ps h1,.ps h2,.ps h3,.ps h4,.ps h5,.ps h6{color:inherit;overflow-wrap:break-word}
+/* Guionado solo en el móvil, donde una palabra larga no cabe; en grande no. */
+@media (max-width:599px){.ps h1,.ps h2,.ps h3{hyphens:auto;-webkit-hyphens:auto}}
 
 /* Campos */
 .ps--noche{background:var(--ps-noche);color:var(--ps-marfil);--ps-texto-2:var(--ps-marfil-2);--ps-linea:var(--ps-linea-osc);--ps-campo-2:var(--ps-noche-2)}

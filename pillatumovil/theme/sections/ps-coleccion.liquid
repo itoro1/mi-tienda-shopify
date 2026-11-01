@@ -1,55 +1,175 @@
 {%- comment -%}
-  Pagina de coleccion: titulo, descripcion y los productos en las mismas
-  tarjetas que la portada (snippets/ps-tarjeta.liquid), con el precio de
-  Apple y el boton de anadir. Debajo, las garantias.
-{%- endcomment -%}
-{{ 'ps-base.css' | asset_url | stylesheet_tag }}
-<section class="ps ps--piedra ps-col">
-  <div class="ps-wrap">
-    <header class="ps-col__cab">
-      <div>
-        <h1 class="ps-h1 ps-col__titulo">{{ collection.title }}</h1>
-        {%- if collection.description != blank -%}<div class="ps-lead ps-col__texto">{{ collection.description }}</div>{%- endif -%}
-      </div>
-      <p class="ps-col__n">{{ collection.products_count }} {% if collection.products_count == 1 %}producto{% else %}productos{% endif %}</p>
-    </header>
+  Rediseño 2026 · PS · Colección (templates/collection.json).
 
-    {%- paginate collection.products by section.settings.por_pagina -%}
+  Arriba, el nombre de la colección en grande, su descripción y cuántos
+  productos hay. Debajo, los filtros que tienen sentido en esa colección:
+  - «Su iPhone»: iPhone 15 o posterior (USB-C) / iPhone 8 al 14 (Lightning).
+    El adaptador sale en los dos, porque sirve para todos.
+  - «Qué busca»: packs, adaptador, cables (y móviles cuando los haya).
+  Solo aparece un filtro si en la colección hay más de una opción. Filtran
+  al momento, sin recargar (data-tipo y data-conector de cada tarjeta, ver
+  snippets/ps-tarjeta.liquid). Sin JavaScript no salen y se ve todo.
+  Las tarjetas son grandes si hay pocos productos (2 por fila) y más
+  pequeñas si hay muchos (4 por fila).
+
+  La plantilla collection.idealo.liquid (feed de idealo) es aparte y no
+  pasa por aquí.
+{%- endcomment -%}
+{%- paginate collection.products by section.settings.por_pagina -%}
+  {%- liquid
+    assign n = collection.products_count
+    assign tipos = ''
+    assign conectores = ''
+    for p in collection.products
+      assign sku = p.variants.first.sku | upcase
+      if sku contains 'PACK-'
+        assign t = 'pack'
+      elsif sku contains 'CHRG-'
+        assign t = 'cargador'
+      elsif sku contains 'CBL-'
+        assign t = 'cable'
+      else
+        assign t = 'otro'
+      endif
+      unless tipos contains t
+        assign tipos = tipos | append: t | append: ','
+      endunless
+      if t == 'pack' or t == 'cable'
+        if sku contains 'LTN'
+          unless conectores contains 'lightning'
+            assign conectores = conectores | append: 'lightning,'
+          endunless
+        else
+          unless conectores contains 'usbc'
+            assign conectores = conectores | append: 'usbc,'
+          endunless
+        endif
+      endif
+    endfor
+    assign lista_tipos = tipos | split: ','
+    assign lista_con = conectores | split: ','
+    assign cols = 4
+    if n <= 2
+      assign cols = 2
+    elsif n == 3
+      assign cols = 3
+    endif
+  -%}
+  <section class="ps ps--papel ps-co" data-ps-coleccion>
+    <div class="ps-wrap">
+      <div class="ps-co__cab">
+        <h1 class="ps-co__h1">{{ collection.title }}</h1>
+        <div class="ps-co__intro">
+          {%- if collection.description != blank -%}<div class="ps-co__desc">{{ collection.description }}</div>{%- endif -%}
+          <p class="ps-co__n" aria-live="polite"><span data-ps-n>{{ n }}</span> <span data-ps-n-txt>{% if n == 1 %}producto{% else %}productos{% endif %}</span></p>
+        </div>
+      </div>
+
+      {%- if lista_con.size > 1 or lista_tipos.size > 1 -%}
+        <div class="ps-co__filtros" data-ps-filtros>
+          {%- if lista_con.size > 1 -%}
+            <div class="ps-co__grupo" role="group" aria-labelledby="PsCoIph-{{ section.id }}">
+              <p class="ps-co__gtit" id="PsCoIph-{{ section.id }}">Su iPhone</p>
+              <button type="button" class="ps-co__chip" data-f="conector" data-v="" aria-pressed="true">Todos</button>
+              <button type="button" class="ps-co__chip" data-f="conector" data-v="usbc" aria-pressed="false">iPhone 15 o posterior</button>
+              <button type="button" class="ps-co__chip" data-f="conector" data-v="lightning" aria-pressed="false">iPhone 8 al 14</button>
+            </div>
+          {%- endif -%}
+          {%- if lista_tipos.size > 1 -%}
+            <div class="ps-co__grupo" role="group" aria-labelledby="PsCoTipo-{{ section.id }}">
+              <p class="ps-co__gtit" id="PsCoTipo-{{ section.id }}">Qué busca</p>
+              <button type="button" class="ps-co__chip" data-f="tipo" data-v="" aria-pressed="true">Todo</button>
+              {%- for t in lista_tipos -%}
+                <button type="button" class="ps-co__chip" data-f="tipo" data-v="{{ t }}" aria-pressed="false">
+                  {%- case t -%}{%- when 'pack' -%}Packs{%- when 'cargador' -%}Adaptador{%- when 'cable' -%}Cables{%- when 'movil' -%}Móviles{%- else -%}Otros{%- endcase -%}
+                </button>
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
       {%- if collection.products.size > 0 -%}
-        <ul class="ps-col__lista" role="list">
+        <ul class="ps-tarjetas ps-co__lista ps-co__lista--{{ cols }}" role="list">
           {%- for p in collection.products -%}
             {%- render 'ps-tarjeta', p: p -%}
           {%- endfor -%}
         </ul>
+        <p class="ps-co__vacio" data-ps-vacio hidden>No hay nada con esos filtros. <button type="button" class="ps-link" data-ps-limpiar>Ver todo</button></p>
       {%- else -%}
-        <p class="ps-col__vacia">Ahora mismo no hay productos en esta colección. <a class="ps-link" href="{{ routes.all_products_collection_url }}">Ver todos los productos</a></p>
+        <p class="ps-co__vacio">Esta colección está vacía por ahora. <a class="ps-link" href="/collections/cargadores-y-cables">Ver todos los productos</a></p>
       {%- endif -%}
-      {%- if paginate.pages > 1 -%}
-        <nav class="ps-col__pag" aria-label="Páginas">{{ paginate | default_pagination: next: 'Siguiente', previous: 'Anterior' }}</nav>
-      {%- endif -%}
-    {%- endpaginate -%}
 
-    <ul class="ps-sellos ps-col__sellos" role="list">
-      <li>{% render 'ps-icono', nombre: 'envio' %}Lo recibe en 24&#8288;-&#8288;48&nbsp;h</li>
-      <li>{% render 'ps-icono', nombre: 'devolucion' %}Envío y devolución gratis</li>
-      <li>{% render 'ps-icono', nombre: 'garantia' %}Originales de Apple, con 3 años de garantía</li>
-    </ul>
-  </div>
-</section>
+      {%- if paginate.pages > 1 -%}
+        <nav class="ps-co__pag" aria-label="Páginas">
+          {%- if paginate.previous -%}<a class="ps-link" href="{{ paginate.previous.url }}">Anterior</a>{%- endif -%}
+          <span>Página {{ paginate.current_page }} de {{ paginate.pages }}</span>
+          {%- if paginate.next -%}<a class="ps-link" href="{{ paginate.next.url }}">Siguiente</a>{%- endif -%}
+        </nav>
+      {%- endif -%}
+    </div>
+
+    <script>
+      (function () {
+        var s = document.currentScript.closest('[data-ps-coleccion]');
+        var f = s && s.querySelector('[data-ps-filtros]');
+        if (!f) return;
+        var estado = { conector: '', tipo: '' };
+        var tarjetas = s.querySelectorAll('.ps-co__lista > .ps-tar');
+        var n = s.querySelector('[data-ps-n]'), nt = s.querySelector('[data-ps-n-txt]'), vacio = s.querySelector('[data-ps-vacio]');
+        function aplicar() {
+          var vistos = 0;
+          tarjetas.forEach(function (t) {
+            var c = t.getAttribute('data-conector'), ti = t.getAttribute('data-tipo');
+            var ok = (!estado.conector || c === estado.conector || c === 'todos') && (!estado.tipo || ti === estado.tipo);
+            t.hidden = !ok; if (ok) vistos++;
+          });
+          n.textContent = vistos; nt.textContent = vistos === 1 ? 'producto' : 'productos';
+          vacio.hidden = vistos !== 0;
+          f.querySelectorAll('.ps-co__chip').forEach(function (b) {
+            b.setAttribute('aria-pressed', estado[b.getAttribute('data-f')] === b.getAttribute('data-v') ? 'true' : 'false');
+          });
+        }
+        f.addEventListener('click', function (e) {
+          var b = e.target.closest('.ps-co__chip'); if (!b) return;
+          estado[b.getAttribute('data-f')] = b.getAttribute('data-v'); aplicar();
+        });
+        s.addEventListener('click', function (e) { if (e.target.closest('[data-ps-limpiar]')) { estado = { conector: '', tipo: '' }; aplicar(); } });
+        f.classList.add('ps-co__filtros--vivo');
+      })();
+    </script>
+  </section>
+{%- endpaginate -%}
 
 {% stylesheet %}
-.ps-col{padding:clamp(40px,5vw,72px) 0 clamp(64px,8vw,112px)}
-.ps-col__cab{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px 40px;margin-bottom:clamp(28px,4vw,48px)}
-.ps-col .ps-col__titulo{font-size:clamp(36px,4.4vw,64px)}
-.ps-col__texto{margin-top:14px}
-.ps-col__texto p{margin:0}
-.ps-col__n{margin:0;font-size:15px;color:var(--ps-texto-2)}
-.ps-col__lista{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:clamp(14px,1.6vw,22px)}
-.ps-col__vacia{font-size:17px}
-.ps-col__pag{margin-top:32px;font-size:16px}
-.ps-col__pag a,.ps-col__pag span{display:inline-block;margin-right:12px;color:inherit}
-.ps-col .ps-col__sellos{margin-top:clamp(36px,5vw,56px);padding-top:20px;border-top:1px solid var(--ps-linea)}
-@media (max-width:599px){.ps-col__lista{grid-template-columns:1fr 1fr;gap:10px}.ps-col__lista .ps-tar{padding:8px 8px 14px}.ps-col__lista .ps-tar__aqui{font-size:20px}.ps-col__lista .ps-tar__apple b{display:block;margin:2px 0 0}}
+.ps-co{padding:clamp(40px,5vw,80px) 0 var(--ps-sec)}
+.ps-co__cab{display:grid;grid-template-columns:minmax(0,8fr) minmax(0,4fr);gap:20px 48px;align-items:end}
+.ps .ps-co__h1{margin:0;font-family:var(--ps-display);font-weight:600;font-size:var(--ps-t1);line-height:1.02;letter-spacing:-.035em;text-wrap:balance;hyphens:manual;-webkit-hyphens:manual}
+.ps-co__desc{font-size:var(--ps-t3);line-height:1.5}
+.ps-co__desc p{margin:0 0 8px}
+.ps-co__n{margin:8px 0 0;font-size:var(--ps-t5);color:var(--ps-tinta-2)}
+.ps-co__filtros{display:none;flex-wrap:wrap;gap:16px 40px;margin-top:clamp(32px,4vw,56px)}
+.ps-co__filtros--vivo{display:flex}
+.ps-co__grupo{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.ps-co__gtit{flex-basis:100%;margin:0 0 4px;font-size:var(--ps-t5);font-weight:700}
+.ps-co__chip{min-height:44px;padding:0 18px;border:0;border-radius:999px;background:var(--ps-piedra);color:var(--ps-tinta);font:inherit;font-size:16px;cursor:pointer;transition:transform 120ms var(--ps-ease-out),background-color 160ms ease,color 160ms ease;-webkit-user-select:none;user-select:none}
+.ps-co__chip:active{transform:scale(.96)}
+.ps-co__chip[aria-pressed="true"]{background:var(--ps-noche);color:var(--ps-marfil)}
+.ps-co__lista{margin-top:clamp(32px,4vw,56px)}
+.ps-co__lista--2{--ps-cols:2}.ps-co__lista--3{--ps-cols:3}.ps-co__lista--4{--ps-cols:4}
+.ps-co__lista > .ps-tar[hidden]{display:none}
+.ps-co__lista--2 .ps-tar__foto{aspect-ratio:4/3}
+.ps-co__lista--2 .ps-tar .ps-cmp__aqui{font-size:32px}
+.ps-co__vacio{margin:40px 0 0;font-size:var(--ps-t3)}
+.ps-co__vacio .ps-link{border:0;background:none;padding:0;font:inherit;font-weight:700;cursor:pointer}
+.ps-co__pag{display:flex;gap:24px;align-items:center;justify-content:center;margin-top:56px;font-size:var(--ps-t4)}
+@media (hover:hover) and (pointer:fine){.ps-co__chip:hover{background:#dcd8d0}.ps-co__chip[aria-pressed="true"]:hover{background:var(--ps-noche)}}
+@media (max-width:989px){
+  .ps-co__cab{grid-template-columns:1fr}
+  .ps-co__lista--3,.ps-co__lista--4{--ps-cols:2}
+  .ps-co__lista--2 .ps-tar__foto{aspect-ratio:1/1}
+  .ps-co__lista--2 .ps-tar .ps-cmp__aqui{font-size:24px}
+}
 {% endstylesheet %}
 
 {% schema %}

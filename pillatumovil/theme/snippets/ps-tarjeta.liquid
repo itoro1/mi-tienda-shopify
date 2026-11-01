@@ -13,6 +13,9 @@
     (assets/ps-carrito.js; sin JavaScript va al carrito). Varias (packs):
     «Elegir cantidad», a la ficha.
   - Agotado: lo dice y no deja añadir.
+  - data-tipo (pack, cargador, cable, movil, otro) y data-conector (usbc,
+    lightning, todos) salen de la referencia: los usan los filtros de la
+    colección.
 {%- endcomment -%}
 {%- liquid
   assign v = p.selected_or_first_available_variant
@@ -23,8 +26,32 @@
   capture para
     render 'ps-dato', p: p, campo: 'para'
   endcapture
+  assign sku = p.variants.first.sku | upcase
+  assign tipo = 'otro'
+  if sku contains 'PACK-'
+    assign tipo = 'pack'
+  elsif sku contains 'CHRG-'
+    assign tipo = 'cargador'
+  elsif sku contains 'CBL-'
+    assign tipo = 'cable'
+  else
+    assign ptipo = p.type | downcase
+    if ptipo contains 'móvil' or ptipo contains 'movil' or ptipo contains 'iphone'
+      assign tipo = 'movil'
+    endif
+  endif
+  assign conector = ''
+  if tipo == 'cargador'
+    assign conector = 'todos'
+  elsif tipo == 'pack' or tipo == 'cable'
+    if sku contains 'LTN'
+      assign conector = 'lightning'
+    else
+      assign conector = 'usbc'
+    endif
+  endif
 -%}
-<li class="ps-tar">
+<li class="ps-tar" data-tipo="{{ tipo }}" data-conector="{{ conector }}">
   <a class="ps-tar__foto{% if segunda %} ps-tar__foto--doble{% endif %}" href="{{ p.url }}" tabindex="-1" aria-hidden="true">
     {%- if p.featured_image -%}
       {{ p.featured_image | image_url: width: 800 | image_tag: loading: 'lazy', widths: '300,500,800', sizes: '(min-width: 990px) 22vw, (min-width: 600px) 45vw, 50vw', alt: '', class: 'ps-tar__img' }}

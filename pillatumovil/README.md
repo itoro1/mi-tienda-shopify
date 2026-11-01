@@ -705,6 +705,33 @@ encuentra los 5 productos y el enlace de WhatsApp es el de siempre.
   pasan a 2 o 1 columna, precio grande que cabe a 320, «En Apple…, precio
   del…» con coma en vez de «·» al principio de línea.
 
+### Fase 5: colecciones y carrito (01/11/2026)
+
+- **Colección** (`sections/ps-coleccion.liquid`, plantilla
+  `collection.json` + `ps-garantia`): nombre en grande, descripción,
+  «N productos» (con singular: «1 producto») y filtros que solo salen si
+  hay más de una opción: **«Su iPhone»** (15 o posterior / 8 al 14; el
+  adaptador sale en los dos) y **«Qué busca»** (packs, adaptador, cables,
+  y móviles cuando los haya). Filtran al momento; sin JavaScript no salen y
+  se ve todo. Con 2 productos (`/collections/packs`, la de los anuncios)
+  las tarjetas son grandes. `/collections/packs?utm_…` responde 200.
+- **`/collections`**: `ps-categorias` con el título como `h1` grande.
+- **Carrito lateral** (`snippets/cart-drawer.liquid`): nombres cortos,
+  sin «PRODUCTO / TOTAL» en mayúsculas (siguen para lectores de pantalla),
+  total en Unbounded, «Pagar pedido» en oro a todo el ancho, la sugerencia
+  honesta por SKU de siempre (con nombres cortos y sin tachados) y las dos
+  garantías. Estilos en `snippets/ps-carrito-extra.liquid`.
+- **Página del carrito**: copias de Dawn `main-cart-items.liquid` (nombre
+  corto, precios como «21,98 €») y `main-cart-footer.liquid` (total como
+  «34,97 €»), y `ps-carrito-sug` (la sugerencia y las garantías) en lugar
+  de las tarjetas de antes. Los botones de pago rápido de Shopify (Shop Pay,
+  PayPal, Google Pay) siguen.
+- **Sin campo de código de descuento** en el carrito: lo pidió el dueño
+  (01/11). PACK1799 se sigue escribiendo en la pantalla de pago de Shopify.
+  El texto de los impuestos queda «IVA incluido. Envío gratis.».
+- Comprobado: adaptador → sugiere los dos cables → añadir uno → +1 cantidad
+  (34,97 €) → página del carrito → «Pagar pedido» abre el pago de Shopify.
+
 ## Dominio
 
 - **pillatumovil.com**, comprado en Shopify el 27/10/2026 (registrador

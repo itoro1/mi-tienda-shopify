@@ -6,21 +6,45 @@
         "por_pagina": 24
       }
     },
-    "cierre": {
-      "type": "ps-cierre",
+    "garantia": {
+      "type": "ps-garantia",
+      "blocks": {
+        "g1": {
+          "type": "hecho",
+          "settings": {
+            "hecho": "3 años de garantía",
+            "texto": "Si falla, se lo reparamos o se lo cambiamos sin coste. Es la garantía legal de un producto nuevo, desde que lo recibe."
+          }
+        },
+        "g2": {
+          "type": "hecho",
+          "settings": {
+            "hecho": "14 días para devolverlo",
+            "texto": "Sin tener que explicar por qué. La devolución también es gratis."
+          }
+        },
+        "g3": {
+          "type": "hecho",
+          "settings": {
+            "hecho": "Le atiende una persona",
+            "texto": "Por WhatsApp, al 641 04 75 39, o desde el formulario de contacto."
+          }
+        }
+      },
+      "block_order": [
+        "g1",
+        "g2",
+        "g3"
+      ],
       "settings": {
-        "titulo": "¿No sabe qué cable necesita?",
-        "texto": "Escríbanos por WhatsApp con el modelo de su iPhone y se lo decimos.",
-        "boton": "Preguntar por WhatsApp",
-        "enlace": "https://wa.me/34641047539",
-        "boton_2": "Ver los packs",
-        "enlace_2": "/#pack",
-        "imagen": "shopify://shop_images/ps-estudio-portada.jpg"
+        "titulo": "Sin letra pequeña",
+        "enlace": "Envío, garantía y devoluciones, con detalle",
+        "enlace_url": "/pages/garantia-y-devoluciones"
       }
     }
   },
   "order": [
     "coleccion",
-    "cierre"
+    "garantia"
   ]
 }

@@ -30,21 +30,14 @@
         "buttons"
       ]
     },
-    "precios": {
-      "type": "ps-precios",
-      "settings": {
-        "titulo": "Complete su carga",
-        "texto": "Cargador y cables originales, con el precio de Apple al lado.",
-        "productos": [],
-        "coleccion": "cargadores-y-cables",
-        "ver_todo": "Ver todos los productos",
-        "fondo": "papel"
-      }
+    "sugerencia": {
+      "type": "ps-carrito-sug",
+      "settings": {}
     }
   },
   "order": [
     "cart-items",
     "cart-footer",
-    "precios"
+    "sugerencia"
   ]
 }

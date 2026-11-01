@@ -224,7 +224,7 @@
     <div class="ps ps--piedra ps-fi__sug">
       <div class="ps-wrap ps-fi__sug-in">
         <h2 class="ps-h2">{{ section.settings.sug_titulo }}</h2>
-        <ul class="ps-tarjetas ps-fi__sug-lista" role="list" style="--ps-cols:2">
+        <ul class="ps-tarjetas ps-fi__sug-lista" role="list">
           {%- for h in sug -%}
             {%- assign q = all_products[h] -%}
             {%- liquid
@@ -362,7 +362,7 @@
 .ps-fi__desc h2,.ps-fi__desc h3,.ps-fi__desc h4{font-family:var(--ps-sans);font-size:var(--ps-t4);font-weight:700;letter-spacing:0;margin:20px 0 6px}
 .ps-fi__sug{padding:var(--ps-sec) 0}
 .ps-fi__sug-in{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:40px clamp(32px,5vw,88px);align-items:start}
-.ps-fi__sug-lista{max-width:640px}
+.ps-fi__sug-lista{max-width:640px;--ps-cols:2}
 .ps-fi__barra{display:none}
 @media (hover:hover) and (pointer:fine){.ps-fi__pack:hover{background:#dcd8d0}.ps-fi__pack:has(input:checked):hover{background:var(--ps-noche)}}
 @media (max-width:989px){

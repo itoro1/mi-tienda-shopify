@@ -1,0 +1,21 @@
+{%- comment -%}
+  Rediseño 2026 · PS · Sugerencia del carrito (página /cart). La misma
+  sugerencia honesta que el carrito lateral (snippets/ps-carrito-extra, zona
+  «sugerencia»: lo que falta según las referencias) y las dos garantías.
+  Si no falta nada, solo salen las garantías.
+{%- endcomment -%}
+{%- unless cart == empty -%}
+<div class="ps ps--papel ps-csug">
+  <div class="ps-wrap ps-csug__in">
+    {%- render 'ps-carrito-extra', zona: 'sugerencia' -%}
+    {%- render 'ps-carrito-extra', zona: 'pie' -%}
+  </div>
+</div>
+{%- endunless -%}
+{% stylesheet %}
+.ps-csug{padding:0 0 var(--ps-sec)}
+.ps-csug__in{max-width:720px}
+{% endstylesheet %}
+{% schema %}
+{ "name": "PS · Sugerencia carrito", "tag": "div", "class": "ps-section", "settings": [], "presets": [{ "name": "PS · Sugerencia carrito" }] }
+{% endschema %}
