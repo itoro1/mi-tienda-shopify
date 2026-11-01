@@ -90,7 +90,7 @@ FORMATOS = {
                                pk_x=36, pk_y=508, pk_gap=24, eti_mt=10, eti_py=10, eti_t=30, eti_s=22,
                                pg_x=784, pg_y=290, pg=236, pg_precio=82, pg_t=19, ap_x=548, ap_y=402, ap=24,
                                pie_y=1018, envio=104, camion=90, plazo=38, plazo_mt=10, mas=24, mas_mt=14,
-                               firma_b=14, logo_h=34, letra=12)),
+                               firma_b=14, logo_h=38, letra=12)),
     # Stories/Reels: todo entre 250 px arriba y 340 px abajo
     'story': (1080, 1920, dict(cab_y=250, cab_h=220, t1=116, t2=34, t2_mt=12,
                                 ci_y=470, ci_h=64, ci=29,
@@ -98,14 +98,14 @@ FORMATOS = {
                                 pk_x=36, pk_y=770, pk_gap=24, eti_mt=10, eti_py=10, eti_t=31, eti_s=23,
                                 pg_x=784, pg_y=548, pg=240, pg_precio=84, pg_t=19, ap_x=548, ap_y=664, ap=25,
                                 pie_y=1272, envio=96, camion=82, plazo=34, plazo_mt=8, mas=22, mas_mt=10,
-                                firma_b=345, logo_h=32, letra=12)),
+                                firma_b=345, logo_h=36, letra=12)),
     'cuadrado': (1080, 1080, dict(cab_y=0, cab_h=170, t1=88, t2=26, t2_mt=8,
                                    ci_y=170, ci_h=50, ci=23,
                                    bl_y=220, bl_h=590, el_x=40, el_y=248, el=44,
                                    pk_x=80, pk_y=384, pk_gap=24, eti_mt=8, eti_py=7, eti_t=24, eti_s=18,
                                    pg_x=820, pg_y=232, pg=196, pg_precio=68, pg_t=16, ap_x=600, ap_y=318, ap=20,
                                    pie_y=830, envio=74, camion=64, plazo=26, plazo_mt=6, mas=18, mas_mt=8,
-                                   firma_b=12, logo_h=24, letra=10)),
+                                   firma_b=12, logo_h=27, letra=10)),
 }
 
 if __name__ == '__main__':

@@ -17,6 +17,10 @@ LANZAMIENTO · HASTA FIN DE EXISTENCIAS», «ELIJA SU CABLE», pack USB-C
 actuales. Cuando suba, hay que **cambiar o pausar este anuncio**. No se puso
 «la oferta caduca en 48 h» porque no había ninguna oferta que caducara.
 
+**Logo nuevo** (01/11): las seis imágenes de E están rehechas con el logo
+de la marca v3 al pie (el móvil-P con «pillatumovil»); el resto no cambia.
+Si ya se subieron a Meta, hay que cambiar la imagen del anuncio por estas.
+
 **Imágenes para subir: las «con marco»** (01/11). Al subir a Meta, la foto
 se recortaba arriba y abajo (Meta la pasa a cuadrado en varias ubicaciones).
 En estas, todo lo importante está en un cuadrado central con margen azul

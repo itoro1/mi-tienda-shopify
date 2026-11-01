@@ -563,7 +563,7 @@ Lo que hace el dueño a mano: *Configuración → Marca* (logo y logo cuadrado
 que usan el pago, los correos y la app Shop: subir `movil-p_perfil-oro.png`
 como cuadrado y `movil-p_logo-horizontal-claro-transparente.png` como logo),
 y la foto de WhatsApp, Instagram y Facebook con `movil-p_perfil-oro.png`.
-Los anuncios de Meta (A a E) llevan todavía la firma antigua al pie.
+El anuncio de Meta que se usa (E, normal y «con marco») ya lleva el logo nuevo al pie (01/11); los retirados (A a D) siguen con la firma antigua.
 
 ## Dominio
 

@@ -9,7 +9,7 @@ def b64(ruta, tipo):
     return f'data:{tipo};base64,' + base64.b64encode(open(ruta, 'rb').read()).decode()
 
 FOTO = b64(os.path.join(AQUI, 'cajas-1536.jpg'), 'image/jpeg')
-LOGO = b64(os.path.join(REPO, 'marca/logo-pillatumovil-firma.png'), 'image/png')
+LOGO = b64(os.path.join(REPO, 'marca/v3/movil-p_logo-cabecera-oscuro.png'), 'image/png')  # marca v3, 01/11/2026
 
 CAMION = '<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.5h11v10h-11z"/><path d="M13.5 9.5h4l3 3.2v3.8h-7"/><circle cx="6.5" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>'
 W2 = '⁠'  # para que "24-48" no se parta
