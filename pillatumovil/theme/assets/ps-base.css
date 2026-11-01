@@ -255,3 +255,14 @@ cart-drawer.drawer{width:100%}
 }
 @media (max-width:989px){.ps-tarjetas{--ps-cols:2;gap:32px 12px}}
 @media (max-width:599px){.ps-tar .ps-cmp__aqui,.ps-tar .ps-tar__desde .ps-cmp__aqui{font-size:20px}.ps-tar__btn{font-size:15px;padding:0 10px}}
+
+/* ---------- Políticas de Shopify (/policies/...) ----------
+   Shopify las pinta con su propia plantilla (no se puede editar): se les da
+   el campo papel, la tinta entera y una medida de lectura cómoda. */
+body:has(.shopify-policy__container) #MainContent{background:#f3f1ec;color:#141824}
+.shopify-policy__container{max-width:72ch!important;padding:clamp(48px,6vw,96px) clamp(16px,4vw,56px) clamp(64px,8vw,128px)!important;font-family:var(--font-body-family);font-size:17px;line-height:1.65}
+.shopify-policy__title h1{font-family:var(--font-heading-family);font-weight:600;font-size:clamp(32px,4vw,56px);line-height:1.05;letter-spacing:-.03em;text-align:left;color:#141824}
+.shopify-policy__body h2,.shopify-policy__body h3{font-family:var(--font-body-family);font-weight:700;letter-spacing:0;color:#141824;margin:36px 0 10px}
+.shopify-policy__body h2{font-size:22px}.shopify-policy__body h3{font-size:18px}
+.shopify-policy__body a{color:inherit;text-decoration-color:#c9a86a;text-decoration-thickness:2px;text-underline-offset:4px}
+.shopify-policy__body,.shopify-policy__body p,.shopify-policy__body li{color:#141824}

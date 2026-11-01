@@ -782,6 +782,37 @@ Lo pidió el dueño a mitad del rediseño: los mismos iPhone que IToroStore.
   carrito con «¿Necesita cargador para el iPhone?»; colección con 18 y 5
   nuevos con el filtro.
 
+### Fase 6: el resto de páginas (01/11/2026)
+
+- **Limpieza común** en `ps-guia`, `ps-contacto`, `ps-pagina`, `ps-404` y
+  `ps-buscar`: sin etiquetas en mayúsculas espaciadas (y sin las que iban
+  encima de un titular: «Guía rápida», «Error 404»), esquinas rectas, sin
+  filetes (los separa el espacio o el tono), texto en tinta entera y campos
+  de búsqueda en blanco (en piedra no se veían).
+- **Guía**: titular «¿Qué cable necesita?» (dos líneas también en el móvil).
+- **Contacto**: titular «Hable con nosotros», frase más grande, el número de
+  WhatsApp sin la etiqueta encima.
+- **Envío, garantía y devoluciones** (`page.info.json`): las cifras dicen
+  ahora que los iPhone sin stock tardan 3-5 días y que los de segunda mano
+  llevan 1 año de garantía. **El texto de la página (contenido de Shopify)
+  sigue hablando solo de cargadores**: lo tiene que repasar el dueño.
+- **404**: «Esta página no existe», buscador y el selector «¿Qué iPhone
+  tiene?» (en lugar de la lista de productos de antes).
+- **Políticas** (`/policies/...`, plantilla de Shopify que no se edita):
+  campo papel, tinta, medida de lectura y titulares de la casa, desde
+  `ps-base.css`.
+- **Contraseña** (`templates/password.json`, `layout/password.liquid`): en
+  español y de usted («Volvemos enseguida»), con la foto de las cajas y la
+  hoja `ps-base.css`. Solo se ve si se pone contraseña a la tienda.
+- **Textos de Dawn** (`locales/es.json`) que el cliente ve y trataban de tú:
+  contraseña, recuperar contraseña, tarjeta regalo, contacto, etc., ahora de
+  usted.
+- **Cuentas de cliente**: la tienda usa las cuentas nuevas de Shopify
+  (`account.pillatumovil.com`), que no pasan por el tema.
+- **Página «Quiénes somos»** (`/pages/quienes-somos`) creada **sin
+  publicar**, con datos verdaderos y sin dirección ni NIF. La publica el
+  dueño cuando la revise (y se añade al menú del pie si la quiere).
+
 ## Dominio
 
 - **pillatumovil.com**, comprado en Shopify el 27/10/2026 (registrador

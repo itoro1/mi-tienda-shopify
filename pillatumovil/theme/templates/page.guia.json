@@ -3,7 +3,7 @@
     "guia": {
       "type": "ps-guia",
       "settings": {
-        "titulo": "¿Qué cable necesita\nsu iPhone?",
+        "titulo": "¿Qué cable necesita?",
         "texto": "Mire el conector de la parte de abajo de su iPhone. Solo hay dos, y el cargador de 20 W sirve para los dos.",
         "modelos_c": "<p><strong>iPhone 15 o posterior</strong>, en todas sus versiones.</p>",
         "nota_c": "",
