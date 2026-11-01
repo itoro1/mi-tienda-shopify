@@ -1,0 +1,94 @@
+{%- comment -%}
+  Rediseño 2026 · PS · Tres pasos que crecen (el envío).
+
+  Tres teselas en fila, apoyadas abajo, cada una más grande que la anterior:
+  el orden lo lleva el tamaño (sin números). Cada paso es un bloque con su
+  foto. Las fotos de producto sobre blanco se funden con la tesela
+  («Fundir el blanco»). El título va en el hueco de encima de las dos
+  pequeñas. En el móvil se apilan y siguen creciendo.
+{%- endcomment -%}
+<section class="ps ps--papel ps-sec ps-pa" aria-labelledby="PsPa-{{ section.id }}">
+  <div class="ps-wrap ps-pa__grid">
+    <div class="ps-pa__cab">
+      <h2 class="ps-h2" id="PsPa-{{ section.id }}">{{ section.settings.titulo }}</h2>
+      {%- if section.settings.texto != blank -%}<p class="ps-pa__texto">{{ section.settings.texto }}</p>{%- endif -%}
+    </div>
+    <ol class="ps-pa__lista" role="list">
+      {%- for block in section.blocks limit: 3 -%}
+        {%- liquid
+          assign img = block.settings.imagen
+          assign cl = 'ps-pa__img'
+          if block.settings.fundir
+            assign cl = 'ps-pa__img ps-pa__img--fundir'
+          endif
+        -%}
+        <li class="ps-pa__paso ps-pa__paso--{{ forloop.index }}" {{ block.shopify_attributes }}>
+          <div class="ps-pa__tesela ps--{{ block.settings.fondo }}">
+            {%- if img != blank -%}
+              {{ img | image_url: width: 1400 | image_tag: loading: 'lazy', widths: '400,700,1000,1400', sizes: '(min-width: 990px) 40vw, 100vw', alt: img.alt, class: cl }}
+            {%- endif -%}
+          </div>
+          <h3 class="ps-pa__nombre">{{ block.settings.titulo }}</h3>
+          <p class="ps-pa__txt">{{ block.settings.texto }}</p>
+        </li>
+      {%- endfor -%}
+    </ol>
+  </div>
+</section>
+
+{% stylesheet %}
+.ps-pa__grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:10px;align-items:end}
+.ps-pa__cab{grid-column:1 / span 7;grid-row:1;align-self:end;padding:0 24px 48px 0}
+.ps-pa__texto{margin:20px 0 0;max-width:40ch;font-size:var(--ps-t3);line-height:1.5}
+.ps-pa__lista{display:contents;list-style:none;margin:0;padding:0}
+.ps-pa__paso{grid-row:2;align-self:end}
+.ps-pa__paso--1{grid-column:1 / span 3}
+.ps-pa__paso--2{grid-column:4 / span 4}
+.ps-pa__paso--3{grid-column:8 / span 5;grid-row:1 / span 2}
+.ps-pa__tesela{position:relative;overflow:hidden}
+.ps-pa__paso--1 .ps-pa__tesela{height:30vh;min-height:220px}
+.ps-pa__paso--2 .ps-pa__tesela{height:44vh;min-height:300px}
+.ps-pa__paso--3 .ps-pa__tesela{height:60vh;min-height:400px}
+.ps-pa__img{width:100%;height:100%;object-fit:cover}
+.ps-pa__img--fundir{object-fit:contain;mix-blend-mode:multiply;padding:8%}
+.ps .ps-pa__nombre{margin:20px 0 0;font-family:var(--ps-sans);font-size:var(--ps-t3);font-weight:700;letter-spacing:0;line-height:1.3}
+.ps-pa__txt{margin:6px 0 0;max-width:36ch;font-size:var(--ps-t4);line-height:1.5}
+@media (max-width:989px){
+  .ps-pa__grid{display:block}
+  .ps-pa__cab{padding:0}
+  .ps-pa__lista{display:grid;gap:40px;margin-top:40px}
+  .ps-pa__paso,.ps-pa__paso--3{grid-column:auto;grid-row:auto}
+  .ps-pa__img--fundir{padding:2%}
+  .ps-pa__paso--1 .ps-pa__tesela{height:34vw;min-height:180px}
+  .ps-pa__paso--2 .ps-pa__tesela{height:46vw;min-height:220px}
+  .ps-pa__paso--3 .ps-pa__tesela{height:62vw;min-height:260px}
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PS · Tres pasos",
+  "tag": "div",
+  "class": "ps-section",
+  "max_blocks": 3,
+  "settings": [
+    { "type": "text", "id": "titulo", "label": "Título", "default": "En su casa en 24-48 h" },
+    { "type": "textarea", "id": "texto", "label": "Texto", "default": "Envío gratis en todos los pedidos, sin mínimo." }
+  ],
+  "blocks": [
+    {
+      "type": "paso",
+      "name": "Paso",
+      "settings": [
+        { "type": "image_picker", "id": "imagen", "label": "Foto" },
+        { "type": "checkbox", "id": "fundir", "label": "Fundir el blanco con el fondo", "default": false, "info": "Para fotos de producto sobre blanco." },
+        { "type": "select", "id": "fondo", "label": "Fondo de la tesela", "default": "piedra", "options": [
+          { "value": "piedra", "label": "Piedra" }, { "value": "marfil", "label": "Marfil" }, { "value": "noche", "label": "Noche" } ] },
+        { "type": "text", "id": "titulo", "label": "Título", "default": "Lo pide hoy" },
+        { "type": "textarea", "id": "texto", "label": "Texto", "default": "Con tarjeta, Apple Pay, Google Pay o PayPal." }
+      ]
+    }
+  ],
+  "presets": [{ "name": "PS · Tres pasos" }]
+}
+{% endschema %}

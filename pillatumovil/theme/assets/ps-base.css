@@ -92,6 +92,10 @@ h4,h5,.h4,.h5{letter-spacing:-.01em}
 .ps video::-webkit-media-controls-start-playback-button,
 .ps video::-webkit-media-controls-overlay-play-button{display:none !important;-webkit-appearance:none}
 
+/* Dawn pinta h1-h6 con el color de su esquema (marfil sobre noche): en las
+   secciones ps- los titulares heredan el color de su campo. */
+.ps h1,.ps h2,.ps h3,.ps h4,.ps h5,.ps h6{color:inherit}
+
 /* Campos */
 .ps--noche{background:var(--ps-noche);color:var(--ps-marfil);--ps-texto-2:var(--ps-marfil-2);--ps-linea:var(--ps-linea-osc);--ps-campo-2:var(--ps-noche-2)}
 .ps--piedra{background:var(--ps-piedra);color:var(--ps-tinta);--ps-texto-2:var(--ps-tinta-2);--ps-linea:var(--ps-linea-cla);--ps-campo-2:var(--ps-papel)}
@@ -198,3 +202,19 @@ predictive-search .predictive-search__image{background:#f3f1ec;object-fit:contai
 predictive-search .predictive-search__item .price{font-size:15px;letter-spacing:0;color:#d9bb7c}
 predictive-search .predictive-search__search-for-button{border-top:0}
 predictive-search .predictive-search__list-item:nth-last-child(1){border:0}
+
+/* ---------- Comparación con Apple (snippets/ps-comparacion.liquid) ---------- */
+.ps-cmp{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 16px}
+.ps-cmp p{margin:0}
+.ps-cmp__aqui{font-family:var(--font-heading-family);font-weight:600;font-size:clamp(30px,2.6vw,40px);line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.ps-cmp__apple{font-size:var(--ps-t5,14px);line-height:1.4;color:var(--ps-texto-2,inherit)}
+.ps-cmp__fecha{white-space:nowrap}
+.ps-cmp__ahorro{flex-basis:100%;font-size:var(--ps-t5,14px);font-weight:700;color:var(--ps-oro-tinta,#7d5f28)}
+.ps--noche .ps-cmp__ahorro{color:var(--ps-oro-texto)}
+.ps-cmp--grande .ps-cmp__aqui{font-size:clamp(56px,7.4vw,120px);letter-spacing:-.045em}
+.ps-cmp--grande .ps-cmp__apple{flex-basis:100%;font-size:var(--ps-t4);margin-top:8px}
+.ps-cmp--grande .ps-cmp__ahorro{font-size:var(--ps-t4)}
+
+/* Dawn: el cajón del carrito mide 100vw y, con barra de desplazamiento,
+   hacía que la página se moviera 11 px de lado. */
+cart-drawer.drawer{width:100%}

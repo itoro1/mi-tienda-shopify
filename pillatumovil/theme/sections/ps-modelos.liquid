@@ -1,0 +1,62 @@
+{%- comment -%}
+  Rediseño 2026 · PS · Banda de modelos (compatibilidad).
+
+  Una banda de color a todo el ancho con los nombres de los iPhone
+  compatibles en letra enorme, cortados por los dos bordes y corriendo
+  despacio hacia la izquierda (40 s por vuelta; parada si el sistema pide
+  menos movimiento). Debajo, el título y la frase que dicen qué significa.
+  No son clientes ni reseñas: son los modelos con los que funciona.
+  Los lectores de pantalla leen la lista una vez (la banda es decorativa).
+{%- endcomment -%}
+{%- assign nombres = section.settings.modelos | split: ',' -%}
+<section class="ps ps--papel ps-mo" aria-labelledby="PsMo-{{ section.id }}">
+  <div class="ps-mo__banda ps--{{ section.settings.fondo }}" aria-hidden="true">
+    <div class="ps-mo__pista">
+      {%- for vuelta in (1..2) -%}
+        <span class="ps-mo__fila">
+          {%- for n in nombres -%}<span class="ps-mo__n">{{ n | strip }}</span><span class="ps-mo__punto"></span>{%- endfor -%}
+        </span>
+      {%- endfor -%}
+    </div>
+  </div>
+  <div class="ps-wrap ps-mo__txt">
+    <h2 class="ps-h3 ps-mo__tit" id="PsMo-{{ section.id }}">{{ section.settings.titulo }}</h2>
+    <p class="ps-mo__frase">{{ section.settings.texto }}</p>
+    <ul class="ps-visually-hidden">{%- for n in nombres -%}<li>{{ n | strip }}</li>{%- endfor -%}</ul>
+  </div>
+</section>
+
+{% stylesheet %}
+.ps-mo{padding-bottom:var(--ps-sec)}
+.ps-mo__banda{display:flex;align-items:center;min-height:34vh;overflow:hidden}
+.ps-mo__pista{display:flex;width:max-content;animation:ps-mo 40s linear infinite}
+.ps-mo__fila{display:flex;align-items:center;flex:none}
+.ps-mo__n{padding:0 .3em;font-family:var(--ps-display);font-weight:600;font-size:8vw;line-height:1;letter-spacing:-.04em;white-space:nowrap}
+.ps-mo__punto{flex:none;width:.12em;height:.12em;font-size:8vw;border-radius:50%;background:currentColor}
+@keyframes ps-mo{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.ps-mo__pista{animation:none}}
+.ps-mo__txt{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:24px 48px;padding-top:40px}
+.ps .ps-mo__tit{margin:0}
+.ps-mo__frase{margin:0;max-width:52ch;font-size:var(--ps-t3);line-height:1.5}
+@media (max-width:749px){
+  .ps-mo__banda{min-height:22vh}
+  .ps-mo__n,.ps-mo__punto{font-size:15vw}
+  .ps-mo__txt{grid-template-columns:1fr;padding-top:28px}
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PS · Banda de modelos",
+  "tag": "div",
+  "class": "ps-section",
+  "settings": [
+    { "type": "textarea", "id": "modelos", "label": "Modelos, separados por comas", "default": "iPhone 8, iPhone X, iPhone 11, iPhone 12, iPhone 13, iPhone 14, iPhone 15, iPhone 16, iPhone 17" },
+    { "type": "select", "id": "fondo", "label": "Color de la banda", "default": "noche", "options": [
+      { "value": "noche", "label": "Noche" }, { "value": "piedra", "label": "Piedra" }, { "value": "marfil", "label": "Marfil" } ] },
+    { "type": "text", "id": "titulo", "label": "Título", "default": "Sirve para todos estos iPhone" },
+    { "type": "textarea", "id": "texto", "label": "Frase", "default": "El adaptador de 20 W es el mismo para todos. El cable depende del conector: Lightning hasta el iPhone 14, USB-C desde el iPhone 15." }
+  ],
+  "presets": [{ "name": "PS · Banda de modelos" }]
+}
+{% endschema %}

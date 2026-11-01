@@ -1,0 +1,41 @@
+{%- comment -%}
+  Rediseño 2026 · precio aquí, precio en Apple y ahorro, siempre igual en
+  toda la tienda.
+
+  Parámetros:
+    precio     (obligatorio) precio nuestro en céntimos (p. ej. variant.price)
+    producto   (obligatorio) el producto, para leer su PVP de Apple
+               (metacampo custom.pvp_apple, «38,00 €»)
+    unidades   (opcional) cuántas unidades compara (packs de 2 o 3): el PVP
+               de Apple se multiplica. Por defecto 1.
+    tam        (opcional) 'grande' para la portada y la ficha.
+    sin_ahorro (opcional) true para no pintar la línea del ahorro.
+
+  Reglas (Omnibus y consumo):
+  - El PVP de Apple va siempre con «En Apple» y la fecha en que se miró
+    (Configuración del tema > Pillatumovil). Sin tachado: un tachado se lee
+    como «antes costaba esto aquí».
+  - El ahorro se calcula, y el porcentaje se redondea hacia abajo.
+  - Si Apple no es más caro, no se dice nada de Apple ni de ahorro.
+{%- endcomment -%}
+{%- liquid
+  assign u = unidades | default: 1
+  capture pa
+    render 'ps-pvp-centimos', product: producto
+  endcapture
+  assign pa = pa | strip | plus: 0 | times: u
+  assign ahorro = pa | minus: precio
+  assign pct = 0
+  if pa > 0
+    assign pct = ahorro | times: 100 | divided_by: pa
+  endif
+-%}
+<div class="ps-cmp{% if tam == 'grande' %} ps-cmp--grande{% endif %}">
+  <p class="ps-cmp__aqui ps-num">{{ precio | money_without_currency }}&nbsp;€</p>
+  {%- if pa > precio -%}
+    <p class="ps-cmp__apple">En Apple, {{ pa | money_without_currency }}&nbsp;€{% if u > 1 %} ({{ u }}&nbsp;×&nbsp;{{ pa | divided_by: u | money_without_currency }}&nbsp;€){% endif %} <span class="ps-cmp__fecha">· precio del {{ settings.ps_fecha_apple }}</span></p>
+    {%- unless sin_ahorro -%}
+      <p class="ps-cmp__ahorro">Ahorra {{ ahorro | money_without_currency }}&nbsp;€ ({{ pct }}&nbsp;%)</p>
+    {%- endunless -%}
+  {%- endif -%}
+</div>

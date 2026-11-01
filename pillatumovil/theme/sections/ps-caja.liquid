@@ -1,0 +1,97 @@
+{%- comment -%}
+  Rediseño 2026 · PS · Lo que llega (capítulos a pantalla completa).
+
+  Un capítulo por pantalla: un campo de color plano sacado de su foto, la
+  foto (o el vídeo) en vertical en el centro, el título arriba a la
+  izquierda, una frase abajo a la izquierda y un enlace abajo a la derecha.
+  Cada capítulo es un bloque: foto o vídeo, textos, enlace y fondo.
+
+  Los vídeos (con su foto de espera) solo se reproducen mientras se ven, y
+  nunca si el sistema pide menos movimiento.
+{%- endcomment -%}
+<section class="ps ps-cj" aria-label="{{ section.settings.nombre | escape }}">
+  {%- for block in section.blocks -%}
+    {%- assign img = block.settings.imagen -%}
+    <article class="ps ps--{{ block.settings.fondo }} ps-cj__cap" {{ block.shopify_attributes }}>
+      <div class="ps-cj__in">
+        <h2 class="ps-cj__tit">{{ block.settings.titulo }}</h2>
+        <div class="ps-cj__retrato">
+          {%- if img != blank -%}
+            {{ img | image_url: width: 1100 | image_tag: loading: 'lazy', widths: '400,600,800,1100', sizes: '(min-width: 990px) 520px, 80vw', alt: img.alt, class: 'ps-cj__img' }}
+          {%- endif -%}
+          {%- if block.settings.video_url != blank -%}
+            <video class="ps-cj__img ps-cj__video" muted loop playsinline preload="none" aria-hidden="true"{% if img != blank %} poster="{{ img | image_url: width: 900 }}"{% endif %} data-src="{{ block.settings.video_url }}"></video>
+          {%- endif -%}
+        </div>
+        <p class="ps-cj__frase">{{ block.settings.texto }}</p>
+        {%- if block.settings.enlace != blank -%}
+          <a class="ps-link ps-cj__enlace" href="{{ block.settings.enlace_url | default: '/collections/cargadores-y-cables' }}">{{ block.settings.enlace }}</a>
+        {%- endif -%}
+      </div>
+    </article>
+  {%- endfor -%}
+  <script>
+    (function () {
+      var s = document.currentScript.closest('.ps-cj');
+      if (!s || !('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var io = new IntersectionObserver(function (es) {
+        es.forEach(function (e) {
+          var v = e.target;
+          if (e.isIntersecting) {
+            if (!v.src) { v.src = v.getAttribute('data-src'); v.addEventListener('playing', function () { v.classList.add('ps-cj__video--ya'); }, { once: true }); }
+            var p = v.play(); if (p && p.catch) p.catch(function () {});
+          } else if (v.src) v.pause();
+        });
+      }, { rootMargin: '200px 0px' });
+      s.querySelectorAll('.ps-cj__video').forEach(function (v) { io.observe(v); });
+    })();
+  </script>
+</section>
+
+{% stylesheet %}
+.ps-cj__cap{position:relative;min-height:100svh;display:flex}
+.ps-cj__in{position:relative;flex:1;display:grid;grid-template-columns:1fr auto 1fr;grid-template-rows:auto 1fr auto;gap:24px;width:100%;max-width:1360px;margin:0 auto;padding:clamp(40px,5vw,72px) var(--ps-margen)}
+.ps .ps-cj__tit{grid-column:1;grid-row:1;align-self:start;margin:0;max-width:16ch;font-family:var(--ps-display);font-weight:600;font-size:var(--ps-t2);line-height:1.08;letter-spacing:-.025em;text-wrap:balance}
+.ps-cj__retrato{grid-column:2;grid-row:1 / span 3;align-self:center;position:relative;width:min(520px,36vw);aspect-ratio:3/4;overflow:hidden}
+.ps-cj__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ps-cj__video{opacity:0;transition:opacity 500ms ease}
+.ps-cj__video--ya{opacity:1}
+.ps-cj__frase{grid-column:1;grid-row:3;align-self:end;margin:0;max-width:32ch;font-size:var(--ps-t3);line-height:1.5}
+.ps-cj__enlace{grid-column:3;grid-row:3;align-self:end;justify-self:end}
+@media (max-width:989px){
+  .ps-cj__cap{min-height:0}
+  .ps-cj__in{display:block;padding-top:56px;padding-bottom:56px}
+  .ps .ps-cj__tit{max-width:16ch}
+  .ps-cj__retrato{width:80%;margin:28px auto 0}
+  .ps-cj__frase{margin-top:24px}
+  .ps-cj__enlace{display:inline-block;margin-top:16px}
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PS · Lo que llega",
+  "tag": "div",
+  "class": "ps-section",
+  "settings": [
+    { "type": "text", "id": "nombre", "label": "Nombre de la sección (para lectores de pantalla)", "default": "Lo que llega a su casa" }
+  ],
+  "blocks": [
+    {
+      "type": "capitulo",
+      "name": "Capítulo",
+      "settings": [
+        { "type": "text", "id": "titulo", "label": "Título", "default": "El adaptador de 20 W" },
+        { "type": "image_picker", "id": "imagen", "label": "Foto (vertical, o se recorta al centro)" },
+        { "type": "text", "id": "video_url", "label": "Vídeo (.mp4, opcional)", "info": "Va encima de la foto mientras se ve." },
+        { "type": "textarea", "id": "texto", "label": "Frase", "default": "Con enchufe europeo." },
+        { "type": "text", "id": "enlace", "label": "Enlace", "default": "Ver el adaptador" },
+        { "type": "url", "id": "enlace_url", "label": "Destino" },
+        { "type": "select", "id": "fondo", "label": "Fondo", "default": "piedra", "options": [
+          { "value": "piedra", "label": "Piedra" }, { "value": "papel", "label": "Papel" }, { "value": "marfil", "label": "Marfil" }, { "value": "noche", "label": "Noche" } ] }
+      ]
+    }
+  ],
+  "presets": [{ "name": "PS · Lo que llega" }]
+}
+{% endschema %}

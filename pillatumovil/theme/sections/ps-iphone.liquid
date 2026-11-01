@@ -1,0 +1,218 @@
+{%- comment -%}
+  Rediseño 2026 · PS · ¿Qué iPhone tiene? (lo vivo de la portada).
+
+  El cliente toca su modelo de iPhone y la caja grande de la derecha pasa a
+  la de su pack (USB-C o Lightning), con su precio, «En Apple» y «Añadir al
+  carrito», que lo añade sin salir de la página (assets/ps-carrito.js abre
+  el carrito lateral).
+
+  - Cada modelo es un bloque (nombre, año y conector): se añaden, quitan y
+    ordenan en el editor. Cuando salgan iPhone nuevos, se añade un bloque.
+  - Sin JavaScript, cada modelo es un enlace normal a la ficha de su pack.
+  - Con teclado: los modelos son botones de alternar (aria-pressed) en el
+    orden de lectura; el resultado se anuncia (aria-live).
+  - Recuerda el último modelo elegido en este navegador (localStorage), por
+    comodidad; si no se puede leer, no pasa nada.
+{%- endcomment -%}
+{%- liquid
+  assign pu = section.settings.packs | first
+  assign pl = nil
+  if section.settings.packs.size > 1
+    assign pl = section.settings.packs | last
+  endif
+  assign fu = section.settings.foto_usbc | default: pu.featured_image
+  assign fl = section.settings.foto_lightning | default: pl.featured_image
+-%}
+<section class="ps ps--papel ps-sec ps-ip" id="su-iphone" aria-labelledby="PsIp-{{ section.id }}" data-ps-ip>
+  <div class="ps-wrap ps-ip__grid">
+    <div class="ps-ip__elige">
+      <h2 class="ps-h2" id="PsIp-{{ section.id }}">{{ section.settings.titulo }}</h2>
+      {%- if section.settings.texto != blank -%}<p class="ps-ip__texto">{{ section.settings.texto }}</p>{%- endif -%}
+      <ul class="ps-ip__modelos" role="list">
+        {%- for block in section.blocks -%}
+          {%- liquid
+            if block.settings.conector == 'usbc'
+              assign destino = pu.url
+            else
+              assign destino = pl.url
+            endif
+          -%}
+          <li {{ block.shopify_attributes }}>
+            <a class="ps-ip__modelo" href="{{ destino | default: '/collections/packs' }}" data-c="{{ block.settings.conector }}" data-m="{{ block.settings.nombre | escape }}">
+              <span class="ps-ip__nombre">{{ block.settings.nombre }}</span>
+              <span class="ps-ip__anio">{{ block.settings.anio }}</span>
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+      {%- if section.settings.ayuda != blank -%}<p class="ps-ip__ayuda">{{ section.settings.ayuda }}</p>{%- endif -%}
+    </div>
+
+    <div class="ps-ip__res" aria-live="polite">
+      {%- comment -%} Estado inicial: los dos packs y qué hacer. {%- endcomment -%}
+      <div class="ps-ip__panel" data-panel="inicio">
+        <div class="ps-ip__foto">
+          {%- if section.settings.foto_inicio != blank -%}
+            {{ section.settings.foto_inicio | image_url: width: 1400 | image_tag: loading: 'lazy', widths: '500,800,1100,1400', sizes: '(min-width: 990px) 46vw, 100vw', alt: section.settings.foto_inicio.alt }}
+          {%- endif -%}
+        </div>
+        <p class="ps-ip__para">{{ section.settings.inicio }}</p>
+      </div>
+
+      {%- for c in (1..2) -%}
+        {%- liquid
+          if c == 1
+            assign pp = pu
+            assign foto = fu
+            assign clave = 'usbc'
+            assign nombre = section.settings.nombre_usbc
+          else
+            assign pp = pl
+            assign foto = fl
+            assign clave = 'lightning'
+            assign nombre = section.settings.nombre_lightning
+          endif
+        -%}
+        {%- if pp == blank -%}{%- continue -%}{%- endif -%}
+        {%- assign v = pp.selected_or_first_available_variant -%}
+        <div class="ps-ip__panel" data-panel="{{ clave }}" hidden>
+          <div class="ps-ip__foto">
+            {%- if foto != blank -%}
+              {{ foto | image_url: width: 1400 | image_tag: loading: 'lazy', widths: '500,800,1100,1400', sizes: '(min-width: 990px) 46vw, 100vw', alt: foto.alt }}
+            {%- endif -%}
+          </div>
+          <p class="ps-ip__para">Para su <strong data-modelo>iPhone</strong>: {{ nombre }}.</p>
+          {%- render 'ps-comparacion', precio: v.price, producto: pp -%}
+          {%- form 'product', pp, class: 'ps-ip__form', data-ps-anadir: '' -%}
+            <input type="hidden" name="id" value="{{ v.id }}">
+            <input type="hidden" name="quantity" value="1">
+            <div class="ps-ip__acciones">
+              <button class="ps-btn" type="submit"{% unless v.available %} disabled{% endunless %}>{% if v.available %}Añadir al carrito{% else %}Agotado{% endif %}</button>
+              <a class="ps-link" href="{{ pp.url }}">{{ section.settings.ver_pack }}</a>
+            </div>
+          {%- endform -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var s = document.currentScript.closest('[data-ps-ip]');
+      if (!s) return;
+      var botones = s.querySelectorAll('.ps-ip__modelo');
+      var paneles = s.querySelectorAll('.ps-ip__panel');
+      var res = s.querySelector('.ps-ip__res');
+      var reducido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      botones.forEach(function (b) { b.setAttribute('role', 'button'); b.setAttribute('aria-pressed', 'false'); });
+
+      function elegir(b, desdeToque) {
+        var c = b.getAttribute('data-c');
+        var panel = s.querySelector('[data-panel="' + c + '"]');
+        if (!panel) return false;
+        botones.forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+        paneles.forEach(function (p) { p.hidden = p !== panel; });
+        panel.querySelectorAll('[data-modelo]').forEach(function (m) { m.textContent = b.getAttribute('data-m'); });
+        panel.classList.remove('ps-ip__panel--entra'); void panel.offsetWidth; panel.classList.add('ps-ip__panel--entra');
+        try { localStorage.setItem('ps-iphone', b.getAttribute('data-m')); } catch (e) {}
+        if (desdeToque) {
+          var r = res.getBoundingClientRect();
+          if (r.top > window.innerHeight * 0.6 || r.bottom < 0) res.scrollIntoView({ behavior: reducido ? 'auto' : 'smooth', block: 'start' });
+        }
+        return true;
+      }
+      s.addEventListener('click', function (e) {
+        var b = e.target.closest('.ps-ip__modelo');
+        if (!b) return;
+        if (elegir(b, true)) e.preventDefault();
+      });
+      s.addEventListener('keydown', function (e) {
+        var b = e.target.closest('.ps-ip__modelo');
+        if (b && e.key === ' ') { e.preventDefault(); if (elegir(b, true)) {} }
+      });
+      try {
+        var guardado = localStorage.getItem('ps-iphone');
+        if (guardado) botones.forEach(function (b) { if (b.getAttribute('data-m') === guardado) elegir(b, false); });
+      } catch (e) {}
+    })();
+  </script>
+</section>
+
+{% stylesheet %}
+.ps-ip__grid{display:grid;grid-template-columns:minmax(0,6fr) minmax(0,6fr);gap:clamp(40px,6vw,112px);align-items:start}
+.ps-ip__texto{margin:20px 0 0;font-size:var(--ps-t3);line-height:1.5}
+.ps-ip__modelos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;list-style:none;margin:36px 0 0;padding:0}
+.ps-ip__modelo{display:flex;flex-direction:column;justify-content:center;gap:2px;min-height:76px;padding:12px 16px;background:var(--ps-piedra);color:var(--ps-tinta);text-decoration:none;cursor:pointer;
+  transition:transform 120ms var(--ps-ease-out),background-color 160ms ease,color 160ms ease;-webkit-user-select:none;user-select:none}
+.ps-ip__modelo:active{transform:scale(.97)}
+.ps-ip__nombre{font-size:var(--ps-t4);font-weight:700;line-height:1.2}
+.ps-ip__anio{font-size:var(--ps-t5);color:var(--ps-tinta-2)}
+.ps-ip__modelo[aria-pressed="true"]{background:var(--ps-noche);color:var(--ps-marfil)}
+.ps-ip__modelo[aria-pressed="true"] .ps-ip__anio{color:var(--ps-oro-texto)}
+.ps-ip__ayuda{margin:20px 0 0;max-width:52ch;font-size:var(--ps-t5);line-height:1.5;color:var(--ps-tinta-2)}
+.ps-ip__res{position:sticky;top:calc(var(--header-height,72px) + 24px);scroll-margin-top:calc(var(--header-height,72px) + 16px)}
+.ps-ip__foto{aspect-ratio:4/3;overflow:hidden;background:var(--ps-papel);margin-bottom:24px}
+.ps-ip__foto img{width:100%;height:100%;object-fit:cover;object-position:50% 58%}
+.ps-ip__para{margin:0 0 14px;font-size:var(--ps-t3);line-height:1.4}
+.ps-ip__panel[data-panel="inicio"] .ps-ip__para{max-width:34ch}
+.ps-ip__acciones{display:flex;flex-wrap:wrap;align-items:center;gap:14px 28px;margin-top:24px}
+.ps-ip__form .ps-tar__error{margin:12px 0 0;color:#9b1c1c;font-size:var(--ps-t5)}
+@media (prefers-reduced-motion:no-preference){
+  .ps-ip__panel--entra .ps-ip__foto img{animation:ps-ip-caja 520ms var(--ps-ease-out) both}
+  .ps-ip__panel--entra .ps-ip__para,.ps-ip__panel--entra .ps-cmp,.ps-ip__panel--entra .ps-ip__acciones{animation:ps-ip-sube 420ms var(--ps-ease-out) both}
+  .ps-ip__panel--entra .ps-cmp{animation-delay:50ms}
+  .ps-ip__panel--entra .ps-ip__acciones{animation-delay:100ms}
+  @keyframes ps-ip-caja{from{opacity:0;transform:scale(1.06) translateY(16px)}to{opacity:1;transform:none}}
+  @keyframes ps-ip-sube{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+}
+@media (hover:hover) and (pointer:fine){
+  .ps-ip__modelo:hover{background:#dcd8d0}
+  .ps-ip__modelo[aria-pressed="true"]:hover{background:var(--ps-noche)}
+}
+@media (max-width:989px){
+  .ps-ip__grid{grid-template-columns:1fr;gap:40px}
+  .ps-ip__res{position:static}
+}
+@media (max-width:599px){
+  .ps-ip__foto{aspect-ratio:1/1}
+  .ps-ip__modelos{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ps-ip__modelo{min-height:64px}
+  .ps-ip__acciones .ps-btn{width:100%}
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PS · ¿Qué iPhone tiene?",
+  "tag": "div",
+  "class": "ps-section",
+  "settings": [
+    { "type": "text", "id": "titulo", "label": "Título", "default": "¿Qué iPhone tiene?" },
+    { "type": "textarea", "id": "texto", "label": "Texto", "default": "Tóquelo y le enseñamos su pack." },
+    { "type": "textarea", "id": "ayuda", "label": "Ayuda bajo los modelos", "default": "¿No sabe cuál es? En el iPhone: Ajustes > General > Información > Nombre del modelo." },
+    { "type": "header", "content": "Antes de elegir" },
+    { "type": "image_picker", "id": "foto_inicio", "label": "Foto" },
+    { "type": "textarea", "id": "inicio", "label": "Texto", "default": "Hasta el iPhone 14, el cable es Lightning. Desde el iPhone 15, USB-C. El adaptador de 20 W es el mismo para todos." },
+    { "type": "header", "content": "Packs" },
+    { "type": "product_list", "id": "packs", "label": "Los dos packs", "limit": 2, "info": "En este orden: primero el USB-C y después el Lightning." },
+    { "type": "image_picker", "id": "foto_usbc", "label": "Foto del pack USB-C", "info": "Si se deja vacía, la del producto." },
+    { "type": "text", "id": "nombre_usbc", "label": "Cómo se llama en la frase", "default": "el pack con cable USB-C" },
+    { "type": "image_picker", "id": "foto_lightning", "label": "Foto del pack Lightning" },
+    { "type": "text", "id": "nombre_lightning", "label": "Cómo se llama en la frase", "default": "el pack con cable Lightning" },
+    { "type": "text", "id": "ver_pack", "label": "Enlace a la ficha", "default": "Ver 2 o 3 packs" }
+  ],
+  "blocks": [
+    {
+      "type": "modelo",
+      "name": "Modelo de iPhone",
+      "settings": [
+        { "type": "text", "id": "nombre", "label": "Modelo", "default": "iPhone 16" },
+        { "type": "text", "id": "anio", "label": "Año", "default": "2024" },
+        { "type": "select", "id": "conector", "label": "Conector", "default": "usbc", "options": [
+          { "value": "usbc", "label": "USB-C" }, { "value": "lightning", "label": "Lightning" } ] }
+      ]
+    }
+  ],
+  "presets": [{ "name": "PS · ¿Qué iPhone tiene?" }]
+}
+{% endschema %}

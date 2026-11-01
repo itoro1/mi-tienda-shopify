@@ -20,6 +20,34 @@
         "label": "Color de marca",
         "default": "#C9A86A",
         "info": "El oro de la marca: precios, botones y detalles de las secciones PT ·."
+      },
+      {
+        "type": "header",
+        "content": "Comparación con Apple"
+      },
+      {
+        "type": "text",
+        "id": "ps_fecha_apple",
+        "label": "Fecha en que se miraron los precios de Apple",
+        "default": "01/11/2026",
+        "info": "Sale junto a cada «En Apple». El PVP de Apple de cada producto está en su metacampo custom.pvp_apple. Si Apple cambia el precio, cambie los dos."
+      },
+      {
+        "type": "header",
+        "content": "Precio de lanzamiento"
+      },
+      {
+        "type": "checkbox",
+        "id": "ps_lanzamiento",
+        "label": "Mostrar «Precio de lanzamiento»",
+        "default": false,
+        "info": "Enciéndalo solo mientras sea verdad: el precio subirá cuando se acaben estas unidades."
+      },
+      {
+        "type": "text",
+        "id": "ps_lanzamiento_texto",
+        "label": "Texto",
+        "default": "Precio de lanzamiento, hasta fin de existencias"
       }
     ]
   },

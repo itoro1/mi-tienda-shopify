@@ -1,0 +1,53 @@
+{%- comment -%}
+  Rediseño 2026 · PS · Garantía y devolución.
+
+  Los hechos en grande, alineados a la izquierda, y al lado lo que
+  significan, en una frase. Sin filetes: los separa el espacio. Cada hecho
+  es un bloque. Debajo, el enlace a la página con todos los detalles.
+{%- endcomment -%}
+<section class="ps ps--piedra ps-sec ps-ga" aria-labelledby="PsGa-{{ section.id }}">
+  <div class="ps-wrap">
+    <h2 class="ps-h2 ps-ga__tit" id="PsGa-{{ section.id }}">{{ section.settings.titulo }}</h2>
+    <dl class="ps-ga__lista">
+      {%- for block in section.blocks -%}
+        <div class="ps-ga__fila" {{ block.shopify_attributes }}>
+          <dt class="ps-ga__hecho">{{ block.settings.hecho }}</dt>
+          <dd class="ps-ga__que">{{ block.settings.texto }}</dd>
+        </div>
+      {%- endfor -%}
+    </dl>
+    {%- if section.settings.enlace != blank -%}
+      <p class="ps-ga__mas"><a class="ps-link" href="{{ section.settings.enlace_url | default: '/pages/garantia-y-devoluciones' }}">{{ section.settings.enlace }}</a></p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+.ps .ps-ga__tit{max-width:18ch}
+.ps-ga__lista{margin:clamp(40px,5vw,72px) 0 0;padding:0}
+.ps-ga__fila{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:12px 48px;align-items:baseline}
+.ps-ga__fila + .ps-ga__fila{margin-top:clamp(28px,3.5vw,48px)}
+.ps-ga__hecho{margin:0;font-family:var(--ps-display);font-weight:600;font-size:var(--ps-t2);line-height:1.08;letter-spacing:-.025em}
+.ps-ga__que{margin:0;max-width:40ch;font-size:var(--ps-t3);line-height:1.5}
+.ps-ga__mas{margin:clamp(40px,5vw,64px) 0 0}
+@media (max-width:749px){.ps-ga__fila{grid-template-columns:1fr}}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PS · Garantía",
+  "tag": "div",
+  "class": "ps-section",
+  "settings": [
+    { "type": "text", "id": "titulo", "label": "Título", "default": "Si algo falla, se lo cambiamos" },
+    { "type": "text", "id": "enlace", "label": "Enlace", "default": "Envío, garantía y devoluciones, con detalle" },
+    { "type": "url", "id": "enlace_url", "label": "Destino" }
+  ],
+  "blocks": [
+    { "type": "hecho", "name": "Hecho", "settings": [
+      { "type": "text", "id": "hecho", "label": "Hecho", "default": "3 años de garantía" },
+      { "type": "textarea", "id": "texto", "label": "Qué significa", "default": "La garantía legal de un producto nuevo, desde que lo recibe." } ] }
+  ],
+  "presets": [{ "name": "PS · Garantía" }]
+}
+{% endschema %}

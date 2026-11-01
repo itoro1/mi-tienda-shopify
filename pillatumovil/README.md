@@ -625,6 +625,44 @@ Comprobado en la vista previa: el feed de idealo sale idéntico al publicado
 (9 filas), añadir al carrito abre el panel con el producto, el buscador
 encuentra los 5 productos y el enlace de WhatsApp es el de siempre.
 
+### Fase 3: portada (01/11/2026)
+
+`templates/index.json`, de arriba abajo (todo se cambia en el editor):
+
+| Sección | Qué hace | Ajustes |
+|---|---|---|
+| `ps-inicio` · PS · Inicio | Vídeo de las cajas a la derecha (cortado por el borde); a la izquierda «Cargador y cable de Apple», la frase, **18,99 €** en grande con «En Apple, 38,00 € · precio del 01/11/2026» y el ahorro, y «Elegir mi pack» (baja al selector). En el móvil, dos tarjetas con los dos packs | Titular, frase, producto del precio, nota, botón, enlace, foto, vídeo (y el de móvil), tarjetas (bloques) |
+| `ps-iphone` · PS · ¿Qué iPhone tiene? | **Lo vivo**: 13 modelos (iPhone 8 a iPhone Air, con su año). Al tocar uno, la caja grande pasa a la de su pack, con precio, «Añadir al carrito» (sin salir de la página) y «Ver 2 o 3 packs». Con teclado (Espacio o Intro), sin JavaScript (cada modelo es un enlace a la ficha de su pack) y recuerda el último modelo en ese navegador | Modelos como bloques (nombre, año, conector); los dos packs (lista de productos: USB-C primero), sus fotos y frases, foto y texto de antes de elegir |
+| `ps-tique` · PS · El tique | «Ganamos menos. A propósito.» y la cuenta en un tique: adaptador y cable en Apple, la suma, envío 0 €, el pack aquí y el ahorro. Cifras sacadas de Shopify | Texto, pack, líneas (bloques con producto: se usa su PVP de Apple) |
+| `ps-caja` · PS · Lo que llega | Tres capítulos a pantalla completa: adaptador, cable y «Llega precintado» (vídeo de las manos, solo mientras se ve) | Capítulos (bloques: foto, vídeo, textos, enlace, fondo) |
+| `ps-pasos` · PS · Tres pasos | «En su casa en 24-48 h»: lo pide, sale con Correos, lo abre usted, en teselas que crecen | Pasos (bloques: foto, fundir el blanco, fondo, textos) |
+| `ps-modelos` · PS · Banda de modelos | Los iPhone compatibles en letra enorme corriendo despacio, y qué cable lleva cada uno. No son clientes: son los modelos | Lista de modelos, color, título, frase |
+| `ps-garantia` · PS · Garantía | «Sin letra pequeña»: 3 años, 14 días, le atiende una persona | Hechos (bloques) y enlace |
+| `ps-faq` · PS · Preguntas | Rehecha: titular ancho y preguntas sangradas; 8 preguntas (nueva: «¿Por qué cuesta menos que en Apple?»). FAQPage de schema.org | Igual que antes (los bloques no cambian) |
+
+- **Comparación con Apple** en toda la tienda: `snippets/ps-comparacion.liquid`
+  (precio aquí, «En Apple, X € · precio del FECHA» y ahorro). **Sin
+  tachado**: un tachado se lee como «antes costaba esto aquí». La fecha es
+  un ajuste global: *Configuración del tema → Pillatumovil → Fecha en que se
+  miraron los precios de Apple*.
+- **Precios de Apple comprobados el 01/11/2026** en apple.com/es con un
+  navegador (Playwright): adaptador de 20 W, 19,00 €; cable USB-C 60 W 1 m,
+  19,00 €; cable USB-C a Lightning 1 m, 19,00 €. Siguen como los metacampos.
+- **«Precio de lanzamiento, hasta fin de existencias»**: ajuste global,
+  **apagado**. Se enciende solo si el dueño confirma que es verdad.
+- Nueva regla en `ps-base.css`: los `h1`-`h6` de las secciones ps- heredan
+  el color de su campo (Dawn los pintaba de marfil sobre fondo claro).
+- Dawn: el cajón del carrito medía `100vw` y movía la página 11 px de lado
+  con barra de desplazamiento; ahora `100%`.
+- La barra superior va de uno en uno (con fundido) por debajo de 990 px: a
+  768 los tres mensajes no cabían.
+- Medido en móvil (4G rápido, procesador lento x4): **LCP 2,0 s** (la foto
+  de la portada) y **CLS 0,002**.
+- Las secciones antiguas de la portada (`ps-hero`, `ps-pack`, `ps-envio`,
+  `ps-categorias`, `ps-editorial`, `ps-video`, `ps-precios`, `ps-cierre`)
+  siguen en el tema por si se quieren recuperar, pero la portada nueva no
+  las usa.
+
 ## Dominio
 
 - **pillatumovil.com**, comprado en Shopify el 27/10/2026 (registrador

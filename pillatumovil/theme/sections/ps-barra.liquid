@@ -30,7 +30,7 @@
   .ps-barra__item a{color:inherit;text-decoration:underline;text-underline-offset:3px}
   .ps-barra__item--destacado{font-weight:700}
   .ps-barra__item svg{flex:none}
-  @media (max-width:749px){
+  @media (max-width:989px){
     .ps-barra__lista{position:relative;min-height:36px}
     .ps-barra__item{position:absolute;left:16px;right:16px;justify-content:center;opacity:0;animation:ps-barra calc(var(--ps-n) * 4s) infinite;animation-delay:calc(var(--i) * 4s)}
     @keyframes ps-barra{
@@ -41,7 +41,7 @@
       100%{opacity:0}
     }
   }
-  @media (max-width:749px) and (prefers-reduced-motion:reduce){
+  @media (max-width:989px) and (prefers-reduced-motion:reduce){
     .ps-barra__item{animation:none}
     .ps-barra__item:first-child{opacity:1}
   }

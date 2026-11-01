@@ -1,0 +1,141 @@
+{%- comment -%}
+  Rediseño 2026 · PS · El tique (por qué es tan barato).
+
+  A la izquierda, el porqué: ganamos menos, a propósito. A la derecha, la
+  cuenta en un tique de papel que baja desde arriba de la sección y acaba en
+  dientes: lo que cuesta cada pieza en Apple, la suma, el envío y lo que
+  cuesta aquí el pack. Todas las cifras salen de Shopify:
+  - cada línea «en Apple» es un bloque con un producto: su PVP de Apple
+    (metacampo custom.pvp_apple);
+  - el total es el precio del pack elegido;
+  - el ahorro se calcula y el porcentaje se redondea hacia abajo.
+  Si un día la suma de Apple no supera el precio del pack, las líneas del
+  ahorro desaparecen solas.
+{%- endcomment -%}
+{%- liquid
+  assign pack = section.settings.pack
+  assign suma = 0
+  for block in section.blocks
+    assign bp = block.settings.producto
+    if bp != blank
+      capture c
+        render 'ps-pvp-centimos', product: bp
+      endcapture
+      assign suma = c | strip | plus: 0 | plus: suma
+    endif
+  endfor
+  assign precio = pack.price_min | default: 0
+  assign ahorro = suma | minus: precio
+  assign pct = 0
+  if suma > 0
+    assign pct = ahorro | times: 100 | divided_by: suma
+  endif
+-%}
+<section class="ps ps--noche ps-tq" aria-labelledby="PsTq-{{ section.id }}">
+  <div class="ps-wrap ps-tq__grid">
+    <div class="ps-tq__txt">
+      <h2 class="ps-h2" id="PsTq-{{ section.id }}">{{ section.settings.titulo }}</h2>
+      <div class="ps-tq__rte">{{ section.settings.texto }}</div>
+      {%- if section.settings.boton != blank -%}
+        <div class="ps-btns"><a class="ps-btn" href="{{ section.settings.boton_url | default: '#su-iphone' }}">{{ section.settings.boton }}</a></div>
+      {%- endif -%}
+    </div>
+
+    {%- if pack != blank -%}
+      <div class="ps-tq__slip">
+        <p class="ps-tq__nombre">{{ section.settings.nombre_tique }}</p>
+        <table class="ps-tq__tabla">
+          <caption class="ps-visually-hidden">{{ section.settings.nombre_tique }}: precios en Apple y aquí</caption>
+          <tbody>
+            {%- for block in section.blocks -%}
+              {%- assign bp = block.settings.producto -%}
+              {%- if bp == blank -%}{%- continue -%}{%- endif -%}
+              {%- capture c -%}{% render 'ps-pvp-centimos', product: bp %}{%- endcapture -%}
+              <tr {{ block.shopify_attributes }}>
+                <th scope="row">{{ block.settings.concepto | default: bp.title }}</th>
+                <td class="ps-num">{{ c | strip | plus: 0 | money_without_currency }}&nbsp;€</td>
+              </tr>
+            {%- endfor -%}
+            <tr class="ps-tq__sub">
+              <th scope="row">{{ section.settings.texto_suma }}</th>
+              <td class="ps-num">{{ suma | money_without_currency }}&nbsp;€</td>
+            </tr>
+            <tr>
+              <th scope="row">{{ section.settings.texto_envio }}</th>
+              <td class="ps-num">0,00&nbsp;€</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="ps-tq__barra" role="presentation"></div>
+        <p class="ps-tq__total-fila"><span class="ps-tq__total-txt">{{ section.settings.texto_total }}</span> <span class="ps-tq__total ps-num">{{ precio | money_without_currency }}&nbsp;€</span></p>
+        {%- if suma > precio -%}
+          <p class="ps-tq__ahorro">Usted ahorra {{ ahorro | money_without_currency }}&nbsp;€ ({{ pct }}&nbsp;%)</p>
+        {%- endif -%}
+        <p class="ps-tq__pie">Precios de apple.com/es del {{ settings.ps_fecha_apple }}. IVA incluido.</p>
+      </div>
+    {%- elsif request.design_mode -%}
+      <p>Falta elegir el pack (solo lo ve usted en el editor).</p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+.ps-tq{padding-bottom:var(--ps-sec)}
+.ps-tq__grid{display:grid;grid-template-columns:minmax(0,6fr) minmax(0,1fr) minmax(0,4fr) minmax(0,1fr);align-items:start}
+.ps-tq__txt{grid-column:1;padding-top:var(--ps-sec)}
+.ps-tq__rte{margin-top:28px;max-width:46ch}
+.ps-tq__rte p{margin:0 0 16px;font-size:var(--ps-t3);line-height:1.55}
+.ps-tq__rte p:first-child{font-weight:500}
+.ps-tq__slip{grid-column:3;position:relative;padding:calc(var(--ps-sec) * .6) 28px 56px;background:var(--ps-marfil);color:var(--ps-tinta);
+  clip-path:polygon(0 0,100% 0,100% calc(100% - 14px),95% 100%,90% calc(100% - 14px),85% 100%,80% calc(100% - 14px),75% 100%,70% calc(100% - 14px),65% 100%,60% calc(100% - 14px),55% 100%,50% calc(100% - 14px),45% 100%,40% calc(100% - 14px),35% 100%,30% calc(100% - 14px),25% 100%,20% calc(100% - 14px),15% 100%,10% calc(100% - 14px),5% 100%,0 calc(100% - 14px))}
+.ps-tq__nombre{margin:0 0 24px;text-align:center;font-size:var(--ps-t3);font-weight:700}
+.ps-tq__tabla{width:100%;border-collapse:collapse;font-size:var(--ps-t4)}
+.ps-tq__tabla th{padding:7px 12px 7px 0;text-align:left;font-weight:400;line-height:1.35}
+.ps-tq__tabla td{padding:7px 0;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.ps-tq__sub th,.ps-tq__sub td{font-weight:700;padding-top:14px}
+.ps-tq__barra{height:4px;margin:18px 0 16px;background:var(--ps-tinta)}
+.ps-tq__total-fila{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 16px;margin:0}
+.ps-tq__total-txt{font-size:var(--ps-t4);font-weight:700}
+.ps-tq__total{font-family:var(--ps-display);font-weight:600;font-size:var(--ps-t2);line-height:1;letter-spacing:-.03em}
+.ps-tq__ahorro{margin:14px 0 0;text-align:right;font-size:var(--ps-t4);font-weight:700;color:var(--ps-oro-tinta)}
+.ps-tq__pie{margin:24px 0 0;font-size:var(--ps-t5);line-height:1.45;color:var(--ps-tinta-2)}
+@media (max-width:989px){
+  .ps-tq__grid{grid-template-columns:1fr}
+  .ps-tq__txt{grid-column:1}
+  .ps-tq__slip{grid-column:1;width:86%;max-width:420px;margin:56px auto 0;padding-top:32px}
+}
+@media (max-width:599px){
+  .ps-tq__slip{width:100%;padding-left:20px;padding-right:20px}
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PS · El tique",
+  "tag": "div",
+  "class": "ps-section",
+  "settings": [
+    { "type": "text", "id": "titulo", "label": "Título", "default": "Ganamos menos. A propósito." },
+    { "type": "richtext", "id": "texto", "label": "Texto", "default": "<p>Es el mismo cargador y el mismo cable que vende Apple, en su caja precintada. El producto no tiene truco.</p><p>El precio sale del margen: compramos por cantidad, nos quedamos una parte pequeña de cada pack y no le cobramos el envío.</p>" },
+    { "type": "text", "id": "boton", "label": "Botón", "default": "Elegir mi pack" },
+    { "type": "url", "id": "boton_url", "label": "Enlace del botón", "info": "Vacío: baja a «¿Qué iPhone tiene?»." },
+    { "type": "header", "content": "El tique" },
+    { "type": "text", "id": "nombre_tique", "label": "Nombre del tique", "default": "La cuenta de un pack" },
+    { "type": "product", "id": "pack", "label": "Pack (su precio es el total)" },
+    { "type": "text", "id": "texto_suma", "label": "Línea de la suma", "default": "En Apple, por separado" },
+    { "type": "text", "id": "texto_envio", "label": "Línea del envío", "default": "Envío" },
+    { "type": "text", "id": "texto_total", "label": "Línea del total", "default": "Aquí, el pack" }
+  ],
+  "blocks": [
+    {
+      "type": "linea",
+      "name": "Línea en Apple",
+      "settings": [
+        { "type": "product", "id": "producto", "label": "Producto", "info": "Se usa su PVP de Apple (metacampo custom.pvp_apple)." },
+        { "type": "text", "id": "concepto", "label": "Texto de la línea", "default": "Adaptador de 20 W, en Apple" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "PS · El tique" }]
+}
+{% endschema %}
