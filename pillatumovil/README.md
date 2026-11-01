@@ -508,6 +508,46 @@ carga dorado), sobre el azul noche con luz en el centro. Dos versiones en
 Muestra en círculo a 420, 96 y 48 px: `muestra-perfil-emblema.png`. Se
 rehacen con `python3 tools/perfil_emblema.py marca/`.
 
+**El dueño la descartó** (01/11): parecía hecha en dos minutos y solo
+hablaba de cargadores, y la tienda venderá también móviles.
+
+## Marca nueva, v3 (01/11/2026): pendiente de elegir
+
+Lo que pidió el dueño: que sea **reconocible**, que **llame la atención**,
+que valga para **móviles y accesorios** y que se vea profesional. Dos
+propuestas en `marca/v3/`, con los colores de la tienda (noche `#0B0F1A`,
+oro champán y marfil):
+
+1. **El móvil-P** (`movil-p_*`, la recomendada): la P de Pillatumovil hecha
+   con un móvil. El móvil es el asta y la panza de la P sale de su costado.
+   Es una silueta propia y se reconoce aunque se vea muy pequeña.
+2. **El abanico** (`abanico_*`): tres móviles abiertos como cartas (oro,
+   titanio y el de delante con la pantalla). Se entiende al momento que es
+   una tienda de móviles.
+
+Para la foto de perfil, la **versión oro** (`*_perfil-oro.png`): en una
+lista de chats casi todos los contactos son fotos o círculos apagados, y el
+dorado es lo primero que se ve. La versión noche queda como alternativa.
+
+El logotipo es «pilla**tu**movil» en **Unbounded** 700 (Google Fonts,
+licencia OFL), con «tu» en oro y «MÓVILES Y ACCESORIOS» debajo, del mismo
+ancho. En los SVG las letras van convertidas a trazos, así que se ven igual
+aunque la letra no esté instalada.
+
+| Archivo (en `marca/v3/`) | Para qué |
+|---|---|
+| `*_perfil-oro.png` / `*_perfil-noche.png` (1080 × 1080) | WhatsApp, Instagram, Facebook, logo cuadrado de Shopify |
+| `*_logo-horizontal-claro-transparente.png` | Cabecera de la tienda sobre fondo claro, facturas, correos |
+| `*_logo-horizontal-oscuro-transparente.png` | Cabecera o pie sobre fondo noche, vídeos |
+| `*_logo-horizontal-claro.png` / `-oscuro.png` | Con fondo, para portadas y banners |
+| `*_simbolo-transparente.png` | Favicon, marca de agua en fotos |
+| `muestra-marca-v3.png` | Las dos propuestas lado a lado, con una lista de chats para verlas a tamaño real |
+
+Se rehacen con `python3 tools/marca_v3.py marca/v3` (necesita
+`pip install fonttools uharfbuzz`; la letra se descarga sola la primera
+vez). Cuando el dueño elija, se pone en la tienda (*Configuración → Marca*:
+logo, logo cuadrado y favicon) y se actualiza la identidad de arriba.
+
 ## Dominio
 
 - **pillatumovil.com**, comprado en Shopify el 27/10/2026 (registrador
