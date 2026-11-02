@@ -47,3 +47,13 @@ Petición del dueño: «hasta fin de existencias» para enganchar y explicar por
 - Texto: «¿Por qué tan barato? Es el mismo producto que vende Apple: compramos por cantidad y ganamos menos en cada pack.»
 - Publicados: tienda 120250354421120622, A 120250354422090622, B 120250354423020622. Pausados los v3.
 - Las revisiones automáticas (diaria 19:47 y lunes 10:13) ya no dependen de los IDs: miran todos los anuncios activos.
+
+## Vídeo «problema → solución» (02/11/2026)
+
+Hecho con `tools/video_anuncio.py` (ffmpeg + Pillow), con fotos y vídeos propios de la tienda (mesilla, estudio, unboxing). Sin IA ni música. 15,8 s.
+Higgsfield tenía 0 créditos (plan gratis), por eso no se usó.
+
+1. «Su iPhone ya no trae cargador.» (mesilla) 2. «En Apple: 38,00 €» con fecha (estudio) 3. «El mismo. Original y precintado.» (unboxing) 4. «Aquí, el pack: 18,99 €» + lanzamiento + por qué es barato 5. Cierre con «pillatumovil.com».
+
+- `pillatumovil_video_problema-solucion_4x5.mp4` (el del anuncio) y `_9x16.mp4` (stories/reels, para subir a mano).
+- Vídeo en Meta: 1140870675096291, portada hash f282c0782081e7b2071f0358268d5f0e.
