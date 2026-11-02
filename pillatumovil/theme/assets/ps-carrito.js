@@ -6,6 +6,8 @@
    Shopify. Si no hay carrito lateral, fetch falla o Shopify responde con un
    error, el formulario se envia normal y lleva a la pagina del carrito. */
 (function () {
+  // La casilla del cargador solo se enseña si este script funciona.
+  document.querySelectorAll('[data-ps-extra-caja]').forEach(function (c) { c.hidden = false; });
   document.addEventListener('submit', function (e) {
     var form = e.target;
     if (!form.matches || !form.matches('form[data-ps-anadir]')) return;
@@ -20,6 +22,15 @@
 
     var datos = new FormData(form);
     datos.delete('return_to');
+    // Casilla «Añadir el cargador» (ficha de iPhone): manda los dos juntos.
+    var extra = form.querySelector('[data-ps-extra]:checked');
+    if (extra && datos.get('id')) {
+      datos.append('items[0][id]', datos.get('id'));
+      datos.append('items[0][quantity]', datos.get('quantity') || '1');
+      datos.append('items[1][id]', extra.getAttribute('data-ps-extra'));
+      datos.append('items[1][quantity]', '1');
+      datos.delete('id'); datos.delete('quantity');
+    }
     datos.append('sections', cart.getSectionsToRender().map(function (s) { return s.id; }));
     datos.append('sections_url', window.location.pathname);
 

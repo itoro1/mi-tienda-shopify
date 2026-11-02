@@ -152,6 +152,35 @@
           <input type="hidden" name="id" value="{{ v.id }}">
         {%- endif -%}
 
+        {%- comment -%}
+          iPhone: casilla para llevarse también el pack de su conector (el
+          iPhone no trae cargador). Solo con JavaScript (ps-carrito.js manda
+          los dos artículos juntos); sin JavaScript queda oculta.
+        {%- endcomment -%}
+        {%- if tipo == 'movil' and section.settings.extra_pack and section.settings.coleccion != blank -%}
+          {%- liquid
+            assign extra = nil
+            for q in section.settings.coleccion.products
+              assign qs = q.variants.first.sku | upcase
+              assign qcon = 'usbc'
+              if qs contains 'LTN'
+                assign qcon = 'lightning'
+              endif
+              if qs contains 'PACK-' and qcon == conector and q.variants.first.available
+                assign extra = q.variants.first
+                break
+              endif
+            endfor
+          -%}
+          {%- if extra -%}
+            <label class="ps-fi__extra" data-ps-extra-caja hidden>
+              <input type="checkbox" data-ps-extra="{{ extra.id }}">
+              <span class="ps-fi__extra-txt"><b>Añadir el cargador: {{ extra.price | money_without_currency }}&nbsp;€</b>
+              {{ section.settings.extra_texto | replace: '[conector]', conector | replace: 'usbc', 'USB&#8209;C' | replace: 'lightning', 'Lightning' }}</span>
+            </label>
+          {%- endif -%}
+        {%- endif -%}
+
         <div class="ps-fi__fila">
           <div class="ps-fi__cant">
             <label class="ps-visually-hidden" for="PsCant-{{ section.id }}">Cantidad</label>
@@ -420,6 +449,10 @@
 .ps-fi__pack:has(input:focus-visible){outline:2px solid var(--ps-oro-tinta);outline-offset:3px}
 .ps-fi__pack:has(input:disabled){opacity:.5;cursor:not-allowed}
 .ps-fi__fila{display:flex;gap:10px}
+.ps-fi__extra{display:flex;gap:12px;align-items:flex-start;margin:0 0 14px;padding:14px 16px;background:var(--ps-piedra);border:2px solid transparent;cursor:pointer;font-size:var(--ps-t4);line-height:1.4;transition:border-color 160ms ease}
+.ps-fi__extra:has(input:checked){border-color:#c9a86a}
+.ps-fi__extra input{flex:none;width:22px;height:22px;margin:1px 0 0;accent-color:#0b0f1a}
+.ps-fi__extra-txt b{display:block;margin-bottom:2px}
 .ps-fi__cant{display:flex;align-items:center;flex:none;height:56px;border-radius:999px;background:var(--ps-piedra)}
 .ps-fi__cant input{width:40px;height:100%;border:0;background:transparent;text-align:center;font:inherit;font-size:17px;font-weight:700;-moz-appearance:textfield}
 .ps-fi__cant input::-webkit-outer-spin-button,.ps-fi__cant input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
@@ -513,6 +546,8 @@
     { "type": "text", "id": "movil_nuevo", "label": "Frase bajo el nombre (nuevos)", "default": "Nuevo y precintado de fábrica. Original de Apple." },
     { "type": "text", "id": "movil_usado", "label": "Frase bajo el nombre (segunda mano)", "default": "De segunda mano, revisado y verificado: 100 % funcional." },
     { "type": "text", "id": "movil_plazo", "label": "Plazo de entrega", "default": "Si está en stock, sale en 24-48 h; si no, en 3-5 días hábiles." },
+    { "type": "checkbox", "id": "extra_pack", "label": "iPhone: casilla «Añadir el cargador» junto al botón", "default": true },
+    { "type": "text", "id": "extra_texto", "label": "iPhone: texto de la casilla", "info": "[conector] se cambia por USB-C o Lightning.", "default": "El iPhone no trae cargador. Adaptador de 20 W y cable [conector], originales de Apple." },
     { "type": "textarea", "id": "movil_carga_usbc", "label": "Carga (móviles USB-C)", "default": "Carga por USB-C. Si no tiene cargador, el adaptador de 20 W de Apple le da carga rápida; el pack USB-C trae adaptador y cable." },
     { "type": "textarea", "id": "movil_carga_lightning", "label": "Carga (móviles Lightning)", "default": "Carga por Lightning. Si no tiene cargador, el pack Lightning trae el adaptador de 20 W de Apple y el cable." },
     { "type": "text", "id": "motivo_movil", "label": "Motivo de la sugerencia, con un móvil", "default": "Para cargarlo rápido" },
