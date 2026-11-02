@@ -113,6 +113,14 @@
             "anio": "2025",
             "conector": "usbc"
           }
+        },
+        "m14": {
+          "type": "modelo",
+          "settings": {
+            "nombre": "iPhone 18",
+            "anio": "2026",
+            "conector": "usbc"
+          }
         }
       },
       "block_order": [
@@ -128,7 +136,8 @@
         "m10",
         "m11",
         "m12",
-        "m13"
+        "m13",
+        "m14"
       ],
       "settings": {
         "titulo": "¿Buscaba un cargador?",

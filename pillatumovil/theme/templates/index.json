@@ -147,6 +147,14 @@
             "anio": "2025",
             "conector": "usbc"
           }
+        },
+        "m14": {
+          "type": "modelo",
+          "settings": {
+            "nombre": "iPhone 18",
+            "anio": "2026",
+            "conector": "usbc"
+          }
         }
       },
       "block_order": [
@@ -162,7 +170,8 @@
         "m10",
         "m11",
         "m12",
-        "m13"
+        "m13",
+        "m14"
       ],
       "settings": {
         "titulo": "¿Qué iPhone tiene?",
@@ -308,7 +317,7 @@
     "modelos": {
       "type": "ps-modelos",
       "settings": {
-        "modelos": "iPhone 8, iPhone X, iPhone 11, iPhone 12, iPhone 13, iPhone 14, iPhone 15, iPhone 16, iPhone 17",
+        "modelos": "iPhone 8, iPhone X, iPhone 11, iPhone 12, iPhone 13, iPhone 14, iPhone 15, iPhone 16, iPhone 17, iPhone 18",
         "fondo": "noche",
         "titulo": "Sirve para todos estos iPhone",
         "texto": "El adaptador de 20 W es el mismo para todos. El cable depende del conector: Lightning hasta el iPhone 14, USB-C desde el iPhone 15."
