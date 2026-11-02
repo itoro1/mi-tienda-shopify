@@ -178,12 +178,28 @@ h4,h5,.h4,.h5{letter-spacing:-.01em}
 
 .ps-visually-hidden{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
-/* ---------- Entradas al hacer scroll (fase de movimiento) ----------
-   Solo si el sistema no pide menos movimiento y solo si el script está
-   activo (.ps-js en <html>): sin script, todo se ve desde el principio. */
+/* ---------- Movimiento (fase 7) ----------
+   Todo con transform y opacity, una sola vez, y solo si el sistema no pide
+   menos movimiento y el script está activo (.ps-js en <html>): sin script o
+   con movimiento reducido, todo se ve quieto desde el principio.
+   - [data-ps-entra]: sube 24 px y aparece, escalonado 70 ms (--ps-i).
+   - [data-ps-imprime]: el tique sale de arriba, como de una impresora
+     (el movimiento firma de la página: la cuenta se «imprime»).
+   - [data-ps-crece]: los retratos de «Lo que llega» crecen un poco al
+     llegar, como si la habitación cambiara.
+   - La primera pantalla no se esconde nunca: sube suave al cargar. */
 @media (prefers-reduced-motion:no-preference){
-  .ps-js [data-ps-entra]{opacity:0;transform:translateY(24px);transition:opacity 700ms var(--ps-ease-out),transform 700ms var(--ps-ease-out);transition-delay:calc(var(--ps-i,0) * 70ms)}
+  .ps-js [data-ps-entra]{opacity:0;transform:translateY(24px);transition:opacity 700ms var(--ps-ease-out,cubic-bezier(.23,1,.32,1)),transform 700ms var(--ps-ease-out,cubic-bezier(.23,1,.32,1));transition-delay:calc(var(--ps-i,0) * 70ms)}
+  .ps-js [data-ps-entra][data-ps-imprime]{opacity:1;transform:translateY(-38%);transition:transform 1100ms cubic-bezier(.32,.72,0,1)}
+  .ps-js [data-ps-entra][data-ps-crece]{transform:scale(.94);transition-duration:900ms}
   .ps-js [data-ps-entra].ps-dentro{opacity:1;transform:none}
+  .ps-ini__texto > *{animation:ps-sube 700ms cubic-bezier(.23,1,.32,1) both}
+  .ps-ini__texto > :nth-child(2){animation-delay:70ms}
+  .ps-ini__texto > :nth-child(3){animation-delay:140ms}
+  .ps-ini__texto > :nth-child(4){animation-delay:210ms}
+  @keyframes ps-sube{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+  .ps-faq__item[open] .ps-faq__r{animation:ps-abre 240ms cubic-bezier(.23,1,.32,1)}
+  @keyframes ps-abre{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
 }
 @media (prefers-reduced-motion:reduce){
   .ps *{transition-duration:1ms!important;animation:none!important}

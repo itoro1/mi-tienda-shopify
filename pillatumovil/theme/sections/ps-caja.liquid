@@ -14,8 +14,8 @@
     {%- assign img = block.settings.imagen -%}
     <article class="ps ps--{{ block.settings.fondo }} ps-cj__cap" {{ block.shopify_attributes }}>
       <div class="ps-cj__in">
-        <h2 class="ps-cj__tit">{{ block.settings.titulo }}</h2>
-        <div class="ps-cj__retrato">
+        <h2 class="ps-cj__tit" data-ps-entra style="--ps-i:0">{{ block.settings.titulo }}</h2>
+        <div class="ps-cj__retrato" data-ps-entra data-ps-crece>
           {%- if img != blank -%}
             {{ img | image_url: width: 1100 | image_tag: loading: 'lazy', widths: '400,600,800,1100', sizes: '(min-width: 990px) 520px, 80vw', alt: img.alt, class: 'ps-cj__img' }}
           {%- endif -%}
@@ -23,9 +23,9 @@
             <video class="ps-cj__img ps-cj__video" muted loop playsinline preload="none" aria-hidden="true"{% if img != blank %} poster="{{ img | image_url: width: 900 }}"{% endif %} data-src="{{ block.settings.video_url }}"></video>
           {%- endif -%}
         </div>
-        <p class="ps-cj__frase">{{ block.settings.texto }}</p>
+        <p class="ps-cj__frase" data-ps-entra style="--ps-i:1">{{ block.settings.texto }}</p>
         {%- if block.settings.enlace != blank -%}
-          <a class="ps-link ps-cj__enlace" href="{{ block.settings.enlace_url | default: '/collections/cargadores-y-cables' }}">{{ block.settings.enlace }}</a>
+          <a class="ps-link ps-cj__enlace" data-ps-entra style="--ps-i:2" href="{{ block.settings.enlace_url | default: '/collections/cargadores-y-cables' }}">{{ block.settings.enlace }}</a>
         {%- endif -%}
       </div>
     </article>

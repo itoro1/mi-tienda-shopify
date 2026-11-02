@@ -813,6 +813,29 @@ Lo pidió el dueño a mitad del rediseño: los mismos iPhone que IToroStore.
   publicar**, con datos verdaderos y sin dirección ni NIF. La publica el
   dueño cuando la revise (y se añade al menú del pie si la quiere).
 
+### Fase 7: movimiento y repaso final (02/11/2026)
+
+- **Entradas al hacer scroll**: los elementos con `data-ps-entra` suben
+  24 px y aparecen (700 ms, escalonados 70 ms con `--ps-i`). Un
+  IntersectionObserver al final de `layout/theme.liquid` les pone
+  `.ps-dentro`. Solo `transform` y `opacity`.
+- **El tique se imprime**: baja desde arriba (`data-ps-imprime`, 1,1 s).
+  **Las fotos grandes** crecen un poco al entrar (`data-ps-crece`).
+- **Portada**: el texto del inicio sube en cascada al cargar; las respuestas
+  de las preguntas frecuentes se abren con un fundido corto.
+- **Controles**: el vídeo del inicio lleva un botón «Pausar el vídeo» y la
+  banda de modelos un botón «Parar la banda» (normas de accesibilidad: un
+  movimiento automático de más de 5 s debe poder pararse).
+- **Sin movimiento** si el sistema pide reducirlo, y sin JavaScript todo se
+  ve (la clase `ps-js` solo la pone el script). Comprobado: 35 de 35
+  elementos visibles en los dos casos.
+- **Repaso de normas** (web-design-guidelines): anillo de foco en el
+  buscador del 404, `autocomplete="off"` en campos que no son de cuenta y
+  `enterkeyhint` en la búsqueda.
+- **Comprobado al final**: feed de idealo idéntico al publicado (9 filas),
+  añadir al carrito, sugerencia de cable, cantidades, página del carrito,
+  pago, menú del móvil, búsqueda y WhatsApp.
+
 ## Dominio
 
 - **pillatumovil.com**, comprado en Shopify el 27/10/2026 (registrador

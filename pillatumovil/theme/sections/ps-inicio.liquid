@@ -28,6 +28,9 @@
       <video class="ps-ini__video" muted loop playsinline preload="none" aria-hidden="true"{% if poster != blank %} poster="{{ poster | image_url: width: 1200 }}"{% endif %}
         data-src="{{ section.settings.video_url }}"
         {%- if section.settings.video_movil != blank %} data-src-movil="{{ section.settings.video_movil }}"{% endif %}></video>
+      <button type="button" class="ps-ini__pausa" aria-label="Pausar el vídeo" aria-pressed="false" hidden>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path class="ps-ini__i-pausa" d="M7 5h3v14H7zM14 5h3v14h-3z"/><path class="ps-ini__i-play" d="M8 5v14l11-7z"/></svg>
+      </button>
     {%- endif -%}
   </div>
 
@@ -89,12 +92,18 @@
         var empezar = function () {
           var movil = v.getAttribute('data-src-movil');
           v.src = movil && window.matchMedia('(max-width: 989px)').matches ? movil : v.getAttribute('data-src');
-          v.addEventListener('playing', function () { v.classList.add('ps-ini__video--ya'); }, { once: true });
+          v.addEventListener('playing', function () { v.classList.add('ps-ini__video--ya'); var bp = s.querySelector('.ps-ini__pausa'); if (bp) bp.hidden = false; }, { once: true });
           var pr = v.play();
           if (pr && pr.catch) pr.catch(function () { /* bajo consumo: se queda la foto */ });
         };
         if (document.readyState === 'complete') empezar(); else window.addEventListener('load', empezar, { once: true });
-        document.addEventListener('visibilitychange', function () { if (document.hidden) v.pause(); else if (v.src) v.play().catch(function () {}); });
+        var parado = false, bp = s.querySelector('.ps-ini__pausa');
+        if (bp) bp.addEventListener('click', function () {
+          parado = !parado; if (parado) v.pause(); else v.play().catch(function () {});
+          bp.setAttribute('aria-pressed', parado ? 'true' : 'false');
+          bp.setAttribute('aria-label', parado ? 'Reproducir el vídeo' : 'Pausar el vídeo');
+        });
+        document.addEventListener('visibilitychange', function () { if (document.hidden) v.pause(); else if (v.src && !parado) v.play().catch(function () {}); });
       })();
     </script>
   {%- endif -%}
@@ -106,6 +115,10 @@
 .ps-ini__poster,.ps-ini__video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:62% 50%}
 .ps-ini__video{opacity:0;transition:opacity 600ms ease}
 .ps-ini__video--ya{opacity:1}
+.ps-ini__pausa{position:absolute;right:16px;top:16px;z-index:2;display:grid;place-items:center;width:44px;height:44px;border:0;border-radius:999px;background:rgba(11,15,26,.6);color:#f4f1ea;cursor:pointer;transition:transform 120ms var(--ps-ease-out)}
+.ps-ini__pausa:active{transform:scale(.92)}
+.ps-ini__pausa .ps-ini__i-play,.ps-ini__pausa[aria-pressed="true"] .ps-ini__i-pausa{display:none}
+.ps-ini__pausa[aria-pressed="true"] .ps-ini__i-play{display:inline}
 .ps-ini__wrap{position:relative;display:flex;flex-direction:column;justify-content:center;padding-top:clamp(48px,6vw,96px);padding-bottom:clamp(40px,5vw,72px)}
 .ps-ini__texto{max-width:600px}
 .ps .ps-ini__h1{margin:0;font-family:var(--ps-display);font-weight:600;font-size:clamp(32px,3.7vw,58px);line-height:1.04;letter-spacing:-.035em;text-wrap:balance}

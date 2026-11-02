@@ -8,9 +8,9 @@
 {%- endcomment -%}
 <section class="ps ps--{{ section.settings.fondo }} ps-sec ps-faq" aria-labelledby="PsFaq-{{ section.id }}">
   <div class="ps-wrap">
-    <h2 class="ps-faq__tit" id="PsFaq-{{ section.id }}">{{ section.settings.titulo }}</h2>
+    <h2 class="ps-faq__tit" id="PsFaq-{{ section.id }}" data-ps-entra style="--ps-i:0">{{ section.settings.titulo }}</h2>
     <div class="ps-faq__cuerpo">
-      <div class="ps-faq__lista">
+      <div class="ps-faq__lista" data-ps-entra style="--ps-i:1">
         {%- for block in section.blocks -%}
           <details class="ps-faq__item" {{ block.shopify_attributes }}{% if forloop.first and section.settings.abrir_primera %} open{% endif %}>
             <summary><span>{{ block.settings.pregunta }}</span><svg class="ps-faq__flecha" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>

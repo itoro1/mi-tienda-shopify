@@ -34,15 +34,15 @@
 <section class="ps ps--noche ps-tq" aria-labelledby="PsTq-{{ section.id }}">
   <div class="ps-wrap ps-tq__grid">
     <div class="ps-tq__txt">
-      <h2 class="ps-h2" id="PsTq-{{ section.id }}">{{ section.settings.titulo }}</h2>
-      <div class="ps-tq__rte">{{ section.settings.texto }}</div>
+      <h2 class="ps-h2" id="PsTq-{{ section.id }}" data-ps-entra style="--ps-i:0">{{ section.settings.titulo }}</h2>
+      <div class="ps-tq__rte" data-ps-entra style="--ps-i:1">{{ section.settings.texto }}</div>
       {%- if section.settings.boton != blank -%}
-        <div class="ps-btns"><a class="ps-btn" href="{{ section.settings.boton_url | default: '#su-iphone' }}">{{ section.settings.boton }}</a></div>
+        <div class="ps-btns" data-ps-entra style="--ps-i:2"><a class="ps-btn" href="{{ section.settings.boton_url | default: '#su-iphone' }}">{{ section.settings.boton }}</a></div>
       {%- endif -%}
     </div>
 
     {%- if pack != blank -%}
-      <div class="ps-tq__slip">
+      <div class="ps-tq__slip" data-ps-entra data-ps-imprime>
         <p class="ps-tq__nombre">{{ section.settings.nombre_tique }}</p>
         <table class="ps-tq__tabla">
           <caption class="ps-visually-hidden">{{ section.settings.nombre_tique }}: precios en Apple y aquí</caption>
@@ -80,7 +80,7 @@
 </section>
 
 {% stylesheet %}
-.ps-tq{padding-bottom:var(--ps-sec)}
+.ps-tq{padding-bottom:var(--ps-sec);overflow:hidden}
 .ps-tq__grid{display:grid;grid-template-columns:minmax(0,6fr) minmax(0,1fr) minmax(0,4fr) minmax(0,1fr);align-items:start}
 .ps-tq__txt{grid-column:1;padding-top:var(--ps-sec)}
 .ps-tq__rte{margin-top:28px;max-width:46ch}

@@ -26,9 +26,9 @@
 <section class="ps ps--papel ps-sec ps-ip" id="su-iphone" aria-labelledby="PsIp-{{ section.id }}" data-ps-ip>
   <div class="ps-wrap ps-ip__grid">
     <div class="ps-ip__elige">
-      <h2 class="ps-h2" id="PsIp-{{ section.id }}">{{ section.settings.titulo }}</h2>
-      {%- if section.settings.texto != blank -%}<p class="ps-ip__texto">{{ section.settings.texto }}</p>{%- endif -%}
-      <ul class="ps-ip__modelos" role="list">
+      <h2 class="ps-h2" id="PsIp-{{ section.id }}" data-ps-entra style="--ps-i:0">{{ section.settings.titulo }}</h2>
+      {%- if section.settings.texto != blank -%}<p class="ps-ip__texto" data-ps-entra style="--ps-i:1">{{ section.settings.texto }}</p>{%- endif -%}
+      <ul class="ps-ip__modelos" role="list" data-ps-entra style="--ps-i:2">
         {%- for block in section.blocks -%}
           {%- liquid
             if block.settings.conector == 'usbc'
@@ -48,7 +48,7 @@
       {%- if section.settings.ayuda != blank -%}<p class="ps-ip__ayuda">{{ section.settings.ayuda }}</p>{%- endif -%}
     </div>
 
-    <div class="ps-ip__res" aria-live="polite">
+    <div class="ps-ip__res" aria-live="polite" data-ps-entra style="--ps-i:1">
       {%- comment -%} Estado inicial: los dos packs y qué hacer. {%- endcomment -%}
       <div class="ps-ip__panel" data-panel="inicio">
         <div class="ps-ip__foto">

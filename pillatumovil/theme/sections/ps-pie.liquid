@@ -29,16 +29,16 @@
     {%- endif -%}
     <div class="ps-wrap ps-pie__capa">
       <div class="ps-pie__contacto">
-        <h2 class="ps-h2 ps-pie__frase">{{ section.settings.frase | newline_to_br }}</h2>
+        <h2 class="ps-h2 ps-pie__frase" data-ps-entra style="--ps-i:0">{{ section.settings.frase | newline_to_br }}</h2>
         {%- if section.settings.texto != blank -%}<p class="ps-pie__texto">{{ section.settings.texto }}</p>{%- endif -%}
-        <div class="ps-pie__acciones">
+        <div class="ps-pie__acciones" data-ps-entra style="--ps-i:1">
           {%- if wa != blank -%}
             <a class="ps-btn" href="https://wa.me/{{ wa }}" target="_blank" rel="noopener">{% render 'ps-icono', nombre: 'whatsapp', tam: 20 %}WhatsApp {{ section.settings.whatsapp_texto }}</a>
           {%- endif -%}
           <a class="ps-link" href="{{ section.settings.contacto | default: '/pages/contact' }}">O por el formulario</a>
         </div>
       </div>
-      <a class="ps-pie__logo" href="{{ routes.root_url }}" aria-label="{{ shop.name }}, ir a la portada">
+      <a class="ps-pie__logo" data-ps-entra style="--ps-i:2" href="{{ routes.root_url }}" aria-label="{{ shop.name }}, ir a la portada">
         <img src="{{ 'ps-logo-oscuro.svg' | asset_url }}" width="1933" height="286" alt="" loading="lazy">
       </a>
     </div>

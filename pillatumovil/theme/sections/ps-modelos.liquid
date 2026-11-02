@@ -19,12 +19,27 @@
       {%- endfor -%}
     </div>
   </div>
+  <div class="ps-wrap ps-mo__ctl"><button type="button" class="ps-mo__parar" aria-pressed="false" data-ps-parar>Parar la banda</button></div>
   <div class="ps-wrap ps-mo__txt">
-    <h2 class="ps-h3 ps-mo__tit" id="PsMo-{{ section.id }}">{{ section.settings.titulo }}</h2>
-    <p class="ps-mo__frase">{{ section.settings.texto }}</p>
+    <h2 class="ps-h3 ps-mo__tit" id="PsMo-{{ section.id }}" data-ps-entra style="--ps-i:0">{{ section.settings.titulo }}</h2>
+    <p class="ps-mo__frase" data-ps-entra style="--ps-i:1">{{ section.settings.texto }}</p>
     <ul class="ps-visually-hidden">{%- for n in nombres -%}<li>{{ n | strip }}</li>{%- endfor -%}</ul>
   </div>
 </section>
+
+<script>
+  (function () {
+    var s = document.currentScript.previousElementSibling;
+    if (s && !s.classList.contains('ps-mo')) s = s.querySelector('.ps-mo') || s.closest('.ps-mo');
+    var b = s && s.querySelector('[data-ps-parar]');
+    if (!b) return;
+    b.addEventListener('click', function () {
+      var parada = s.classList.toggle('ps-mo--parada');
+      b.setAttribute('aria-pressed', parada ? 'true' : 'false');
+      b.textContent = parada ? 'Mover la banda' : 'Parar la banda';
+    });
+  })();
+</script>
 
 {% stylesheet %}
 .ps-mo{padding-bottom:var(--ps-sec)}
@@ -34,7 +49,10 @@
 .ps-mo__n{padding:0 .3em;font-family:var(--ps-display);font-weight:600;font-size:8vw;line-height:1;letter-spacing:-.04em;white-space:nowrap}
 .ps-mo__punto{flex:none;width:.12em;height:.12em;font-size:8vw;border-radius:50%;background:currentColor}
 @keyframes ps-mo{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-@media (prefers-reduced-motion:reduce){.ps-mo__pista{animation:none}}
+@media (prefers-reduced-motion:reduce){.ps-mo__pista{animation:none}.ps-mo__ctl{display:none}}
+.ps-mo--parada .ps-mo__pista{animation-play-state:paused}
+.ps-mo__ctl{display:flex;justify-content:flex-end;padding-top:12px}
+.ps-mo__parar{min-height:44px;padding:0 4px;border:0;background:none;color:inherit;font:inherit;font-size:var(--ps-t5);text-decoration:underline;text-underline-offset:4px;cursor:pointer}
 .ps-mo__txt{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:24px 48px;padding-top:40px}
 .ps .ps-mo__tit{margin:0}
 .ps-mo__frase{margin:0;max-width:52ch;font-size:var(--ps-t3);line-height:1.5}

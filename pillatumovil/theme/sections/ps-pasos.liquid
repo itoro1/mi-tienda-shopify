@@ -9,7 +9,7 @@
 {%- endcomment -%}
 <section class="ps ps--papel ps-sec ps-pa" aria-labelledby="PsPa-{{ section.id }}">
   <div class="ps-wrap ps-pa__grid">
-    <div class="ps-pa__cab">
+    <div class="ps-pa__cab" data-ps-entra style="--ps-i:0">
       <h2 class="ps-h2" id="PsPa-{{ section.id }}">{{ section.settings.titulo }}</h2>
       {%- if section.settings.texto != blank -%}<p class="ps-pa__texto">{{ section.settings.texto }}</p>{%- endif -%}
     </div>
@@ -22,7 +22,7 @@
             assign cl = 'ps-pa__img ps-pa__img--fundir'
           endif
         -%}
-        <li class="ps-pa__paso ps-pa__paso--{{ forloop.index }}" {{ block.shopify_attributes }}>
+        <li class="ps-pa__paso ps-pa__paso--{{ forloop.index }}" data-ps-entra style="--ps-i:{{ forloop.index }}" {{ block.shopify_attributes }}>
           <div class="ps-pa__tesela ps--{{ block.settings.fondo }}">
             {%- if img != blank -%}
               {{ img | image_url: width: 1400 | image_tag: loading: 'lazy', widths: '400,700,1000,1400', sizes: '(min-width: 990px) 40vw, 100vw', alt: img.alt, class: cl }}

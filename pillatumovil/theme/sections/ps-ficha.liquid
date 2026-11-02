@@ -196,7 +196,7 @@
     </div>
   {%- elsif tipo != 'otro' -%}
     <div class="ps-wrap ps-fi__mas">
-      <div class="ps-fi__bloque">
+      <div class="ps-fi__bloque" data-ps-entra style="--ps-i:0">
         <h2 class="ps-h2">¿Es para su iPhone?</h2>
         {%- liquid
           if tipo == 'cargador'
@@ -217,7 +217,7 @@
         {%- if nota != blank -%}<div class="ps-fi__nota">{{ nota }}</div>{%- endif -%}
       </div>
 
-      <div class="ps-fi__bloque">
+      <div class="ps-fi__bloque" data-ps-entra style="--ps-i:1">
         <h2 class="ps-h2">En la caja</h2>
         <ul class="ps-fi__caja" role="list">
           {%- if tipo == 'pack' or tipo == 'cargador' -%}<li>{{ section.settings.caja_adaptador }}</li>{%- endif -%}

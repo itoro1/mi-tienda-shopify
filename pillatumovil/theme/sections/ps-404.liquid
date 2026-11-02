@@ -14,7 +14,7 @@
     </div>
     <form class="ps-404__buscar" action="{{ routes.search_url }}" method="get" role="search">
       <label class="ps-visually-hidden" for="Ps404Buscar">Buscar en la tienda</label>
-      <input id="Ps404Buscar" type="search" name="q" placeholder="O busque: cargador, cable USB-C…">
+      <input id="Ps404Buscar" type="search" name="q" autocomplete="off" enterkeyhint="search" placeholder="O busque: cargador, cable USB-C…">
       <button type="submit">Buscar</button>
     </form>
   </div>
@@ -27,6 +27,7 @@
 .ps-404__buscar:focus-within{box-shadow:inset 0 0 0 2px var(--ps-tinta)}
 .ps-404__buscar input{flex:1;min-width:0;height:46px;padding:0 16px;border:0;background:transparent;color:var(--ps-tinta);font:inherit;font-size:16px}
 .ps-404__buscar input:focus{outline:0}
+.ps-404__buscar:focus-within{box-shadow:0 0 0 2px var(--ps-oro-tinta)}
 .ps-404__buscar button{height:46px;padding:0 22px;border:0;border-radius:999px;background:var(--ps-tinta);color:var(--ps-marfil);font:inherit;font-size:15px;font-weight:700;cursor:pointer}
 {% endstylesheet %}
 

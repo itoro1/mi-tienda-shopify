@@ -7,10 +7,10 @@
 {%- endcomment -%}
 <section class="ps ps--piedra ps-sec ps-ga" aria-labelledby="PsGa-{{ section.id }}">
   <div class="ps-wrap">
-    <h2 class="ps-h2 ps-ga__tit" id="PsGa-{{ section.id }}">{{ section.settings.titulo }}</h2>
+    <h2 class="ps-h2 ps-ga__tit" id="PsGa-{{ section.id }}" data-ps-entra style="--ps-i:0">{{ section.settings.titulo }}</h2>
     <dl class="ps-ga__lista">
       {%- for block in section.blocks -%}
-        <div class="ps-ga__fila" {{ block.shopify_attributes }}>
+        <div class="ps-ga__fila" data-ps-entra style="--ps-i:{{ forloop.index }}" {{ block.shopify_attributes }}>
           <dt class="ps-ga__hecho">{{ block.settings.hecho }}</dt>
           <dd class="ps-ga__que">{{ block.settings.texto }}</dd>
         </div>
