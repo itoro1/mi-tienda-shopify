@@ -13,3 +13,10 @@ Generadas con `tools/anuncio_meta.py`.
   - B: anuncio 120250353951690622, creative 1280144227746676.
   - Los primeros creativos (1761630894923060 y 1727772112198515) llevaban la imagen dos veces (enlace y hash) y Meta no los publicaba. Quedan dos borradores con ese error en el Administrador de anuncios: se pueden descartar.
 - Regla del dueño: puedo crear, publicar y pausar anuncios; **el presupuesto no se cambia sin su permiso**.
+
+## Anuncio de la tienda: «¿Qué cargador necesita su iPhone?» (02/11/2026)
+
+- Foto propia de la mesilla (ps-mesilla-v2) con dos teselas: iPhone 8 al 14 → cable Lightning; iPhone 15 al 18 → cable USB-C; pack 18,99 € cada uno. Generada con `tools/anuncio_tienda.py`.
+- Enlace: portada, directo al selector «¿Qué iPhone tiene?» (`#su-iphone`), utm_campaign=tienda-2026-11.
+- **Publicado**: anuncio 120250354025830622, creative 1113019388368373 (con la cuenta de Instagram 17841437289404273).
+- Borrador sin publicar 120250354022660622: le faltaba la cuenta de Instagram. Se puede descartar.
