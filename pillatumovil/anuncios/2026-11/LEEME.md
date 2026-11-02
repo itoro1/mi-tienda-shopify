@@ -57,3 +57,4 @@ Higgsfield tenía 0 créditos (plan gratis), por eso no se usó.
 
 - `pillatumovil_video_problema-solucion_4x5.mp4` (el del anuncio) y `_9x16.mp4` (stories/reels, para subir a mano).
 - Vídeo en Meta: 1140870675096291, portada hash f282c0782081e7b2071f0358268d5f0e.
+- **Publicado**: anuncio 120250354553120622 (creative 944862398478057), enlace a /collections/packs, utm_campaign=video-2026-11.
