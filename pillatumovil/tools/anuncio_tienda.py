@@ -34,7 +34,7 @@ def tesela(d, x, y, w, h, modelos, cable):
 def anuncio(W, H, top, bot):
     story = H > W * 1.5
     lienzo = Image.new('RGB', (W, H), NOCHE)
-    fh = int(H * (0.56 if not story else 0.46))
+    fh = int(H * (0.52 if not story else 0.46))
     lienzo.paste(foto_fundida(W, fh), (0, 0 if not story else top - 60))
     d = ImageDraw.Draw(lienzo); M = 64
     ft = F('Unbounded.ttf', 74 if not story else 72, 600)
@@ -49,9 +49,10 @@ def anuncio(W, H, top, bot):
     d.text((M, y), 'Adaptador de 20 W + cable, originales de Apple.', font=F('Archivo.ttf', 34, 500), fill=MARFIL)
     y += 54
     d.text((M, y), 'Envío gratis en 24-48 h · 14 días para devolverlo', font=F('Archivo.ttf', 30, 500), fill=ORO_T)
-    if not story:
-        f = F('Archivo.ttf', 28, 700); t = 'pillatumovil.com'
-        d.text((W - M - d.textlength(t, font=f), H - bot - 4), t, font=f, fill=MARFIL2)
+    BH = 120; by = H - BH if not story else H - bot - BH
+    d.rectangle([0, by, W, by + BH], fill=ORO)
+    f = F('Unbounded.ttf', 50, 600); t = 'pillatumovil.com'
+    d.text(((W - d.textlength(t, font=f)) / 2, by + (BH - 50) / 2 - 6), t, font=f, fill=NOCHE)
     return lienzo
 
 os.makedirs(out, exist_ok=True)

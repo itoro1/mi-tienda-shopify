@@ -20,3 +20,12 @@ Generadas con `tools/anuncio_meta.py`.
 - Enlace: portada, directo al selector «¿Qué iPhone tiene?» (`#su-iphone`), utm_campaign=tienda-2026-11.
 - **Publicado**: anuncio 120250354025830622, creative 1113019388368373 (con la cuenta de Instagram 17841437289404273).
 - Borrador sin publicar 120250354022660622: le faltaba la cuenta de Instagram. Se puede descartar.
+
+## v2 (02/11/2026): la web en grande abajo y enlace a los packs
+
+Petición del dueño: «poner el link abajo de la web directo, en grande» y «que la lleve directamente al producto de los packs».
+
+- Las tres imágenes llevan abajo una franja dorada con «pillatumovil.com» en grande (Unbounded, noche sobre oro).
+- Tienda: el enlace va a `/collections/packs` (los dos packs). A y B van a la ficha del pack USB-C.
+- Publicados: tienda 120250354076460622 (creative 1752210195854821), A 120250354076720622 (2343264039792813), B 120250354077040622 (1681377504028642). Todos con la cuenta de Instagram.
+- Pausados los anteriores (sin la franja): 120250354025830622, 120250353950680622, 120250353951690622.

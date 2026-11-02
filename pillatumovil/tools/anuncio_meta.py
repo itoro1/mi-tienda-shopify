@@ -50,6 +50,12 @@ def sello(d, x, y, txt, f):
     d.text((x+24, y+13), txt, font=f, fill=ORO_T)
     return y+h+30
 
+def barra(d, W, y, h):
+    d.rectangle([0, y, W, y + h], fill=ORO)
+    f = UNB(50); t = 'pillatumovil.com'
+    w = d.textlength(t, font=f)
+    d.text(((W - w) / 2, y + (h - f.size) / 2 - 6), t, font=f, fill=NOCHE)
+
 def logo(d, W, y, f):
     t1, t2, t3 = 'pilla', 'tu', 'movil'
     w = sum(d.textlength(t, font=f) for t in (t1, t2, t3)); x = (W-w)/2
@@ -66,13 +72,15 @@ def idea(nombre, W, H, safe_top, safe_bot):
     ft = UNB(92 if not story else 100)
     alto_tit = len(titulo)*int(ft.size*1.08)
     foto_y = safe_top + alto_tit + (10 if not story else 60)
-    foto_frac = 0.50 if not story else 0.46
+    foto_frac = 0.50 if not story else 0.30
     im = base(W, H, foto_frac, foto_y - int(H*foto_frac*0.18))
     d = ImageDraw.Draw(im)
     texto_lineas(d, M, safe_top, titulo, ft, MARFIL, int(ft.size*1.08))
     # bloque de precio, abajo
     fp = UNB(150 if not story else 170); fs = ARC(40, 500); fsm = ARC(31, 450); fb = ARC(34, 600)
-    y = H - safe_bot - (fp.size + 36 + 40 + 30 + 76)
+    BH = 120
+    bar_y = H - BH if not story else H - safe_bot - BH
+    y = bar_y - 50 - (fp.size + 36 + 40 + 30 + 76)
     d.text((M, y), 'Cargador 20 W + cable USB‑C, de Apple', font=fs, fill=MARFIL)
     y += 56
     d.text((M-6, y), '18,99 €', font=fp, fill=ORO_T)
@@ -80,8 +88,7 @@ def idea(nombre, W, H, safe_top, safe_bot):
     d.text((M, y), 'En Apple, 38,00 € (precio del 01/11/2026)', font=fsm, fill=MARFIL2)
     y += 58
     sello(d, M, y, 'Envío gratis en 24-48 h', fb)
-    if not story:
-        logo(d, W, H-safe_bot+26, ARC(30, 700)) if safe_bot > 60 else None
+    barra(d, W, bar_y, BH)
     return im
 
 os.makedirs(out, exist_ok=True)
