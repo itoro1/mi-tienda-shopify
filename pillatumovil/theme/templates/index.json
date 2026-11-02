@@ -38,7 +38,9 @@
         "poster_alt": "Las cajas del adaptador de 20 W y del cable USB-C de Apple, sobre una piedra oscura",
         "video_url": "https://cdn.shopify.com/s/files/1/1066/2182/9468/files/ps-estudio-portada.mp4?v=1792930763",
         "video_movil": "https://cdn.shopify.com/s/files/1/1066/2182/9468/files/ps-estudio-portada-movil.mp4?v=1793051485",
-        "tarjetas_titulo": "Los dos packs"
+        "tarjetas_titulo": "Los dos packs",
+        "iphones": "iphone",
+        "iphones_texto": "También iPhone, desde"
       }
     },
     "iphone": {
@@ -437,10 +439,27 @@
         "abrir_primera": true,
         "fondo": "papel"
       }
+    },
+    "iphones": {
+      "type": "ps-iphones",
+      "settings": {
+        "titulo": "También iPhone.",
+        "texto": "Nuevos y de segunda mano, revisados y funcionando al 100 %. Garantía de 3 años si es nuevo y de 1 año si es de segunda mano. Envío gratis.",
+        "coleccion": "iphone",
+        "productos": [
+          "iphone-18-pro",
+          "iphone-17",
+          "iphone-16",
+          "iphone-13"
+        ],
+        "boton": "Ver todos los iPhone",
+        "fondo": "marfil"
+      }
     }
   },
   "order": [
     "inicio",
+    "iphones",
     "iphone",
     "tique",
     "caja",

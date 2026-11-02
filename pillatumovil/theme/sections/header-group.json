@@ -31,9 +31,19 @@
             "enlace": "",
             "destacado": false
           }
+        },
+        "m_iphone": {
+          "type": "mensaje",
+          "settings": {
+            "icono": "movil",
+            "texto": "Ahora también iPhone, nuevos y de segunda mano",
+            "enlace": "shopify://collections/iphone",
+            "destacado": true
+          }
         }
       },
       "block_order": [
+        "m_iphone",
         "m1",
         "m2",
         "m3"

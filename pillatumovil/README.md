@@ -836,6 +836,14 @@ Lo pidió el dueño a mitad del rediseño: los mismos iPhone que IToroStore.
   añadir al carrito, sugerencia de cable, cantidades, página del carrito,
   pago, menú del móvil, búsqueda y WhatsApp.
 
+### iPhone visibles desde el principio (02/11/2026)
+
+Petición del dueño: «la parte de los iPhone se queda muy escondida».
+- **Barra de arriba**: primer mensaje «Ahora también iPhone, nuevos y de segunda mano», con icono de móvil (nuevo en `ps-icono`) y enlace a la colección.
+- **Inicio** (`ps-inicio`): el segundo enlace junto a «Elegir mi pack» es «También iPhone, desde 279,00 €» (ajuste `iphones`; el precio sale del iPhone más barato de la colección).
+- **Sección nueva** `ps-iphones` justo debajo del inicio: «También iPhone. Desde 279,00 €.», garantías y 4 tarjetas (18 Pro, 17, 16 y 13) con «Ver todos los iPhone». Escritorio 4 columnas, móvil 2×2 con el botón al final.
+- Antes de subir se comprobó que el tema publicado no tenía cambios del editor. Inspector: sin fallos nuevos (el «texto tapado» es el enlace que cubre toda la tarjeta).
+
 ## Dominio
 
 - **pillatumovil.com**, comprado en Shopify el 27/10/2026 (registrador

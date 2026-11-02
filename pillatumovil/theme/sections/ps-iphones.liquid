@@ -1,0 +1,80 @@
+{%- comment -%}
+  Rediseño 2026 · PS · «También iPhone» (portada, justo después del inicio).
+  Para que se vea desde el principio que la tienda también vende iPhone:
+  titular con el precio más bajo real de la colección, tres garantías y unas
+  pocas tarjetas (elegidas en el editor) con el enlace a todos.
+  Móvil: las tarjetas pasan de lado (banda horizontal con imán). Escritorio:
+  cuadrícula de 4.
+{%- endcomment -%}
+{%- liquid
+  assign col = section.settings.coleccion
+  assign lista = section.settings.productos
+  if lista == blank and col != blank
+    assign lista = col.products | slice: 0, 4
+  endif
+  assign desde = 0
+  if col != blank and col.products_count > 0
+    assign desde = col.products | map: 'price_min' | sort | first
+  endif
+-%}
+<section class="ps ps--{{ section.settings.fondo }} ps-sec ps-ipn" aria-labelledby="PsIpn-{{ section.id }}">
+  <div class="ps-wrap">
+    <div class="ps-ipn__cab">
+      <div>
+        <h2 class="ps-h2" id="PsIpn-{{ section.id }}" data-ps-entra style="--ps-i:0">
+          {{ section.settings.titulo }}
+          {%- if desde > 0 -%}<span class="ps-ipn__desde"> Desde {{ desde | money_without_currency }}&nbsp;€.</span>{%- endif -%}
+        </h2>
+        {%- if section.settings.texto != blank -%}<p class="ps-ipn__texto" data-ps-entra style="--ps-i:1">{{ section.settings.texto }}</p>{%- endif -%}
+      </div>
+      {%- if col != blank -%}
+        <a class="ps-btn ps-ipn__todos" href="{{ col.url }}" data-ps-entra style="--ps-i:2">{{ section.settings.boton }}</a>
+      {%- endif -%}
+    </div>
+    {%- if lista != blank -%}
+      <ul class="ps-tarjetas ps-ipn__lista" role="list">
+        {%- for p in lista limit: 4 -%}
+          {%- render 'ps-tarjeta', p: p -%}
+        {%- endfor -%}
+      </ul>
+    {%- elsif request.design_mode -%}
+      <p>Elija la colección de iPhone (solo lo ve usted en el editor).</p>
+    {%- endif -%}
+    {%- if col != blank -%}
+      <p class="ps-ipn__movil-todos"><a class="ps-btn" href="{{ col.url }}">{{ section.settings.boton }}</a></p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+.ps-ipn__cab{display:flex;align-items:flex-end;justify-content:space-between;gap:24px 48px;flex-wrap:wrap;margin-bottom:clamp(28px,4vw,48px)}
+.ps-ipn__desde{color:var(--ps-oro-tinta)}
+.ps--noche .ps-ipn__desde{color:var(--ps-oro-texto,#D9BB7C)}
+.ps-ipn__texto{margin:16px 0 0;max-width:52ch;font-size:var(--ps-t3);line-height:1.5}
+.ps-ipn__lista{--ps-cols:4}
+.ps-ipn__movil-todos{display:none}
+@media (max-width:989px){
+  .ps-ipn__todos{display:none}
+  .ps-ipn__lista{--ps-cols:2}
+  .ps-ipn__movil-todos{display:block;margin:32px 0 0}
+  .ps-ipn__movil-todos .ps-btn{width:100%;justify-content:center}
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PS · También iPhone",
+  "tag": "div",
+  "class": "ps-section",
+  "settings": [
+    { "type": "text", "id": "titulo", "label": "Título", "default": "También iPhone." },
+    { "type": "textarea", "id": "texto", "label": "Texto", "default": "Nuevos y de segunda mano, revisados y funcionando al 100 %. Garantía de 3 años si es nuevo y de 1 año si es de segunda mano. Envío gratis." },
+    { "type": "collection", "id": "coleccion", "label": "Colección de iPhone", "info": "El «Desde» sale del precio más bajo de esta colección." },
+    { "type": "product_list", "id": "productos", "label": "iPhone que se enseñan", "limit": 4 },
+    { "type": "text", "id": "boton", "label": "Botón", "default": "Ver todos los iPhone" },
+    { "type": "select", "id": "fondo", "label": "Fondo", "default": "marfil", "options": [
+      { "value": "marfil", "label": "Marfil" }, { "value": "papel", "label": "Papel" }, { "value": "piedra", "label": "Piedra" }, { "value": "noche", "label": "Noche" } ] }
+  ],
+  "presets": [{ "name": "PS · También iPhone" }]
+}
+{% endschema %}

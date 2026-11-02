@@ -53,7 +53,11 @@
         {%- if section.settings.boton != blank -%}
           <a class="ps-btn" href="{{ section.settings.boton_url | default: '#su-iphone' }}">{{ section.settings.boton }}</a>
         {%- endif -%}
-        {%- if section.settings.enlace != blank -%}
+        {%- assign ipn = section.settings.iphones -%}
+        {%- if ipn != blank and ipn.products_count > 0 -%}
+          {%- assign ipn_min = ipn.products | map: 'price_min' | sort | first -%}
+          <a class="ps-link" href="{{ ipn.url }}">{{ section.settings.iphones_texto }} {{ ipn_min | money_without_currency }}&nbsp;€</a>
+        {%- elsif section.settings.enlace != blank -%}
           <a class="ps-link" href="{{ section.settings.enlace_url | default: '/collections/cargadores-y-cables' }}">{{ section.settings.enlace }}</a>
         {%- endif -%}
       </div>
@@ -176,6 +180,8 @@
     { "type": "text", "id": "video_url", "label": "Enlace del vídeo (.mp4)", "info": "Súbalo en Contenido > Archivos como archivo y pegue aquí su enlace." },
     { "type": "text", "id": "video_movil", "label": "Vídeo para móvil (.mp4, cuadrado)" },
     { "type": "header", "content": "Tarjetas" },
+    { "type": "collection", "id": "iphones", "label": "Colección de iPhone (enlace junto al botón)", "info": "Si se elige, el segundo enlace dice «También iPhone, desde …» con el precio más bajo de la colección, en lugar del enlace de arriba." },
+    { "type": "text", "id": "iphones_texto", "label": "Texto del enlace de iPhone", "default": "También iPhone, desde" },
     { "type": "text", "id": "tarjetas_titulo", "label": "Nombre de las tarjetas (para lectores de pantalla)", "default": "Los dos packs" }
   ],
   "blocks": [
