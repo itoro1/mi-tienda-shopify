@@ -87,7 +87,7 @@ def idea(nombre, W, H, safe_top, safe_bot):
     y += fp.size + 22
     d.text((M, y), 'En Apple, 38,00 € (precio del 01/11/2026)', font=fsm, fill=MARFIL2)
     y += 58
-    sello(d, M, y, 'Envío gratis en 24-48 h', fb)
+    sello(d, M, y, 'Precio de lanzamiento · hasta fin de existencias', fb)
     barra(d, W, bar_y, BH)
     return im
 

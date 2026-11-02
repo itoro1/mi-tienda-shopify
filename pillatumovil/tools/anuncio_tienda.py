@@ -48,7 +48,11 @@ def anuncio(W, H, top, bot):
     y += th + 34
     d.text((M, y), 'Adaptador de 20 W + cable, originales de Apple.', font=F('Archivo.ttf', 34, 500), fill=MARFIL)
     y += 54
-    d.text((M, y), 'Envío gratis en 24-48 h · 14 días para devolverlo', font=F('Archivo.ttf', 30, 500), fill=ORO_T)
+    y += 4
+    fs = F('Archivo.ttf', 30, 600); t = 'Precio de lanzamiento · hasta fin de existencias'
+    w = d.textlength(t, font=fs)
+    d.rounded_rectangle([M, y, M + w + 44, y + 58], radius=29, outline=ORO, width=3)
+    d.text((M + 22, y + 12), t, font=fs, fill=ORO_T)
     BH = 120; by = H - BH if not story else H - bot - BH
     d.rectangle([0, by, W, by + BH], fill=ORO)
     f = F('Unbounded.ttf', 50, 600); t = 'pillatumovil.com'

@@ -38,3 +38,12 @@ Petición del dueño: «que la gente simplemente tenga que clicar, no buscar el 
 - Publicados: tienda 120250354135760622, A 120250354136280622, B 120250354137560622.
 - Pausados los v2: 120250354076460622, 120250354076720622, 120250354077040622.
 - **Regla para todos los anuncios**: web en grande abajo en la imagen + enlace escrito en la primera línea + botón «Comprar» a los packs.
+
+## v4 (02/11/2026): precio de lanzamiento y por qué es barato
+
+Petición del dueño: «hasta fin de existencias» para enganchar y explicar por qué es tan económico.
+
+- Imagen: el sello pasa a «Precio de lanzamiento · hasta fin de existencias» (es verdad mientras `ps_lanzamiento` esté activo en la web; cuando se acaben las unidades hay que quitarlo de los anuncios también).
+- Texto: «¿Por qué tan barato? Es el mismo producto que vende Apple: compramos por cantidad y ganamos menos en cada pack.»
+- Publicados: tienda 120250354421120622, A 120250354422090622, B 120250354423020622. Pausados los v3.
+- Las revisiones automáticas (diaria 19:47 y lunes 10:13) ya no dependen de los IDs: miran todos los anuncios activos.
