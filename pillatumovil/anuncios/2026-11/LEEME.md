@@ -29,3 +29,12 @@ Petición del dueño: «poner el link abajo de la web directo, en grande» y «q
 - Tienda: el enlace va a `/collections/packs` (los dos packs). A y B van a la ficha del pack USB-C.
 - Publicados: tienda 120250354076460622 (creative 1752210195854821), A 120250354076720622 (2343264039792813), B 120250354077040622 (1681377504028642). Todos con la cuenta de Instagram.
 - Pausados los anteriores (sin la franja): 120250354025830622, 120250353950680622, 120250353951690622.
+
+## v3 (02/11/2026): el enlace escrito en el texto
+
+Petición del dueño: «que la gente simplemente tenga que clicar, no buscar el nombre en Google».
+
+- Primera línea del texto de los tres anuncios: «Compre aquí 👉 https://pillatumovil.com/collections/packs» (en Facebook se puede tocar). La imagen y el botón «Comprar» ya llevaban directo a la tienda.
+- Publicados: tienda 120250354135760622, A 120250354136280622, B 120250354137560622.
+- Pausados los v2: 120250354076460622, 120250354076720622, 120250354077040622.
+- **Regla para todos los anuncios**: web en grande abajo en la imagen + enlace escrito en la primera línea + botón «Comprar» a los packs.
