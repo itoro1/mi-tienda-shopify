@@ -889,3 +889,9 @@ Petición del dueño: «la parte de los iPhone se queda muy escondida».
 
 Capturas en `disenos/`: `estudio-*.jpg` es la portada actual; `cine-*.png`
 y `oro-*.jpg`, las anteriores.
+
+## Tema publicado desde el 02/11/2026
+
+- **En vivo:** «Pruebas — mejoras nov 2026» (207877767516). Es una copia del rediseño con la casilla «Añadir el cargador» en la ficha de los iPhone. La publicó el dueño.
+- **Copia de seguridad:** «Dawn — Rediseño 2026» (207801942364), sin publicar. Es idéntica salvo `sections/ps-ficha.liquid` y `assets/ps-carrito.js`.
+- Antes de publicar se comprobó que `settings_data.json`, `index.json`, `product.json` y los grupos de cabecera y pie eran iguales en los dos temas.
