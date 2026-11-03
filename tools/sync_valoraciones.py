@@ -288,7 +288,7 @@ def genera_google(g, anterior):
 {{%- assign gg_avg = '{coma(g['media'])}' -%}}
 {{%- assign gg_count = '{g['total']}' -%}}
 {{%- assign gg_url = 'https://g.page/r/CYw33L08S3wPEBM/review' -%}}
-{{%- assign gg_maps = 'https://search.google.com/local/reviews?placeid={GG_PLACE}' -%}}
+{{%- assign gg_maps = 'https://www.google.com/maps/search/?api=1&query=itorostore%20Villamart%C3%ADn&query_place_id={GG_PLACE}' -%}}
 """
 
 
