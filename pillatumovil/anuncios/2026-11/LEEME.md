@@ -58,3 +58,9 @@ Higgsfield tenía 0 créditos (plan gratis), por eso no se usó.
 - `pillatumovil_video_problema-solucion_4x5.mp4` (el del anuncio) y `_9x16.mp4` (stories/reels, para subir a mano).
 - Vídeo en Meta: 1140870675096291, portada hash f282c0782081e7b2071f0358268d5f0e.
 - **Publicado**: anuncio 120250354553120622 (creative 944862398478057), enlace a /collections/packs, utm_campaign=video-2026-11.
+
+## 03/11/2026 · Vídeo en pausa
+
+- Pausado «Vídeo · problema-solución» (120250354553120622). Lo pidió el dueño: «Prefiero mover el dinero al pack».
+- Datos del día: 5,37 € de gasto, 24 clics, 15 visitas y 0 carritos. Pack A, con 0,71 €, consiguió 3 carritos.
+- El presupuesto del conjunto no se ha tocado. El dinero se reparte entre los anuncios que siguen activos: Pack A, Pack B, Tienda y Catálogo.
