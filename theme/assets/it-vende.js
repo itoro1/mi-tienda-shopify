@@ -50,7 +50,7 @@ var empezado = false;   /* para el evento vende_inicio */
 function $(sel, ctx) { return (ctx || raiz).querySelector(sel); }
 function $$(sel, ctx) { return Array.prototype.slice.call((ctx || raiz).querySelectorAll(sel)); }
 function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return '&#' + c.charCodeAt(0) + ';'; }); }
-function eur(n) { return Math.round(n).toLocaleString('es-ES'); }
+function eur(n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
 function norm(s) {
   return String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
     .replace(/iphone|apple|\d+\s*gb/g, '').replace(/[^a-z0-9]/g, '')

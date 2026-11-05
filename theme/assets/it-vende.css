@@ -35,7 +35,7 @@
 .itv-resume__btns{display:flex;gap:8px}
 
 /* Layout */
-.itv-app{display:grid;gap:24px}
+.itv-app{display:grid;gap:24px;scroll-margin-top:96px}
 @media(min-width:900px){
   .itv-app{grid-template-columns:minmax(0,1fr) 280px;align-items:start}
   .itv-app[data-paso="4"]{grid-template-columns:minmax(0,720px);justify-content:center}
@@ -147,7 +147,7 @@
   /* Cápsula fija abajo, a la izquierda del botón de WhatsApp (50px + márgenes). */
   .itv-live{position:fixed;z-index:9970;left:12px;right:74px;bottom:calc(12px + env(safe-area-inset-bottom));display:flex;align-items:baseline;gap:8px;min-height:50px;padding:8px 16px;border-radius:999px;background:#111110;border-color:rgba(212,175,55,.45);color:#f0ece4;box-shadow:0 8px 24px rgba(0,0,0,.22)}
   .itv-live__k{font-size:12px;color:#d4af37;letter-spacing:.08em}
-  .itv-live__p{font-size:22px;color:#fff}
+  .itv .itv-live__p{font-size:22px;color:#fff!important}
   .itv-live__m{flex:1;min-width:0;margin:0;color:rgba(240,236,228,.7);font-size:13px}
   body.itv-bar-on .itv{padding-bottom:96px}
   body.itv-bar-on .it-tb{opacity:0!important;pointer-events:none!important}

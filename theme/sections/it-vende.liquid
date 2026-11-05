@@ -197,7 +197,7 @@
 
         {%- if s.mostrar_formulario -%}
           <div class="itv-formbox" id="itv-form-{{ section.id }}" data-itv-formbox hidden>
-            {%- form 'contact', id: 'itv-form', class: 'itv-form' -%}
+            {%- form 'contact', id: 'itv-form', class: 'itv-form', novalidate: 'novalidate' -%}
               <h3 class="itv-h3">Solicitar recogida</h3>
               <p class="itv-mini">Te llamamos o escribimos para confirmar la oferta y el día de recogida.</p>
               <textarea name="contact[body]" hidden data-itv-body></textarea>
