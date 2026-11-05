@@ -1,4 +1,4 @@
-/* Vende tu iPhone (sections/it-vende.liquid). Colores: variables --it-* del tema. */
+/* Vende tu iPhone · sections/it-vende.liquid */
 .itv{
   --v-bg:var(--it-bg,#f5f5f7);
   --v-card:var(--it-surface,#fff);
@@ -27,7 +27,7 @@
 .itv-hero{margin:0 0 20px}
 .itv-eyebrow{margin:0 0 8px;font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--v-gold-ink)}
 .itv-title{margin:0 0 8px;font-size:clamp(28px,6vw,44px);line-height:1.08;letter-spacing:-.025em;font-weight:600;color:var(--v-text)}
-.itv-sub{margin:0;max-width:560px;color:var(--v-muted);font-size:16px}
+.itv-sub{margin:0;max-width:560px;color:var(--v-muted)}
 
 /* Continuar tasación */
 .itv-resume{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;padding:12px 14px;margin:0 0 16px;border:1px solid var(--v-gold);border-radius:var(--v-r);background:var(--v-gold-soft)}

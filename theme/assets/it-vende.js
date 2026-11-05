@@ -191,7 +191,7 @@ var ultimoVivo = null;
 function pintarVivo() {
   var m = modelo(), live = $('[data-itv-live]');
   var c = calcular();
-  var valor = c ? c.total : m ? maxDe(m) : null;
+  var valor = c ? c.total + (st.r.caja ? 0 : CAJA) + (st.r.factura ? 0 : FACTURA) : m ? maxDe(m) + CAJA + FACTURA : null;
   var visible = valor !== null && st.paso < 4;
   live.hidden = !visible;
   document.body.classList.toggle('itv-bar-on', visible);
@@ -477,7 +477,7 @@ raiz.addEventListener('input', function (e) {
   }
 });
 
-/* Intro en el buscador: si solo queda un modelo, se elige. */
+/* Intro: si queda un modelo, se elige. */
 raiz.addEventListener('keydown', function (e) {
   if (e.key === 'Enter' && e.target.hasAttribute('data-itv-q')) {
     e.preventDefault();
