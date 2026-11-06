@@ -9,7 +9,7 @@ var raiz = document.querySelector('[data-itv]');
 if (!raiz || raiz.getAttribute('data-itv-listo')) return;
 raiz.setAttribute('data-itv-listo', '1');
 
-/* ---------- Configuración ---------- */
+/* == Configuración == */
 var cfg = {};
 try { cfg = JSON.parse(raiz.querySelector('[data-itv-cfg]').textContent); } catch (e) { cfg = {}; }
 var MULT = (cfg.mult || [100, 92, 84, 75, 60, 40]).map(function (n) { return n / 100; });
@@ -32,12 +32,12 @@ var MODELOS = (cfg.precios || []).filter(function (m) {
 var GENS = [];
 MODELOS.forEach(function (m) { if (GENS.indexOf(m.g) < 0) GENS.push(m.g); });
 
-/* ---------- Preguntas (textos en el JSON de la sección) ---------- */
+/* == Preguntas (textos en el JSON de la sección) == */
 var Q = cfg.q || {};
 var SELLADO = Q.sellado, ESTADO = Q.estado || [];
 var REQ = (Q.req || []).filter(function (p) { return (p.k !== 'canje' || cfg.canje) && (p.k !== 'entrega' || cfg.mano); });
 
-/* ---------- Estado ---------- */
+/* == Estado == */
 function vacio() {
   return { v: 1, paso: 1, modelo: '', cap: -1, color: '', gen: '', r: {}, bat: '', batNs: false, ok: false, fotos: [] };
 }
@@ -46,7 +46,7 @@ var ICO_CAM = '<svg class="itv-ico"><use href="#itv-i-camera"/></svg>';
 var blobs = [];         /* fotos comprimidas: solo en memoria */
 var empezado = false;   /* para el evento vende_inicio */
 
-/* ---------- Utilidades ---------- */
+/* == Utilidades == */
 function $(sel, ctx) { return (ctx || raiz).querySelector(sel); }
 function $$(sel, ctx) { return Array.prototype.slice.call((ctx || raiz).querySelectorAll(sel)); }
 function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return '&#' + c.charCodeAt(0) + ';'; }); }
@@ -67,13 +67,14 @@ function leer() {
 }
 function borrar() { try { localStorage.removeItem(CLAVE); } catch (e) {} }
 
+/* gtag (GA4/Ads) y fbq (Meta) los carga la tienda. */
+var META = { vende_inicio: 'VendeInicio', vende_precio_mostrado: 'VendePrecio', vende_whatsapp: 'Contact', vende_formulario: 'Lead' };
 function medir(evento, extra) {
-  var m = modelo(), c = calcular();
-  var datos = { modelo: st.modelo || null, capacidad: st.cap >= 0 ? CAPS[st.cap] : null, precio: c ? c.total : null };
-  for (var k in extra || {}) datos[k] = extra[k];
-  try { (window.dataLayer = window.dataLayer || []).push(Object.assign({ event: evento }, datos)); } catch (e) {}
-  try { if (window.Shopify && Shopify.analytics && Shopify.analytics.publish) Shopify.analytics.publish(evento, datos); } catch (e) {}
-  return m;
+  var c = calcular();
+  var d = { modelo: st.modelo || null, capacidad: st.cap >= 0 ? CAPS[st.cap] : null, value: c ? c.total : 0, currency: 'EUR' };
+  for (var k in extra || {}) d[k] = extra[k];
+  try { if (window.gtag) gtag('event', evento, d); } catch (e) {}
+  try { var f = META[evento]; if (f && window.fbq) fbq(/^[A-Z][a-z]+$/.test(f) ? 'track' : 'trackCustom', f, { content_name: d.modelo, value: d.value, currency: 'EUR' }); } catch (e) {}
 }
 function inicio() {
   if (empezado) return;
@@ -82,7 +83,7 @@ function inicio() {
   medir('vende_inicio');
 }
 
-/* ---------- Cálculo del precio ----------
+/* == Cálculo del precio ==
    Nivel 0 = precintado … 5 = con daños. Lo que no se ha respondido no
    resta, por eso la cifra en vivo es siempre "hasta". */
 function nivel() {
@@ -115,7 +116,7 @@ function calcular() {
   return { base: base, nivel: n, lineas: lineas, total: Math.max(0, total) };
 }
 
-/* ---------- Pintado: paso 1 ---------- */
+/* == Pintado: paso 1 == */
 function pintarGens() {
   var g = st.gen || (modelo() || {}).g || GENS[0];
   $('[data-itv-gens]').innerHTML = GENS.map(function (x) {
@@ -160,7 +161,7 @@ function pintarCaps() {
   $('[data-itv-color]').value = st.color;
 }
 
-/* ---------- Pintado: preguntas (pasos 2 y 3) ---------- */
+/* == Pintado: preguntas (pasos 2 y 3) == */
 function grupo(p) {
   var sel = st.r[p.k];
   return '<fieldset class="itv-q" data-q="' + p.k + '"><legend class="itv-q__t">' + esc(p.t) + '</legend>' +
@@ -186,7 +187,7 @@ function pintarReq() {
   $('[data-itv-ok]').checked = !!st.ok;
 }
 
-/* ---------- Precio en vivo ---------- */
+/* == Precio en vivo == */
 var ultimoVivo = null;
 function pintarVivo() {
   var m = modelo(), live = $('[data-itv-live]');
@@ -205,7 +206,7 @@ function pintarVivo() {
   ultimoVivo = valor;
 }
 
-/* ---------- Validación ---------- */
+/* == Validación == */
 function marcar(clave, msg) {
   var fs = $('[data-q="' + clave + '"]');
   if (!fs) return null;
@@ -244,7 +245,7 @@ function validar(paso) {
   }
   return !malos.length;
 }
-/* ---------- Navegación entre pasos ---------- */
+/* == Navegación entre pasos == */
 var TITULOS = ['Tu iPhone', 'Su estado', 'Requisitos y entrega', 'Tu oferta'];
 function ir(n, apilar) {
   if (n > st.paso) {
@@ -285,7 +286,7 @@ function pintarPaso(animar) {
   }
 }
 
-/* ---------- Resultado ---------- */
+/* == Resultado == */
 function txt(lista, clave) {
   var p = lista.filter(function (x) { return x.k === clave; })[0];
   var o = p && p.o.filter(function (x) { return x[0] === st.r[clave]; })[0];
@@ -343,7 +344,7 @@ function contar(total, animar) {
   requestAnimationFrame(paso);
 }
 
-/* ---------- Fotos guiadas ---------- */
+/* == Fotos guiadas == */
 function pintarFotos() {
   var ol = $('[data-itv-fotos]');
   if (!ol) return;
@@ -383,7 +384,7 @@ function compartir() {
   navigator.share({ files: files }).catch(function () {});
 }
 
-/* ---------- Formulario de recogida ---------- */
+/* == Formulario de recogida == */
 function enviarForm(e) {
   var f = e.target;
   e.preventDefault();
@@ -408,7 +409,7 @@ function enviarForm(e) {
   });
 }
 
-/* ---------- Eventos ---------- */
+/* == Eventos == */
 raiz.addEventListener('click', function (e) {
   var t = e.target.closest('button, a');
   if (!t || !raiz.contains(t)) return;
@@ -494,7 +495,7 @@ window.addEventListener('popstate', function (e) {
   if (n !== st.paso) { st.paso = Math.min(n, st.paso); pintarPaso(true); guardar(); }
 });
 
-/* ---------- Arranque ---------- */
+/* == Arranque == */
 function reanudar() {
   var d = leer();
   $('[data-itv-resume]').hidden = true;
