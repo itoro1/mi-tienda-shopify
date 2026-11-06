@@ -194,21 +194,6 @@
             "image2": "shopify://shop_images/itoro-17-pro-max-azul-profundo-trasera.jpg"
           }
         },
-        "b16": {
-          "type": "iphone",
-          "settings": {
-            "product": "iphone-16",
-            "variant_id": "57856135790917",
-            "title": "iPhone 16",
-            "specs": "128 GB · Rosa · Segunda mano en buen estado",
-            "badge": "Segunda mano",
-            "tone": "azul",
-            "image": "shopify://shop_images/itoro-iphone-16-rosa-lateral.jpg",
-            "image2": "shopify://shop_images/itoro-iphone-16-rosa-128.jpg",
-            "ref_price": "",
-            "ref_label": "en otros colores"
-          }
-        },
         "b17": {
           "type": "iphone",
           "settings": {
@@ -227,8 +212,7 @@
       },
       "block_order": [
         "b17pm",
-        "b17",
-        "b16"
+        "b17"
       ],
       "settings": {
         "eyebrow": "Ofertas de la semana",
