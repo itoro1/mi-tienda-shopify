@@ -64,3 +64,11 @@ Higgsfield tenía 0 créditos (plan gratis), por eso no se usó.
 - Pausado «Vídeo · problema-solución» (120250354553120622). Lo pidió el dueño: «Prefiero mover el dinero al pack».
 - Datos del día: 5,37 € de gasto, 24 clics, 15 visitas y 0 carritos. Pack A, con 0,71 €, consiguió 3 carritos.
 - El presupuesto del conjunto no se ha tocado. El dinero se reparte entre los anuncios que siguen activos: Pack A, Pack B, Tienda y Catálogo.
+
+## 06/11/2026 · Anuncio de recordatorio (carritos sin compra)
+
+- El dueño aceptó las condiciones de públicos personalizados de Meta.
+- Público «Carrito sin compra · 30 días» (120250440862930622): personas que añadieron al carrito o empezaron el pago en 30 días, sin las que ya compraron.
+- Conjunto «Recordatorio · carrito sin compra 30 días» (120250440870340622) dentro de «primera campaña». Busca compras y solo se muestra a ese público. El presupuesto es de campaña (6 €/día) y no cambia.
+- Anuncio «Recordatorio · Su pack sigue esperándole» (120250440883070622), creatividad 1782456869537318, con la imagen de Pack A. Enlace a /collections/packs con utm `recordatorio-carrito`.
+- Publicado y en revisión (IN_PROCESS).
