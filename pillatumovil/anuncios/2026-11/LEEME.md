@@ -122,3 +122,11 @@ Por qué: casi no había carritos. Meta contaba unos 12 del 05/11 al 09/11, pero
 - El conjunto de recordatorio (120250440870340622) usa ahora ese público más «Carrito sin compra · 30 días». Se llama «Recordatorio · visitantes y carritos sin compra 30 días». El presupuesto no cambia.
 - A1 y A2 en pausa: al dueño le parecen hechas con IA y malas («tiene que verse reales»). Sigue activo Pack A.
 - No se usan fotos de Apple ni de Pinterest: tienen derechos de autor y no son nuestras. Hacen falta fotos propias hechas en estudio.
+
+## 09/11/2026 (noche) · Anuncios P1/P2 con fotos de estudio retocadas
+
+- Al dueño le gustaba el de Pack A («se ve bien el cargador y el cable, pero faltaban retoques profesionales»). También pidió enganchar en el primer segundo y un botón claro a la web.
+- `tools/anuncio_pro.py` usa las fotos de estudio de Pack A (`fotos/estudio/`). Les da contraste, nitidez, un tono cálido y viñeta. Añade un gancho grande arriba y un panel noche con precio, comparación con Apple y su fecha, 3 ventajas y un botón dorado «pillatumovil.com →».
+  - P1 «¿Su iPhone vino sin cargador?» (cargador con el cable puesto): anuncio **120250488549080622**, creatividad 1837527177399951.
+  - P2 «Original de Apple. A mitad de precio.» (cajas en el pedestal): anuncio **120250488549310622**, creatividad 1118701940780845. El texto empieza con «Compre aquí 👉 …/collections/packs». El botón de Meta es «Comprar» y lleva a la ficha del pack (utm `pro-2026-11`).
+- Activos: P1, P2, Pack A y el recordatorio. Presupuesto sin cambios.
