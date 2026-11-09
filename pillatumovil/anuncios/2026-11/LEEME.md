@@ -130,3 +130,12 @@ Por qué: casi no había carritos. Meta contaba unos 12 del 05/11 al 09/11, pero
   - P1 «¿Su iPhone vino sin cargador?» (cargador con el cable puesto): anuncio **120250488549080622**, creatividad 1837527177399951.
   - P2 «Original de Apple. A mitad de precio.» (cajas en el pedestal): anuncio **120250488549310622**, creatividad 1118701940780845. El texto empieza con «Compre aquí 👉 …/collections/packs». El botón de Meta es «Comprar» y lleva a la ficha del pack (utm `pro-2026-11`).
 - Activos: P1, P2, Pack A y el recordatorio. Presupuesto sin cambios.
+
+## 09/11/2026 (tarde) · Anuncios de tienda T1/T2 (fondo Higgsfield + producto real)
+
+- Fondo de tienda vacío, sin marcas ni producto, creado con Higgsfield (gpt_image_2_6, 2 imágenes, 5,5 créditos): `fotos/fondos/tienda-ia-1.png` y `fotos/fondos/tienda-ia-2.png`.
+- Encima va el producto real, recortado de la foto de estudio (`fotos/recortes/pro_cajas.png`), con sombra y tono cálido. Lo monta `tools/anuncio_boutique.py`.
+  - T1 «¿Su iPhone vino sin cargador?»: anuncio **120250494972430622**, creatividad 29442277175460279.
+  - T2 «Original de Apple. A mitad de precio.»: anuncio **120250494972800622**, creatividad 2231144557450238. utm `boutique-2026-11`.
+- P1 y P2 en pausa: T1 y T2 llevan el mismo mensaje con mejor imagen.
+- Pedido #1004 (09/11, Málaga, 18,99 €, pack Lightning): llegó por Google (búsqueda gratis) y luego entró directo. No viene de Meta.
