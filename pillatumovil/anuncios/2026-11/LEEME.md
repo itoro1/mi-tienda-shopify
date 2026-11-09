@@ -86,3 +86,14 @@ Por qué: casi no había carritos. Meta contaba unos 12 del 05/11 al 09/11, pero
 3. En pausa: Pack B, Tienda y «Nuevo anuncio de Ventas» (catálogo).
 4. Siguen activos: E1, E2, Pack A (como referencia, era el mejor) y el anuncio de recordatorio.
 5. Presupuesto: sin cambios (6 €/día de campaña). Los 3 borradores rotos siguen sin publicar.
+
+## 09/11/2026 (tarde) · Versión estilo Apple (A1/A2)
+
+- El dueño no veía profesionales las E1/E2 («quiero algo a nivel de estudio, al estilo Apple»).
+- Higgsfield tiene 0 créditos, así que no se pudo generar con IA.
+- `tools/anuncio_apple.py`: caras limpias de las cajas (`fotos/cine/`) montadas en 3D (lateral, tapa, sombra de contacto y reflejo) sobre fondo gris claro sin costuras. Titular sobrio, precio, comparación con Apple con fecha, ventajas y la web en grande abajo.
+  - A1 «Carga original.»: anuncio **120250488394170622**, creatividad 951034024528049.
+  - A2 «Original. Se nota.» (trasera con sello CE): anuncio **120250488394460622**, creatividad 4056920461270010.
+  - utm `apple-2026-11`, A1/A2. Publicados; Meta los está revisando.
+- En pausa: E1 (120250486270030622) y E2 (120250486271850622).
+- Activos: A1, A2, Pack A y el recordatorio. Presupuesto sin cambios.
