@@ -115,3 +115,10 @@ Por qué: casi no había carritos. Meta contaba unos 12 del 05/11 al 09/11, pero
 - Total: 43,26 €. Pedidos reales en la tienda esta semana: 2 (#1002 y #1003). Unos 21,6 € de anuncios por venta, por encima de los 7 € a partir de los que se pierde dinero.
 - Pack A: CTR 3,7 %, frecuencia 1,4. No está cansado. Muchos carritos, pero pocos pagos y ninguna compra.
 - Cambios: ninguno más que los de hoy. A1/A2 tienen menos de 7 días; no se tocan. Presupuesto sin cambios.
+
+## 09/11/2026 (noche) · Recordatorio ampliado y A1/A2 en pausa
+
+- Con el «sí» del dueño: nuevo público «Visitantes web sin compra · 30 días» (120250488459900622). Lo forman todos los que visitaron la web, sin los que compraron.
+- El conjunto de recordatorio (120250440870340622) usa ahora ese público más «Carrito sin compra · 30 días». Se llama «Recordatorio · visitantes y carritos sin compra 30 días». El presupuesto no cambia.
+- A1 y A2 en pausa: al dueño le parecen hechas con IA y malas («tiene que verse reales»). Sigue activo Pack A.
+- No se usan fotos de Apple ni de Pinterest: tienen derechos de autor y no son nuestras. Hacen falta fotos propias hechas en estudio.
