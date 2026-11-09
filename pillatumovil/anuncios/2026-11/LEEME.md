@@ -139,3 +139,15 @@ Por qué: casi no había carritos. Meta contaba unos 12 del 05/11 al 09/11, pero
   - T2 «Original de Apple. A mitad de precio.»: anuncio **120250494972800622**, creatividad 2231144557450238. utm `boutique-2026-11`.
 - P1 y P2 en pausa: T1 y T2 llevan el mismo mensaje con mejor imagen.
 - Pedido #1004 (09/11, Málaga, 18,99 €, pack Lightning): llegó por Google (búsqueda gratis) y luego entró directo. No viene de Meta.
+
+## 09/11/2026 (noche) · Anuncio «Escena E»: tienda con letrero LED y los dos packs
+
+- El dueño pidió un letrero LED «Pillatumovil» de fondo, las cajas apoyadas en la mesa con el logo de Apple a la vista, los dos packs (USB‑C y Lightning) y algún iPhone al fondo.
+- Higgsfield (gpt_image_2_6):
+  1. Fondo con el letrero: `fotos/fondos/tienda-led-1.png` y `tienda-led-2.png`.
+  2. Escena montada con ese fondo y las caras reales de las cajas (`fotos/cine/*.png`) como referencia: `fotos/fondos/escena-packs-1.png` (la elegida) y `-2.png`. Los textos de las cajas se revisaron a mano y son correctos.
+- `tools/anuncio_escena.py` añade el precio, la comparación con Apple y su fecha, y un botón «pillatumovil.com →».
+- Anuncio **120250495087240622**, creatividad 1317300623855058. Enlace a /collections/packs con utm `escena-2026-11`. ACTIVO.
+- T1 y T2 en pausa (al dueño no le convencían).
+- Activos: Escena E, Pack A y el recordatorio. Presupuesto sin cambios.
+- Créditos de Higgsfield usados hoy: unos 20 de 600.
