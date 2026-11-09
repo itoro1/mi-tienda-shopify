@@ -131,16 +131,39 @@
       En los packs el metacampo guarda el precio de UNA unidad (cargador +
       cable = 38,00 €). Si la variante elegida es "2 unidades" o "3 unidades",
       se multiplica por ese numero, para comparar siempre lo mismo con lo mismo.
+      Solo cuando el titulo dice "unidad": en un iPhone "256GB / Negro" el
+      primer numero es la capacidad y multiplicaria el PVP por 256.
+
+      En los iPhone el PVP cambia con la capacidad, asi que va en el metacampo
+      de VARIANTE custom.pvp_apple (euros enteros, p. ej. 1469), que gana al
+      del producto. En las tarjetas se usa el de la variante mas barata, que es
+      la que da el precio "desde". Si nuestro precio no es menor que el de
+      Apple no se pinta nada.
       Dawn vuelve a pintar este bloque al cambiar de variante, asi que el
       tachado y el ahorro siguen a la variante sin JavaScript.
     {%- endcomment -%}
     {%- liquid
       assign pvp_apple = product.metafields.custom.pvp_apple.value
+      assign pvp_por_variante = false
+      if use_variant
+        if target.metafields.custom.pvp_apple.value != blank
+          assign pvp_apple = target.metafields.custom.pvp_apple.value
+          assign pvp_por_variante = true
+        endif
+      else
+        for v in product.variants
+          if v.price == price and v.metafields.custom.pvp_apple.value != blank
+            assign pvp_apple = v.metafields.custom.pvp_apple.value
+            assign pvp_por_variante = true
+            break
+          endif
+        endfor
+      endif
       assign pvp_ahorro = 0
       if pvp_apple != blank
         assign pvp_cents = pvp_apple | remove: '€' | remove: ' ' | replace: ',', '.' | times: 100 | round
         assign pvp_mult = 1
-        if use_variant
+        if use_variant and pvp_por_variante == false and target.title contains 'unidad'
           assign pvp_n = target.title | split: ' ' | first | plus: 0
           if pvp_n > 1
             assign pvp_mult = pvp_n

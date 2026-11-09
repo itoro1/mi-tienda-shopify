@@ -39,6 +39,10 @@
 [data-theme="dark"] .it-pvp s{color:#7a7a7a}
 [data-theme="dark"] .it-pvp__ahorro{background:rgba(34,197,94,.16);color:#86efac}
 
+/* En la ficha del producto el ahorro tiene que verse de un vistazo. */
+.product__info-container .it-pvp{font-size:14.5px;margin-top:8px;gap:6px 10px}
+.product__info-container .it-pvp__ahorro{font-size:14px;padding:4px 11px}
+
 /* En las tarjetas de coleccion hay menos sitio: se encoge un punto. */
 .card__information .it-pvp,
 .card-information .it-pvp{font-size:11.5px;margin-top:3px}
