@@ -97,3 +97,21 @@ Por qué: casi no había carritos. Meta contaba unos 12 del 05/11 al 09/11, pero
   - utm `apple-2026-11`, A1/A2. Publicados; Meta los está revisando.
 - En pausa: E1 (120250486270030622) y E2 (120250486271850622).
 - Activos: A1, A2, Pack A y el recordatorio. Presupuesto sin cambios.
+
+## 09/11/2026 · Informe semanal (últimos 7 días, datos de Meta)
+
+| Anuncio | Gasto | Clics | Visitas | Carritos* | Pagos iniciados | Compras |
+|---|---|---|---|---|---|---|
+| Pack A v4 (activo) | 16,09 € | 77 | 48 | 26 | 5 | 0 |
+| Tienda v4 (pausado hoy) | 13,04 € | 65 | 49 | 4 | 3 | 1 (13,04 €/compra) |
+| Vídeo (pausado 03/11) | 6,51 € | 37 | 25 | 0 | 0 | 0 |
+| Catálogo (pausado hoy) | 5,99 € | 15 | 7 | 2 | 2 | 0 |
+| Pack B v4 (pausado hoy) | 1,63 € | 4 | 2 | 0 | 0 | 0 |
+| A1/A2 estilo Apple | 0 € | publicados hoy, en revisión | | | | |
+| Recordatorio | 0 € | el público es aún muy pequeño | | | | |
+
+*Meta parece contar cada carrito dos veces.
+
+- Total: 43,26 €. Pedidos reales en la tienda esta semana: 2 (#1002 y #1003). Unos 21,6 € de anuncios por venta, por encima de los 7 € a partir de los que se pierde dinero.
+- Pack A: CTR 3,7 %, frecuencia 1,4. No está cansado. Muchos carritos, pero pocos pagos y ninguna compra.
+- Cambios: ninguno más que los de hoy. A1/A2 tienen menos de 7 días; no se tocan. Presupuesto sin cambios.
