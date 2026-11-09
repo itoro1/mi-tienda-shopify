@@ -72,3 +72,17 @@ Higgsfield tenía 0 créditos (plan gratis), por eso no se usó.
 - Conjunto «Recordatorio · carrito sin compra 30 días» (120250440870340622) dentro de «primera campaña». Busca compras y solo se muestra a ese público. El presupuesto es de campaña (6 €/día) y no cambia.
 - Anuncio «Recordatorio · Su pack sigue esperándole» (120250440883070622), creatividad 1782456869537318, con la imagen de Pack A. Enlace a /collections/packs con utm `recordatorio-carrito`.
 - Publicado y en revisión (IN_PROCESS).
+
+## 09/11/2026 · Anuncios nuevos desde cero: producto real con fondo de estudio
+
+Por qué: casi no había carritos. Meta contaba unos 12 del 05/11 al 09/11, pero parece que los cuenta dos veces. Los clics eran baratos, así que el anuncio no convencía. Lo que más frena en este producto es el miedo a que sea una imitación (ver `estudio/competencia-2026-11.md`), y las imágenes de estudio hechas con IA no daban confianza.
+
+1. Primera versión, R1/R2 (`tools/anuncio_real.py`): fotos reales del stock, con la terraza de fondo. El dueño no la quiso («tiene que verse profesional»). Anuncios 120250485469710622 y 120250485469920622 en **pausa**.
+2. Versión buena, E1/E2 (`tools/anuncio_estudio.py`): las mismas fotos reales, recortadas (`fotos/recortes/`, con rembg) y puestas sobre un fondo de estudio azul noche con luz y sombra. Sigue siendo su producto de verdad; solo cambia el fondo.
+   - E1 «Cargador + cable originales de Apple»: anuncio **120250486270030622**, creatividad 1124799337104554.
+   - E2 «¿Original o imitación? Caja de Apple y sello CE»: anuncio **120250486271850622**, creatividad 2202763110597465.
+   - Enlace a la ficha del pack USB-C con utm `estudio-2026-11`, E1/E2. Texto con la comparación con Apple y su fecha, «¿Por qué tan barato?» y «Compre aquí 👉 /collections/packs».
+   - Solo se ha subido la imagen 4:5: Meta no deja poner aquí una imagen distinta por ubicación. Las de 9:16 quedan para subirlas a mano en stories si se quiere.
+3. En pausa: Pack B, Tienda y «Nuevo anuncio de Ventas» (catálogo).
+4. Siguen activos: E1, E2, Pack A (como referencia, era el mejor) y el anuncio de recordatorio.
+5. Presupuesto: sin cambios (6 €/día de campaña). Los 3 borradores rotos siguen sin publicar.
