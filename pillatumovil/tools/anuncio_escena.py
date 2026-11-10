@@ -1,7 +1,7 @@
 """Anuncio 09/11/2026 (v6): escena completa de tienda con letrero LED «pillatumovil».
-
+Uso: python3 anuncio_escena.py FOTOS_DIR FUENTES_DIR SALIDA_DIR [ESCENA.png] [PREFIJO]
 Uso: python3 anuncio_escena.py FOTOS_DIR FUENTES_DIR SALIDA_DIR
-- Escena: fotos/fondos/escena-packs-1.png. Higgsfield (gpt_image_2_6) a partir del fondo
+- Escena: fotos/fondos/ESCENA (por defecto escena-packs-1.png; 4.º argumento). Higgsfield (gpt_image_2_6) a partir del fondo
   LED (fotos/fondos/tienda-led-1.png) y las caras reales de las cajas (fotos/cine/*.png).
   Muestra los 2 packs (cargador + cable USB‑C y cargador + cable Lightning) apoyados en
   el mostrador, con iPhones en la estantería del fondo.
@@ -10,6 +10,7 @@ Uso: python3 anuncio_escena.py FOTOS_DIR FUENTES_DIR SALIDA_DIR
 import sys
 from PIL import Image, ImageDraw, ImageFilter, ImageFont, ImageOps
 
+ESCENA = sys.argv[4] if len(sys.argv) > 4 else 'escena-packs-1.png'; PREF = sys.argv[5] if len(sys.argv) > 5 else 'E'
 NOCHE = (11, 15, 26); ORO = (214, 180, 112); MARFIL = (244, 241, 234); GRIS = (168, 174, 190)
 fotos, fuentes, salida = sys.argv[1:4]
 
@@ -32,7 +33,7 @@ def boton(im, x0, y0, x1, y1, texto):
 
 def anuncio(sup, nombre, W, H):
     st = H > 1500
-    esc = Image.open(f'{fotos}/fondos/escena-packs-1.png').convert('RGB')
+    esc = Image.open(f'{fotos}/fondos/' + ESCENA + '').convert('RGB')
     esc = esc.resize((W, int(W * esc.height / esc.width)), Image.LANCZOS)   # 1080 x 1350
     if st:
         esc_h = 1230; y_esc = 120
@@ -62,5 +63,5 @@ def anuncio(sup, nombre, W, H):
     im.save(f'{salida}/{nombre}', quality=94)
 
 SUP = 'Cargador 20 W + cable USB‑C o Lightning · originales de Apple'
-anuncio(SUP, 'pillatumovil_escena_E_feed-4x5.jpg', 1080, 1350)
-anuncio(SUP, 'pillatumovil_escena_E_stories-9x16.jpg', 1080, 1920)
+anuncio(SUP, 'pillatumovil_escena_' + PREF + '_feed-4x5.jpg', 1080, 1350)
+anuncio(SUP, 'pillatumovil_escena_' + PREF + '_stories-9x16.jpg', 1080, 1920)

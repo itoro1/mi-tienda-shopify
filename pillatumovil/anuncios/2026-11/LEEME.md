@@ -151,3 +151,13 @@ Por qué: casi no había carritos. Meta contaba unos 12 del 05/11 al 09/11, pero
 - T1 y T2 en pausa (al dueño no le convencían).
 - Activos: Escena E, Pack A y el recordatorio. Presupuesto sin cambios.
 - Créditos de Higgsfield usados hoy: unos 20 de 600.
+
+## 10/11/2026 · Anuncio «Escena Premium»: fondo de tienda de más categoría
+
+- El dueño: «el fondo se sigue viendo irreal; tiene que verse de más categoría, con varios modelos de iPhone, incluido el 18 Pro Max».
+- Higgsfield: edición de `escena-packs-1` en la que las cajas del mostrador no cambian. Se cambió el fondo por una tienda premium con pared de madera oscura, el letrero LED «pillatumovil» y una vitrina iluminada. Las referencias de iPhone son las fotos de producto de la propia tienda: 18 Pro Max burdeos y plata, 18 Pro negro y 17. Resultado en `fotos/fondos/escena-premium-1.png` y `-2.png`; se eligió la 2. Las cajas se revisaron de cerca y siguen correctas.
+- Montaje con `tools/anuncio_escena.py fotos FUENTES anuncios/2026-11 escena-premium-2.png PREMIUM`.
+- Anuncio **120250504942170622**, creatividad 1661274328980699. Enlace a /collections/packs con utm `escena-2026-11/PREMIUM`.
+- Escena E (120250495087240622) en pausa.
+- Activos: Escena Premium, Pack A y el recordatorio. Presupuesto sin cambios.
+- Ubicación de Shopify: el dueño quiere quitar el «1B». El token no tiene permiso `write_locations`, así que se le dieron los pasos para hacerlo él.
