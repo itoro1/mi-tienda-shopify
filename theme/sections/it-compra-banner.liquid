@@ -1,170 +1,69 @@
-<!-- COMPRAMOS IPHONE — SVG icons, no emojis -->
 {%- comment -%}
+  COMPRAMOS TU IPHONE — banner de portada.
+
   Los "hasta" salen de snippets/it-vende-precios.liquid: el mismo metaobjeto
   "Precio de compra iPhone" que usa el tasador. Si Fernando cambia un precio
   en Contenido > Metaobjetos, cambia aquí y en el tasador a la vez.
+
+  La sección es oscura en los dos modos (claro y oscuro) a propósito: es una
+  pieza de marca negro y dorado, y así se separa del resto de la portada.
+  La foto es de Higgsfield (Shopify > Contenido > Archivos >
+  itoro-vende-hero.jpg) y se cambia desde el editor de temas.
 {%- endcomment -%}
-<section class="itcb">
-  <div class="itcb-wrap">
+{%- liquid
+  assign modelos = section.settings.modelos | default: 'iPhone 18 Pro Max,iPhone 18 Pro,iPhone 17 Pro Max,iPhone 16 Pro,iPhone 15 Pro' | split: ','
+  if section.settings.imagen != blank
+    assign img = section.settings.imagen | image_url: width: 1200
+  else
+    assign img = 'itoro-vende-hero.jpg' | file_img_url: '1200x'
+  endif
+-%}
+<section class="itv2" aria-labelledby="itv2-t-{{ section.id }}">
+  <div class="itv2__in">
 
-    <div class="itcb-l">
-
-      <span class="itcb-tag">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-        Compramos iPhones
-      </span>
-
-      <h2 class="itcb-title">&iquest;Tienes un iPhone<br>que ya no usas?</h2>
-
-      <p class="itcb-desc">
-        Tasaci&oacute;n <strong>gratuita</strong> en menos de 2&nbsp;horas.
-        Pago por <strong>Bizum</strong> o transferencia al revisarlo.
-        Recogida <strong>gratuita</strong> a domicilio.
-      </p>
-
-      <div class="itcb-checks">
-        <div class="itcb-check">
-          <span class="itcb-check-ico" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-          </span>
-          <div>
-            <p class="itcb-check-t">Recogida gratuita</p>
-            <p class="itcb-check-d">A domicilio en pen&iacute;nsula y Baleares</p>
-          </div>
-        </div>
-        <div class="itcb-check">
-          <span class="itcb-check-ico" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          </span>
-          <div>
-            <p class="itcb-check-t">Oferta en 2 horas</p>
-            <p class="itcb-check-d">Sin compromiso</p>
-          </div>
-        </div>
-        <div class="itcb-check">
-          <span class="itcb-check-ico" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-          </span>
-          <div>
-            <p class="itcb-check-t">Cobras al revisarlo</p>
-            <p class="itcb-check-d">Bizum o transferencia</p>
-          </div>
-        </div>
-        <div class="itcb-check">
-          <span class="itcb-check-ico" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          </span>
-          <div>
-            <p class="itcb-check-t">Pago 100% seguro</p>
-            <p class="itcb-check-d">Sin intermediarios</p>
-          </div>
-        </div>
+    <div class="itv2__media">
+      <img src="{{ img }}" alt="" width="1200" height="1490" loading="lazy" decoding="async">
+      <div class="itv2__chip" aria-hidden="true">
+        <span class="itv2__chip-k">Oferta en</span>
+        <span class="itv2__chip-v">&lt; 2 h</span>
       </div>
-
-      <div class="itcb-prices">
-        <p class="itcb-prices-title">Lo que pagamos por tu iPhone:</p>
-        {%- capture itcb_max -%}{% render 'it-vende-precios', modo: 'max', modelo: 'iPhone 14' %}{%- endcapture -%}
-        {%- if itcb_max != blank -%}
-        <div class="itcb-price-row">
-          <span class="itcb-p-model">iPhone 14</span>
-          <span class="itcb-p-sep"></span>
-          <span class="itcb-p-val">hasta {% assign v = itcb_max | strip | plus: 0 %}{% if v >= 1000 %}{{ v | divided_by: 1000 }}.{{ v | modulo: 1000 | prepend: '00' | slice: -3, 3 }}{% else %}{{ v }}{% endif %} &euro;</span>
-        </div>
-        {%- endif -%}
-        {%- capture itcb_max -%}{% render 'it-vende-precios', modo: 'max', modelo: 'iPhone 15 Pro' %}{%- endcapture -%}
-        {%- if itcb_max != blank -%}
-        <div class="itcb-price-row">
-          <span class="itcb-p-model">iPhone 15 Pro</span>
-          <span class="itcb-p-sep"></span>
-          <span class="itcb-p-val">hasta {% assign v = itcb_max | strip | plus: 0 %}{% if v >= 1000 %}{{ v | divided_by: 1000 }}.{{ v | modulo: 1000 | prepend: '00' | slice: -3, 3 }}{% else %}{{ v }}{% endif %} &euro;</span>
-        </div>
-        {%- endif -%}
-        {%- capture itcb_max -%}{% render 'it-vende-precios', modo: 'max', modelo: 'iPhone 16 Pro' %}{%- endcapture -%}
-        {%- if itcb_max != blank -%}
-        <div class="itcb-price-row itcb-price-row--hi">
-          <span class="itcb-p-model">iPhone 16 Pro</span>
-          <span class="itcb-p-sep"></span>
-          <span class="itcb-p-val itcb-p-hi">hasta {% assign v = itcb_max | strip | plus: 0 %}{% if v >= 1000 %}{{ v | divided_by: 1000 }}.{{ v | modulo: 1000 | prepend: '00' | slice: -3, 3 }}{% else %}{{ v }}{% endif %} &euro;</span>
-        </div>
-        {%- endif -%}
-        {%- capture itcb_max -%}{% render 'it-vende-precios', modo: 'max', modelo: 'iPhone 17 Pro Max' %}{%- endcapture -%}
-        {%- if itcb_max != blank -%}
-        <div class="itcb-price-row itcb-price-row--hi">
-          <span class="itcb-p-model">iPhone 17 Pro Max</span>
-          <span class="itcb-p-sep"></span>
-          <span class="itcb-p-val itcb-p-hi">hasta {% assign v = itcb_max | strip | plus: 0 %}{% if v >= 1000 %}{{ v | divided_by: 1000 }}.{{ v | modulo: 1000 | prepend: '00' | slice: -3, 3 }}{% else %}{{ v }}{% endif %} &euro;</span>
-        </div>
-        {%- endif -%}
-        {%- capture itcb_max -%}{% render 'it-vende-precios', modo: 'max', modelo: 'iPhone 18 Pro Max' %}{%- endcapture -%}
-        {%- if itcb_max != blank -%}
-        <div class="itcb-price-row itcb-price-row--hi">
-          <span class="itcb-p-model">iPhone 18 Pro Max</span>
-          <span class="itcb-p-sep"></span>
-          <span class="itcb-p-val itcb-p-hi">hasta {% assign v = itcb_max | strip | plus: 0 %}{% if v >= 1000 %}{{ v | divided_by: 1000 }}.{{ v | modulo: 1000 | prepend: '00' | slice: -3, 3 }}{% else %}{{ v }}{% endif %} &euro;</span>
-        </div>
-        {%- endif -%}
-      </div>
-
-      <a href="https://wa.me/34624150603?text=Hola%2C+quiero+vender+mi+iPhone.+Modelo%3A+"
-        target="_blank" rel="noopener noreferrer" class="itcb-wa">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-        </svg>
-        Pedir tasaci&oacute;n gratis &mdash; WhatsApp
-      </a>
-      <a href="/pages/compramos-tu-movil" class="itcb-calc">Calcular mi precio en 1 minuto &rarr;</a>
-      <p class="itcb-note">* Precios m&aacute;ximos orientativos (iPhone precintado de mayor capacidad). La oferta depende del estado.</p>
     </div>
 
-    <div class="itcb-r">
-      <div class="itcb-stats">
-        <div class="itcb-stat">
-          <span class="itcb-stat-n">Bizum</span>
-          <span class="itcb-stat-l">o transferencia</span>
-        </div>
-        <div class="itcb-stat">
-          <span class="itcb-stat-n">2h</span>
-          <span class="itcb-stat-l">Oferta m&aacute;x.</span>
-        </div>
-        <div class="itcb-stat itcb-stat-g">
-          <span class="itcb-stat-n">Gratis</span>
-          <span class="itcb-stat-l">Recogida</span>
-        </div>
-        <div class="itcb-stat itcb-stat-g">
-          <span class="itcb-stat-n">0 &euro;</span>
-          <span class="itcb-stat-l">Sin compromiso</span>
-        </div>
+    <div class="itv2__body">
+      <p class="itv2__kicker">Compramos tu iPhone</p>
+      <h2 class="itv2__title" id="itv2-t-{{ section.id }}">Vende tu iPhone sin salir de casa</h2>
+      <p class="itv2__lead">Te damos precio en menos de 2 horas, lo recogemos gratis con Correos y cobras por Bizum o transferencia al revisarlo.</p>
+
+      <div class="itv2__prices">
+        <p class="itv2__prices-h">Pagamos hasta</p>
+        <ul>
+          {%- for m in modelos -%}
+            {%- assign nombre = m | strip -%}
+            {%- capture mx -%}{% render 'it-vende-precios', modo: 'max', modelo: nombre %}{%- endcapture -%}
+            {%- assign v = mx | strip | plus: 0 -%}
+            {%- if v > 0 -%}
+              <li>
+                <span>{{ nombre }}</span>
+                <b>{% if v >= 1000 %}{{ v | divided_by: 1000 }}.{{ v | modulo: 1000 | prepend: '00' | slice: -3, 3 }}{% else %}{{ v }}{% endif %}&nbsp;&euro;</b>
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+        <p class="itv2__fine">Precio máximo orientativo por un iPhone precintado de la mayor capacidad. Tu oferta depende del modelo, la capacidad y el estado.</p>
       </div>
 
-      <div class="itcb-steps">
-        <div class="itcb-step">
-          <div class="itcb-step-n">1</div>
-          <div class="itcb-step-txt">
-            <p class="itcb-step-t">Env&iacute;anos modelo y fotos por WhatsApp</p>
-            <p class="itcb-step-d">624 15 06 03 &mdash; respondemos en minutos</p>
-          </div>
-        </div>
-        <div class="itcb-step">
-          <div class="itcb-step-n">2</div>
-          <div class="itcb-step-txt">
-            <p class="itcb-step-t">Recibe tu oferta en menos de 2 horas</p>
-            <p class="itcb-step-d">Orientativa hasta revisarlo &mdash; sin compromiso</p>
-          </div>
-        </div>
-        <div class="itcb-step">
-          <div class="itcb-step-n">3</div>
-          <div class="itcb-step-txt">
-            <p class="itcb-step-t">Recogida <strong>gratuita</strong> a domicilio</p>
-            <p class="itcb-step-d">En pen&iacute;nsula y Baleares &mdash; sin costes ocultos</p>
-          </div>
-        </div>
-        <div class="itcb-step">
-          <div class="itcb-step-n">4</div>
-          <div class="itcb-step-txt">
-            <p class="itcb-step-t">Cobras al revisarlo</p>
-            <p class="itcb-step-d">Bizum o transferencia</p>
-          </div>
-        </div>
+      <ol class="itv2__steps">
+        <li><b>Calcula tu precio</b><span>En 1 minuto, desde el móvil</span></li>
+        <li><b>Recogida gratis</b><span>Correos pasa por tu casa</span></li>
+        <li><b>Cobras al revisarlo</b><span>Bizum o transferencia</span></li>
+      </ol>
+
+      <div class="itv2__ctas">
+        <a class="itv2__btn" href="/pages/compramos-tu-movil">Calcular mi precio</a>
+        <a class="itv2__btn itv2__btn--line" href="https://wa.me/34624150603?text={{ 'Hola, quiero vender mi iPhone. Modelo: ' | url_encode }}" target="_blank" rel="noopener">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.3c0-.1-.2-.2-.5-.3z"/></svg>
+          Preguntar por WhatsApp
+        </a>
       </div>
     </div>
 
@@ -172,75 +71,57 @@
 </section>
 
 <style>
-.itcb{font-family:inherit;border-top:3px solid #15803d}
-.itcb-wrap{max-width:1100px;margin:0 auto;padding:52px 48px;display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start;background:#ffffff}
-.itcb-l{background:#ffffff}
-.itcb-tag{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#166534!important;background:#f0fdf4!important;border:1.5px solid #86efac!important;padding:5px 14px;border-radius:20px;margin-bottom:16px}
-.itcb-tag svg{flex-shrink:0;stroke:#166534}
-.itcb-title{font-size:36px;font-weight:700;letter-spacing:-0.03em;line-height:1.1;color:#0a0a0a!important;margin:0 0 14px}
-.itcb-desc{font-size:15px;color:#374151!important;line-height:1.7;margin:0 0 22px}
-.itcb-desc strong{color:#15803d!important;font-weight:700}
-.itcb-checks{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}
-.itcb-check{display:flex;align-items:flex-start;gap:10px;padding:12px;background:#f9fafb!important;border:1px solid #e5e7eb!important;border-radius:10px}
-.itcb-check-ico{flex-shrink:0;width:38px;height:38px;background:#ffffff!important;border:1px solid #e5e7eb!important;border-radius:50%;display:flex;align-items:center;justify-content:center}
-.itcb-check-ico svg{width:18px;height:18px}
-.itcb-check-t{font-size:12px;font-weight:700;color:#111827!important;margin:0 0 2px;line-height:1.3}
-.itcb-check-d{font-size:11px;color:#6b7280!important;margin:0;line-height:1.3}
-.itcb-prices{background:#f9fafb!important;border:1px solid #e5e7eb!important;border-radius:12px;padding:14px 16px;margin-bottom:24px}
-.itcb-prices-title{font-size:11px;font-weight:600;color:#6b7280!important;text-transform:uppercase;letter-spacing:1px;margin:0 0 10px}
-.itcb-price-row{display:flex;align-items:center;gap:8px;font-size:13px;padding:5px 0;border-bottom:1px solid #f3f4f6}
-.itcb-price-row:last-child{border-bottom:none}
-.itcb-p-model{color:#6b7280!important;min-width:130px;font-weight:400}
-.itcb-price-row--hi .itcb-p-model{color:#111827!important;font-weight:600}
-.itcb-p-sep{flex:1;height:1px;background:#e5e7eb}
-.itcb-p-val{color:#374151!important;font-weight:500;white-space:nowrap}
-.itcb-p-hi{color:#15803d!important;font-weight:700!important;font-size:14px!important}
-.itcb-wa{display:inline-flex;align-items:center;gap:10px;padding:14px 24px;background:#16a34a!important;color:#ffffff!important;border-radius:12px;text-decoration:none;font-weight:700;font-size:14px;min-height:52px;margin-bottom:10px;transition:background .2s}
-.itcb-wa:hover{background:#15803d!important;color:#ffffff!important}
-.itcb-calc{display:inline-flex;align-items:center;min-height:44px;margin:0 0 6px 14px;font-weight:600;font-size:14px;color:#111827!important;text-decoration:underline;text-underline-offset:3px}
-[data-theme="dark"] .itcb-calc{color:#d4af37!important}
-.itcb-note{font-size:11px;color:#9ca3af!important;margin:0}
-.itcb-r{background:#0f172a!important;border-radius:16px;overflow:hidden;border:1px solid #1e293b!important}
-.itcb-stats{display:grid;grid-template-columns:1fr 1fr;gap:0;border-bottom:1px solid #1e293b}
-.itcb-stat{padding:20px 16px;text-align:center;border-right:1px solid #1e293b;background:#0f172a!important}
-.itcb-stat:nth-child(even){border-right:none}
-.itcb-stat:nth-child(n+3){border-top:1px solid #1e293b}
-.itcb-stat-g{background:#052e16!important}
-.itcb-stat-n{display:block;font-size:24px;font-weight:700;color:#f8fafc!important;line-height:1;margin-bottom:5px;letter-spacing:-0.02em}
-.itcb-stat-g .itcb-stat-n{color:#4ade80!important}
-.itcb-stat-l{display:block;font-size:11px;color:#94a3b8!important;line-height:1.3}
-.itcb-stat-g .itcb-stat-l{color:#86efac!important}
-.itcb-steps{padding:20px;display:flex;flex-direction:column;gap:14px;background:#0f172a!important}
-.itcb-step{display:flex;align-items:flex-start;gap:12px}
-.itcb-step-n{width:30px;height:30px;border-radius:50%;background:#1e293b!important;border:1px solid #334155!important;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#e2e8f0!important;flex-shrink:0}
-.itcb-step-t{font-size:13px;font-weight:600;color:#f1f5f9!important;margin:0 0 2px;line-height:1.3}
-.itcb-step-t strong{color:#4ade80!important}
-.itcb-step-d{font-size:11px;color:#94a3b8!important;margin:0;line-height:1.4}
-[data-theme="dark"] .itcb-wrap{background:#0d0d0b!important}
-[data-theme="dark"] .itcb-l{background:transparent!important}
-[data-theme="dark"] .itcb-tag{color:#d4af37!important;background:rgba(212,175,55,.1)!important;border-color:rgba(212,175,55,.35)!important}
-[data-theme="dark"] .itcb-tag svg{stroke:#d4af37}
-[data-theme="dark"] .itcb-title{color:#f0ece4!important}
-[data-theme="dark"] .itcb-desc{color:#d1d5db!important}
-[data-theme="dark"] .itcb-desc strong{color:#4ade80!important}
-[data-theme="dark"] .itcb-check{background:#18181c!important;border-color:rgba(255,255,255,.08)!important}
-[data-theme="dark"] .itcb-check-ico{background:#0d0d0b!important;border-color:rgba(255,255,255,.1)!important}
-[data-theme="dark"] .itcb-check-ico svg{stroke:#d4af37}
-[data-theme="dark"] .itcb-check-t{color:#f0ece4!important}
-[data-theme="dark"] .itcb-check-d{color:#9ca3af!important}
-[data-theme="dark"] .itcb-prices{background:#18181c!important;border-color:rgba(255,255,255,.08)!important}
-[data-theme="dark"] .itcb-prices-title{color:#9ca3af!important}
-[data-theme="dark"] .itcb-p-model{color:#9ca3af!important}
-[data-theme="dark"] .itcb-price-row--hi .itcb-p-model{color:#f0ece4!important}
-[data-theme="dark"] .itcb-p-sep{background:rgba(255,255,255,.1)}
-[data-theme="dark"] .itcb-p-val{color:#e2e8f0!important}
-[data-theme="dark"] .itcb-p-hi{color:#d4af37!important}
-[data-theme="dark"] .itcb-price-row{border-color:rgba(255,255,255,.06)}
-[data-theme="dark"] .itcb-note{color:#6b7280!important}
-@media(max-width:900px){.itcb-wrap{grid-template-columns:1fr;gap:28px;padding:36px 20px}.itcb-title{font-size:26px}.itcb-stats{grid-template-columns:repeat(4,1fr)}.itcb-stat:nth-child(n+3){border-top:none}.itcb-stat:nth-child(2){border-right:1px solid #1e293b}.itcb-stat:nth-child(4){border-right:none}}
-@media(max-width:600px){.itcb-checks{grid-template-columns:1fr}.itcb-stats{grid-template-columns:1fr 1fr}.itcb-stat:nth-child(2){border-right:none}.itcb-stat:nth-child(n+3){border-top:1px solid #1e293b}.itcb-wa{width:100%;justify-content:center}}
+.itv2{--ink:#0e0e10;--panel:#17171a;--line:rgba(255,255,255,.09);--fg:#f3f1eb;--mute:#a09c92;--gold:#c9a227;--gold-hi:#e3c566;
+  background:var(--ink);color:var(--fg);font-family:inherit}
+.itv2__in{max-width:1180px;margin:0 auto;padding:72px 40px;display:grid;grid-template-columns:.95fr 1.05fr;gap:56px;align-items:center}
+.itv2__media{position:relative;border-radius:22px;overflow:hidden;aspect-ratio:4/5;background:#000}
+.itv2__media img{width:100%;height:100%;object-fit:cover;display:block}
+.itv2__media::after{content:"";position:absolute;inset:auto 0 0;height:40%;background:linear-gradient(transparent,rgba(14,14,16,.75));pointer-events:none}
+.itv2__chip{position:absolute;left:18px;bottom:18px;z-index:1;display:flex;flex-direction:column;gap:2px;padding:12px 16px;border-radius:14px;
+  background:rgba(14,14,16,.72);border:1px solid rgba(201,162,39,.45);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.itv2__chip-k{font-size:12px;color:var(--mute)}
+.itv2__chip-v{font-size:24px;font-weight:700;color:var(--gold-hi);letter-spacing:-.02em;line-height:1}
+.itv2__kicker{margin:0 0 12px;font-size:14px;font-weight:600;color:var(--gold)}
+.itv2__title{margin:0;font-size:clamp(30px,2.2vw + 18px,48px);line-height:1.05;letter-spacing:-.03em;font-weight:700;color:var(--fg);text-wrap:balance}
+.itv2__lead{margin:16px 0 0;font-size:16px;line-height:1.6;color:var(--mute);max-width:46ch}
+.itv2__prices{margin:28px 0 0;padding:20px 22px;border-radius:18px;background:var(--panel);border:1px solid var(--line)}
+.itv2__prices-h{margin:0 0 6px;font-size:13px;color:var(--mute)}
+.itv2__prices ul{list-style:none;margin:0;padding:0}
+.itv2__prices li{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);font-size:15px}
+.itv2__prices li:last-child{border-bottom:0}
+.itv2__prices li span{color:var(--fg)}
+.itv2__prices li b{font-size:18px;font-weight:700;color:var(--gold-hi);font-variant-numeric:tabular-nums;white-space:nowrap}
+.itv2__fine{margin:10px 0 0;font-size:12px;line-height:1.5;color:var(--mute)}
+.itv2__steps{list-style:none;margin:24px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;counter-reset:p}
+.itv2__steps li{counter-increment:p;display:flex;flex-direction:column;gap:3px;padding:14px;border-radius:14px;border:1px solid var(--line);min-width:0}
+.itv2__steps li::before{content:counter(p);width:26px;height:26px;border-radius:50%;border:1px solid var(--gold);color:var(--gold);display:grid;place-items:center;font-size:13px;font-weight:700;margin-bottom:6px}
+.itv2__steps b{font-size:14px;color:var(--fg)}
+.itv2__steps span{font-size:12.5px;color:var(--mute);line-height:1.35}
+.itv2__ctas{display:flex;flex-wrap:wrap;gap:12px;margin:26px 0 0}
+.itv2__btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:52px;padding:0 26px;border-radius:999px;font-size:15px;font-weight:700;text-decoration:none;
+  background:var(--gold);color:#151208!important;transition:background .2s}
+.itv2__btn:hover{background:var(--gold-hi)}
+.itv2__btn--line{background:transparent;color:var(--fg)!important;border:1px solid rgba(255,255,255,.22)}
+.itv2__btn--line:hover{background:rgba(255,255,255,.06)}
+.itv2__btn:focus-visible{outline:2px solid var(--gold-hi);outline-offset:3px}
+@media(max-width:900px){
+  .itv2__in{grid-template-columns:1fr;gap:28px;padding:44px 18px 52px}
+  .itv2__media{aspect-ratio:4/3.4}
+  .itv2__steps{grid-template-columns:1fr}
+  .itv2__steps li{flex-direction:row;flex-wrap:wrap;align-items:center;column-gap:12px;padding:12px 14px}
+  .itv2__steps li::before{margin:0}
+  .itv2__steps span{flex-basis:100%;padding-left:38px;margin-top:-4px}
+  .itv2__btn{flex:1 1 100%}
+}
 </style>
 
 {% schema %}
-{"name":"Compramos iPhone","settings":[],"presets":[{"name":"Compramos iPhone"}]}
+{
+  "name": "Compramos iPhone",
+  "settings": [
+    { "type": "image_picker", "id": "imagen", "label": "Foto (si se deja vacía, usa itoro-vende-hero.jpg)" },
+    { "type": "text", "id": "modelos", "label": "Modelos de la tabla, separados por comas", "default": "iPhone 18 Pro Max,iPhone 18 Pro,iPhone 17 Pro Max,iPhone 16 Pro,iPhone 15 Pro" }
+  ],
+  "presets": [{ "name": "Compramos iPhone" }]
+}
 {% endschema %}
