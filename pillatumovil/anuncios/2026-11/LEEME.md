@@ -174,3 +174,4 @@ Por qué: casi no había carritos. Meta contaba unos 12 del 05/11 al 09/11, pero
   - pausa Pack A y el recordatorio (muestran 18,99 €);
   - avisa al dueño.
 - Los packs de 2 y 3 unidades (33,99 € y 45,99 €) no cambian.
+- 10/11: contador en directo en la web (`theme/snippets/ps-cuenta-atras.liquid`, cargado desde `layout/theme.liquid`). Es una barra roja arriba: «Precio de lanzamiento · termina en 2 d 00:02:57». Cuenta cada segundo hasta el 12/11 a las 17:00 UTC y se oculta sola. Solo aparece si `ps_lanzamiento` está activo. Probado en un iPhone 13 simulado. En el anuncio no cabe un contador real: Meta no lo permite en imagen ni en vídeo.

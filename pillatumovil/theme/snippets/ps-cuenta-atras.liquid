@@ -1,0 +1,34 @@
+{%- comment -%}
+  Cuenta atrás REAL del precio de lanzamiento (10/11/2026).
+  Fin: jueves 12/11/2026 a las 18:00 (Madrid) = 17:00 UTC. A esa hora una Routine
+  sube el pack a 19,99 € y apaga «ps_lanzamiento». La barra se oculta sola al llegar a 0.
+{%- endcomment -%}
+{%- if settings.ps_lanzamiento -%}
+<div class="ps-ca" data-ps-ca data-fin="2026-11-12T17:00:00Z" hidden>
+  <a class="ps-ca__in" href="{{ routes.collections_url }}/packs">
+    <span class="ps-ca__txt">Precio de lanzamiento · termina en</span>
+    <span class="ps-ca__reloj" data-ps-ca-reloj aria-hidden="true">--:--:--</span>
+    <span class="visually-hidden">el jueves 12 de noviembre a las 18:00</span>
+  </a>
+</div>
+<style>
+.ps-ca{background:#c4262e;color:#fff;font:700 15px/1.2 system-ui,-apple-system,sans-serif;text-align:center}
+.ps-ca__in{display:flex;flex-wrap:wrap;gap:6px 12px;justify-content:center;align-items:center;padding:9px 16px;color:inherit;text-decoration:none}
+.ps-ca__reloj{font-variant-numeric:tabular-nums;background:rgba(0,0,0,.25);border-radius:6px;padding:3px 8px;letter-spacing:.04em}
+</style>
+<script>
+(function(){
+  var b=document.querySelector('[data-ps-ca]'); if(!b) return;
+  var fin=Date.parse(b.getAttribute('data-fin')), r=b.querySelector('[data-ps-ca-reloj]');
+  function dos(n){return (n<10?'0':'')+n}
+  function tic(){
+    var s=Math.floor((fin-Date.now())/1000);
+    if(s<=0){b.hidden=true;return}
+    var d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60),x=s%60;
+    r.textContent=(d?d+' d ':'')+dos(h)+':'+dos(m)+':'+dos(x);
+    b.hidden=false; setTimeout(tic,1000);
+  }
+  tic();
+})();
+</script>
+{%- endif -%}
