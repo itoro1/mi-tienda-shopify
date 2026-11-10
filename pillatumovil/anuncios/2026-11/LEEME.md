@@ -184,4 +184,4 @@ Por qué: casi no había carritos. Meta contaba unos 12 del 05/11 al 09/11, pero
   - cierre: tarjeta con el plazo del jueves y el botón pillatumovil.com
   - Enlace a /collections/packs con utm `video-pro-2026-11`. Termina solo el 12/11 a las 18:00 (ad_schedule_end_time).
   - La escena está hecha con IA: el dueño debe marcar en el Administrador de anuncios la casilla de contenido hecho con IA.
-  - El clip sin montar (`clip-kling.mp4`, 19 MB) no se sube al repositorio; se puede recuperar en Higgsfield con el job d1625821.
+  - El clip sin montar es `clip-kling.mp4` (19 MB, job d1625821 de Higgsfield).
