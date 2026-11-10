@@ -1,0 +1,375 @@
+{%- comment -%}
+  VENDE TU IPHONE — tasador en 3 pasos + resultado.
+  Sustituye a sections/itoro-trade-in.liquid en templates/page.trade-in.json.
+
+  · Precios: snippets/it-vende-precios.liquid (metaobjeto "Precio de compra
+    iPhone", el mismo que lee el banner de portada).
+  · Lógica: assets/it-vende.js · Estilos: assets/it-vende.css
+  · Valoraciones: snippets/it-google-data.liquid e it-wallapop-data.liquid
+    (se usa include, no render, para que lleguen sus variables).
+{%- endcomment -%}
+{{ 'it-vende.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'it-vende.js' | asset_url }}" defer></script>
+
+{%- liquid
+  assign s = section.settings
+  assign wa = s.whatsapp | remove: ' ' | remove: '+' | default: '34624150603'
+  assign priv = s.privacidad_url | default: '/policies/privacy-policy'
+-%}
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="itv-i-phone" viewBox="0 0 24 24"><rect x="6" y="2.5" width="12" height="19" rx="2.6"/><path d="M10.5 5h3"/></symbol>
+  <symbol id="itv-i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></symbol>
+  <symbol id="itv-i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+  <symbol id="itv-i-left" viewBox="0 0 24 24"><path d="M14.5 6 8.5 12l6 6"/></symbol>
+  <symbol id="itv-i-right" viewBox="0 0 24 24"><path d="m9.5 6 6 6-6 6"/></symbol>
+  <symbol id="itv-i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.6v.1"/></symbol>
+  <symbol id="itv-i-truck" viewBox="0 0 24 24"><path d="M3 6.5h11v9H3zM14 9.5h3.6l3 3.2v2.8H14"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></symbol>
+  <symbol id="itv-i-euro" viewBox="0 0 24 24"><path d="M17.5 6.6A6.5 6.5 0 1 0 17.5 17.4M4.5 10.2h9M4.5 13.8h9"/></symbol>
+  <symbol id="itv-i-chat" viewBox="0 0 24 24"><path d="M20 12a8 8 0 0 1-11.8 7L4 20l1.1-4A8 8 0 1 1 20 12Z"/></symbol>
+  <symbol id="itv-i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 2"/></symbol>
+  <symbol id="itv-i-camera" viewBox="0 0 24 24"><path d="M4 8h3.2L9 5.5h6L16.8 8H20v11H4z"/><circle cx="12" cy="13.3" r="3.3"/></symbol>
+  <symbol id="itv-i-alert" viewBox="0 0 24 24"><path d="M12 3.5 21.5 20h-19z"/><path d="M12 10v4.5M12 17v.1"/></symbol>
+  <symbol id="itv-i-share" viewBox="0 0 24 24"><path d="M12 15V3.5M8 7.5l4-4 4 4M5 12v8h14v-8"/></symbol>
+  <symbol id="itv-i-star" viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.8l-5.2 2.8 1-5.8-4.3-4.1 5.9-.8z"/></symbol>
+</svg>
+
+<section class="itv" id="itv-{{ section.id }}" data-itv>
+  <script type="application/json" data-itv-cfg>
+    {
+      "wa": {{ wa | json }},
+      "mult": [100, {{ s.mult_excelente }}, {{ s.mult_muy_bueno }}, {{ s.mult_bueno }}, {{ s.mult_aceptable }}, {{ s.mult_danos }}],
+      "bat": [{{ s.bat_85 }}, {{ s.bat_80 }}, {{ s.bat_bajo }}],
+      "caja": {{ s.extra_caja }},
+      "factura": {{ s.extra_factura }},
+      "canje": {{ s.canje }},
+      "mano": {{ s.entrega_mano }},
+      "precios": {% render 'it-vende-precios', modo: 'json' %},
+      "q": {
+        "sellado": {"k":"precintado","t":"¿Está precintado, sin estrenar?","a":"Caja cerrada con su plástico original. Si es así, no hace falta nada más.","o":[["si","Sí, precintado"],["no","No, lo he usado"]]},
+        "estado": [
+          {"k":"pantalla","t":"¿Cómo está la pantalla?","a":"Mírala apagada y a contraluz: así se ven mejor las marcas.","o":[["perfecta","Perfecta"],["leves","Marcas leves"],["rota","Rota o con fallos"]]},
+          {"k":"cuerpo","t":"¿Y el marco y el cristal trasero?","a":"Cuentan golpes en esquinas y el cristal de atrás roto.","o":[["perfecto","Como nuevo"],["leves","Marcas leves"],["golpes","Golpes o cristal roto"]]},
+          {"k":"faceid","t":"¿Funciona Face ID?","a":"Bloquéalo y desbloquéalo con la cara.","o":[["si","Sí, funciona"],["no","No funciona"]]},
+          {"k":"camaras","t":"¿Funcionan todas las cámaras?","a":"Abre Cámara y prueba cada zoom y la frontal.","o":[["si","Sí, todas"],["no","Alguna falla"]]},
+          {"k":"piezas","t":"¿Le han cambiado alguna pieza?","a":"Ajustes → General → Información → Piezas y servicio.","o":[["no","No"],["si","Sí"],["nose","No lo sé"]]},
+          {"k":"agua","t":"¿Ha cogido agua alguna vez?","a":"Aunque ahora funcione bien, dínoslo.","o":[["no","No"],["si","Sí"]]}
+        ],
+        "req": [
+          {"k":"icloud","t":"¿Has desactivado «Buscar mi iPhone»?","a":"Ajustes → tu nombre → Buscar → Buscar mi iPhone. Es obligatorio antes de enviarlo.","o":[["si","Sí, desactivado"],["no","Todavía no"]]},
+          {"k":"operador","t":"¿Está libre de operador?","a":"Ajustes → General → Información → Bloqueo del operador: «Sin restricciones de SIM».","o":[["si","Sí"],["no","No"],["nose","No lo sé"]]},
+          {"k":"caja","t":"¿Conservas la caja original?","a":{% if s.extra_caja > 0 %}"Suma {{ s.extra_caja }} €."{% else %}""{% endif %},"o":[["si","Sí"],["no","No"]]},
+          {"k":"factura","t":"¿Tienes la factura de compra?","a":{% if s.extra_factura > 0 %}"Suma {{ s.extra_factura }} €."{% else %}""{% endif %},"o":[["si","Sí"],["no","No"]]},
+          {"k":"canje","t":"¿Qué prefieres?","a":"Si lo cambias, lo descontamos del iPhone que elijas.","o":[["dinero","Cobrar"],["canje","Cambiarlo por otro iPhone"]]},
+          {"k":"cobro","t":"¿Cómo quieres cobrar?","a":"Te pagamos en cuanto lo revisamos.","o":[["bizum","Bizum"],["transferencia","Transferencia"]]},
+          {"k":"entrega","t":"¿Cómo nos lo das?","a":"","o":[["correos","Recogida con Correos"],["mano",{{ s.entrega_mano_texto | default: 'Entrega en mano' | json }}]]}
+        ]
+      }
+    }
+  </script>
+
+  <header class="itv-hero">
+    {%- if s.eyebrow != blank -%}<p class="itv-eyebrow">{{ s.eyebrow | escape }}</p>{%- endif -%}
+    <h1 class="itv-title">{{ s.titulo | escape }}</h1>
+    {%- if s.subtitulo != blank -%}<p class="itv-sub">{{ s.subtitulo | escape }}</p>{%- endif -%}
+  </header>
+
+  <div class="itv-resume" data-itv-resume hidden>
+    <p>¿Seguimos? <span data-itv-resume-txt></span></p>
+    <div class="itv-resume__btns">
+      <button type="button" class="itv-btn itv-btn--gold" data-itv-resume-ok>Continuar</button>
+      <button type="button" class="itv-btn itv-btn--ghost" data-itv-resume-no>Empezar de nuevo</button>
+    </div>
+  </div>
+
+  <div class="itv-app" data-itv-app data-paso="1">
+    <div class="itv-main">
+      <div class="itv-prog" data-itv-prog>
+        <div class="itv-prog__bar" role="progressbar" aria-label="Progreso de la tasación" aria-valuemin="1" aria-valuemax="3" aria-valuenow="1"><i></i></div>
+        <p class="itv-prog__txt">Paso <b data-itv-prog-n>1</b> de 3 · <span data-itv-prog-t>Tu iPhone</span></p>
+      </div>
+
+      {%- comment -%} PASO 1 · Modelo y capacidad {%- endcomment -%}
+      <div class="itv-step" data-step="1">
+        <h2 class="itv-h" tabindex="-1">¿Qué iPhone tienes?</h2>
+        <div class="itv-search">
+          <label class="itv-sr" for="itv-q">Busca tu modelo</label>
+          <svg class="itv-ico" aria-hidden="true"><use href="#itv-i-search"/></svg>
+          <input id="itv-q" class="itv-input" type="search" placeholder="Busca: 15 pro max, 13 mini…" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" data-itv-q>
+        </div>
+        <fieldset class="itv-q" data-q="modelo">
+          <legend class="itv-sr">Modelo</legend>
+          <div class="itv-gens" role="tablist" aria-label="Generación" data-itv-gens></div>
+          <div class="itv-models" data-itv-models aria-live="polite"></div>
+          <div class="itv-empty" data-itv-sinprecios hidden><p>Ahora mismo no podemos mostrar los precios.</p><p><a href="https://wa.me/{{ wa }}" target="_blank" rel="noopener">Escríbenos por WhatsApp</a> y te tasamos el iPhone a mano.</p></div>
+          <p class="itv-err" hidden></p>
+        </fieldset>
+        <details class="itv-help">
+          <summary><svg class="itv-ico" aria-hidden="true"><use href="#itv-i-info"/></svg>¿No sabes cuál es?</summary>
+          <p>En tu iPhone abre <b>Ajustes → General → Información</b>. Ahí verás el <b>nombre del modelo</b> y la <b>capacidad</b>.</p>
+        </details>
+        <div class="itv-caps-wrap" data-itv-caps-wrap hidden>
+          <fieldset class="itv-q" data-q="cap">
+            <legend class="itv-q__t">Capacidad</legend>
+            <div class="itv-caps" data-itv-caps></div>
+            <p class="itv-err" hidden></p>
+          </fieldset>
+          <div class="itv-field">
+            <label class="itv-label" for="itv-color">Color <span class="itv-opt-tag">opcional</span></label>
+            <input id="itv-color" class="itv-input" type="text" maxlength="40" placeholder="Negro, titanio natural…" autocomplete="off" data-itv-color>
+          </div>
+        </div>
+        <div class="itv-nav">
+          <button type="button" class="itv-btn itv-btn--gold itv-btn--wide" data-itv-go="2">Continuar <svg class="itv-ico" aria-hidden="true"><use href="#itv-i-right"/></svg></button>
+        </div>
+      </div>
+
+      {%- comment -%} PASO 2 · Estado {%- endcomment -%}
+      <div class="itv-step" data-step="2" hidden>
+        <h2 class="itv-h" tabindex="-1">¿Cómo está?</h2>
+        <p class="itv-lead">Responde lo que ves. El estado lo calculamos nosotros con tus respuestas.</p>
+        <div data-itv-sellado></div>
+        <div data-itv-usado hidden>
+          <div data-itv-estado-a></div>
+          <fieldset class="itv-q" data-q="bat">
+            <legend class="itv-q__t">¿Qué salud de batería marca?</legend>
+            <p class="itv-q__a">Ajustes → Batería → Estado de la batería → Capacidad máxima.</p>
+            <div class="itv-bat">
+              <label class="itv-sr" for="itv-bat">Capacidad máxima de la batería, en %</label>
+              <input id="itv-bat" class="itv-input" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="3" placeholder="Ej. 87" autocomplete="off" data-itv-bat>
+              <span class="itv-bat__u" aria-hidden="true">%</span>
+              <label class="itv-check itv-check--inline"><input type="checkbox" data-itv-batns><span>No lo sé</span></label>
+            </div>
+            <p class="itv-err" hidden></p>
+          </fieldset>
+          <div data-itv-estado-b></div>
+        </div>
+        <div class="itv-nav">
+          <button type="button" class="itv-btn itv-btn--ghost" data-itv-back><svg class="itv-ico" aria-hidden="true"><use href="#itv-i-left"/></svg> Atrás</button>
+          <button type="button" class="itv-btn itv-btn--gold" data-itv-go="3">Continuar <svg class="itv-ico" aria-hidden="true"><use href="#itv-i-right"/></svg></button>
+        </div>
+      </div>
+
+      {%- comment -%} PASO 3 · Requisitos y entrega {%- endcomment -%}
+      <div class="itv-step" data-step="3" hidden>
+        <h2 class="itv-h" tabindex="-1">Requisitos y entrega</h2>
+        <div data-itv-req></div>
+        <p class="itv-note"><svg class="itv-ico" aria-hidden="true"><use href="#itv-i-truck"/></svg> Recogida gratis a domicilio con Correos.</p>
+        <fieldset class="itv-q" data-q="ok">
+          <legend class="itv-sr">Confirmación</legend>
+          <label class="itv-check">
+            <input type="checkbox" data-itv-ok>
+            <span>Soy mayor de edad, el iPhone es mío y enviaré mi DNI.</span>
+          </label>
+          <p class="itv-err" hidden></p>
+        </fieldset>
+        <div class="itv-nav">
+          <button type="button" class="itv-btn itv-btn--ghost" data-itv-back><svg class="itv-ico" aria-hidden="true"><use href="#itv-i-left"/></svg> Atrás</button>
+          <button type="button" class="itv-btn itv-btn--gold" data-itv-go="4">Ver mi oferta</button>
+        </div>
+      </div>
+
+      {%- comment -%} RESULTADO {%- endcomment -%}
+      <div class="itv-step itv-res" data-step="4" hidden>
+        <div class="itv-offer">
+          <h2 class="itv-offer__k" tabindex="-1">Tu oferta orientativa</h2>
+          <p class="itv-offer__p"><span data-itv-total>0</span>&nbsp;€</p>
+          <p class="itv-offer__m" data-itv-res-model></p>
+          <ul class="itv-break" data-itv-break></ul>
+          <p class="itv-offer__n">Es orientativa hasta revisar el iPhone: si algo no coincide, te lo decimos antes de pagarte y decides.</p>
+        </div>
+        <div class="itv-warn" data-itv-icloud hidden>
+          <svg class="itv-ico" aria-hidden="true"><use href="#itv-i-alert"/></svg>
+          <p>Antes de enviarlo desactiva <b>Buscar mi iPhone</b> (Ajustes → tu nombre → Buscar). Sin eso no podemos comprarlo.</p>
+        </div>
+
+        <div class="itv-actions">
+          <a class="itv-btn itv-btn--wa" href="https://wa.me/{{ wa }}" target="_blank" rel="noopener" data-itv-wa>
+            <svg class="itv-ico" aria-hidden="true"><use href="#itv-i-chat"/></svg> Enviar por WhatsApp
+          </a>
+          {%- if s.mostrar_formulario -%}
+            <button type="button" class="itv-btn itv-btn--line" aria-expanded="false" aria-controls="itv-form-{{ section.id }}" data-itv-form-open>
+              <svg class="itv-ico" aria-hidden="true"><use href="#itv-i-truck"/></svg> Solicitar recogida
+            </button>
+          {%- endif -%}
+        </div>
+        <p class="itv-mini">El mensaje sale ya escrito con todos los datos. Solo tienes que enviarlo.</p>
+
+        {%- if s.mostrar_formulario -%}
+          <div class="itv-formbox" id="itv-form-{{ section.id }}" data-itv-formbox hidden>
+            {%- form 'contact', id: 'itv-form', class: 'itv-form', novalidate: 'novalidate' -%}
+              <h3 class="itv-h3">Solicitar recogida</h3>
+              <p class="itv-mini">Te llamamos o escribimos para confirmar la oferta y el día de recogida.</p>
+              <textarea name="contact[body]" hidden data-itv-body></textarea>
+              <div class="itv-grid2">
+                <div class="itv-field">
+                  <label class="itv-label" for="itv-f-name">Nombre</label>
+                  <input id="itv-f-name" class="itv-input" type="text" name="contact[name]" autocomplete="name" required maxlength="80">
+                </div>
+                <div class="itv-field">
+                  <label class="itv-label" for="itv-f-tel">Teléfono</label>
+                  <input id="itv-f-tel" class="itv-input" type="tel" name="contact[phone]" autocomplete="tel" inputmode="tel" required pattern="[+0-9 ]{9,16}">
+                </div>
+                <div class="itv-field">
+                  <label class="itv-label" for="itv-f-mail">Email</label>
+                  <input id="itv-f-mail" class="itv-input" type="email" name="contact[email]" autocomplete="email" required>
+                </div>
+                <div class="itv-field">
+                  <label class="itv-label" for="itv-f-cp">Código postal</label>
+                  <input id="itv-f-cp" class="itv-input" type="text" name="contact[codigo_postal]" autocomplete="postal-code" inputmode="numeric" pattern="[0-9]{5}" maxlength="5" required>
+                </div>
+              </div>
+              <label class="itv-check">
+                <input type="checkbox" name="contact[privacidad]" value="Aceptada" required>
+                <span>He leído la <a href="{{ priv }}" target="_blank" rel="noopener">política de privacidad</a>. Usaremos tus datos solo para esta tasación.</span>
+              </label>
+              <p class="itv-err" data-itv-form-err role="alert" hidden></p>
+              <button type="submit" class="itv-btn itv-btn--gold itv-btn--wide" data-itv-submit>Enviar solicitud</button>
+              {%- if form.posted_successfully? -%}<p class="itv-ok" data-itv-posted>Solicitud enviada. Te contactamos en breve.</p>{%- endif -%}
+            {%- endform -%}
+          </div>
+        {%- endif -%}
+
+        {%- if s.mostrar_fotos -%}
+          <div class="itv-photos">
+            <h3 class="itv-h3"><svg class="itv-ico" aria-hidden="true"><use href="#itv-i-camera"/></svg> Al abrir WhatsApp, adjunta estas 6 fotos</h3>
+            <p class="itv-mini">WhatsApp no recibe fotos desde la web: prepáralas aquí y márcalas cuando las mandes. No se suben a ningún sitio.</p>
+            <ol class="itv-fotos" data-itv-fotos>
+              <li class="itv-foto" data-foto="0">
+                <label class="itv-foto__pick"><input type="file" accept="image/*" class="itv-sr" data-itv-file="0">
+                  <span class="itv-foto__th" aria-hidden="true"><svg class="itv-ico"><use href="#itv-i-camera"/></svg></span>
+                  <span class="itv-foto__tx"><b>1. Frontal encendido</b><small>Pantalla encendida, de frente</small></span></label>
+                <label class="itv-check itv-check--sm"><input type="checkbox" data-itv-fok="0"><span>Hecha</span></label>
+              </li>
+              <li class="itv-foto" data-foto="1">
+                <label class="itv-foto__pick"><input type="file" accept="image/*" class="itv-sr" data-itv-file="1">
+                  <span class="itv-foto__th" aria-hidden="true"><svg class="itv-ico"><use href="#itv-i-camera"/></svg></span>
+                  <span class="itv-foto__tx"><b>2. Trasera</b><small>Que se vea todo el cristal</small></span></label>
+                <label class="itv-check itv-check--sm"><input type="checkbox" data-itv-fok="1"><span>Hecha</span></label>
+              </li>
+              <li class="itv-foto" data-foto="2">
+                <label class="itv-foto__pick"><input type="file" accept="image/*" class="itv-sr" data-itv-file="2">
+                  <span class="itv-foto__th" aria-hidden="true"><svg class="itv-ico"><use href="#itv-i-camera"/></svg></span>
+                  <span class="itv-foto__tx"><b>3. Lateral izquierdo</b><small>Para ver el marco</small></span></label>
+                <label class="itv-check itv-check--sm"><input type="checkbox" data-itv-fok="2"><span>Hecha</span></label>
+              </li>
+              <li class="itv-foto" data-foto="3">
+                <label class="itv-foto__pick"><input type="file" accept="image/*" class="itv-sr" data-itv-file="3">
+                  <span class="itv-foto__th" aria-hidden="true"><svg class="itv-ico"><use href="#itv-i-camera"/></svg></span>
+                  <span class="itv-foto__tx"><b>4. Lateral derecho</b><small>Para ver el marco</small></span></label>
+                <label class="itv-check itv-check--sm"><input type="checkbox" data-itv-fok="3"><span>Hecha</span></label>
+              </li>
+              <li class="itv-foto" data-foto="4">
+                <label class="itv-foto__pick"><input type="file" accept="image/*" class="itv-sr" data-itv-file="4">
+                  <span class="itv-foto__th" aria-hidden="true"><svg class="itv-ico"><use href="#itv-i-camera"/></svg></span>
+                  <span class="itv-foto__tx"><b>5. Pantalla en blanco</b><small>Fondo blanco y brillo al máximo</small></span></label>
+                <label class="itv-check itv-check--sm"><input type="checkbox" data-itv-fok="4"><span>Hecha</span></label>
+              </li>
+              <li class="itv-foto" data-foto="5">
+                <label class="itv-foto__pick"><input type="file" accept="image/*" class="itv-sr" data-itv-file="5">
+                  <span class="itv-foto__th" aria-hidden="true"><svg class="itv-ico"><use href="#itv-i-camera"/></svg></span>
+                  <span class="itv-foto__tx"><b>6. Captura de batería</b><small>Ajustes → Batería → Estado</small></span></label>
+                <label class="itv-check itv-check--sm"><input type="checkbox" data-itv-fok="5"><span>Hecha</span></label>
+              </li>
+            </ol>
+            <p class="itv-mini" data-itv-fotos-n></p>
+            <button type="button" class="itv-btn itv-btn--line" data-itv-share hidden><svg class="itv-ico" aria-hidden="true"><use href="#itv-i-share"/></svg> Compartir las fotos</button>
+          </div>
+        {%- endif -%}
+
+        <div class="itv-nav">
+          <button type="button" class="itv-btn itv-btn--ghost" data-itv-back><svg class="itv-ico" aria-hidden="true"><use href="#itv-i-left"/></svg> Cambiar respuestas</button>
+          <button type="button" class="itv-link" data-itv-reset>Tasar otro iPhone</button>
+        </div>
+      </div>
+    </div>
+
+    <aside class="itv-live" data-itv-live hidden>
+      <p class="itv-live__k">Hasta</p>
+      <p class="itv-live__p" aria-live="polite" aria-atomic="true"><span data-itv-live-p>0</span>&nbsp;€</p>
+      <p class="itv-live__m" data-itv-live-m></p>
+    </aside>
+  </div>
+
+  {%- if s.mostrar_confianza -%}
+    {%- include 'it-google-data' -%}
+    {%- include 'it-wallapop-data' -%}
+    <div class="itv-trust">
+      <h2 class="itv-h2">Cómo funciona</h2>
+      <ol class="itv-how">
+        <li><svg class="itv-ico" aria-hidden="true"><use href="#itv-i-chat"/></svg><span>Tasa tu iPhone aquí o mándanos modelo y fotos por WhatsApp.</span></li>
+        <li><svg class="itv-ico" aria-hidden="true"><use href="#itv-i-clock"/></svg><span>Te damos oferta en menos de 2 horas, sin compromiso.</span></li>
+        <li><svg class="itv-ico" aria-hidden="true"><use href="#itv-i-truck"/></svg><span>Lo recogemos gratis en tu casa con Correos.</span></li>
+        <li><svg class="itv-ico" aria-hidden="true"><use href="#itv-i-euro"/></svg><span>Te pagamos por Bizum o transferencia al revisarlo.</span></li>
+      </ol>
+      <div class="itv-rates">
+        <a class="itv-rate" href="{{ gg_maps }}" target="_blank" rel="noopener">
+          <svg class="itv-ico" aria-hidden="true"><use href="#itv-i-star"/></svg>
+          <span><b>{{ gg_avg }}</b> de 5 en Google · {{ gg_count }} reseñas</span>
+        </a>
+        <a class="itv-rate" href="{{ wp_profile }}" target="_blank" rel="noopener">
+          <svg class="itv-ico" aria-hidden="true"><use href="#itv-i-star"/></svg>
+          <span><b>{{ wp_avg }}</b> de 5 en Wallapop · {{ wp_ratings }} valoraciones</span>
+        </a>
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- if s.mostrar_faq and section.blocks.size > 0 -%}
+    <div class="itv-faq">
+      <h2 class="itv-h2">Preguntas frecuentes</h2>
+      {%- for b in section.blocks -%}
+        <details class="itv-faq__i" {{ b.shopify_attributes }}>
+          <summary>{{ b.settings.pregunta | escape }}</summary>
+          <div class="itv-faq__a">{{ b.settings.respuesta }}</div>
+        </details>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Vende tu iPhone",
+  "tag": "div",
+  "class": "itv-section",
+  "settings": [
+    { "type": "header", "content": "Textos" },
+    { "type": "text", "id": "eyebrow", "label": "Antetítulo", "default": "Compramos tu iPhone" },
+    { "type": "text", "id": "titulo", "label": "Título", "default": "¿Cuánto te damos por tu iPhone?" },
+    { "type": "textarea", "id": "subtitulo", "label": "Subtítulo", "default": "Tres pasos y ves la oferta. Recogida gratis con Correos y pago por Bizum o transferencia al revisarlo." },
+    { "type": "text", "id": "whatsapp", "label": "WhatsApp (con prefijo, sin +)", "default": "34624150603" },
+    { "type": "url", "id": "privacidad_url", "label": "Política de privacidad", "info": "Vacío = /policies/privacy-policy" },
+    { "type": "header", "content": "Precios", "info": "Los precios máximos por modelo y capacidad se editan en Contenido > Metaobjetos > Precio de compra iPhone. Aquí solo se ajusta cómo se descuenta según el estado." },
+    { "type": "range", "id": "mult_excelente", "label": "Excelente (% del máximo)", "min": 10, "max": 100, "step": 1, "unit": "%", "default": 92 },
+    { "type": "range", "id": "mult_muy_bueno", "label": "Muy bueno (%)", "min": 10, "max": 100, "step": 1, "unit": "%", "default": 84 },
+    { "type": "range", "id": "mult_bueno", "label": "Bueno (%)", "min": 10, "max": 100, "step": 1, "unit": "%", "default": 75 },
+    { "type": "range", "id": "mult_aceptable", "label": "Aceptable (%)", "min": 10, "max": 100, "step": 1, "unit": "%", "default": 60 },
+    { "type": "range", "id": "mult_danos", "label": "Con daños (%)", "min": 10, "max": 100, "step": 1, "unit": "%", "default": 40 },
+    { "type": "range", "id": "bat_85", "label": "Descuento batería 85-89 %", "min": 0, "max": 30, "step": 1, "unit": "%", "default": 3 },
+    { "type": "range", "id": "bat_80", "label": "Descuento batería 80-84 %", "min": 0, "max": 30, "step": 1, "unit": "%", "default": 6 },
+    { "type": "range", "id": "bat_bajo", "label": "Descuento batería < 80 %", "min": 0, "max": 50, "step": 1, "unit": "%", "default": 12 },
+    { "type": "range", "id": "extra_caja", "label": "Suma por caja original", "min": 0, "max": 50, "step": 5, "unit": "€", "default": 10 },
+    { "type": "range", "id": "extra_factura", "label": "Suma por factura", "min": 0, "max": 50, "step": 5, "unit": "€", "default": 10 },
+    { "type": "header", "content": "Opciones" },
+    { "type": "checkbox", "id": "canje", "label": "Ofrecer canje por otro iPhone", "default": false },
+    { "type": "checkbox", "id": "entrega_mano", "label": "Ofrecer entrega en mano", "default": false },
+    { "type": "text", "id": "entrega_mano_texto", "label": "Texto de entrega en mano", "default": "Entrega en mano" },
+    { "type": "checkbox", "id": "mostrar_formulario", "label": "Mostrar \"Solicitar recogida\"", "default": true },
+    { "type": "checkbox", "id": "mostrar_fotos", "label": "Mostrar guía de 6 fotos", "default": true },
+    { "type": "checkbox", "id": "mostrar_confianza", "label": "Mostrar cómo funciona y valoraciones", "default": true },
+    { "type": "checkbox", "id": "mostrar_faq", "label": "Mostrar preguntas frecuentes", "default": true }
+  ],
+  "blocks": [
+    {
+      "type": "faq",
+      "name": "Pregunta",
+      "settings": [
+        { "type": "text", "id": "pregunta", "label": "Pregunta" },
+        { "type": "richtext", "id": "respuesta", "label": "Respuesta" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Vende tu iPhone" }]
+}
+{% endschema %}

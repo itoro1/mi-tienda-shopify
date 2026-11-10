@@ -1,9 +1,8 @@
 <!-- COMPRAMOS IPHONE — SVG icons, no emojis -->
 {%- comment -%}
-  Los "hasta" son el maximo de la tabla del tasador (assets/itoro-trade-in.js)
-  para ese grupo de modelos, y esa tabla paga ~70 % del precio de venta.
-  "iPhone 13 / 14" decia hasta 380: un 13 se vende a 279 y un 14 de 256 GB
-  a 389, asi que se pagaba de mas. El maximo real del grupo es 270 (14, 256 GB).
+  Los "hasta" salen de snippets/it-vende-precios.liquid: el mismo metaobjeto
+  "Precio de compra iPhone" que usa el tasador. Si Fernando cambia un precio
+  en Contenido > Metaobjetos, cambia aquí y en el tasador a la vez.
 {%- endcomment -%}
 <section class="itcb">
   <div class="itcb-wrap">
@@ -19,7 +18,7 @@
 
       <p class="itcb-desc">
         Tasaci&oacute;n <strong>gratuita</strong> en menos de 2&nbsp;horas.
-        Pago <strong>inmediato</strong> por Bizum.
+        Pago por <strong>Bizum</strong> o transferencia al revisarlo.
         Recogida <strong>gratuita</strong> a domicilio.
       </p>
 
@@ -39,7 +38,7 @@
           </span>
           <div>
             <p class="itcb-check-t">Oferta en 2 horas</p>
-            <p class="itcb-check-d">Precio garantizado 48h</p>
+            <p class="itcb-check-d">Sin compromiso</p>
           </div>
         </div>
         <div class="itcb-check">
@@ -47,7 +46,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
           </span>
           <div>
-            <p class="itcb-check-t">Cobras al instante</p>
+            <p class="itcb-check-t">Cobras al revisarlo</p>
             <p class="itcb-check-d">Bizum o transferencia</p>
           </div>
         </div>
@@ -64,31 +63,46 @@
 
       <div class="itcb-prices">
         <p class="itcb-prices-title">Lo que pagamos por tu iPhone:</p>
+        {%- capture itcb_max -%}{% render 'it-vende-precios', modo: 'max', modelo: 'iPhone 14' %}{%- endcapture -%}
+        {%- if itcb_max != blank -%}
         <div class="itcb-price-row">
-          <span class="itcb-p-model">iPhone 13 / 14</span>
+          <span class="itcb-p-model">iPhone 14</span>
           <span class="itcb-p-sep"></span>
-          <span class="itcb-p-val">hasta 270 &euro;</span>
+          <span class="itcb-p-val">hasta {% assign v = itcb_max | strip | plus: 0 %}{% if v >= 1000 %}{{ v | divided_by: 1000 }}.{{ v | modulo: 1000 | prepend: '00' | slice: -3, 3 }}{% else %}{{ v }}{% endif %} &euro;</span>
         </div>
+        {%- endif -%}
+        {%- capture itcb_max -%}{% render 'it-vende-precios', modo: 'max', modelo: 'iPhone 15 Pro' %}{%- endcapture -%}
+        {%- if itcb_max != blank -%}
         <div class="itcb-price-row">
           <span class="itcb-p-model">iPhone 15 Pro</span>
           <span class="itcb-p-sep"></span>
-          <span class="itcb-p-val">hasta 580 &euro;</span>
+          <span class="itcb-p-val">hasta {% assign v = itcb_max | strip | plus: 0 %}{% if v >= 1000 %}{{ v | divided_by: 1000 }}.{{ v | modulo: 1000 | prepend: '00' | slice: -3, 3 }}{% else %}{{ v }}{% endif %} &euro;</span>
         </div>
+        {%- endif -%}
+        {%- capture itcb_max -%}{% render 'it-vende-precios', modo: 'max', modelo: 'iPhone 16 Pro' %}{%- endcapture -%}
+        {%- if itcb_max != blank -%}
         <div class="itcb-price-row itcb-price-row--hi">
           <span class="itcb-p-model">iPhone 16 Pro</span>
           <span class="itcb-p-sep"></span>
-          <span class="itcb-p-val itcb-p-hi">hasta 720 &euro;</span>
+          <span class="itcb-p-val itcb-p-hi">hasta {% assign v = itcb_max | strip | plus: 0 %}{% if v >= 1000 %}{{ v | divided_by: 1000 }}.{{ v | modulo: 1000 | prepend: '00' | slice: -3, 3 }}{% else %}{{ v }}{% endif %} &euro;</span>
         </div>
+        {%- endif -%}
+        {%- capture itcb_max -%}{% render 'it-vende-precios', modo: 'max', modelo: 'iPhone 17 Pro Max' %}{%- endcapture -%}
+        {%- if itcb_max != blank -%}
         <div class="itcb-price-row itcb-price-row--hi">
           <span class="itcb-p-model">iPhone 17 Pro Max</span>
           <span class="itcb-p-sep"></span>
-          <span class="itcb-p-val itcb-p-hi">hasta 950 &euro;</span>
+          <span class="itcb-p-val itcb-p-hi">hasta {% assign v = itcb_max | strip | plus: 0 %}{% if v >= 1000 %}{{ v | divided_by: 1000 }}.{{ v | modulo: 1000 | prepend: '00' | slice: -3, 3 }}{% else %}{{ v }}{% endif %} &euro;</span>
         </div>
+        {%- endif -%}
+        {%- capture itcb_max -%}{% render 'it-vende-precios', modo: 'max', modelo: 'iPhone 18 Pro Max' %}{%- endcapture -%}
+        {%- if itcb_max != blank -%}
         <div class="itcb-price-row itcb-price-row--hi">
           <span class="itcb-p-model">iPhone 18 Pro Max</span>
           <span class="itcb-p-sep"></span>
-          <span class="itcb-p-val itcb-p-hi">hasta 1.350 &euro;</span>
+          <span class="itcb-p-val itcb-p-hi">hasta {% assign v = itcb_max | strip | plus: 0 %}{% if v >= 1000 %}{{ v | divided_by: 1000 }}.{{ v | modulo: 1000 | prepend: '00' | slice: -3, 3 }}{% else %}{{ v }}{% endif %} &euro;</span>
         </div>
+        {%- endif -%}
       </div>
 
       <a href="https://wa.me/34624150603?text=Hola%2C+quiero+vender+mi+iPhone.+Modelo%3A+"
@@ -98,14 +112,15 @@
         </svg>
         Pedir tasaci&oacute;n gratis &mdash; WhatsApp
       </a>
-      <p class="itcb-note">* Precios orientativos seg&uacute;n estado. Valoramos cualquier modelo.</p>
+      <a href="/pages/compramos-tu-movil" class="itcb-calc">Calcular mi precio en 1 minuto &rarr;</a>
+      <p class="itcb-note">* Precios m&aacute;ximos orientativos (iPhone precintado de mayor capacidad). La oferta depende del estado.</p>
     </div>
 
     <div class="itcb-r">
       <div class="itcb-stats">
         <div class="itcb-stat">
           <span class="itcb-stat-n">Bizum</span>
-          <span class="itcb-stat-l">Pago inmediato</span>
+          <span class="itcb-stat-l">o transferencia</span>
         </div>
         <div class="itcb-stat">
           <span class="itcb-stat-n">2h</span>
@@ -116,8 +131,8 @@
           <span class="itcb-stat-l">Recogida</span>
         </div>
         <div class="itcb-stat itcb-stat-g">
-          <span class="itcb-stat-n">48h</span>
-          <span class="itcb-stat-l">Precio fijo</span>
+          <span class="itcb-stat-n">0 &euro;</span>
+          <span class="itcb-stat-l">Sin compromiso</span>
         </div>
       </div>
 
@@ -133,7 +148,7 @@
           <div class="itcb-step-n">2</div>
           <div class="itcb-step-txt">
             <p class="itcb-step-t">Recibe tu oferta en menos de 2 horas</p>
-            <p class="itcb-step-d">Precio garantizado 48h &mdash; sin compromiso</p>
+            <p class="itcb-step-d">Orientativa hasta revisarlo &mdash; sin compromiso</p>
           </div>
         </div>
         <div class="itcb-step">
@@ -146,8 +161,8 @@
         <div class="itcb-step">
           <div class="itcb-step-n">4</div>
           <div class="itcb-step-txt">
-            <p class="itcb-step-t">Cobras al instante</p>
-            <p class="itcb-step-d">Bizum o transferencia &mdash; pago inmediato</p>
+            <p class="itcb-step-t">Cobras al revisarlo</p>
+            <p class="itcb-step-d">Bizum o transferencia</p>
           </div>
         </div>
       </div>
@@ -182,6 +197,8 @@
 .itcb-p-hi{color:#15803d!important;font-weight:700!important;font-size:14px!important}
 .itcb-wa{display:inline-flex;align-items:center;gap:10px;padding:14px 24px;background:#16a34a!important;color:#ffffff!important;border-radius:12px;text-decoration:none;font-weight:700;font-size:14px;min-height:52px;margin-bottom:10px;transition:background .2s}
 .itcb-wa:hover{background:#15803d!important;color:#ffffff!important}
+.itcb-calc{display:inline-flex;align-items:center;min-height:44px;margin:0 0 6px 14px;font-weight:600;font-size:14px;color:#111827!important;text-decoration:underline;text-underline-offset:3px}
+[data-theme="dark"] .itcb-calc{color:#d4af37!important}
 .itcb-note{font-size:11px;color:#9ca3af!important;margin:0}
 .itcb-r{background:#0f172a!important;border-radius:16px;overflow:hidden;border:1px solid #1e293b!important}
 .itcb-stats{display:grid;grid-template-columns:1fr 1fr;gap:0;border-bottom:1px solid #1e293b}

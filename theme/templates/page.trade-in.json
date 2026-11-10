@@ -1,0 +1,63 @@
+{
+  "sections": {
+    "vende": {
+      "type": "it-vende",
+      "blocks": {
+        "faq_1": {
+          "type": "faq",
+          "settings": {
+            "pregunta": "¿Qué necesito para venderlo?",
+            "respuesta": "<p>Ser mayor de edad, que el iPhone sea tuyo y tu DNI. Debe tener «Buscar mi iPhone» desactivado, estar libre de operador y con los datos borrados. Si tienes la factura, mejor.</p>"
+          }
+        },
+        "faq_2": {
+          "type": "faq",
+          "settings": {
+            "pregunta": "¿El precio de la web es definitivo?",
+            "respuesta": "<p>Es una oferta orientativa hasta revisar el iPhone. Si al revisarlo algo no coincide con lo que has indicado, te lo decimos antes de pagarte y decides si sigues.</p>"
+          }
+        },
+        "faq_3": {
+          "type": "faq",
+          "settings": {
+            "pregunta": "¿Cómo os lo envío?",
+            "respuesta": "<p>Lo recogemos gratis en tu casa con Correos. Te explicamos cómo embalarlo.</p>"
+          }
+        },
+        "faq_4": {
+          "type": "faq",
+          "settings": {
+            "pregunta": "¿Cuándo y cómo cobro?",
+            "respuesta": "<p>Por Bizum o transferencia, en cuanto lo revisamos.</p>"
+          }
+        },
+        "faq_5": {
+          "type": "faq",
+          "settings": {
+            "pregunta": "¿Compráis iPhone con la pantalla rota?",
+            "respuesta": "<p>Sí. El precio se ajusta según el daño y siempre te hacemos oferta.</p>"
+          }
+        },
+        "faq_6": {
+          "type": "faq",
+          "settings": {
+            "pregunta": "¿Puedo echarme atrás?",
+            "respuesta": "<p>Sí, sin ningún coste hasta que se haga la recogida.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "faq_1",
+        "faq_2",
+        "faq_3",
+        "faq_4",
+        "faq_5",
+        "faq_6"
+      ],
+      "settings": {}
+    }
+  },
+  "order": [
+    "vende"
+  ]
+}
