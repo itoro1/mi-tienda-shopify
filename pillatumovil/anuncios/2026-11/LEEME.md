@@ -177,3 +177,11 @@ Por qué: casi no había carritos. Meta contaba unos 12 del 05/11 al 09/11, pero
 - 10/11: contador en directo en la web (`theme/snippets/ps-cuenta-atras.liquid`, cargado desde `layout/theme.liquid`). Es una barra roja arriba: «Precio de lanzamiento · termina en 2 d 00:02:57». Cuenta cada segundo hasta el 12/11 a las 17:00 UTC y se oculta sola. Solo aparece si `ps_lanzamiento` está activo. Probado en un iPhone 13 simulado. En el anuncio no cabe un contador real: Meta no lo permite en imagen ni en vídeo.
 - 10/11: fotos nuevas de los packs en la tienda. Son de estudio, hechas con Higgsfield a partir de las caras reales de las cajas: `fotos/estudio-pro/pack-usbc.png` y `pack-lightning.png`. Ahora son la foto principal (MediaImage 73072086024540 y 73072086057308); las fotos antiguas siguen detrás, no se ha borrado nada.
 - 10/11: vídeo pro en marcha. Fotograma vertical `fotos/fondos/escena-premium-9x16.png` (job 9941f75a). Vídeo Kling 3.0 Pro de 10 s (job d1625821, 25 créditos).
+- 10/11: anuncio **Vídeo pro** 120250513055960622 (creatividad 1556820797503598, vídeo Meta 4554601834815513), publicado en el conjunto de prospección. Montaje con `tools/video_pro.py`: 12,6 s en 9:16. Guion:
+  - 0-2,6 s: «¿Su iPhone vino sin cargador?»
+  - 2,6-6 s: «Originales de Apple · precintados en su caja»
+  - 6-10 s: 18,99 € y «En Apple, 38,00 € (precio del 01/11/2026)», con envío gratis en 24-48 h
+  - cierre: tarjeta con el plazo del jueves y el botón pillatumovil.com
+  - Enlace a /collections/packs con utm `video-pro-2026-11`. Termina solo el 12/11 a las 18:00 (ad_schedule_end_time).
+  - La escena está hecha con IA: el dueño debe marcar en el Administrador de anuncios la casilla de contenido hecho con IA.
+  - El clip sin montar (`clip-kling.mp4`, 19 MB) no se sube al repositorio; se puede recuperar en Higgsfield con el job d1625821.
