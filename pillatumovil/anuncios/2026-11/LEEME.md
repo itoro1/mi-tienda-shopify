@@ -161,3 +161,16 @@ Por qué: casi no había carritos. Meta contaba unos 12 del 05/11 al 09/11, pero
 - Escena E (120250495087240622) en pausa.
 - Activos: Escena Premium, Pack A y el recordatorio. Presupuesto sin cambios.
 - Ubicación de Shopify: el dueño quiere quitar el «1B». El token no tiene permiso `write_locations`, así que se le dieron los pasos para hacerlo él.
+
+## 10/11/2026 · Urgencia real: precio de lanzamiento hasta el jueves 12/11 a las 18:00
+
+- Lo pidió el dueño: 48 horas a 18,99 € y después el pack sube a 19,99 €. Al cliente solo se le enseña el plazo, no el precio futuro. Es urgencia verdadera porque el precio sube de verdad.
+- Web: `ps_lanzamiento_texto` = «Precio de lanzamiento: solo hasta el jueves 12/11 a las 18:00» (tema 207877767516, settings_data comparado con el publicado antes de subir).
+- Anuncio **Urgencia U** 120250512815050622, creatividad 2588966644941883 (`tools/anuncio_urgencia.py`). Lleva una franja roja con el plazo y «Envío gratis · llega a su casa en 24-48 h». Termina solo el 12/11 a las 18:00 (ad_schedule_end_time). Enlace a /collections/packs con utm `urgencia-2026-11`.
+- Escena Premium (120250504942170622) en pausa.
+- Routine **trig_0173LcPnve9rC4M41Z8hn1hh**, el 12/11 a las 18:00 (hora de Madrid):
+  - sube a 19,99 € las dos variantes «1 pack» (59637591474524 y 59637591605596);
+  - apaga `ps_lanzamiento`;
+  - pausa Pack A y el recordatorio (muestran 18,99 €);
+  - avisa al dueño.
+- Los packs de 2 y 3 unidades (33,99 € y 45,99 €) no cambian.
