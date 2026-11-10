@@ -2,13 +2,12 @@
 
 Uso: python3 video_persona.py CLIP.mp4 FUENTES_DIR SALIDA.mp4
 
-- Subtítulos palabra a palabra sincronizados con la voz (faster-whisper),
+- Subtítulos con el texto exacto del guion, sincronizados con la voz,
   abajo, sin tapar la cara ni las cajas. En Reels y TikTok casi todos ven sin sonido.
 - Mientras dice el precio salen «18,99 €» y «En Apple, 38,00 € (precio del 01/11/2026)».
 - Al final, tarjeta fija de 2,5 s: plazo real, envío y botón pillatumovil.com.
 """
 import subprocess, sys, tempfile
-from faster_whisper import WhisperModel
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 clip, fuentes, salida = sys.argv[1:4]
@@ -24,28 +23,24 @@ def arc(t, w=600):
     f = ImageFont.truetype(f'{fuentes}/Archivo.ttf', t); f.set_variation_by_axes([w, 100]); return f
 
 
-# 1) palabras con tiempos
-m = WhisperModel('small', device='cpu', compute_type='int8')
-segs, _ = m.transcribe(clip, language='es', word_timestamps=True)
-palabras = [(w.word.strip(), w.start, w.end) for s in segs for w in s.words]
-print(' '.join(p for p, _, _ in palabras))
-
-# 2) grupos de 2-4 palabras (cortes en pausas y signos)
-grupos, cur = [], []
-for p, a, b in palabras:
-    cur.append((p, a, b))
-    if len(cur) >= 4 or p[-1:] in '.,?!:' or (len(cur) >= 2 and len(' '.join(x[0] for x in cur)) > 18):
-        grupos.append(cur); cur = []
-if cur:
-    grupos.append(cur)
+# 1) subtítulos: texto exacto del guion; tiempos sacados de la voz con
+#    faster-whisper (word_timestamps) y fijados aquí para el clip Seedance 11423373.
+SUBS = [
+    ('¿Su iPhone vino', 0.00), ('sin cargador?', 0.68), ('Normal,', 1.42), ('Apple ya no lo pone.', 1.98),
+    ('Aquí tiene los dos:', 2.92), ('adaptador de 20 W', 3.76), ('y cable.', 4.68), ('Originales de Apple,', 5.24),
+    ('precintados.', 5.94), ('En Apple le cuestan', 6.84), ('38 euros.', 7.56), ('Aquí, 18,99.', 8.40),
+    ('Compramos por cantidad', 9.70), ('y ganamos menos.', 10.38), ('Envío gratis', 11.40),
+    ('en 24-48 h', 12.02), ('en su casa.', 12.98), ('Hasta el jueves.', 13.66), ('Toque «Comprar».', 14.44),
+]
+FIN_VOZ = 15.0
+PRECIO = (6.84, 11.30)
 
 FS = unb(64, 800)
-Y_SUB = 1600
+Y_SUB = 1720
 
 
 def capa_sub(txt):
     im = Image.new('RGBA', (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
-    txt = txt.upper()
     tw = d.textlength(txt, font=FS)
     x = (W - tw) / 2
     d.text((x, Y_SUB), txt, font=FS, fill=(255, 255, 255), stroke_width=7, stroke_fill=(0, 0, 0))
@@ -81,14 +76,10 @@ def cierre(fondo_png):
 
 tmp = tempfile.mkdtemp()
 capas = []
-for i, g in enumerate(grupos):
-    a = g[0][1]
-    b = grupos[i + 1][0][1] if i + 1 < len(grupos) else g[-1][2] + .3
-    capas.append((capa_sub(' '.join(x[0] for x in g)), a, b))
-# precio: desde «treinta y ocho»/«38» hasta el final de «menos»
-ini = next((a for p, a, _ in palabras if p.lower().strip('.,') in ('treinta', '38')), 7.0)
-fin = next((b for p, _, b in palabras if p.lower().strip('.,') == 'menos'), ini + 4)
-capas.append((capa_precio(), ini, fin))
+for i, (t, ini) in enumerate(SUBS):
+    fin = SUBS[i + 1][1] if i + 1 < len(SUBS) else FIN_VOZ
+    capas.append((capa_sub(t), ini, fin))
+capas.append((capa_precio(), *PRECIO))
 for i, (im, _, _) in enumerate(capas):
     im.save(f'{tmp}/c{i}.png')
 
