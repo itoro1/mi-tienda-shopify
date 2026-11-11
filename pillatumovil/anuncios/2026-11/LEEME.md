@@ -198,3 +198,8 @@ Por qué: casi no había carritos. Meta contaba unos 12 del 05/11 al 09/11, pero
   - El vídeo con dependienta pasa a la versión 30/11 (`pillatumovil_video_dependienta_30nov_9x16.mp4`). La frase final se cambió por la voz nueva (`voz-frase-30nov.mp3`) sobre un plano de los dos packs (`fotos/estudio-pro/dos-packs-9x16.png`), así no se nota que la boca no coincide. Subtítulos v3.
   - Anuncio **Vídeo dependienta · tienda real · oferta hasta 30/11**: ID 120250535868370622, creatividad 1774846063806047, vídeo Meta 1826881621787791. Está en el conjunto de prospección 120250314921150622, enlaza a /collections/packs con utm `dependienta-2026-11` / V2 y lleva el botón «Comprar». Termina solo el 30/11 a las 23:59. Publicado; Meta lo estaba revisando (IN_PROCESS) al anotarlo.
   - La Routine del 30/11 ya incluye este anuncio en su lista de pausas.
+- 11/11: **vídeo con dependienta 30/11 en 4K** (`pillatumovil_video_dependienta_30nov_4k.mp4`, 2160x3840, 32 s, 31 MB). Todavía sin publicar; espera el visto bueno del dueño.
+  - El tramo de 4,9 a 11,8 s (antes fotos de los packs sobre fondo gris) es ahora un plano de la chica detrás del mostrador señalando las cajas (Intone, job 83934977, 70 créditos), acelerado ×1,38 para que encaje con la voz.
+  - Intone cambió la voz de ese tramo por palabras sin sentido, así que se dejó la voz original de Elena por encima. En ese tramo la boca no va exacta, aunque en plano abierto casi no se nota.
+  - El primer intento (job 6bb1dd7f, 70 créditos) salió mal por un error de recorte: la voz quedó muda a partir de 2,4 s.
+  - El 4K se hizo con Topaz 2160p (job 055ddbaa, unos 27 créditos) y luego se recomprimió con crf 21. Quedan 51 créditos.
