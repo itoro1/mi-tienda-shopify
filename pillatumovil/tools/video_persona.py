@@ -1,6 +1,6 @@
 """Vídeo con dependienta 9:16 (10/11/2026): clip Seedance hablado + subtítulos + precio + cierre.
 
-Uso: python3 video_persona.py CLIP.mp4 FUENTES_DIR SALIDA.mp4
+Uso: python3 video_persona.py CLIP.mp4 FUENTES_DIR SALIDA.mp4 [v1|v2] [RETRASO_VOZ_S]
 
 - Subtítulos con el texto exacto del guion, sincronizados con la voz,
   abajo, sin tapar la cara ni las cajas. En Reels y TikTok casi todos ven sin sonido.
@@ -11,6 +11,8 @@ import subprocess, sys, tempfile
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 clip, fuentes, salida = sys.argv[1:4]
+VERSION = sys.argv[4] if len(sys.argv) > 4 else 'v2'
+RETRASO = float(sys.argv[5]) if len(sys.argv) > 5 else 0.0
 W, H = 1080, 1920
 NOCHE = (11, 15, 26); ORO = (214, 180, 112); MARFIL = (244, 241, 234); ROJO = (196, 38, 46)
 
@@ -25,15 +27,28 @@ def arc(t, w=600):
 
 # 1) subtítulos: texto exacto del guion; tiempos sacados de la voz con
 #    faster-whisper (word_timestamps) y fijados aquí para el clip Seedance 11423373.
-SUBS = [
+SUBS_V1 = [
     ('¿Su iPhone vino', 0.00), ('sin cargador?', 0.68), ('Normal,', 1.42), ('Apple ya no lo pone.', 1.98),
     ('Aquí tiene los dos:', 2.92), ('adaptador de 20 W', 3.76), ('y cable.', 4.68), ('Originales de Apple,', 5.24),
     ('precintados.', 5.94), ('En Apple le cuestan', 6.84), ('38 euros.', 7.56), ('Aquí, 18,99.', 8.40),
     ('Compramos por cantidad', 9.70), ('y ganamos menos.', 10.38), ('Envío gratis', 11.40),
     ('en 24-48 h', 12.02), ('en su casa.', 12.98), ('Hasta el jueves.', 13.66), ('Toque «Comprar».', 14.44),
 ]
-FIN_VOZ = 15.0
-PRECIO = (6.84, 11.30)
+# v2 (11/11): voz ElevenLabs «Elena» (voz-final-elena.mp3) + vídeo Intone con 5 planos.
+SUBS_V2 = [
+    ('¿Su iPhone vino', 0.0), ('sin cargador?', 0.8), ('Normal:', 2.1), ('Apple ya no lo pone.', 3.1),
+    ('Aquí tiene los dos:', 4.6), ('adaptador de 20 W', 5.9), ('y cable.', 7.5), ('Originales de Apple,', 8.6),
+    ('en su caja sin abrir.', 9.9), ('En Apple, 38 €.', 11.5), ('Aquí, 18,99 €.', 13.5),
+    ('Compramos por cantidad', 15.9), ('y ganamos menos.', 16.9), ('Envío gratis', 18.7),
+    ('en 24-48 h.', 19.7), ('Dese prisa:', 22.3), ('este precio acaba el jueves.', 23.2), ('Toque «Comprar».', 25.0),
+]
+if VERSION == 'v1':
+    SUBS, FIN_VOZ, PRECIO = SUBS_V1, 15.0, (6.84, 11.30)
+else:
+    SUBS, FIN_VOZ, PRECIO = SUBS_V2, 25.9, (11.5, 15.8)
+SUBS = [(t, x + RETRASO) for t, x in SUBS]
+FIN_VOZ += RETRASO
+PRECIO = (PRECIO[0] + RETRASO, PRECIO[1] + RETRASO)
 
 FS = unb(64, 800)
 Y_SUB = 1720
@@ -41,9 +56,12 @@ Y_SUB = 1720
 
 def capa_sub(txt):
     im = Image.new('RGBA', (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
-    tw = d.textlength(txt, font=FS)
+    f = FS
+    while d.textlength(txt, font=f) > W - 100:
+        f = unb(f.size - 4, 800)
+    tw = d.textlength(txt, font=f)
     x = (W - tw) / 2
-    d.text((x, Y_SUB), txt, font=FS, fill=(255, 255, 255), stroke_width=7, stroke_fill=(0, 0, 0))
+    d.text((x, Y_SUB), txt, font=f, fill=(255, 255, 255), stroke_width=7, stroke_fill=(0, 0, 0))
     return im
 
 
