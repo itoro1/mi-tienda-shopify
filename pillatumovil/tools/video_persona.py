@@ -34,18 +34,19 @@ SUBS_V1 = [
     ('Compramos por cantidad', 9.70), ('y ganamos menos.', 10.38), ('Envío gratis', 11.40),
     ('en 24-48 h', 12.02), ('en su casa.', 12.98), ('Hasta el jueves.', 13.66), ('Toque «Comprar».', 14.44),
 ]
-# v2 (11/11): voz ElevenLabs «Elena» (voz-final-elena.mp3) + vídeo Intone con 5 planos.
+# v2 (11/11): voz ElevenLabs «Elena» + vídeo Intone 5630c05b con 5 planos; tiempos medidos
+#    con faster-whisper sobre el clip final (clip-intone-broll.mp4).
 SUBS_V2 = [
-    ('¿Su iPhone vino', 0.0), ('sin cargador?', 0.8), ('Normal:', 2.1), ('Apple ya no lo pone.', 3.1),
-    ('Aquí tiene los dos:', 4.6), ('adaptador de 20 W', 5.9), ('y cable.', 7.5), ('Originales de Apple,', 8.6),
-    ('en su caja sin abrir.', 9.9), ('En Apple, 38 €.', 11.5), ('Aquí, 18,99 €.', 13.5),
-    ('Compramos por cantidad', 15.9), ('y ganamos menos.', 16.9), ('Envío gratis', 18.7),
-    ('en 24-48 h.', 19.7), ('Dese prisa:', 22.3), ('este precio acaba el jueves.', 23.2), ('Toque «Comprar».', 25.0),
+    ('¿Su iPhone vino', 0.0), ('sin cargador?', 1.0), ('Normal:', 2.3), ('Apple ya no lo pone.', 3.2),
+    ('Aquí tiene los dos:', 4.9), ('adaptador de 20 W', 6.3), ('y cable.', 7.9), ('Originales de Apple,', 8.9),
+    ('en su caja sin abrir.', 10.3), ('En Apple, 38 €.', 12.4), ('Aquí, 18,99 €.', 15.2),
+    ('Compramos por cantidad', 17.9), ('y ganamos menos.', 19.0), ('Envío gratis', 21.0),
+    ('en 24-48 h.', 22.0), ('Dese prisa:', 24.5), ('este precio acaba el jueves.', 25.6), ('Toque «Comprar».', 27.0),
 ]
 if VERSION == 'v1':
     SUBS, FIN_VOZ, PRECIO = SUBS_V1, 15.0, (6.84, 11.30)
 else:
-    SUBS, FIN_VOZ, PRECIO = SUBS_V2, 25.9, (11.5, 15.8)
+    SUBS, FIN_VOZ, PRECIO = SUBS_V2, 28.8, (12.4, 17.8)
 SUBS = [(t, x + RETRASO) for t, x in SUBS]
 FIN_VOZ += RETRASO
 PRECIO = (PRECIO[0] + RETRASO, PRECIO[1] + RETRASO)

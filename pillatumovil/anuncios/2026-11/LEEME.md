@@ -185,3 +185,9 @@ Por qué: casi no había carritos. Meta contaba unos 12 del 05/11 al 09/11, pero
   - Enlace a /collections/packs con utm `video-pro-2026-11`. Termina solo el 12/11 a las 18:00 (ad_schedule_end_time).
   - La escena está hecha con IA: el dueño debe marcar en el Administrador de anuncios la casilla de contenido hecho con IA.
   - El clip sin montar es `clip-kling.mp4` (19 MB, job d1625821 de Higgsfield).
+- 11/11: **vídeo con dependienta v2** (`anuncios/2026-11/video-persona/pillatumovil_video_dependienta_v2_9x16.mp4`, 31,5 s). Todavía sin publicar; espera el visto bueno del dueño.
+  - Voz ElevenLabs «Elena» (`voz-final-elena.mp3`). Dice «en su caja sin abrir» en vez de «precintada», que se entendía «presentada». Urgencia real: «este precio acaba el jueves». No dice «se agotan» porque hay unas 200 unidades.
+  - Vídeo Higgsfield Intone (job 5630c05b, 720p, 203 créditos) a partir de `fotograma-dependienta-real-v7.png`. La boca va sincronizada con la voz y hay 5 planos.
+  - El plano de las manos (4,9-11,8 s) traía el texto de las cajas deformado. Se cambió por las fotos de estudio de los packs (`tools/insertar_broll.py`).
+  - El plano del precio (11,8-14,9 s) se recortó a primer plano para sacar las cajas deformadas.
+  - Subtítulos, precio y cierre añadidos con `tools/video_persona.py ... v2`.
