@@ -196,3 +196,5 @@ Por qué: casi no había carritos. Meta contaba unos 12 del 05/11 al 09/11, pero
   - Web: `ps-cuenta-atras.liquid` cambia su data-fin a 2026-11-30T22:59:00Z, y `ps_lanzamiento_texto` dice «Precio de lanzamiento: solo hasta el 30/11». Se comparó con el tema publicado antes de subirlo.
   - Urgencia U y Vídeo pro llevan «hasta el jueves 12/11» en la imagen, así que se dejan acabar solos el 12/11 a las 18:00.
   - El vídeo con dependienta pasa a la versión 30/11 (`pillatumovil_video_dependienta_30nov_9x16.mp4`). La frase final se cambió por la voz nueva (`voz-frase-30nov.mp3`) sobre un plano de los dos packs (`fotos/estudio-pro/dos-packs-9x16.png`), así no se nota que la boca no coincide. Subtítulos v3.
+  - Anuncio **Vídeo dependienta · tienda real · oferta hasta 30/11**: ID 120250535868370622, creatividad 1774846063806047, vídeo Meta 1826881621787791. Está en el conjunto de prospección 120250314921150622, enlaza a /collections/packs con utm `dependienta-2026-11` / V2 y lleva el botón «Comprar». Termina solo el 30/11 a las 23:59. Publicado; Meta lo estaba revisando (IN_PROCESS) al anotarlo.
+  - La Routine del 30/11 ya incluye este anuncio en su lista de pausas.
