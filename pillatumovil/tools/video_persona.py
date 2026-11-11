@@ -115,9 +115,9 @@ fc = f'[0:v]scale={W}:{H}:flags=lanczos,setsar=1,format=yuv420p[v0];'
 for i, (_, a, b) in enumerate(capas):
     fc += f"[v{i}][{i+1}:v]overlay=0:0:enable='between(t,{a:.2f},{b:.2f})'[v{i+1}];"
 subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', *ins, '-filter_complex', fc.rstrip(';'), '-map', f'[v{len(capas)}]', '-map', '0:a?',
-                '-c:v', 'libx264', '-crf', '18', '-preset', 'medium', '-c:a', 'aac', '-b:a', '160k', '-ar', '44100', '-ac', '2', '-r', '30', f'{tmp}/a.mp4'], check=True)
+                '-c:v', 'libx264', '-crf', '18', '-preset', 'medium', '-c:a', 'aac', '-b:a', '160k', '-ar', '44100', '-ac', '2', '-r', '24', f'{tmp}/a.mp4'], check=True)
 subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-loop', '1', '-t', '2.5', '-i', f'{tmp}/cierre.png', '-f', 'lavfi', '-t', '2.5', '-i', 'anullsrc=r=44100:cl=stereo',
-                '-vf', 'format=yuv420p,fade=in:0:8', '-c:v', 'libx264', '-crf', '18', '-r', '30', '-c:a', 'aac', '-shortest', f'{tmp}/b.mp4'], check=True)
+                '-vf', 'format=yuv420p,fade=in:0:8', '-c:v', 'libx264', '-crf', '18', '-r', '24', '-c:a', 'aac', '-shortest', f'{tmp}/b.mp4'], check=True)
 open(f'{tmp}/l.txt', 'w').write(f"file '{tmp}/a.mp4'\nfile '{tmp}/b.mp4'\n")
 subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-f', 'concat', '-safe', '0', '-i', f'{tmp}/l.txt', '-c:v', 'libx264', '-crf', '19', '-c:a', 'aac', '-movflags', '+faststart', salida], check=True)
 print('ok', salida)
