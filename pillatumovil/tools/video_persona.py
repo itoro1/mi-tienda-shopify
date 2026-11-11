@@ -43,10 +43,16 @@ SUBS_V2 = [
     ('Compramos por cantidad', 17.9), ('y ganamos menos.', 19.0), ('Envío gratis', 21.0),
     ('en 24-48 h.', 22.0), ('Dese prisa:', 24.5), ('este precio acaba el jueves.', 25.6), ('Toque «Comprar».', 27.0),
 ]
+# v3 (11/11): oferta ampliada al 30/11. Se cambió la frase final por la voz nueva
+#    (voz-frase-30nov.mp3) sobre un plano de los dos packs; todo lo de después va 0,5 s más tarde.
+SUBS_V3 = SUBS_V2[:-3] + [('Dese prisa:', 24.4), ('este precio acaba el 30/11.', 25.5), ('Toque «Comprar».', 28.28)]
+PLAZO = {'v1': 'hasta el jueves 12/11, 18:00', 'v2': 'hasta el jueves 12/11, 18:00', 'v3': 'hasta el 30 de noviembre'}[VERSION]
 if VERSION == 'v1':
     SUBS, FIN_VOZ, PRECIO = SUBS_V1, 15.0, (6.84, 11.30)
-else:
+elif VERSION == 'v2':
     SUBS, FIN_VOZ, PRECIO = SUBS_V2, 28.8, (12.4, 17.8)
+else:
+    SUBS, FIN_VOZ, PRECIO = SUBS_V3, 29.3, (12.4, 17.8)
 SUBS = [(t, x + RETRASO) for t, x in SUBS]
 FIN_VOZ += RETRASO
 PRECIO = (PRECIO[0] + RETRASO, PRECIO[1] + RETRASO)
@@ -86,7 +92,7 @@ def cierre(fondo_png):
     c(790, '18,99 €', unb(170), ORO)
     c(1010, 'En Apple, 38,00 € (precio del 01/11/2026)', arc(30, 500), MARFIL)
     d.rounded_rectangle((90, 1100, W - 90, 1180), radius=40, fill=ROJO)
-    c(1122, 'Precio de lanzamiento · hasta el jueves 12/11, 18:00', arc(30, 800), (255, 255, 255))
+    c(1122, f'Precio de lanzamiento · {PLAZO}', arc(30, 800), (255, 255, 255))
     c(1220, 'Envío gratis · llega a su casa en 24-48 h', arc(34, 700), MARFIL)
     d.rounded_rectangle((110, 1320, W - 110, 1430), radius=55, fill=ORO)
     c(1352, 'pillatumovil.com  →', unb(46), NOCHE)
@@ -102,7 +108,7 @@ capas.append((capa_precio(), *PRECIO))
 for i, (im, _, _) in enumerate(capas):
     im.save(f'{tmp}/c{i}.png')
 
-subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-sseof', '-0.1', '-i', clip, '-frames:v', '1', '-vf', f'scale={W}:{H}', f'{tmp}/ult.png'], check=True)
+subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-sseof', '-0.5', '-i', clip, '-frames:v', '1', '-vf', f'scale={W}:{H}', f'{tmp}/ult.png'], check=True)
 cierre(f'{tmp}/ult.png').save(f'{tmp}/cierre.png')
 ins = ['-i', clip] + sum([['-i', f'{tmp}/c{i}.png'] for i in range(len(capas))], [])
 fc = f'[0:v]scale={W}:{H}:flags=lanczos,setsar=1,format=yuv420p[v0];'

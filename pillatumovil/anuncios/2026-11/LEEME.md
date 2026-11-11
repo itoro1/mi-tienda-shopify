@@ -191,3 +191,8 @@ Por qué: casi no había carritos. Meta contaba unos 12 del 05/11 al 09/11, pero
   - El plano de las manos (4,9-11,8 s) traía el texto de las cajas deformado. Se cambió por las fotos de estudio de los packs (`tools/insertar_broll.py`).
   - El plano del precio (11,8-14,9 s) se recortó a primer plano para sacar las cajas deformadas.
   - Subtítulos, precio y cierre añadidos con `tools/video_persona.py ... v2`.
+- 11/11: **el precio de lanzamiento se amplía hasta el 30/11 a las 23:59**, porque lo pidió el dueño («hasta final de mes para tener más margen»).
+  - La Routine trig_0173LcPnve9rC4M41Z8hn1hh pasa al 30/11 a las 23:59 (Madrid).
+  - Web: `ps-cuenta-atras.liquid` cambia su data-fin a 2026-11-30T22:59:00Z, y `ps_lanzamiento_texto` dice «Precio de lanzamiento: solo hasta el 30/11». Se comparó con el tema publicado antes de subirlo.
+  - Urgencia U y Vídeo pro llevan «hasta el jueves 12/11» en la imagen, así que se dejan acabar solos el 12/11 a las 18:00.
+  - El vídeo con dependienta pasa a la versión 30/11 (`pillatumovil_video_dependienta_30nov_9x16.mp4`). La frase final se cambió por la voz nueva (`voz-frase-30nov.mp3`) sobre un plano de los dos packs (`fotos/estudio-pro/dos-packs-9x16.png`), así no se nota que la boca no coincide. Subtítulos v3.

@@ -1,14 +1,14 @@
 {%- comment -%}
   Cuenta atrás REAL del precio de lanzamiento (10/11/2026).
-  Fin: jueves 12/11/2026 a las 18:00 (Madrid) = 17:00 UTC. A esa hora una Routine
+  Fin: domingo 30/11/2026 a las 23:59 (Madrid) = 22:59 UTC (ampliado el 11/11 a petición del dueño). A esa hora una Routine
   sube el pack a 19,99 € y apaga «ps_lanzamiento». La barra se oculta sola al llegar a 0.
 {%- endcomment -%}
 {%- if settings.ps_lanzamiento -%}
-<div class="ps-ca" data-ps-ca data-fin="2026-11-12T17:00:00Z" hidden>
+<div class="ps-ca" data-ps-ca data-fin="2026-11-30T22:59:00Z" hidden>
   <a class="ps-ca__in" href="{{ routes.collections_url }}/packs">
     <span class="ps-ca__txt">Precio de lanzamiento · termina en</span>
     <span class="ps-ca__reloj" data-ps-ca-reloj aria-hidden="true">--:--:--</span>
-    <span class="visually-hidden">el jueves 12 de noviembre a las 18:00</span>
+    <span class="visually-hidden">el 30 de noviembre a las 23:59</span>
   </a>
 </div>
 <style>
