@@ -12,6 +12,10 @@
   - Una variante: «Añadir al carrito» sin salir de la página
     (assets/ps-carrito.js; sin JavaScript va al carrito). Varias (packs):
     «Elegir cantidad», a la ficha.
+  - Con selector: true (página de colección), los packs enseñan «1 pack,
+    2 packs, 3 packs» con su precio y se añaden desde la tarjeta. Lo pidió
+    el dueño el 12/11/2026 para que quien llega del anuncio elija sin
+    cambiar de página.
   - Agotado: lo dice y no deja añadir.
   - data-tipo (pack, cargador, cable, movil, otro) y data-conector (usbc,
     lightning, todos) salen de la referencia: los usan los filtros de la
@@ -88,6 +92,24 @@
     {%- elsif p.has_only_default_variant -%}
       {%- form 'product', p, data-ps-anadir: '' -%}
         <input type="hidden" name="id" value="{{ v.id }}">
+        <input type="hidden" name="quantity" value="1">
+        <button class="ps-btn ps-btn--tinta ps-btn--ancho ps-tar__btn" type="submit" aria-label="Añadir al carrito: {{ nombre | strip | escape }}">Añadir al carrito</button>
+      {%- endform -%}
+    {%- elsif tipo == 'pack' and selector -%}
+      {%- form 'product', p, data-ps-anadir: '' -%}
+        <fieldset class="ps-tar__ops">
+          <legend class="ps-tar__ops-tit">¿Cuántos packs?</legend>
+          {%- assign marcado = false -%}
+          {%- for va in p.variants -%}
+            {%- if va.available -%}
+              <label class="ps-tar__op">
+                <input class="ps-tar__op-in" type="radio" name="id" value="{{ va.id }}"{% unless marcado %} checked{% endunless %}>
+                <span class="ps-tar__op-c"><span>{{ va.title }}</span><span class="ps-num">{{ va.price | money_without_currency }}&nbsp;€</span></span>
+              </label>
+              {%- assign marcado = true -%}
+            {%- endif -%}
+          {%- endfor -%}
+        </fieldset>
         <input type="hidden" name="quantity" value="1">
         <button class="ps-btn ps-btn--tinta ps-btn--ancho ps-tar__btn" type="submit" aria-label="Añadir al carrito: {{ nombre | strip | escape }}">Añadir al carrito</button>
       {%- endform -%}

@@ -113,7 +113,7 @@
       {%- if collection.products.size > 0 -%}
         <ul class="ps-tarjetas ps-co__lista ps-co__lista--{{ cols }}" role="list">
           {%- for p in collection.products -%}
-            {%- render 'ps-tarjeta', p: p -%}
+            {%- render 'ps-tarjeta', p: p, selector: true -%}
           {%- endfor -%}
         </ul>
         <p class="ps-co__vacio" data-ps-vacio hidden>No hay nada con esos filtros. <button type="button" class="ps-link" data-ps-limpiar>Ver todo</button></p>

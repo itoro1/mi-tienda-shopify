@@ -264,6 +264,15 @@ cart-drawer.drawer{width:100%}
 .ps-tar--movil .ps-tar__img--2{object-fit:contain;padding:6%}
 .ps-tar__agotado{margin:0;font-size:var(--ps-t5);font-weight:700}
 .ps-tar .ps-tar__error{margin:8px 0 0;font-size:var(--ps-t5);color:#9b1c1c}
+/* Packs en la colección: elegir 1, 2 o 3 sin salir de la tarjeta. */
+.ps-tar__ops{display:grid;gap:6px;min-width:0;margin:0 0 12px;padding:0;border:0}
+.ps-tar__ops-tit{margin:0 0 8px;padding:0;font-size:var(--ps-t5);font-weight:700}
+.ps-tar__op{position:relative;display:block;cursor:pointer}
+.ps-tar__op-in{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+.ps-tar__op-c{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:48px;padding:0 14px;border-radius:12px;font-size:15px;line-height:1.2;box-shadow:inset 0 0 0 1px rgba(127,127,127,.55);transition:box-shadow 160ms ease,background-color 160ms ease}
+.ps-tar__op-in:checked + .ps-tar__op-c{font-weight:700;background:rgba(214,180,112,.2);box-shadow:inset 0 0 0 2px currentColor}
+.ps-tar__op-in:focus-visible + .ps-tar__op-c{outline:2px solid var(--ps-oro);outline-offset:2px}
+@media (max-width:599px){.ps-tar__op-c{padding:0 10px;font-size:14px}}
 @media (hover:hover) and (pointer:fine){
   .ps-tar:hover .ps-tar__foto--doble .ps-tar__img--2{opacity:1}
   .ps-tar:hover .ps-tar__img{transform:scale(1.03)}
