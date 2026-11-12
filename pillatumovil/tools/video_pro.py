@@ -1,5 +1,5 @@
 """Vídeo pro 9:16 (10/11/2026): clip Kling + textos exactos + cierre con precio y web.
-Uso: python3 video_pro.py CLIP.mp4 FUENTES_DIR SALIDA.mp4
+Uso: python3 video_pro.py CLIP.mp4 FUENTES_DIR SALIDA.mp4 [PLAZO]
 Guion (lo que funciona en Reels/TikTok: gancho en 1 s, una idea por plano, cierre con CTA):
  0-2,5 s  «¿Su iPhone vino sin cargador?»          (gancho: el problema)
  2,5-6 s  «Originales de Apple · Precintados»        (confianza)
@@ -10,6 +10,8 @@ import os, subprocess, sys, tempfile
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 clip, fuentes, salida = sys.argv[1:4]
+# 12/11: el plazo se amplió al 30/11; se puede pasar otro como 4.º argumento.
+PLAZO = sys.argv[4] if len(sys.argv) > 4 else 'hasta el 30 de noviembre'
 W, H = 1080, 1920
 NOCHE = (11, 15, 26); ORO = (214, 180, 112); MARFIL = (244, 241, 234); ROJO = (196, 38, 46)
 def unb(t, w=700):
@@ -37,7 +39,7 @@ def cierre(fondo_png):
     c(790, '18,99 €', unb(170), ORO)
     c(1010, 'En Apple, 38,00 € (precio del 01/11/2026)', arc(30, 500), MARFIL)
     d.rounded_rectangle((90, 1100, W - 90, 1180), radius=40, fill=ROJO)
-    c(1122, 'Precio de lanzamiento · hasta el jueves 12/11, 18:00', arc(30, 800), (255, 255, 255))
+    c(1122, 'Precio de lanzamiento · ' + PLAZO, arc(30, 800), (255, 255, 255))
     c(1220, 'Envío gratis · llega a su casa en 24-48 h', arc(34, 700), MARFIL)
     d.rounded_rectangle((110, 1320, W - 110, 1430), radius=55, fill=ORO)
     c(1352, 'pillatumovil.com  →', unb(46), NOCHE)

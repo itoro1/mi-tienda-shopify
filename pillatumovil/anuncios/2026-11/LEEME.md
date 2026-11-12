@@ -203,3 +203,30 @@ Por qué: casi no había carritos. Meta contaba unos 12 del 05/11 al 09/11, pero
   - Intone cambió la voz de ese tramo por palabras sin sentido, así que se dejó la voz original de Elena por encima. En ese tramo la boca no va exacta, aunque en plano abierto casi no se nota.
   - El primer intento (job 6bb1dd7f, 70 créditos) salió mal por un error de recorte: la voz quedó muda a partir de 2,4 s.
   - El 4K se hizo con Topaz 2160p (job 055ddbaa, unos 27 créditos) y luego se recomprimió con crf 21. Quedan 51 créditos.
+- 12/11: **origen de las últimas ventas** (Shopify, `customerJourneySummary`).
+  - #1006 (Ibiza, 11/11 21:11, 18,99 €): vino del vídeo con dependienta (Facebook, utm `dependienta-2026-11` / V2). Compró 5 minutos después de entrar.
+  - #1007 (Marbella, 12/11 08:24, 18,99 €): origen desconocido. Shopify no guardó ninguna visita previa.
+  - Últimos 7 días en Meta: vídeo dependienta 0,69 € gastados, 9 clics, 2 carritos y 1 compra; Vídeo pro 6,42 €, 38 clics, 8 carritos y 1 compra.
+- 12/11: **prueba A/B hasta el 30/11** porque lo pidió el dueño («pon en circulación el vídeo que ya estaba generando click y este último para ver cuál funciona mejor»).
+  - **Vídeo pro · tienda premium · oferta hasta 30/11**: anuncio 120250547516480622, creatividad 3503495793171923, vídeo Meta 1747312976333535 (`video-pro/pillatumovil_video_pro_30nov_9x16.mp4`, hecho con `tools/video_pro.py` y el plazo nuevo). utm `video-pro-2026-11` / V2. Termina solo el 30/11 a las 23:59. Activo.
+  - Urgencia U y el Vídeo pro antiguo acaban solos el 12/11 a las 18:00.
+- 12/11: **vídeo con dependienta v4** (`video-persona/pillatumovil_video_dependienta_v4_9x16.mp4`, 1080x1920, 32 s). El dueño no quería cajas sobre fondo vacío: «tiene que estar todo el tiempo que se vea a la chica», enseñando la caja y dándole la vuelta, y cambiando de sitio.
+  - Planos nuevos con Kling 3.0 Pro (5 s, sin sonido, 8,75 créditos cada uno), siempre a partir de una imagen con el texto de las cajas correcto. Kling mantiene las letras nítidas.
+    - `broll/clipA.mp4` (job 217c32f0): junto al escaparate, enseña las dos cajas. Imagen inicial `broll/frameA.png` (job e814d40b).
+    - `broll/clipB.mp4` (job d93567a7): primer plano, gira la caja del cargador y enseña la parte de atrás. Va de `broll/frameB_cerca.png` a `broll/frameB_trasera_cerca.png`.
+    - `broll/clipC.mp4` (job 70bef678): entrega las dos cajas sobre el mostrador. Imagen inicial `broll/frameC.png` (job 77b0d162).
+  - La parte de atrás de la caja es la foto real (`fotos/cine/caja-cargador-trasera.png`) pegada sobre la caja con `tools/caja_trasera_en_mano.py`. Así las letras son las de verdad y no las inventa la IA.
+  - Montaje con `tools/montaje_dependienta_v4.sh` (24 fps, 1080x1920) y subtítulos v3 con `tools/video_persona.py`. El audio no cambia.
+  - En los planos nuevos la chica no habla (sonríe y enseña) y su voz sigue de fondo.
+  - Anuncio **Vídeo dependienta v4 · enseña la caja · oferta hasta 30/11**: ID 120250547806320622, creatividad 1137902302322366, vídeo Meta 1462843802614567. Conjunto de prospección 120250314921150622, utm `dependienta-2026-11` / V3, botón «Comprar», termina solo el 30/11 a las 23:59. Publicado; Meta lo estaba revisando (IN_PROCESS) al anotarlo.
+  - El anuncio dependienta anterior (120250535868370622, con el plano de packs sobre fondo vacío) queda en pausa.
+  - La Routine del 30/11 (trig_0173LcPnve9rC4M41Z8hn1hh) ya lleva los dos anuncios nuevos en su lista.
+  - Estudio de anuncios parecidos: `estudio-anuncios.md`.
+  - Quedan 24,2 créditos de Higgsfield.
+  - Pendiente del dueño: marcar en Meta la casilla de contenido hecho con IA en los dos anuncios de vídeo.
+- 12/11 (tarde): **4K real en todo el vídeo**. El dueño vio que los planos nuevos (Kling) salían nítidos pero los planos donde habla la chica (Intone, 720x1280) seguían blandos.
+  - `tools/mejorar_4k.py`: superresolución x4 de toda la imagen (SPAN «clear_reality») y restauración de la cara (GFPGAN 1.4), en local con onnxruntime. No gasta créditos. Tarda unos 5 s por fotograma. Los modelos no están en el repositorio; la cabecera del script dice de dónde bajarlos.
+  - `tools/montaje_dependienta_v4.sh CARPETA_4K` monta a 2160x3840 y `tools/video_persona.py ... v3 0 2` dibuja los textos directamente en 4K.
+- 12/11 (tarde): Urgencia U (120250512815050622) y el Vídeo pro antiguo (120250513055960622) seguían en «activo» a las 19:50, pasada su hora de fin (18:00). Se pusieron en pausa a mano, porque su imagen dice «hasta el jueves 12/11».
+- 12/11 (tarde): **código de descuento de un solo uso para un cable suelto**, porque lo pidió el dueño. Descuenta 10,99 € (el 100 % de un cable) en los dos cables sueltos, con límite de 1 uso. El código no se escribe aquí; está en Shopify → Descuentos, «Cable suelto gratis (un solo uso)».
+- 12/11: **revisión diaria**. Gasto del día 4,50 €, 36 clics y 4 carritos. Del 05/11 al 12/11: 45,29 € y 5 pedidos pagados (#1003 a #1007), 9,06 € por venta (11,32 € sin contar el #1003). En los tres últimos días: 18,30 € y 3 ventas, 6,10 € por venta. Sin pagos abandonados en los últimos 3 días. Propuesta (sin aplicar): no subir el presupuesto todavía y dejar solo los dos vídeos hasta el 16/11.

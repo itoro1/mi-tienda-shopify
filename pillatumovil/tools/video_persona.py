@@ -1,6 +1,7 @@
 """Vídeo con dependienta 9:16 (10/11/2026): clip Seedance hablado + subtítulos + precio + cierre.
 
-Uso: python3 video_persona.py CLIP.mp4 FUENTES_DIR SALIDA.mp4 [v1|v2] [RETRASO_VOZ_S]
+Uso: python3 video_persona.py CLIP.mp4 FUENTES_DIR SALIDA.mp4 [v1|v2|v3] [RETRASO_VOZ_S] [ESCALA]
+ESCALA 2 = 4K nativo (2160x3840): los textos se dibujan al doble, no se amplían.
 
 - Subtítulos con el texto exacto del guion, sincronizados con la voz,
   abajo, sin tapar la cara ni las cajas. En Reels y TikTok casi todos ven sin sonido.
@@ -13,16 +14,17 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont
 clip, fuentes, salida = sys.argv[1:4]
 VERSION = sys.argv[4] if len(sys.argv) > 4 else 'v2'
 RETRASO = float(sys.argv[5]) if len(sys.argv) > 5 else 0.0
-W, H = 1080, 1920
+K = int(sys.argv[6]) if len(sys.argv) > 6 else 1   # 2 = 4K nativo
+W, H = 1080 * K, 1920 * K
 NOCHE = (11, 15, 26); ORO = (214, 180, 112); MARFIL = (244, 241, 234); ROJO = (196, 38, 46)
 
 
 def unb(t, w=700):
-    f = ImageFont.truetype(f'{fuentes}/Unbounded.ttf', t); f.set_variation_by_axes([w]); return f
+    f = ImageFont.truetype(f'{fuentes}/Unbounded.ttf', t * K); f.set_variation_by_axes([w]); return f
 
 
 def arc(t, w=600):
-    f = ImageFont.truetype(f'{fuentes}/Archivo.ttf', t); f.set_variation_by_axes([w, 100]); return f
+    f = ImageFont.truetype(f'{fuentes}/Archivo.ttf', t * K); f.set_variation_by_axes([w, 100]); return f
 
 
 # 1) subtítulos: texto exacto del guion; tiempos sacados de la voz con
@@ -57,44 +59,43 @@ SUBS = [(t, x + RETRASO) for t, x in SUBS]
 FIN_VOZ += RETRASO
 PRECIO = (PRECIO[0] + RETRASO, PRECIO[1] + RETRASO)
 
-FS = unb(64, 800)
-Y_SUB = 1720
+Y_SUB = 1720 * K
 
 
 def capa_sub(txt):
     im = Image.new('RGBA', (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
-    f = FS
-    while d.textlength(txt, font=f) > W - 100:
-        f = unb(f.size - 4, 800)
+    t = 64; f = unb(t, 800)
+    while d.textlength(txt, font=f) > W - 100 * K:
+        t -= 4; f = unb(t, 800)
     tw = d.textlength(txt, font=f)
     x = (W - tw) / 2
-    d.text((x, Y_SUB), txt, font=f, fill=(255, 255, 255), stroke_width=7, stroke_fill=(0, 0, 0))
+    d.text((x, Y_SUB), txt, font=f, fill=(255, 255, 255), stroke_width=7 * K, stroke_fill=(0, 0, 0))
     return im
 
 
 def capa_precio():
     im = Image.new('RGBA', (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
-    d.rounded_rectangle((170, 150, W - 170, 420), radius=40, fill=NOCHE + (225,))
+    d.rounded_rectangle((170 * K, 150 * K, W - 170 * K, 420 * K), radius=40 * K, fill=NOCHE + (225,))
     f = unb(130); t = '18,99 €'
-    d.text(((W - d.textlength(t, font=f)) / 2, 170), t, font=f, fill=ORO)
+    d.text(((W - d.textlength(t, font=f)) / 2, 170 * K), t, font=f, fill=ORO)
     f2 = arc(30, 600); t2 = 'En Apple, 38,00 € (precio del 01/11/2026)'
-    d.text(((W - d.textlength(t2, font=f2)) / 2, 350), t2, font=f2, fill=MARFIL)
+    d.text(((W - d.textlength(t2, font=f2)) / 2, 350 * K), t2, font=f2, fill=MARFIL)
     return im
 
 
 def cierre(fondo_png):
-    bg = Image.open(fondo_png).convert('RGB').filter(ImageFilter.GaussianBlur(6))
+    bg = Image.open(fondo_png).convert('RGB').filter(ImageFilter.GaussianBlur(6 * K))
     bg = Image.blend(bg, Image.new('RGB', bg.size, NOCHE), .55)
     d = ImageDraw.Draw(bg)
-    def c(y, t, f, col): d.text(((W - d.textlength(t, font=f)) / 2, y), t, font=f, fill=col)
+    def c(y, t, f, col): d.text(((W - d.textlength(t, font=f)) / 2, y * K), t, font=f, fill=col)
     c(560, 'pillatumovil', unb(84), MARFIL)
     c(700, 'Cargador 20 W + cable · originales de Apple', arc(34), MARFIL)
     c(790, '18,99 €', unb(170), ORO)
     c(1010, 'En Apple, 38,00 € (precio del 01/11/2026)', arc(30, 500), MARFIL)
-    d.rounded_rectangle((90, 1100, W - 90, 1180), radius=40, fill=ROJO)
+    d.rounded_rectangle((90 * K, 1100 * K, W - 90 * K, 1180 * K), radius=40 * K, fill=ROJO)
     c(1122, f'Precio de lanzamiento · {PLAZO}', arc(30, 800), (255, 255, 255))
     c(1220, 'Envío gratis · llega a su casa en 24-48 h', arc(34, 700), MARFIL)
-    d.rounded_rectangle((110, 1320, W - 110, 1430), radius=55, fill=ORO)
+    d.rounded_rectangle((110 * K, 1320 * K, W - 110 * K, 1430 * K), radius=55 * K, fill=ORO)
     c(1352, 'pillatumovil.com  →', unb(46), NOCHE)
     return bg
 
@@ -115,9 +116,9 @@ fc = f'[0:v]scale={W}:{H}:flags=lanczos,setsar=1,format=yuv420p[v0];'
 for i, (_, a, b) in enumerate(capas):
     fc += f"[v{i}][{i+1}:v]overlay=0:0:enable='between(t,{a:.2f},{b:.2f})'[v{i+1}];"
 subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', *ins, '-filter_complex', fc.rstrip(';'), '-map', f'[v{len(capas)}]', '-map', '0:a?',
-                '-c:v', 'libx264', '-crf', '18', '-preset', 'medium', '-c:a', 'aac', '-b:a', '160k', '-ar', '44100', '-ac', '2', '-r', '24', f'{tmp}/a.mp4'], check=True)
+                '-c:v', 'libx264', '-crf', '14' if K > 1 else '18', '-preset', 'medium', '-c:a', 'aac', '-b:a', '160k', '-ar', '44100', '-ac', '2', '-r', '24', f'{tmp}/a.mp4'], check=True)
 subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-loop', '1', '-t', '2.5', '-i', f'{tmp}/cierre.png', '-f', 'lavfi', '-t', '2.5', '-i', 'anullsrc=r=44100:cl=stereo',
-                '-vf', 'format=yuv420p,fade=in:0:8', '-c:v', 'libx264', '-crf', '18', '-r', '24', '-c:a', 'aac', '-shortest', f'{tmp}/b.mp4'], check=True)
+                '-vf', 'format=yuv420p,fade=in:0:8', '-c:v', 'libx264', '-crf', '14' if K > 1 else '18', '-r', '24', '-c:a', 'aac', '-shortest', f'{tmp}/b.mp4'], check=True)
 open(f'{tmp}/l.txt', 'w').write(f"file '{tmp}/a.mp4'\nfile '{tmp}/b.mp4'\n")
-subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-f', 'concat', '-safe', '0', '-i', f'{tmp}/l.txt', '-c:v', 'libx264', '-crf', '19', '-c:a', 'aac', '-movflags', '+faststart', salida], check=True)
+subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-f', 'concat', '-safe', '0', '-i', f'{tmp}/l.txt', '-c:v', 'libx264', '-crf', '18' if K > 1 else '19', '-c:a', 'aac', '-movflags', '+faststart', salida], check=True)
 print('ok', salida)
