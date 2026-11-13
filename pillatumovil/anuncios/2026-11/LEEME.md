@@ -247,3 +247,6 @@ Por qué: casi no había carritos. Meta contaba unos 12 del 05/11 al 09/11, pero
   - A las 23:35 se puso **en pausa la campaña entera** (120250314921130622) para no pagar clics a una web caída. Hay que reactivarla cuando el dominio vuelva.
   - Pendiente al reactivar: pausar el anuncio dependienta v4 (120250547806320622), porque el dueño ya no quiere ese mensaje, y dejar el anuncio nuevo y el Vídeo pro.
 - 13/11: **revisión diaria**. Gasto del día 6,33 €, 49 clics y 7 carritos (Vídeo pro 5,27 €; anuncio nuevo 1,06 €). Parte de esos clics llegó con la web ya caída. Sin pedidos nuevos desde el #1007. Del 05/11 al 13/11: 52,34 € y 5 pedidos pagados, 10,47 € por venta.
+- 13/11 (23:40): **dominio reactivado**. El dueño pulsó el enlace del correo de verificación del titular (approve.domainadmin.com, el registrador de Shopify) y el «client hold» se levantó a las 23:40. La web estuvo caída de 16:17 a 23:40. Comprobado con un navegador: la página de packs carga con el selector.
+  - Campaña 120250314921130622 reactivada. Activos: anuncio problema-solución 120250574619790622, Vídeo pro 120250547516480622 y Recordatorio. El anuncio dependienta v4 120250547806320622 queda en pausa (el dueño cambió de mensaje).
+  - Para otra vez: un «403» a curl en pillatumovil.com es el filtro antirrobots de Shopify, no una caída. Comprobar con Playwright.
