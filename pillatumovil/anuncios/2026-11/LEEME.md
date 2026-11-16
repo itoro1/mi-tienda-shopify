@@ -284,3 +284,5 @@ Por qué: casi no había carritos. Meta contaba unos 12 del 05/11 al 09/11, pero
   - Montaje: `tools/montaje_problema.sh` (v5). Detalle en `video-problema/LEEME.md`.
   - **No publicado**: se le envía al dueño para que lo vea primero. En Meta sigue la v3 (creatividad 1787350619228488).
   - Sin créditos de Higgsfield (quedan 1,65).
+- 16/11 (14:20, hora de España): **pedido #1009**, 18,99 €, Teba (Málaga). Shopify dice que la primera visita vino de Google, sin etiqueta de anuncio. Meta cuenta ese día una compra para el anuncio dependienta v4: lo más probable es que sea el mismo pedido (vio el anuncio y luego buscó la tienda).
+- 16/11: **revisión diaria** (a las 19:48). Gasto del día hasta esa hora 3,13 € (dependienta v4 2,65 €, 23 clics y 7 carritos; Vídeo pro 0,39 €; problema-solución 0,09 € con solo 20 impresiones; Recordatorio 0 €). Del 05/11 al 16/11: 66,87 € y 7 pedidos pagados (#1003 a #1009), 9,55 € por venta. Los dos códigos de un solo uso (cable y pack) siguen sin usarse. Pago abandonado de L'Alcúdia (15/11): segundo aviso el 16/11.
