@@ -3,17 +3,25 @@
 Uso: python3 foto_4k.py FOTO SALIDA.png MODELOS_DIR [X0 Y0 X1 Y1]
 Sirve para sacar un plano de detalle nítido de una imagen (13/11/2026: el cargador barato
 del plano del cliente, en el anuncio «problema → solución»). Modelos: ver tools/mejorar_4k.py.
+Si la foto tiene transparencia (un recorte PNG), la conserva.
 """
 import sys
 import cv2, numpy as np, onnxruntime as ort
 
 foto, salida, modelos = sys.argv[1:4]
-im = cv2.imread(foto)[:, :, ::-1]
+im = cv2.imread(foto, cv2.IMREAD_UNCHANGED); alfa = None
+if im.shape[2] == 4:                                   # recorte con transparencia: el color se amplía sobre blanco
+    alfa = im[:, :, 3]; a = alfa[..., None].astype(np.float32) / 255
+    im = (im[:, :, :3] * a + 255 * (1 - a)).round().astype(np.uint8)
+im = im[:, :, ::-1]
 if len(sys.argv) > 4:
     x0, y0, x1, y1 = map(int, sys.argv[4:8]); im = im[y0:y1, x0:x1]
 so = ort.SessionOptions(); so.intra_op_num_threads = 4; so.log_severity_level = 3
 sr = ort.InferenceSession(f'{modelos}/clear_reality_x4.onnx', so, providers=['CPUExecutionProvider'])
 x = (np.ascontiguousarray(im).astype(np.float32) / 255).transpose(2, 0, 1)[None]
 y = sr.run(None, {'input': x})[0][0].transpose(1, 2, 0)
-cv2.imwrite(salida, (np.clip(y, 0, 1) * 255).round().astype(np.uint8)[:, :, ::-1])
+out = (np.clip(y, 0, 1) * 255).round().astype(np.uint8)[:, :, ::-1]
+if alfa is not None and len(sys.argv) <= 4:
+    out = np.dstack([out, cv2.resize(alfa, (out.shape[1], out.shape[0]), interpolation=cv2.INTER_CUBIC)])
+cv2.imwrite(salida, out)
 print('ok', salida, y.shape[1], 'x', y.shape[0])

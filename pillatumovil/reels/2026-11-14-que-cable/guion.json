@@ -1,0 +1,12 @@
+{
+  "voz": "voz.mp3",
+  "guion": "Antes de comprar un cable para su iPhone, mire esto. Si su iPhone es un [quince|15] o posterior, necesita USB-C. Si es del [ocho|8] al [catorce|14], necesita Lightning. En [Pillatumóvil|Pillatumovil] tiene los dos, originales de Apple, con el adaptador de [veinte vatios|20 W], por [dieciocho con noventa y nueve|18,99 €]. Envío gratis, en [veinticuatro o cuarenta y ocho horas|24-48 h].",
+  "escenas": [
+    {"tipo": "clip", "hasta": 3.3, "fuente": "../../anuncios/2026-11/video-problema/clipH.mp4", "ini": 0},
+    {"tipo": "ficha", "hasta": 7.9, "rotulo": "¿QUÉ CABLE NECESITA?", "titulo": "iPhone 15 o posterior", "grande": "USB-C", "foto": "../../fotos/cine/caja-cable-usbc-frente.png"},
+    {"tipo": "ficha", "hasta": 11.3, "rotulo": "¿QUÉ CABLE NECESITA?", "titulo": "iPhone 8 al 14", "grande": "Lightning", "foto": "../../fotos/cine/caja-cable-lightning-frente.png"},
+    {"tipo": "clip", "hasta": 14.8, "fuente": "../../anuncios/2026-11/video-persona/broll/clipC.mp4", "ini": 0},
+    {"tipo": "clip", "hasta": 18.9, "fuente": "../../anuncios/2026-11/video-problema/clipT.mp4", "ini": 0},
+    {"tipo": "cierre", "hasta": 23.4, "plazo": "Precio de lanzamiento · hasta el 30/11 o fin de existencias"}
+  ]
+}
