@@ -1,0 +1,4 @@
+{"ini": 0, "fin": 118, "salida": [2160, 3840],
+ "cajas": [{"semilla": [740, 1200], "modelo": "cable", "tramos": [{"de": 0, "a": 117, "modo": "frente"}]},
+           {"semilla": [320, 1200], "modelo": "cargador", "sentido": -1,
+            "tramos": [{"de": 0, "a": 28, "modo": "frente"}, {"de": 29, "a": 56, "modo": "giro"}, {"de": 57, "a": 117, "modo": "trasera"}]}]}

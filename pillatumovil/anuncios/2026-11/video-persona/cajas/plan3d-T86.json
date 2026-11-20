@@ -1,0 +1,1 @@
+{"ini": 0, "fin": 86, "salida": [2160, 3840], "cajas": [{"semilla": [540, 1100], "modelo": "cargador", "sentido": -1, "tramos": [{"de": 0, "a": 30, "modo": "frente"}, {"de": 31, "a": 55, "modo": "giro"}, {"de": 56, "a": 120, "modo": "trasera"}]}]}

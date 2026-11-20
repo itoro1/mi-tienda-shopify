@@ -249,6 +249,11 @@ for n, fr in enumerate(fotogramas()):
     orig = F.copy()
     blanco, piel = mascaras(orig); piel = piel_gruesa(piel)
     _, etq = cv2.connectedComponents(blanco.astype(np.uint8))
+    # manchas pequeñas de color piel sueltas: son el interior de cartón (kraft) de la tapa de la caja dibujada,
+    # no dedos (los dedos van unidos a la mano, que es una mancha grande). Se quitan de la piel y se borran luego.
+    ns, es, st, _ = cv2.connectedComponentsWithStats(piel.astype(np.uint8))
+    kraft = np.isin(es, [k for k in range(1, ns) if st[k, 4] < 14000 * (SH / 3840) ** 2])
+    piel &= ~kraft
     pd = cv2.dilate(piel.astype(np.uint8), np.ones((3, 3), np.uint8)).astype(bool)
     pintadas = []
     # 1) cada caja: su postura y su imagen
@@ -275,6 +280,7 @@ for n, fr in enumerate(fotogramas()):
         cerca = cv2.dilate(sil.astype(np.uint8), np.ones((121, 121), np.uint8)).astype(bool)
         _, e2 = cv2.connectedComponents((claro & cerca).astype(np.uint8))
         resto = np.isin(e2, np.unique(e2[sil & claro & (e2 > 0)]))
+        resto |= kraft & cerca                                            # tapa kraft de la caja dibujada
         hoyo |= cv2.dilate((sil | resto).astype(np.uint8), np.ones((9, 9), np.uint8)).astype(bool)
     borde_carton = cv2.dilate(blanco.astype(np.uint8), np.ones((13, 13), np.uint8)).astype(bool)
     hoyo &= ~(pd & ~borde_carton)                                        # la piel se respeta, salvo el filo pegado al cartón
