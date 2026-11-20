@@ -286,3 +286,23 @@ Por qué: casi no había carritos. Meta contaba unos 12 del 05/11 al 09/11, pero
   - Sin créditos de Higgsfield (quedan 1,65).
 - 16/11 (14:20, hora de España): **pedido #1009**, 18,99 €, Teba (Málaga). Shopify dice que la primera visita vino de Google, sin etiqueta de anuncio. Meta cuenta ese día una compra para el anuncio dependienta v4: lo más probable es que sea el mismo pedido (vio el anuncio y luego buscó la tienda).
 - 16/11: **revisión diaria** (a las 19:48). Gasto del día hasta esa hora 3,13 € (dependienta v4 2,65 €, 23 clics y 7 carritos; Vídeo pro 0,39 €; problema-solución 0,09 € con solo 20 impresiones; Recordatorio 0 €). Del 05/11 al 16/11: 66,87 € y 7 pedidos pagados (#1003 a #1009), 9,55 € por venta. Los dos códigos de un solo uso (cable y pack) siguen sin usarse. Pago abandonado de L'Alcúdia (15/11): segundo aviso el 16/11.
+- 18/11 (17:04, hora de España): **pedido #1010, 33,99 € (2 packs)**, San Roque. Viene de Facebook, del anuncio dependienta v4 (utm `dependienta-2026-11` / V3). Es el primer pedido de 2 packs (deja unos 11 € frente a unos 7 € de 1 pack).
+- 19/11: pedido #1011, 0,00 €: un cargador suelto con un código de descuento. No cuenta como venta de anuncio.
+- 19/11: al editar los anuncios en el Administrador de anuncios, Meta rehízo las creatividades con las mejoras automáticas de Advantage+ activadas (optimización del texto, recorte y relleno del vídeo, filtros). Dependienta v4 pasa a la creatividad 2212585126019133. Ojo: «optimización del texto» puede reescribir el texto del anuncio y quitar, por ejemplo, «(precio del 01/11/2026)». En el anuncio nuevo del 20/11 se dejó apagada.
+- 20/11 (13:27): **el dueño subió el presupuesto de la campaña a 10 €/día** (lo cambió él).
+- 20/11: **estudio de la competencia y prompt de mejora**, porque lo pidió el dueño: «genérame un prompt para autoaplicártelo, para mejorar el anuncio que tenemos en Meta; estudia la competencia, los reels y anuncios con más visitas y más compras, por qué funcionan, y aplícalo para un anuncio que me genere muchas ventas».
+  - El prompt está en `prompt-mejora-anuncio.md` y se puede volver a usar tal cual.
+  - Lo principal de nuestros datos: el vídeo de la chica es el que vende (CTR del enlace 3,9 %, 60 carritos, 3 compras), pero la media de visionado es de 6 s, solo el 25,7 % llega al segundo 8 y el precio salía en el 12,4. Unas 8 de cada 10 personas no veían el precio. Y casi todo se pierde después del carrito.
+  - De la competencia (Biblioteca de anuncios de Meta y vídeos públicos): las compras de otro anunciante no se pueden ver; sí se ve cuánto tiempo lleva activo un anuncio y las visualizaciones públicas. Los temas con más visualizaciones del nicho son «Apple ya no trae cargador» y «cargador original o falso» (con la prueba en primer plano). En España, quien lleva más tiempo anunciándose pone el precio o la prueba social en el titular; las grandes marcas solo tienen Black Friday. Meta recomienda marca y mensaje en los 3 primeros segundos, vídeos cortos y subtítulos grabados.
+  - Se diseñaron tres ideas y las puntuaron dos jueces. Ganó una mezcla: el gancho que ya vende y el precio desde el primer fotograma.
+- 20/11: **anuncio nuevo «corto v1 · precio primero»** (`video-corto/`, ver su LEEME). Vídeo de 18 s hecho con lo que ya había, sin gastar créditos:
+  - Gancho de la chica («¿Su iPhone vino sin cargador?»).
+  - En el segundo 2, «En Apple, 38 €. Aquí, 18,99 €».
+  - Pruebas reales: el grabado del cargador (foto del dueño) y la caja real en 3D.
+  - «Compramos por cantidad y ganamos menos», el envío gratis y «Toque Comprar».
+  - Los precios están en pantalla desde el primer fotograma. Sin «Dese prisa».
+  - Anuncio 120250709680720622, creatividad 1925359448838679, vídeo Meta 3834039123411569. Conjunto 120250314921150622 (gente nueva), al lado de la dependienta v4, sin tocar el presupuesto. Utm `corto-2026-11` / V1, botón «Comprar», termina solo el 30/11 a las 23:59. Mejoras automáticas de texto y recorte apagadas. Publicado activo; Meta lo estaba revisando (IN_PROCESS) al anotarlo.
+  - La tarea programada del 30/11 ya incluye este anuncio en la lista de pausa.
+  - Pendiente del dueño: marcar en Meta la casilla de contenido hecho con IA (la chica es IA).
+  - Cómo juzgarlo: 3-4 días sin tocar (unos 30-40 €). Subir el presupuesto solo si cada compra sale por menos de unos 7 € de publicidad (unos 11 € si son pedidos de 2 packs).
+- 20/11: **vídeo de la dependienta con la caja real en 3D (v5 larga, 32 s)**. Montaje con `tools/montaje_dependienta_v5.sh`: las cajas que dibujó la IA en las manos de la chica se cambian por la caja real en 3D. No se ha publicado: lo que se publica es el corto. El máster está fuera del repositorio por tamaño.

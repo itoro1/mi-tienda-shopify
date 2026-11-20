@@ -1,0 +1,271 @@
+{
+ "pista": "PTM/anuncios/2026-11/video-persona/clip-intone-30nov-chica.mp4",
+ "fuentes": {
+  "H1": {
+   "video": "SCRATCH/k4/1.mp4",
+   "pista_desde": 0.0
+  },
+  "H3": {
+   "video": "SCRATCH/k4/3.mp4",
+   "pista_desde": 11.79
+  },
+  "H4": {
+   "video": "SCRATCH/k4/4.mp4",
+   "pista_desde": 14.92
+  },
+  "H6": {
+   "video": "SCRATCH/k4/6.mp4",
+   "pista_desde": 27.917
+  },
+  "B3D": {
+   "video": "SCRATCH/c3d/dep/B.mp4"
+  },
+  "GRABADO": {
+   "foto": "PTM/fotos/reales/cargador-clavijas-frente.jpg"
+  },
+  "CAJAS": {
+   "foto": "PTM/fotos/reales/cajas-traseras-y-producto.jpg"
+  }
+ },
+ "bloques": [
+  {
+   "audio": [
+    "pista",
+    0.0,
+    2.2
+   ],
+   "planos": [
+    {
+     "fuente": "H1"
+    }
+   ]
+  },
+  {
+   "audio": [
+    "pista",
+    12.3,
+    14.8
+   ],
+   "planos": [
+    {
+     "fuente": "H3"
+    }
+   ]
+  },
+  {
+   "audio": [
+    "pista",
+    15.08,
+    17.62
+   ],
+   "planos": [
+    {
+     "fuente": "H4"
+    }
+   ]
+  },
+  {
+   "audio": [
+    "pista",
+    8.86,
+    10.2
+   ],
+   "planos": [
+    {
+     "fuente": "GRABADO",
+     "recorte": [
+      250,
+      238,
+      1250,
+      2016
+     ],
+     "zoom": 0.15,
+     "ancla": [
+      0.5,
+      0.57
+     ]
+    }
+   ]
+  },
+  {
+   "audio": [
+    "pista",
+    10.22,
+    11.7
+   ],
+   "planos": [
+    {
+     "fuente": "B3D",
+     "desde": 0.75,
+     "velocidad": 1.3,
+     "recorte": [
+      300,
+      1060,
+      1864,
+      3840
+     ]
+    }
+   ]
+  },
+  {
+   "audio": [
+    "pista",
+    17.7,
+    20.66
+   ],
+   "planos": [
+    {
+     "fuente": "H4"
+    }
+   ]
+  },
+  {
+   "audio": [
+    "pista",
+    20.94,
+    24.35
+   ],
+   "planos": [
+    {
+     "fuente": "CAJAS",
+     "recorte": [
+      238,
+      400,
+      1462,
+      2576
+     ],
+     "zoom": 0.06,
+     "ancla": [
+      0.5,
+      0.2
+     ]
+    }
+   ]
+  },
+  {
+   "audio": [
+    "pista",
+    27.94,
+    29.4
+   ],
+   "planos": [
+    {
+     "fuente": "H6"
+    }
+   ]
+  }
+ ],
+ "acelera": 1.1,
+ "cierre": {
+  "dur": 2.0,
+  "producto": "Pack ORIGINAL de Apple",
+  "detalle": "1 pack = adaptador 20 W + cable",
+  "lineas": [
+   "2 packs: 33,99 € · 3 packs: 45,99 €",
+   "Envío gratis · llega a su casa en 24-48 h",
+   "Devolución gratis",
+   "Compramos por cantidad y ganamos menos"
+  ],
+  "plazo": "Oferta de lanzamiento hasta el 30/11/2026 o fin de existencias"
+ },
+ "guion": "¿Su iPhone vino sin cargador? En Apple, [38 euros|38 €]. Aquí, [18,99 euros|18,99 €]. Originales de Apple, en su caja sin abrir. Compramos por cantidad y ganamos menos. Envío gratis [en 24 48 horas|en 24-48 h]. Toque «Comprar».",
+ "subtitulos_y": 1040,
+ "subs_y": [
+  {
+   "de": 6.58,
+   "a": 9.15,
+   "y": 250
+  }
+ ],
+ "textos": [
+  {
+   "tipo": "tarjeta",
+   "de": 0,
+   "a": 6.58,
+   "y": 290
+  },
+  {
+   "tipo": "check",
+   "de": 0,
+   "a": 6.58,
+   "y": 1250,
+   "tam": 38,
+   "items": [
+    "ORIGINAL de Apple · adaptador 20 W + cable"
+   ]
+  },
+  {
+   "tipo": "check",
+   "de": 6.58,
+   "a": 7.8,
+   "y": 440,
+   "tam": 36,
+   "items": [
+    "Grabado: «Designed by Apple in California»"
+   ]
+  },
+  {
+   "tipo": "tarjeta",
+   "de": 9.15,
+   "a": 11.84,
+   "y": 290
+  },
+  {
+   "tipo": "pastilla",
+   "de": 9.15,
+   "a": 11.84,
+   "y": 920,
+   "tam": 40,
+   "texto": "¿Por qué este precio?"
+  },
+  {
+   "tipo": "check",
+   "de": 11.84,
+   "a": 14.94,
+   "y": 1200,
+   "tam": 38,
+   "paso": 1.2,
+   "items": [
+    "1 pack = adaptador 20 W + cable",
+    "Devolución gratis"
+   ]
+  },
+  {
+   "tipo": "tarjeta",
+   "de": 14.94,
+   "a": 16.27,
+   "y": 880
+  },
+  {
+   "tipo": "pastilla",
+   "de": 14.94,
+   "a": 16.27,
+   "y": 1260,
+   "tam": 40,
+   "texto": "2 packs: 33,99 €",
+   "color": [
+    214,
+    180,
+    112
+   ]
+  }
+ ],
+ "muestras": [
+  0.3,
+  1.5,
+  2.5,
+  3.6,
+  5.0,
+  6.2,
+  7.0,
+  7.6,
+  8.4,
+  9.0,
+  10.0,
+  11.2,
+  12.4,
+  13.8,
+  15.2,
+  15.9
+ ]
+}

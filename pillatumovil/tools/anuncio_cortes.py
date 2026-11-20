@@ -28,8 +28,13 @@ Formato del JSON:
   "textos": [ {"tipo": "banda", "de": 0, "a": 6.5, "l1": "…", "l2": "…"},
               {"tipo": "check", "de": 8, "a": 11, "items": ["Caja sin abrir", "Original de Apple"]},
               {"tipo": "precio", "de": 11, "a": 14.5, "grande": "18,99 €", "l1": "…", "l2": "…"},
-              {"tipo": "pastilla", "de": 14.5, "a": 17, "texto": "…"} ]          # tiempos del vídeo FINAL
+              {"tipo": "pastilla", "de": 14.5, "a": 17, "texto": "…"},
+              {"tipo": "tarjeta", "de": 0, "a": 6.5, "y": 290} ],   # precio a dos columnas; tiempos del vídeo FINAL
+  "subtitulos_y": 1040,                            # altura de los subtítulos (en píxeles de 1080x1920)
+  "subs_y": [{"de": 6.6, "a": 9.1, "y": 250}]      # otra altura en algunos tramos (insertos)
 }
+Cada plano admite además "recorte" [x0, y0, x1, y1] (9:16, en píxeles de la fuente), "zoom" (acercamiento lento),
+"ancla" [x, y] y, solo en planos sin boca, "velocidad". El volumen final se deja en -14 LUFS.
 El último plano de cada bloque se estira hasta llenar el bloque; en los tramos H, el punto de entrada
 sale de la hora del audio, así que la boca cuadra siempre.
 """
@@ -131,32 +136,30 @@ for i, a in enumerate(audio_tramos):
     else:
         src = 0 if a[0] == 'pista' else 1; d = a[2] - a[1]
         filtros.append(f'[{src}:a]atrim={a[1]}:{a[2]},asetpts=PTS-STARTPTS,aresample=44100,aformat=channel_layouts=stereo,'
-                       f'afade=t=in:d=0.015,afade=t=out:st={max(d - 0.015, 0)}:d=0.015[s{i}]')
+                       f'afade=t=in:d=0.03,afade=t=out:st={max(d - 0.03, 0)}:d=0.03[s{i}]')
 filtros.append(''.join(f'[s{i}]' for i in range(len(audio_tramos))) + f'concat=n={len(audio_tramos)}:v=0:a=1[a]')
 ff(*entradas, '-filter_complex', ';'.join(filtros), '-map', '[a]', '-c:a', 'pcm_s16le', f'{tmp}/a.wav')
 
 # ---------- 3) acelerar todo junto y añadir la tarjeta de cierre ----------
 AC = spec.get('acelera', 1.0)
-ff('-i', f'{tmp}/v.mp4', '-i', f'{tmp}/a.wav', '-filter_complex', f'[0:v]setpts=PTS/{AC},fps={FPS}[v];[1:a]atempo={AC}[a]',
+ff('-i', f'{tmp}/v.mp4', '-i', f'{tmp}/a.wav', '-filter_complex', f'[0:v]setpts=PTS/{AC},fps={FPS}[v];[1:a]atempo={AC},loudnorm=I=-14:TP=-1.5:LRA=11,aresample=44100[a]',
    '-map', '[v]', '-map', '[a]', '-c:v', 'libx264', '-crf', '14', '-preset', 'medium', '-pix_fmt', 'yuv420p', '-c:a', 'pcm_s16le', f'{tmp}/r.mkv')
 CUERPO = duracion(f'{tmp}/r.mkv')
 
 
 def tarjeta_cierre(c):
+    """Cierre: la web en grande, el precio con la comparación y las condiciones. Sin rojo ni prisa."""
     im = Image.new('RGB', (W, H), NOCHE); d = ImageDraw.Draw(im)
-    centro(d, 330, 'pillatumovil', unb(84), MARFIL)
-    centro(d, 470, 'Cargador 20 W + cable · originales de Apple', arc(34), MARFIL)
-    centro(d, 550, '18,99 €', unb(170), ORO)
-    centro(d, 775, 'En Apple, 38,00 € (precio del 01/11/2026)', arc(30, 500), MARFIL)
-    centro(d, 830, 'Compramos por cantidad y ganamos menos', arc(30, 500), MARFIL)
-    if c.get('plazo'):
-        f = encaja(d, c['plazo'], 30, 900, arc, 800); tw = d.textlength(c['plazo'], font=f)
-        d.rounded_rectangle(((W - tw) / 2 - 40 * K, 915 * K, (W + tw) / 2 + 40 * K, 1000 * K), radius=42 * K, fill=ROJO)
-        centro(d, 938, c['plazo'], f, (255, 255, 255))
-    centro(d, 1045, 'Envío gratis · llega a su casa en 24-48 h', arc(34, 700), MARFIL)
-    d.rounded_rectangle((70 * K, 1160 * K, W - 70 * K, 1330 * K), radius=85 * K, fill=ORO)
-    centro(d, 1203, 'pillatumovil.com', unb(72), NOCHE)
-    if c.get('pie'): centro(d, 1365, c['pie'], arc(30, 600), MARFIL)
+    centro(d, 300, c.get('producto', 'Pack ORIGINAL de Apple'), encaja(d, c.get('producto', 'Pack ORIGINAL de Apple'), 46, 940, arc, 800), MARFIL)
+    centro(d, 368, c.get('detalle', 'adaptador 20 W + cable'), arc(36, 500), MARFIL)
+    centro(d, 440, '18,99 €', unb(150), ORO)
+    centro(d, 640, 'En Apple, 38,00 € (precio del 01/11/2026)', arc(30, 500), MARFIL)
+    y = 715
+    for linea in c.get('lineas', []):
+        centro(d, y, linea, encaja(d, linea, 34, 940, arc, 700), MARFIL); y += 62
+    d.rounded_rectangle((70 * K, (y + 40) * K, W - 70 * K, (y + 200) * K), radius=80 * K, fill=ORO)
+    centro(d, y + 80, 'pillatumovil.com', unb(70), NOCHE)
+    if c.get('plazo'): centro(d, y + 250, c['plazo'], encaja(d, c['plazo'], 26, 940, arc, 500), MARFIL)
     return im
 
 
@@ -220,14 +223,15 @@ def capa_banda(t):
 
 
 def capa_check(t, k):
-    im = Image.new('RGBA', (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(im); y = t.get('y', 330); f = arc(46, 800)
-    ancho = max(d.textlength(x, font=f) for x in t['items']) + 150 * K; x0 = (W - ancho) / 2
+    im = Image.new('RGBA', (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(im); y = t.get('y', 330); tam = t.get('tam', 46); f = arc(tam, 800)
+    ancho = max(d.textlength(x, font=f) for x in t['items']) + 150 * K * tam / 46; x0 = (W - ancho) / 2
     for i, txt in enumerate(t['items'][:k]):
-        yy = (y + i * 110) * K
-        d.rounded_rectangle((x0, yy, x0 + ancho, yy + 90 * K), radius=45 * K, fill=(255, 255, 255, 236))
-        d.ellipse((x0 + 18 * K, yy + 15 * K, x0 + 78 * K, yy + 75 * K), fill=VERDE)
-        d.line([(x0 + 33 * K, yy + 46 * K), (x0 + 45 * K, yy + 58 * K), (x0 + 64 * K, yy + 33 * K)], fill=(255, 255, 255), width=8 * K, joint='curve')
-        d.text((x0 + 100 * K, yy + 18 * K), txt, font=f, fill=NOCHE)
+        e = tam / 46; yy = (y + i * 110 * e) * K
+        d.rounded_rectangle((x0, yy, x0 + ancho, yy + 90 * e * K), radius=45 * e * K, fill=(255, 255, 255, 236))
+        d.ellipse((x0 + 18 * e * K, yy + 15 * e * K, x0 + 78 * e * K, yy + 75 * e * K), fill=VERDE)
+        d.line([(x0 + 33 * e * K, yy + 46 * e * K), (x0 + 45 * e * K, yy + 58 * e * K), (x0 + 64 * e * K, yy + 33 * e * K)],
+               fill=(255, 255, 255), width=int(8 * e * K), joint='curve')
+        d.text((x0 + 100 * e * K, yy + 18 * e * K), txt, font=f, fill=NOCHE)
     return im
 
 
@@ -250,6 +254,21 @@ def capa_pastilla(t):
     return im
 
 
+def capa_tarjeta(t):
+    """Precio a dos columnas: «En Apple 38,00 € (precio del 01/11/2026)» | «Aquí 18,99 €». Nunca tachado."""
+    im = Image.new('RGBA', (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(im); y = t.get('y', 290); x0, x1 = 70, 1010
+    d.rounded_rectangle((x0 * K, y * K, x1 * K, (y + 150) * K), radius=34 * K, fill=NOCHE + (232,))
+    d.line([(560 * K, (y + 24) * K), (560 * K, (y + 126) * K)], fill=(255, 255, 255, 70), width=2 * K)
+    cx = (x0 + 560) / 2
+    for txt, f, yy, col in (('En Apple', arc(28, 500), y + 16, MARFIL), ('38,00 €', unb(46, 600), y + 50, MARFIL),
+                            ('(precio del 01/11/2026)', arc(23, 500), y + 110, MARFIL)):
+        d.text((cx * K - d.textlength(txt, font=f) / 2, yy * K), txt, font=f, fill=col)
+    cx = (560 + x1) / 2
+    for txt, f, yy, col in (('Aquí', arc(28, 700), y + 12, ORO), ('18,99 €', unb(74, 800), y + 42, ORO)):
+        d.text((cx * K - d.textlength(txt, font=f) / 2, yy * K), txt, font=f, fill=col)
+    return im
+
+
 capas = []                                                       # (de, a, imagen RGBA en numpy premultiplicada)
 for t in spec.get('textos', []):
     if t['tipo'] == 'check':
@@ -257,7 +276,7 @@ for t in spec.get('textos', []):
         for k in range(1, len(t['items']) + 1):
             capas.append((t['de'] + (k - 1) * paso, t['de'] + k * paso if k < len(t['items']) else t['a'], capa_check(t, k)))
     else:
-        capas.append((t['de'], t['a'], {'banda': capa_banda, 'precio': capa_precio, 'pastilla': capa_pastilla}[t['tipo']](t)))
+        capas.append((t['de'], t['a'], {'banda': capa_banda, 'precio': capa_precio, 'pastilla': capa_pastilla, 'tarjeta': capa_tarjeta}[t['tipo']](t)))
 capas = [(a, b, np.asarray(im).astype(np.float32)) for a, b, im in capas]
 FS = unb(74, 800); med = ImageDraw.Draw(Image.new('RGB', (10, 10)))
 
@@ -303,7 +322,7 @@ for n in range(NT):
             al = cap[..., 3:] / 255; F = F * (1 - al) + cap[..., :3] * al
     s = sub_en(t) if t < CUERPO else None
     if s is not None:
-        y = SUB_Y * K; zona = F[y:y + s.shape[0]]; al = s[..., 3:] / 255; F[y:y + s.shape[0]] = zona * (1 - al) + s[..., :3] * al
+        y = next((z['y'] for z in spec.get('subs_y', []) if z['de'] <= t < z['a']), SUB_Y) * K; zona = F[y:y + s.shape[0]]; al = s[..., 3:] / 255; F[y:y + s.shape[0]] = zona * (1 - al) + s[..., :3] * al
     F = F.round().clip(0, 255).astype(np.uint8)
     if n in muestras: hoja.append(cv2.resize(F, (360, 640), interpolation=cv2.INTER_AREA))
     if esc is not None: esc.stdin.write(F.tobytes())
