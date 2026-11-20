@@ -64,28 +64,40 @@ def encaja(d, t, tam, ancho, fuente=unb, w=700):
 
 
 # ---------- 1) imagen: plano a plano, en fotogramas exactos ----------
-def plano(fu, desde, n, out):
+def plano(fu, desde, n, out, op={}):
     """Saca n fotogramas de la fuente fu desde el segundo «desde», a 2160x3840."""
     if 'foto' in fu:
         im = cv2.imread(ruta(fu['foto']))
-        if fu.get('recorte'):
-            x0, y0, x1, y1 = fu['recorte']; im = im[y0:y1, x0:x1]
+        rec = op.get('recorte') or fu.get('recorte')
+        if rec:
+            x0, y0, x1, y1 = rec; im = im[y0:y1, x0:x1]
         h, w = im.shape[:2]                                     # recorte 9:16 centrado si hace falta
         if w / h > 9 / 16: nw = int(h * 9 / 16); im = im[:, (w - nw) // 2:(w - nw) // 2 + nw]
         else: nh = int(w * 16 / 9); im = im[(h - nh) // 2:(h - nh) // 2 + nh]
-        z = fu.get('zoom', 0.08)
+        z = op.get('zoom', fu.get('zoom', 0.08))
         im = cv2.resize(im, (int(W * (1 + z)), int(H * (1 + z))), interpolation=cv2.INTER_CUBIC if im.shape[1] < W else cv2.INTER_AREA)
         if fu.get('nitidez', 0.6):                              # las fotos del móvil, ampliadas, ganan con un poco de enfoque
             g = cv2.GaussianBlur(im, (0, 0), 2.2); im = cv2.addWeighted(im, 1 + fu.get('nitidez', 0.6), g, -fu.get('nitidez', 0.6), 0)
         cv2.imwrite(f'{out}.png', im)
-        d = n / FPS; ax, ay = fu.get('ancla', [0.5, 0.5])
+        d = n / FPS; ax, ay = op.get('ancla', fu.get('ancla', [0.5, 0.5]))
         ff('-loop', '1', '-framerate', str(FPS), '-i', f'{out}.png', '-vf',
            f"format=rgb24,scale=w='{W}*(1+{z}*t/{d})':h='{H}*(1+{z}*t/{d})':eval=frame:flags=bicubic,crop={W}:{H}:'(in_w-out_w)*{ax}':'(in_h-out_h)*{ay}',setsar=1,format=yuv420p",
            '-frames:v', str(n), *ENC, out)
         return
-    v = ruta(fu['video']); ini = int(round(desde * FPS))
-    disp = int(round(duracion(v) * FPS)) - ini
-    vf = f"trim=start_frame={ini},setpts=PTS-STARTPTS,scale={W}:{H}:flags=lanczos,setsar=1"
+    v = ruta(fu['video']); ini = int(round(desde * FPS)); vel = op.get('velocidad', 1.0)
+    disp = int((int(round(duracion(v) * FPS)) - ini) / vel)
+    vf = f"trim=start_frame={ini},setpts=(PTS-STARTPTS)/{vel}"
+    if vel != 1.0: vf += f",fps={FPS}"
+    rec = op.get('recorte') or fu.get('recorte')                 # [x0, y0, x1, y1] en píxeles de la fuente
+    if rec: vf += f",crop={rec[2] - rec[0]}:{rec[3] - rec[1]}:{rec[0]}:{rec[1]}"
+    z = op.get('zoom', 0.0); d = n / FPS
+    if z:                                                        # acercamiento lento (z = 0,06 → del 100 al 106 %)
+        ax, ay = op.get('ancla', [0.5, 0.5])
+        vf += (f",scale=w='{W}*(1+{z}*t/{d})':h='{H}*(1+{z}*t/{d})':eval=frame:flags=lanczos,"
+               f"crop={W}:{H}:'(in_w-out_w)*{ax}':'(in_h-out_h)*{ay}'")
+    else:
+        vf += f",scale={W}:{H}:flags=lanczos"
+    vf += ",setsar=1"
     if disp < n:                                                 # si falta, se congela el último fotograma
         vf += f",tpad=stop_mode=clone:stop={n - disp + 2}"
     ff('-i', v, '-vf', vf, '-frames:v', str(n), *ENC, out)
@@ -105,7 +117,7 @@ for bi, b in enumerate(spec['bloques']):
             desde = a[1] + usados / FPS - fu['pista_desde']
         else:
             desde = p.get('desde', 0.0)
-        out = f'{tmp}/b{bi}_{pi}.mp4'; plano(fu, desde, n, out); partes.append(out); usados += n
+        out = f'{tmp}/b{bi}_{pi}.mp4'; plano(fu, desde, n, out, p); partes.append(out); usados += n
     cuadros = fin_b; t_audio += dur; audio_tramos.append(a)
 open(f'{tmp}/l.txt', 'w').write(''.join(f"file '{p}'\n" for p in partes))
 ff('-f', 'concat', '-safe', '0', '-i', f'{tmp}/l.txt', '-c', 'copy', f'{tmp}/v.mp4')
