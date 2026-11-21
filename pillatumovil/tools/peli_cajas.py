@@ -213,4 +213,8 @@ if __name__ == '__main__':
             sc.frame_set(fr); sc.render.filepath = os.path.join(SAL, PLANO, f'prueba_{fr:04d}.png')
             bpy.ops.render.render(write_still=True)
     else:
-        bpy.ops.render.render(animation=True)
+        # 22/11: con render(animation=True) las clavijas de cromo salieron negras del fotograma 64 al 76 de «producto»
+        # (el mismo fotograma renderizado suelto salía bien). Por eso se renderiza fotograma a fotograma.
+        for fr in range(sc.frame_start, sc.frame_end + 1):
+            sc.frame_set(fr); sc.render.filepath = os.path.join(SAL, PLANO, f'{fr:04d}.png')
+            bpy.ops.render.render(write_still=True)
