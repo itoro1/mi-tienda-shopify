@@ -109,6 +109,7 @@ def r_final():
     d.rounded_rectangle((120 * K, 620 * K, W - 120 * K, 770 * K), radius=75 * K, fill=ORO)
     centro(d, 657, 'pillatumovil.com', unb(66, 800), NOCHE, False)
     centro(d, 800, 'Precio de lanzamiento hasta el 30/11/2026 o fin de existencias', arc(24, 500), (200, 200, 206))
+    centro(d, 838, 'Pillatumovil es una tienda independiente, no afiliada a Apple Inc.', arc(22, 500), (170, 170, 178))
     return im
 
 
