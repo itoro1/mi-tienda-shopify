@@ -117,8 +117,9 @@ def p_precinto(n):
     brillo rasante que dibuja su canto; la cámara se desliza despacio a lo largo de la pegatina."""
     escena_base(); k, a, b = luces(clave_w=3.0, rim_w=5.0)
     caja = P.caja('cargador', ARTE); caja.rotation_euler = (0, 0, math.radians(180 + 10))
-    rasante = P.luz_area('rasante', (0.20, -0.06, 0.085), (0, -0.015, 0.074), 2.4, (0.02, 0.25))
-    clave(rasante, 'location', [(1, (0.22, -0.07, 0.095)), (n, (-0.22, -0.07, 0.095))])
+    # luz rasante fija, de lado y casi paralela a la trasera: marca el canto y la sombra de la pegatina sin deslumbrar
+    rasante = P.luz_area('rasante', (0.16, -0.028, 0.092), (0.0, -0.016, 0.074), 1.1, (0.012, 0.12))
+    energia(rasante, [(1, 0.7), (n, 1.3)])
     camara_animada([(1, (-0.030, -0.118, 0.098)), (n, (-0.016, -0.124, 0.097))],
                    [(1, (-0.012, -0.015, 0.071)), (n, (-0.010, -0.015, 0.071))], focal=85, dof=5.6,
                    pares_foco=[(1, (-0.016, -0.016, 0.073)), (n, (-0.008, -0.016, 0.073))])

@@ -95,9 +95,9 @@ def r_porque():
 def r_envio(n):
     im = lienzo(); d = ImageDraw.Draw(im)
     items = ['Envío gratis · llega a su casa en 24-48 h', 'Devolución gratis']
-    for i, t in enumerate(items[:n]): pastilla(d, 270 + i * 108, t, arc(38, 750), fondo=(255, 255, 255, 238), col=NOCHE, check=True)
-    centro(d, 520, 'Adaptador 20 W + cable USB-C (o Lightning)', arc(30, 600), MARFIL)
-    return im
+    for i, t in enumerate(items[:n]): pastilla(d, 250 + i * 108, t, arc(38, 750), fondo=(255, 255, 255, 238), col=NOCHE, check=True)
+    centro(d, 1150, 'Adaptador 20 W + cable USB-C (o Lightning)', arc(34, 650), MARFIL)
+    return sombra_suave(im, 12, 160)
 
 
 def r_final():
@@ -117,7 +117,7 @@ def tramo(i): return FR[i][0], FR[i][1]
 CORTES = {'gancho': 0, 'precinto': 74 / FPS, 'pack': 135 / FPS, 'cantidad': 233 / FPS, 'producto': 293 / FPS, 'final': 369 / FPS}
 ROT = [
     (0.0, tramo(1)[1] + 0.1, r_gancho, 0.0),
-    (tramo(0)[1] - 0.2, CORTES['cantidad'], r_marca, 0.0),
+    (tramo(0)[1] - 0.2, tramo(3)[0] - 0.05, r_marca, 0.0),
     (tramo(2)[0] + 0.1, CORTES['pack'], lambda: r_checks(1), 0.0),
     (tramo(2)[0] + 1.0, CORTES['pack'], lambda: r_checks(2), 0.0),
     (tramo(3)[0] - 0.05, tramo(4)[0] + 0.15, lambda: r_precio(1), 0.0),
@@ -144,10 +144,13 @@ SUB_Y = 1130                                                       # 59 % de la 
 sub_cache = {}
 
 
+CON_SUB = {1, 5}           # el resto de frases ya va escrito en un rótulo (gancho, marcas ✓, precio, envío, tarjeta final)
+
+
 def subtitulo(t):
     for i, (a, b, txt) in enumerate(FR):
         if a - 0.05 <= t < b + 0.25:
-            if i in (0, 1) and t < tramo(1)[1] + 0.1: return None        # el gancho ya va en grande arriba
+            if i not in CON_SUB: return None
             pal = txt.split(); ws = [w for w in PAL if a - 0.15 <= w[1] < b + 0.1]
             act = sum(1 for w in ws if w[1] <= t) - 1
             act = max(0, min(len(pal) - 1, round(act * len(pal) / max(1, len(ws)))))
@@ -175,6 +178,21 @@ def opacidad(t, a, b, fundido=0.22):
     if t < a or t >= b: return 0.0
     return min(1.0, (t - a) / fundido, (b - t) / fundido if b < TOTAL else 1.0)
 
+
+if '--fotos' in sys.argv:                                          # revisión rápida: solo unos instantes, sin vídeo ni audio
+    for ts in sys.argv[sys.argv.index('--fotos') + 1].split(','):
+        t = float(ts)
+        b = subprocess.run(['ffmpeg', '-loglevel', 'error', '-ss', str(t), '-i', BASE, '-frames:v', '1', '-f', 'rawvideo',
+                            '-pix_fmt', 'rgb24', '-'], capture_output=True).stdout
+        Fr = np.frombuffer(b, np.uint8).reshape(H, W, 3).astype(np.float32)
+        for i, (a_, b_, _, _) in enumerate(ROT):
+            o = opacidad(t, a_, b_)
+            if o > 0:
+                c = capa(i); al = c[..., 3:] / 255 * o; Fr = Fr * (1 - al) + c[..., :3] * al
+        s_ = subtitulo(t)
+        if s_ is not None: al = s_[..., 3:] / 255; Fr = Fr * (1 - al) + s_[..., :3] * al
+        Image.fromarray(Fr.clip(0, 255).astype(np.uint8)).resize((540, 960)).save(f'{os.path.splitext(SALIDA)[0]}-{t:05.2f}.jpg', quality=90)
+    sys.exit(0)
 
 NT = int(round(TOTAL * FPS)); tmp = SALIDA + '.mudo.mp4'
 lee = subprocess.Popen(['ffmpeg', '-loglevel', 'error', '-i', BASE, '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-'], stdout=subprocess.PIPE)
