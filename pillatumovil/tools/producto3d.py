@@ -72,6 +72,40 @@ def mat_metal(nombre='metal', rugosidad=0.18, color=(0.78, 0.78, 0.8)):
     return m
 
 
+# Cromo «de foto de estudio» para las clavijas: el metal real en un estudio blanco refleja manchas sin forma
+# (parecían camuflaje). En la foto de la caja de Apple se ve el cromo clásico: borde brillante, franja oscura y otra
+# luz. Aquí el dibujo sale de hacia dónde mira la superficie respecto a la cámara, más un poco de brillo de verdad.
+CROMO = {'brillo': None, 'contraste': 1.0}                         # brillo None: metal normal; un número: cromo de estudio
+
+
+def mat_cromo(nombre='cromo', brillo=1.4, contraste=None):
+    contraste = CROMO['contraste'] if contraste is None else contraste   # <1: franjas más suaves (fundas USB-C, plateado claro)
+    m, nt, p = _nodos(nombre)
+    p.inputs['Base Color'].default_value = (0.8, 0.8, 0.82, 1); p.inputs['Metallic'].default_value = 1.0
+    p.inputs['Roughness'].default_value = 0.08
+    g = nt.nodes.new('ShaderNodeNewGeometry')
+    vt = nt.nodes.new('ShaderNodeVectorTransform'); vt.vector_type = 'NORMAL'; vt.convert_from = 'WORLD'; vt.convert_to = 'CAMERA'
+    sx = nt.nodes.new('ShaderNodeSeparateXYZ')
+    mr = nt.nodes.new('ShaderNodeMapRange'); mr.inputs['From Min'].default_value = -1.0; mr.inputs['From Max'].default_value = 1.0
+    rampa = nt.nodes.new('ShaderNodeValToRGB'); cr = rampa.color_ramp
+    paradas = [(0.0, 0.40), (0.10, 1.0), (0.22, 0.85), (0.32, 0.22), (0.42, 0.05), (0.55, 0.14), (0.70, 0.95), (0.86, 0.55), (1.0, 0.30)]
+    cr.elements[0].position, cr.elements[0].color = paradas[0][0], (paradas[0][1],) * 3 + (1,)
+    cr.elements[1].position, cr.elements[1].color = paradas[-1][0], (paradas[-1][1],) * 3 + (1,)
+    paradas = [(p_, 1 - contraste * (1 - v)) for p_, v in paradas]
+    cr.elements[0].color = (paradas[0][1],) * 3 + (1,); cr.elements[1].color = (paradas[-1][1],) * 3 + (1,)
+    for pos, v in paradas[1:-1]:
+        e = cr.elements.new(pos); e.color = (v, v, v, 1)
+    em = nt.nodes.new('ShaderNodeEmission'); em.inputs['Strength'].default_value = brillo
+    mx = nt.nodes.new('ShaderNodeMixShader'); mx.inputs['Fac'].default_value = 0.12
+    sal = next(n for n in nt.nodes if n.type == 'OUTPUT_MATERIAL')
+    nt.links.new(g.outputs['Normal'], vt.inputs['Vector']); nt.links.new(vt.outputs['Vector'], sx.inputs['Vector'])
+    nt.links.new(sx.outputs['X'], mr.inputs['Value']); nt.links.new(mr.outputs['Result'], rampa.inputs['Fac'])
+    nt.links.new(rampa.outputs['Color'], em.inputs['Color'])
+    nt.links.new(em.outputs['Emission'], mx.inputs[1]); nt.links.new(p.outputs['BSDF'], mx.inputs[2])
+    nt.links.new(mx.outputs['Shader'], sal.inputs['Surface'])
+    return m
+
+
 def mat_negro(nombre='hueco'):
     m, nt, p = _nodos(nombre)
     p.inputs['Base Color'].default_value = (0.01, 0.01, 0.012, 1); p.inputs['Roughness'].default_value = 0.6
@@ -217,7 +251,7 @@ def precinto(nombre, arte, W, H, D, grosor_mm=0.12, levanta_mm=0.22):
 
 
 # ------------------------------------------------------------------ adaptador 20 W (Europa)
-ADAPTADOR = {'ancho': 45.5, 'grueso': 24.6, 'largo': 40.0,       # A2347: techtest 37x45x24 mm y medida en la foto de Apple       # cuerpo: sección de estadio ancho x grueso; largo = eje de las clavijas
+ADAPTADOR = {'ancho': 45.5, 'grueso': 24.6, 'largo': 44.0,       # A2347: techtest 37x45x24 mm; 22/11 alargado a 44 para cuadrar con las fotos de Apple y de la caja       # cuerpo: sección de estadio ancho x grueso; largo = eje de las clavijas
              'meseta': (35.3, 13.7, 19.0),                        # cuello Europlug (EN 50075): 35,3 x 13,7 con los extremos a 45°                         # bloque de las clavijas: ancho, grueso, alto
              'clavija': (4.0, 19.0, 19.0)}                        # diámetro, separación entre centros, largo
 
@@ -275,7 +309,7 @@ def adaptador():
     meseta.data.shade_smooth(); meseta.data.materials.append(blanco)
     # clavijas: vaina blanca aislante y punta de metal redondeada
     d, sep, largo = A['clavija']; z0 = (A['largo'] + mh) * s
-    metal = mat_metal('clavija', 0.12)
+    metal = mat_metal('clavija', 0.12) if CROMO['brillo'] is None else mat_cromo('clavija', CROMO['brillo'])
     for x in (-sep / 2, sep / 2):
         bpy.ops.mesh.primitive_cylinder_add(vertices=48, radius=d / 2 * s, depth=10 * s, location=(x * s, 0, z0 + 5 * s))
         v = bpy.context.object; v.data.materials.append(blanco); v.parent = cuerpo; v.data.shade_smooth()
@@ -306,7 +340,7 @@ def conector_usbc(nombre='usbc'):
     bpy.ops.mesh.primitive_cube_add(size=1, location=(0, 0, (fl + cl / 2 - 0.2) * s)); m = bpy.context.object
     m.scale = (cw * s, ct * s, cl * s); bpy.ops.object.transform_apply(scale=True)
     b = m.modifiers.new('bisel', 'BEVEL'); b.width = 1.15 * s; b.segments = 8; b.limit_method = 'ANGLE'
-    m.data.shade_smooth(); m.data.materials.append(mat_metal('clavija-usbc', 0.16)); m.parent = f
+    m.data.shade_smooth(); m.data.materials.append(mat_metal('clavija-usbc', 0.16) if CROMO['brillo'] is None else mat_cromo('clavija-usbc', CROMO['brillo'])); m.parent = f
     bpy.ops.mesh.primitive_cube_add(size=1, location=(0, 0, (fl + cl - 0.25) * s)); h = bpy.context.object
     h.scale = ((cw - 1.0) * s, (ct - 1.0) * s, 0.3 * s); h.data.materials.append(mat_negro('boca-usbc')); h.parent = f
     return f

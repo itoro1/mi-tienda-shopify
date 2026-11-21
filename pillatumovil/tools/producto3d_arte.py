@@ -16,16 +16,20 @@ def estudio():
     return sc
 
 
-# adaptador: clavijas arriba, visto de frente-izquierda y un poco desde arriba (como en la caja real)
-P.limpia(); sc = estudio()
-a = P.adaptador(); a.rotation_euler = (0, 0, math.radians(-18))
-P.camara((-0.06, -0.34, 0.11), (0, 0, 0.04), focal=105)
+# adaptador: clavijas arriba, a tres cuartos (girado 32°) y visto desde arriba, como en la caja real; clavijas en
+# cromo de estudio (22/11: con metal normal salían manchas que parecían camuflaje y el ángulo era casi de frente)
+P.limpia(); sc = estudio(); P.CROMO['brillo'] = 1.3
+a = P.adaptador(); a.rotation_euler = (0, 0, math.radians(-32))
+P.camara((-0.08, -0.30, 0.21), (0, 0, 0.037), focal=105)
 sc.render.filepath = os.path.join(SAL, 'producto-cargador.png'); bpy.ops.render.render(write_still=True)
+P.CROMO['brillo'] = None
 
-# cable: los dos conectores USB-C de pie, uno al lado del otro, y el cable trenzado bajando
-P.limpia(); sc = estudio()
+# cable: los dos conectores USB-C de pie, uno al lado del otro, y el cable trenzado bajando; las fundas de metal en
+# cromo de estudio (plateado claro, como en la caja real)
+P.limpia(); sc = estudio(); P.CROMO['brillo'] = 1.25; P.CROMO['contraste'] = 0.45
 for x in (-11.5, 11.5):
     c = P.conector_usbc(f'usbc{x}'); c.location = (x * P.MM, 0, 0)
     P.cable_usbc([(x, 0, 1), (x, 0, -20), (x, 0, -45), (x, 0, -70)], nombre=f'cable{x}')
 P.camara((0.0, -0.22, 0.02), (0, 0, -0.004), focal=105)
 sc.render.filepath = os.path.join(SAL, 'producto-cable.png'); bpy.ops.render.render(write_still=True)
+P.CROMO['brillo'] = None

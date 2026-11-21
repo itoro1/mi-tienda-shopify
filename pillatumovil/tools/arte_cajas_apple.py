@@ -104,10 +104,11 @@ class Lienzo:
         s.d.rounded_rectangle((px(-alto), px(-alto), px(w_mm * 0.92), px(alto)), radius=px(alto * 0.9),
                               outline=(178, 178, 182), width=px(0.12), fill=(250, 250, 249))
 
-    def producto(s, ruta, x, y, w):
+    def producto(s, ruta, x, y, w, estira=1.0):
+        """estira: alarga la foto en vertical (la de la caja real está hecha de cerca y el cargador sale más alto)."""
         if not ruta or not os.path.exists(ruta): return
         p = Image.open(ruta).convert('RGBA'); p = p.crop(p.getbbox()); e = px(w) / p.width
-        p = p.resize((px(w), int(p.height * e)), Image.LANCZOS)
+        p = p.resize((px(w), int(p.height * e * estira)), Image.LANCZOS)
         s.im.paste(p, (px(x), px(y)), p)
 
     def guarda(s, nombre):
@@ -132,7 +133,7 @@ c = Lienzo(W, H)
 c.logo(4.7, 2.4, 5.4)
 c.texto(5.1, 13.6, 'USB-C', 3.55, 'SemiBold')
 c.texto(5.1, 17.4, '20W Power Adapter', 3.55, 'Regular', GRIS)
-c.producto(arg('--producto-cargador'), 19.3, 21.6, 26.5)
+c.producto(arg('--producto-cargador'), 19.8, 21.5, 26.0, 1.2)     # 22/11: foto a tres cuartos, de 21,5 a 78 mm como en la caja real
 c.guarda('cargador-frente.png')
 
 c = Lienzo(W, H)                                   # arriba queda el sitio del precinto (pegatina 3D aparte)

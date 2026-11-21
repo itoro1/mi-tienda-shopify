@@ -17,6 +17,7 @@ import producto3d as P
 ARTE, SAL, PLANO = sys.argv[1], sys.argv[2], sys.argv[3]
 def arg(n, d): return type(d)(sys.argv[sys.argv.index(n) + 1]) if n in sys.argv else d
 ANCHO, ALTO, MUESTRAS = arg('--ancho', 1080), arg('--alto', 1920), arg('--muestras', 40)
+E_BARRIDO, ABERTURA = arg('--e-barrido', 0.12), arg('--abertura', 16.0)
 FPS = 24
 
 
@@ -71,19 +72,22 @@ def escena_base():
     return sc
 
 
-def luces(clave_w=6.0, rim_w=7.0, oro_w=0.0):
+def luces(clave_w=6.0, rim_w=7.0, oro_w=0.0, atras=0.0):
+    """atras: aleja los contraluces (en la cuadrícula de packs estaban entre las filas y las quemaban)."""
     k = P.luz_area('clave', (-0.30, -0.30, 0.38), (0, 0, 0.04), clave_w, (0.45, 0.45))
     luces.relleno = P.luz_area('relleno', (0.35, -0.25, 0.10), (0, 0, 0.04), 1.6, (0.5, 0.5))
-    a = P.luz_area('contra_i', (-0.28, 0.30, 0.22), (0, 0, 0.05), rim_w, (0.12, 0.4))
-    b = P.luz_area('contra_d', (0.30, 0.30, 0.22), (0, 0, 0.05), rim_w, (0.12, 0.4))
+    a = P.luz_area('contra_i', (-0.28, 0.30 + atras, 0.22 + atras * 0.4), (0, 0, 0.05), rim_w, (0.12, 0.4))
+    b = P.luz_area('contra_d', (0.30, 0.30 + atras, 0.22 + atras * 0.4), (0, 0, 0.05), rim_w, (0.12, 0.4))
     if oro_w: P.luz_area('oro', (0.0, 0.45, 0.08), (0, 0, 0.05), oro_w, (0.6, 0.05), color=(1.0, 0.82, 0.55))
     return k, a, b
 
 
-def barrido(pares_x, z=0.10, y=-0.22, energia=3.0, ancho=0.03):
-    """Tira de luz estrecha que cruza delante del producto: el brillo recorre la caja (revelado premium)."""
+def barrido(pares_x, z=0.10, y=-0.22, energia=3.0, ancho=0.03, abertura=None):
+    """Tira de luz estrecha que cruza delante del producto: el brillo recorre la caja (revelado premium).
+    abertura (grados): como el panal de un softbox; sin él, la tira ilumina toda la cara por igual (gris plano)."""
     l = P.luz_area('barrido', (pares_x[0][1], y, z), (0, 0, 0.045), energia, (ancho, 0.5))
     l.rotation_euler = (math.radians(90), 0, 0)
+    if abertura: l.data.spread = math.radians(abertura)
     clave(l, 'location', [(f, (x, y, z)) for f, x in pares_x])
     return l
 
@@ -100,15 +104,19 @@ def p_gancho(n):
     pestaña a contraluz."""
     escena_base(); k, a, b = luces()
     caja = P.caja('cargador', ARTE)
-    clave(caja, 'rotation_euler', [(1, (0, 0, math.radians(26))), (n, (0, 0, math.radians(-14)))])
-    energia(k, [(1, 0.0), (int(n * 0.30), 0.0), (int(n * 0.62), 6.0)])
-    energia(luces.relleno, [(1, 0.0), (int(n * 0.30), 0.0), (int(n * 0.62), 1.6)])
-    sw = barrido([(1, -0.14), (int(n * 0.45), 0.14)], z=0.07, y=-0.18, energia=0.3, ancho=0.02)
-    energia(sw, [(1, 0.3), (int(n * 0.45), 0.3), (int(n * 0.6), 0.0)])          # al principio solo el contraluz y el barrido
-    camara_animada([(1, (0.022, -0.105, 0.066)), (int(n * 0.35), (0.018, -0.125, 0.066)), (n, (0.0, -0.33, 0.088))],
-                   [(1, (0.004, -0.014, 0.062)), (int(n * 0.35), (0.004, -0.014, 0.060)), (n, (0.0, 0.0, 0.050))],
+    clave(caja, 'rotation_euler', [(1, (0, 0, math.radians(16))), (n, (0, 0, math.radians(-12)))])
+    # 22/11: antes empezaba gris y borroso (la revisión: «el primer segundo decide si se para el dedo»). Ahora la caja
+    # ya se lee en el primer fotograma, en penumbra, y la luz llega entera hacia el segundo 1,2.
+    energia(k, [(1, 1.6), (int(n * 0.40), 6.0)])
+    energia(luces.relleno, [(1, 0.3), (int(n * 0.40), 1.6)])
+    # 22/11: la tira ancha sin panal dejaba la caja gris y plana el primer segundo. Ahora es una cuchilla de luz
+    # (panal estrecho) que ya está sobre la manzana en el primer fotograma y cruza «20W Power Adapter» en la oscuridad.
+    sw = barrido([(1, -0.05), (int(n * 0.45), 0.09)], z=0.07, y=-0.18, energia=E_BARRIDO, ancho=0.01, abertura=ABERTURA)
+    energia(sw, [(1, E_BARRIDO), (int(n * 0.40), E_BARRIDO), (int(n * 0.55), 0.0)])
+    camara_animada([(1, (-0.004, -0.150, 0.074)), (int(n * 0.45), (0.004, -0.200, 0.076)), (n, (0.0, -0.33, 0.088))],
+                   [(1, (-0.010, -0.015, 0.062)), (int(n * 0.45), (-0.004, -0.012, 0.058)), (n, (0.0, 0.0, 0.050))],
                    focal=70, dof=5.6,
-                   pares_foco=[(1, (0.004, -0.016, 0.062)), (int(n * 0.35), (0.004, -0.016, 0.060)), (n, (0.0, -0.014, 0.050))])
+                   pares_foco=[(1, (-0.010, -0.017, 0.062)), (int(n * 0.45), (-0.004, -0.016, 0.058)), (n, (0.0, -0.014, 0.050))])
     return n
 
 
@@ -120,30 +128,32 @@ def p_precinto(n):
     # luz rasante fija, de lado y casi paralela a la trasera: marca el canto y la sombra de la pegatina sin deslumbrar
     rasante = P.luz_area('rasante', (0.16, -0.028, 0.092), (0.0, -0.016, 0.074), 1.1, (0.012, 0.12))
     energia(rasante, [(1, 0.7), (n, 1.3)])
-    camara_animada([(1, (-0.030, -0.118, 0.098)), (n, (-0.016, -0.124, 0.097))],
-                   [(1, (-0.012, -0.015, 0.071)), (n, (-0.010, -0.015, 0.071))], focal=85, dof=5.6,
-                   pares_foco=[(1, (-0.016, -0.016, 0.073)), (n, (-0.008, -0.016, 0.073))])
+    # 22/11: antes el precinto salía cortado y desenfocado (el foco estaba en los textos). Ahora se ve entero, con la
+    # flecha verde, el canto y la pestaña saliendo de debajo; el foco pasa a los textos en el último tercio.
+    camara_animada([(1, (-0.050, -0.215, 0.112)), (n, (-0.036, -0.180, 0.104))],
+                   [(1, (-0.006, -0.015, 0.068)), (n, (-0.006, -0.015, 0.068))], focal=85, dof=5.6,
+                   pares_foco=[(1, (-0.008, -0.016, 0.0745)), (int(n * 0.6), (-0.008, -0.016, 0.0745)), (n, (-0.006, -0.016, 0.063))])
     return n
 
 
 def p_pack(n):
     """«En Apple, 38 euros. Aquí, 18,99.» Las dos cajas juntas (un pack), abajo del encuadre para dejar sitio al
     precio; la cámara se acerca despacio y un barrido de luz cruza justo cuando entra el 18,99."""
-    escena_base(); k, a, b = luces(oro_w=2.5)
+    escena_base(); k, a, b = luces(clave_w=6.5, rim_w=4.5, oro_w=1.2)
     c1 = P.caja('cargador', ARTE); c2 = P.caja('cable', ARTE)
     c1.location = (-0.036, 0.0, 0); c1.rotation_euler = (0, 0, math.radians(10))
     c2.location = (0.040, 0.012, 0); c2.rotation_euler = (0, 0, math.radians(-12))
     barrido([(int(n * 0.45), -0.30), (int(n * 0.8), 0.30)], z=0.07, y=-0.20, energia=0.45)   # brillo que cruza, sin quemar
-    camara_animada([(1, (0.0, -0.50, 0.150)), (n, (0.0, -0.43, 0.125))],
-                   [(1, (0.002, 0.0, 0.075)), (n, (0.002, 0.0, 0.072))], focal=70, dof=8)
+    camara_animada([(1, (0.0, -0.50, 0.150)), (n, (0.0, -0.475, 0.140))],
+                   [(1, (0.002, 0.0, 0.075)), (n, (0.002, 0.0, 0.074))], focal=70, dof=8)
     return n
 
 
 def p_cantidad(n):
     """«Compramos por cantidad y ganamos menos.» La cámara sube y se aleja: filas de packs que se pierden en la
     oscuridad (por eso el precio)."""
-    escena_base(); k, a, b = luces(clave_w=7.0, rim_w=6.0)
-    paso_x, paso_y = 0.165, 0.11
+    escena_base(); k, a, b = luces(clave_w=7.0, rim_w=14.0, atras=0.9)   # 22/11: contraluces detrás de la última fila
+    paso_x, paso_y = 0.165, 0.13                                    # más hueco entre filas: no se montan pestañas y textos
     for fila in range(7):
         for col in range(-2, 3):
             ox, oy = col * paso_x, fila * paso_y
@@ -155,28 +165,32 @@ def p_cantidad(n):
 
 
 def p_producto(n):
-    """«Envío gratis, en 24 o 48 horas.» Lo que va dentro: el adaptador de pie y el cable trenzado enrollado, con un
-    conector a la vista, girando despacio sobre el suelo oscuro, con luz de borde."""
-    escena_base(); k, a, b = luces(rim_w=8.0)
-    ad = P.adaptador(); ad.location = (-0.022, 0.004, 0.0); ad.rotation_euler = (0, 0, math.radians(12))
+    """«Envío gratis, en 24 o 48 horas.» Lo que va dentro: el adaptador de pie delante y el cable trenzado de 1 m
+    enrollado detrás (3 vueltas, como sale de la caja), con el conector USB-C mirando a la cámara.
+    22/11: antes el rollo era del tamaño de una pulsera, las clavijas salían negras y el adaptador se cortaba."""
+    escena_base(); k, a, b = luces(rim_w=7.0)
+    P.CROMO['brillo'] = 0.85; P.CROMO['contraste'] = 1.0           # clavijas de cromo «de estudio» (no negras)
+    ad = P.adaptador(); ad.location = (-0.030, -0.036, 0.0); ad.rotation_euler = (0, 0, math.radians(14))
+    P.CROMO['contraste'] = 0.45
     pts = []
-    for i in range(0, 721, 12):                                   # rollo de 2 vueltas, como sale de la caja
-        t = math.radians(i); r = 24 - i / 720 * 5
-        pts.append((r * math.cos(t), r * math.sin(t), 1.7 + i / 720 * 3.4))
-    pts += [(19 * math.cos(math.radians(730)) - 4, -24, 1.7), (2, -34, 1.7)]   # el extremo sale hacia la cámara
-    cab = P.cable_usbc(pts, nombre='rollo'); cab.location = (0.030, 0.012, 0.0)
-    u1 = P.conector_usbc('usbc-a'); u1.location = (0.030 + 0.002, 0.012 - 0.034, 0.0029)
-    u1.rotation_euler = (math.radians(90), 0, math.radians(180))
-    base = objetivo('giro', (0.004, 0.0, 0)); ad.parent = base; cab.parent = base; u1.parent = base
-    clave(base, 'rotation_euler', [(1, (0, 0, math.radians(-14))), (n, (0, 0, math.radians(14)))], interp='LINEAR')
-    camara_animada([(1, (0.0, -0.31, 0.135)), (n, (0.0, -0.28, 0.125))],
-                   [(1, (0.004, 0.0, 0.026)), (n, (0.004, 0.0, 0.026))], focal=70, dof=8)
+    for i in range(0, 1081, 12):                                  # rollo de 3 vueltas, unos 8 cm de diámetro
+        t = math.radians(i); r = 40 - i / 1080 * 5
+        pts.append((r * math.cos(t), r * math.sin(t), 1.7 + i / 1080 * 5.0))
+    pts += [(33, -14, 4.0), (24, -36, 1.7), (12, -52, 1.7), (8, -58, 1.7)]   # el extremo sale hacia la cámara
+    cab = P.cable_usbc(pts, nombre='rollo'); cab.location = (0.014, 0.030, 0.0)
+    u1 = P.conector_usbc('usbc-a'); u1.location = (0.014 + 0.008, 0.030 - 0.058, 0.0029)
+    u1.rotation_euler = (math.radians(90), 0, math.radians(-33))   # la clavija mira a la cámara, en la dirección del cable
+    P.CROMO['brillo'] = None; P.CROMO['contraste'] = 1.0
+    base = objetivo('giro', (0.0, 0.0, 0)); ad.parent = base; cab.parent = base; u1.parent = base
+    clave(base, 'rotation_euler', [(1, (0, 0, math.radians(-7))), (n, (0, 0, math.radians(7)))], interp='LINEAR')
+    camara_animada([(1, (-0.010, -0.45, 0.185)), (n, (-0.010, -0.42, 0.175))],
+                   [(1, (-0.010, 0.004, 0.026)), (n, (-0.010, 0.004, 0.026))], focal=70, dof=8)
     return n
 
 
 def p_final(n):
     """«Compre en pillatumovil.com.» Las dos cajas, de frente y abajo; arriba queda el sitio de la tarjeta final."""
-    escena_base(); k, a, b = luces(oro_w=3.0)
+    escena_base(); k, a, b = luces(clave_w=6.5, rim_w=4.5, oro_w=1.4)
     c1 = P.caja('cargador', ARTE); c2 = P.caja('cable', ARTE)
     c1.location = (-0.036, 0.0, 0); c1.rotation_euler = (0, 0, math.radians(8))
     c2.location = (0.040, 0.012, 0); c2.rotation_euler = (0, 0, math.radians(-10))
@@ -186,7 +200,7 @@ def p_final(n):
 
 
 PLANOS = {'gancho': (p_gancho, 74), 'precinto': (p_precinto, 61), 'pack': (p_pack, 98),        # al ritmo de la voz
-          'cantidad': (p_cantidad, 60), 'producto': (p_producto, 76), 'final': (p_final, 80)}     # (449 fotogramas, 18,7 s)
+          'cantidad': (p_cantidad, 60), 'producto': (p_producto, 76), 'final': (p_final, 98)}     # (467 fotogramas, 19,5 s)
 
 if __name__ == '__main__':
     f, n = PLANOS[PLANO]; n = arg('--fotogramas', n); f(n)

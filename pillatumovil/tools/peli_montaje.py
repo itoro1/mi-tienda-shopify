@@ -1,6 +1,6 @@
 """Montaje final de la película de producto (tools/peli_cajas.py): imagen 4K + rótulos animados + subtítulos + voz y música.
 
-Uso: python3 peli_montaje.py BASE_4K.mp4 VOZ.wav TIEMPOS.json MUSICA.mp3 SALIDA.mp4 [--hoja]
+Uso: python3 peli_montaje.py BASE_4K.mp4 VOZ.wav TIEMPOS.json MUSICA.mp3 SALIDA.mp4 [--hoja] [--anillo PRECINTO.json] [--fotos t1,t2]
   BASE_4K.mp4: los planos ya unidos y subidos a 2160x3840 (24 fps, sin audio).
   TIEMPOS.json: {'frases': [[ini, fin, texto], ...], 'total': s} (lo saca el montaje de la voz).
 Los rótulos están pensados para Reels: todo entre el 13 % y el 66 % de la altura (fuera de los botones de Instagram)
@@ -53,80 +53,115 @@ def pastilla(d, y, t, f, fondo=(11, 15, 26, 215), col=MARFIL, alto=86, check=Fal
 
 
 # ---------------------------------------------------------------- rótulos (de, a, función que pinta)
-def r_marca():
-    im = lienzo(); d = ImageDraw.Draw(im)
-    pastilla(d, 250, 'Cargador + cable · ORIGINALES de Apple', arc(34, 700), fondo=(11, 15, 26, 190), alto=74)
-    return im
+# 22/11, tras la revisión independiente (realismo, ley y eficacia): todo lo de arriba empieza en y >= 300 (Reels tapa el
+# 14 % de arriba y el feed 4:5 recorta hasta y 285); textos sobre fondo oscuro (encima de cajas blancas no se leían);
+# cada pastilla es su propia capa (antes, al fundirse, la primera salía doble); letra pequeña >= 30 px y en blanco.
+def centro_max(d, y, t, tam, peso=500, col=MARFIL, maximo=950, sombra=True):
+    f = arc(tam, peso)
+    while ancho(t, f) > maximo * K: tam -= 1; f = arc(tam, peso)
+    centro(d, y, t, f, col, sombra)
 
 
 def r_gancho():
-    im = lienzo(); d = ImageDraw.Draw(im)
-    centro(d, 360, '¿Su iPhone vino', unb(70, 700), BLANCO); centro(d, 455, 'sin cargador?', unb(70, 700), BLANCO)
-    return sombra_suave(im)
-
-
-def r_checks(n):
-    im = lienzo(); d = ImageDraw.Draw(im)
-    items = ['Original de Apple', 'Caja sin abrir: precinto intacto']
-    for i, t in enumerate(items[:n]): pastilla(d, 1080 + i * 108, t, arc(40, 750), fondo=(255, 255, 255, 238), col=NOCHE, check=True)
+    im = lienzo(); d = ImageDraw.Draw(im); f = unb(70, 700)
+    w = max(ancho('¿Su iPhone vino', f), ancho('sin cargador?', f)) + 90 * K
+    d.rounded_rectangle(((W - w) / 2, 330 * K, (W + w) / 2, 575 * K), radius=40 * K, fill=(11, 15, 26, 200))
+    centro(d, 360, '¿Su iPhone vino', f, BLANCO, False); centro(d, 455, 'sin cargador?', f, BLANCO, False)
     return im
 
 
-def r_precio(fase):
-    """Fase 1: «En Apple, 38,00 €». Fase 2: entra «Aquí 18,99 €» grande en oro. Nunca tachado."""
-    im = lienzo(); d = ImageDraw.Draw(im); y = 270
-    d.rounded_rectangle((90 * K, y * K, W - 90 * K, (y + 400) * K), radius=48 * K, fill=(11, 15, 26, 222))
-    centro(d, y + 40, 'En Apple', arc(36, 500), MARFIL, False)
-    centro(d, y + 88, '38,00 €', unb(64, 600), MARFIL, False)
-    centro(d, y + 172, '(precio del 01/11/2026)', arc(26, 500), (190, 190, 196), False)
-    if fase >= 2:
-        d.line([(170 * K, (y + 222) * K), (W - 170 * K, (y + 222) * K)], fill=(255, 255, 255, 50), width=2 * K)
-        centro(d, y + 236, 'Aquí', arc(36, 700), ORO, False)
-        centro(d, y + 272, '18,99 €', unb(104, 800), ORO, False)
+def r_marca():
+    im = lienzo(); d = ImageDraw.Draw(im)
+    pastilla(d, 320, 'Cargador + cable ORIGINALES de Apple · 18,99 €', arc(38, 700), fondo=(11, 15, 26, 225), alto=84)
+    return im
+
+
+def r_chip(y, t):
+    im = lienzo(); d = ImageDraw.Draw(im)
+    pastilla(d, y, t, arc(40, 750), fondo=(255, 255, 255, 255), col=NOCHE, check=True)
+    return im
+
+
+def r_precio_apple():
+    """Arriba de la tarjeta: lo que cuesta en Apple, con qué se compara y la fecha. Nunca tachado."""
+    im = lienzo(); d = ImageDraw.Draw(im); y = 330
+    d.rounded_rectangle((90 * K, y * K, W - 90 * K, (y + 236) * K), radius=44 * K, fill=(11, 15, 26, 228))
+    centro_max(d, y + 30, 'En Apple (adaptador + cable USB-C)', 34, 600, MARFIL, 840, False)
+    centro(d, y + 80, '38,00 €', unb(64, 600), MARFIL, False)
+    centro_max(d, y + 172, '(precio del 01/11/2026)', 31, 500, (225, 225, 230), 840, False)
+    return im
+
+
+def r_precio_aqui():
+    im = lienzo(); d = ImageDraw.Draw(im); y = 580
+    d.rounded_rectangle((90 * K, y * K, W - 90 * K, (y + 214) * K), radius=44 * K, fill=(11, 15, 26, 236))
+    centro_max(d, y + 22, 'Aquí, el mismo pack original', 36, 700, ORO, 840, False)
+    centro(d, y + 66, '18,99 €', unb(104, 800), ORO, False)
     return im
 
 
 def r_porque():
     im = lienzo(); d = ImageDraw.Draw(im)
-    pastilla(d, 270, '¿Por qué este precio?', arc(44, 800), fondo=(214, 180, 112, 240), col=NOCHE, alto=96)
+    pastilla(d, 330, '¿Por qué este precio?', arc(44, 800), fondo=(214, 180, 112, 245), col=NOCHE, alto=96)
     return im
 
 
-def r_envio(n):
+def r_compatible():
     im = lienzo(); d = ImageDraw.Draw(im)
-    items = ['Envío gratis · llega a su casa en 24-48 h', 'Devolución gratis']
-    for i, t in enumerate(items[:n]): pastilla(d, 250 + i * 108, t, arc(38, 750), fondo=(255, 255, 255, 238), col=NOCHE, check=True)
-    centro(d, 1150, 'Adaptador 20 W + cable USB-C (o Lightning)', arc(34, 650), MARFIL)
-    return sombra_suave(im, 12, 160)
+    pastilla(d, 1150, 'Para su iPhone: cable USB-C o Lightning, mismo precio', arc(34, 650), fondo=(11, 15, 26, 225), alto=78)
+    return im
 
 
 def r_final():
     im = lienzo(); d = ImageDraw.Draw(im)
-    centro(d, 250, 'Pack ORIGINAL de Apple · adaptador 20 W + cable', arc(32, 700), MARFIL)
-    centro(d, 300, '18,99 €', unb(150, 800), ORO)
-    centro(d, 500, 'En Apple, 38,00 € (precio del 01/11/2026)', arc(30, 500), MARFIL)
-    centro(d, 548, '2 packs: 33,99 € · Envío gratis 24-48 h · Devolución gratis', arc(28, 600), MARFIL)
-    d.rounded_rectangle((120 * K, 620 * K, W - 120 * K, 770 * K), radius=75 * K, fill=ORO)
-    centro(d, 657, 'pillatumovil.com', unb(66, 800), NOCHE, False)
-    centro(d, 800, 'Precio de lanzamiento hasta el 30/11/2026 o fin de existencias', arc(24, 500), (200, 200, 206))
-    centro(d, 838, 'Pillatumovil es una tienda independiente, no afiliada a Apple Inc.', arc(22, 500), (170, 170, 178))
-    return im
+    centro_max(d, 300, 'Adaptador 20 W + cable · originales de Apple', 36, 700, BLANCO)
+    centro(d, 345, '18,99 €', unb(150, 800), ORO)
+    centro_max(d, 545, 'En Apple (adaptador + cable USB-C): 38,00 €', 34, 600, BLANCO)
+    centro_max(d, 588, '(precio del 01/11/2026)', 31, 500, BLANCO)
+    d.rounded_rectangle((120 * K, 640 * K, W - 120 * K, 780 * K), radius=70 * K, fill=ORO)
+    centro(d, 674, 'pillatumovil.com', unb(64, 800), NOCHE, False)
+    centro_max(d, 806, '2 packs: 33,99 € · Envío gratis 24-48 h laborables', 33, 600, BLANCO)
+    centro_max(d, 849, 'Devolución gratis · Precios con IVA incluido', 33, 600, BLANCO)
+    centro_max(d, 892, 'Oferta válida hasta el 30/11/2026 o fin de existencias', 32, 500, BLANCO)
+    centro_max(d, 934, 'Pillatumovil es una tienda independiente, no afiliada a Apple Inc.', 31, 500, BLANCO)
+    return sombra_suave(im, 10, 170)
 
 
 def tramo(i): return FR[i][0], FR[i][1]
 CORTES = {'gancho': 0, 'precinto': 74 / FPS, 'pack': 135 / FPS, 'cantidad': 233 / FPS, 'producto': 293 / FPS, 'final': 369 / FPS}
+LISTA_CORTES = sorted(CORTES.values()) + [TOTAL]
+def corte_tras(t): return next(c for c in LISTA_CORTES if c > t + 1e-6)
+# (de, a, función, fundido de entrada en s; 0 = ya entero en el primer fotograma)
 ROT = [
-    (0.0, tramo(1)[1] + 0.1, r_gancho, 0.0),
-    (tramo(0)[1] - 0.2, tramo(3)[0] - 0.05, r_marca, 0.0),
-    (tramo(2)[0] + 0.1, CORTES['pack'], lambda: r_checks(1), 0.0),
-    (tramo(2)[0] + 1.0, CORTES['pack'], lambda: r_checks(2), 0.0),
-    (tramo(3)[0] - 0.05, tramo(4)[0] + 0.15, lambda: r_precio(1), 0.0),
-    (tramo(4)[0] + 0.15, CORTES['cantidad'], lambda: r_precio(2), 0.0),
-    (CORTES['cantidad'], CORTES['producto'], r_porque, 0.0),
-    (tramo(6)[0], tramo(6)[0] + 1.2, lambda: r_envio(1), 0.0),
-    (tramo(6)[0] + 1.2, CORTES['final'], lambda: r_envio(2), 0.0),
-    (CORTES['final'] + 0.15, TOTAL + 1, r_final, 0.0),
+    (0.0, CORTES['precinto'] - 0.04, r_gancho, 0.0),
+    (CORTES['precinto'] + 0.1, CORTES['pack'] - 0.04, r_marca, 0.22),
+    (tramo(2)[0] + 0.15, CORTES['pack'] - 0.04, lambda: r_chip(960, 'Original de Apple'), 0.22),
+    (tramo(2)[0] + 1.0, CORTES['pack'] - 0.04, lambda: r_chip(1068, 'Caja sin abrir: precinto intacto'), 0.22),
+    (tramo(3)[0] - 0.05, CORTES['cantidad'] - 0.04, r_precio_apple, 0.22),
+    (tramo(4)[0] + 0.15, CORTES['cantidad'] - 0.04, r_precio_aqui, 0.18),
+    (CORTES['cantidad'] + 0.08, CORTES['producto'] - 0.04, r_porque, 0.22),
+    (tramo(6)[0], CORTES['final'] - 0.04, lambda: r_chip(330, 'Envío gratis · llega a su casa en 24-48 h'), 0.22),
+    (tramo(6)[0] + 1.2, CORTES['final'] - 0.04, lambda: r_chip(438, 'Devolución gratis'), 0.22),
+    (tramo(6)[0] + 0.5, CORTES['final'] - 0.04, r_compatible, 0.22),
+    (CORTES['final'] + 0.15, TOTAL + 1, r_final, 0.3),
 ]
+
+# anillo que señala el precinto (la flecha verde) en el plano de la trasera; posiciones medidas en los fotogramas
+ANILLO = {}
+if '--anillo' in sys.argv:
+    ANILLO = {int(k): v for k, v in json.load(open(sys.argv[sys.argv.index('--anillo') + 1])).items()}
+ANILLO_DE = tramo(2)[0] + 0.35
+
+
+def anillo(n, t):
+    """Devuelve (parche RGBA float, x0, y0) o None. n: fotograma global; el JSON trae {n: [x, y, r]} en 1080x1920."""
+    if n not in ANILLO or t < ANILLO_DE or t >= CORTES['pack'] - 0.04: return None
+    o = min(1.0, (t - ANILLO_DE) / 0.25); x, y, r = ANILLO[n]; R = (r + 22) * K; m = int(R + 30 * K)
+    im = Image.new('RGBA', (2 * m, 2 * m), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
+    esc = 0.85 + 0.15 * o                                          # entra creciendo un poco
+    d.ellipse((m - R * esc, m - R * esc, m + R * esc, m + R * esc), outline=(255, 255, 255, int(255 * o)), width=int(6 * K))
+    im = sombra_suave(im, 8, 150)
+    return np.asarray(im).astype(np.float32), int(x * K) - m, int(y * K) - m
 
 
 # ---------------------------------------------------------------- subtítulos (frase entera, palabra activa en oro)
@@ -149,20 +184,23 @@ CON_SUB = {1, 5}           # el resto de frases ya va escrito en un rótulo (gan
 
 def subtitulo(t):
     for i, (a, b, txt) in enumerate(FR):
-        if a - 0.05 <= t < b + 0.25:
+        if a - 0.05 <= t < min(b + 0.25, corte_tras(a) - 0.04):         # no pasa al plano siguiente
             if i not in CON_SUB: return None
             pal = txt.split(); ws = [w for w in PAL if a - 0.15 <= w[1] < b + 0.1]
             act = sum(1 for w in ws if w[1] <= t) - 1
             act = max(0, min(len(pal) - 1, round(act * len(pal) / max(1, len(ws)))))
             clave = (i, act)
             if clave not in sub_cache:
-                im = lienzo(); d = ImageDraw.Draw(im); f = arc(52, 800)
-                while ancho(txt, f) > W - 160 * K: f = arc(f.size / K - 3, 800)
+                im = lienzo(); d = ImageDraw.Draw(im); f = arc(50, 800)
+                while ancho(txt, f) > W - 220 * K: f = arc(f.size / K - 3, 800)
                 x = (W - ancho(txt, f)) / 2; esp = ancho(' ', f)
+                # pastilla oscura detrás: sobre las cajas blancas el blanco y el oro no se leían
+                d.rounded_rectangle((x - 34 * K, (SUB_Y - 16) * K, x + ancho(txt, f) + 34 * K, (SUB_Y + 78) * K),
+                                    radius=30 * K, fill=(11, 15, 26, 205))
                 for k, p in enumerate(pal):
                     d.text((x, SUB_Y * K), p, font=f, fill=ORO if k == act else BLANCO)
                     x += ancho(p, f) + esp
-                sub_cache[clave] = np.asarray(sombra_suave(im, 14, 200)).astype(np.float32)
+                sub_cache[clave] = np.asarray(im).astype(np.float32)
             return sub_cache[clave]
     return None
 
@@ -174,9 +212,9 @@ def capa(i):
     return capas[i]
 
 
-def opacidad(t, a, b, fundido=0.22):
+def opacidad(t, a, b, entrada=0.22, salida=0.12):
     if t < a or t >= b: return 0.0
-    return min(1.0, (t - a) / fundido, (b - t) / fundido if b < TOTAL else 1.0)
+    return min(1.0, (t - a) / entrada if entrada > 0 else 1.0, (b - t) / salida if b < TOTAL else 1.0)
 
 
 if '--fotos' in sys.argv:                                          # revisión rápida: solo unos instantes, sin vídeo ni audio
@@ -185,12 +223,16 @@ if '--fotos' in sys.argv:                                          # revisión r
         b = subprocess.run(['ffmpeg', '-loglevel', 'error', '-ss', str(t), '-i', BASE, '-frames:v', '1', '-f', 'rawvideo',
                             '-pix_fmt', 'rgb24', '-'], capture_output=True).stdout
         Fr = np.frombuffer(b, np.uint8).reshape(H, W, 3).astype(np.float32)
-        for i, (a_, b_, _, _) in enumerate(ROT):
-            o = opacidad(t, a_, b_)
+        for i, (a_, b_, _, ent) in enumerate(ROT):
+            o = opacidad(t, a_, b_, ent)
             if o > 0:
                 c = capa(i); al = c[..., 3:] / 255 * o; Fr = Fr * (1 - al) + c[..., :3] * al
         s_ = subtitulo(t)
         if s_ is not None: al = s_[..., 3:] / 255; Fr = Fr * (1 - al) + s_[..., :3] * al
+        an = anillo(int(t * FPS), t)
+        if an is not None:
+            pa, x0, y0 = an; h_, w_ = pa.shape[:2]; zona = Fr[y0:y0 + h_, x0:x0 + w_]
+            al = pa[:zona.shape[0], :zona.shape[1], 3:] / 255; zona[:] = zona * (1 - al) + pa[:zona.shape[0], :zona.shape[1], :3] * al
         Image.fromarray(Fr.clip(0, 255).astype(np.uint8)).resize((540, 960)).save(f'{os.path.splitext(SALIDA)[0]}-{t:05.2f}.jpg', quality=90)
     sys.exit(0)
 
@@ -204,19 +246,24 @@ for n in range(NT):
     if len(b) < W * H * 3: b = ultimo                               # si la base es más corta, se congela el último
     ultimo = b; t = (n + 0.5) / FPS
     Fr = np.frombuffer(b, np.uint8).reshape(H, W, 3).astype(np.float32)
-    for i, (a_, b_, _, _) in enumerate(ROT):
-        o = opacidad(t, a_, b_)
+    for i, (a_, b_, _, ent) in enumerate(ROT):
+        o = opacidad(t, a_, b_, ent)
         if o > 0:
-            c = capa(i); dy = int((1 - o) * 18 * K)                  # entra subiendo un poco
+            c = capa(i); dy = int((1 - o) * 18 * K) if t - a_ < 0.5 else 0   # entra subiendo un poco (al salir, quieto)
             al = c[..., 3:] / 255 * o
             if dy: c = np.roll(c, dy, axis=0); al = np.roll(al, dy, axis=0)
             Fr = Fr * (1 - al) + c[..., :3] * al
     s = subtitulo(t)
     if s is not None:
         al = s[..., 3:] / 255; Fr = Fr * (1 - al) + s[..., :3] * al
+    an = anillo(n, t)
+    if an is not None:
+        pa, x0, y0 = an; h_, w_ = pa.shape[:2]; zona = Fr[y0:y0 + h_, x0:x0 + w_]
+        al = pa[:zona.shape[0], :zona.shape[1], 3:] / 255; zona[:] = zona * (1 - al) + pa[:zona.shape[0], :zona.shape[1], :3] * al
     Fr = Fr.clip(0, 255).astype(np.uint8); esc.stdin.write(Fr.tobytes())
     if '--hoja' in sys.argv and n % 24 == 12: hoja.append(np.asarray(Image.fromarray(Fr).resize((270, 480))))
-esc.stdin.close(); esc.wait(); lee.wait()
+esc.stdin.close(); esc.wait()
+lee.stdout.close(); lee.kill(); lee.wait()                         # si la base tiene más fotogramas que el audio, el lector se quedaría esperando
 
 # ---------------------------------------------------------------- audio: voz delante, música debajo (se aparta cuando habla)
 subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', tmp, '-i', VOZ, '-i', MUSICA, '-filter_complex',
