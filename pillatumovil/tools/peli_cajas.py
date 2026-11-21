@@ -133,7 +133,7 @@ def p_pack(n):
     c1 = P.caja('cargador', ARTE); c2 = P.caja('cable', ARTE)
     c1.location = (-0.036, 0.0, 0); c1.rotation_euler = (0, 0, math.radians(10))
     c2.location = (0.040, 0.012, 0); c2.rotation_euler = (0, 0, math.radians(-12))
-    barrido([(int(n * 0.45), -0.30), (int(n * 0.8), 0.30)], z=0.07, y=-0.20, energia=2.0)
+    barrido([(int(n * 0.45), -0.30), (int(n * 0.8), 0.30)], z=0.07, y=-0.20, energia=0.45)   # brillo que cruza, sin quemar
     camara_animada([(1, (0.0, -0.50, 0.150)), (n, (0.0, -0.43, 0.125))],
                    [(1, (0.002, 0.0, 0.075)), (n, (0.002, 0.0, 0.072))], focal=70, dof=8)
     return n
