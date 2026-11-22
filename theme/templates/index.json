@@ -179,6 +179,21 @@
       "type": "it-destacados",
       "name": "iPhone destacados",
       "blocks": {
+        "b18pb": {
+          "type": "iphone",
+          "settings": {
+            "product": "iphone-18-pro",
+            "variant_id": "59297114816837",
+            "title": "iPhone 18 Pro",
+            "specs": "512 GB · Burdeos · Nuevo, precintado",
+            "badge": "Precintado",
+            "tone": "oro",
+            "image": "shopify://shop_images/itoro-18-pro-512-burdeos-precintado.jpg",
+            "image2": "shopify://shop_images/itoro-18-pro-512-burdeos-trasera.jpg",
+            "ref_price": "1599",
+            "ref_label": "en otros colores"
+          }
+        },
         "b17pm": {
           "type": "iphone",
           "settings": {
@@ -211,6 +226,7 @@
         }
       },
       "block_order": [
+        "b18pb",
         "b17pm",
         "b17"
       ],
