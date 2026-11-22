@@ -26,15 +26,19 @@ def estudio():
 # plástico salía gris (0,87 del blanco de la caja; en la caja real 0,94-0,99). Ahora: punta plateada media con una franja
 # blanca y una banda oscura, cúpula con un brillo suave sin anillo negro, más exposición y la pose de la caja real
 # (girado 58°: la clavija derecha más cerca, en diagonal, y un poco más desde arriba).
+# 22/11 v6 (5.ª revisión): las puntas seguían claras y sin contraste (peltre satinado, lo más oscuro a 0,40 del blanco de
+# la caja; en la caja real 0,19-0,26) y la vaina blanca plana parecía un tubo de cristal. Ahora: cromo pulido en blanco y
+# negro como la foto de la caja (canto oscuro, brillo blanco estrecho a la izquierda, banda oscura ancha, reflejo gris y
+# canto oscuro a la derecha), sin reflejo real que lo agrise, la cúpula con el contorno oscuro y la vaina blanca mate.
 P.limpia(); sc = estudio(); sc.view_settings.exposure = -1.0
-P.CROMO.update(brillo=1.7, espejo=0.03, rugosidad=0.15,
-               paradas=[(0.0, 0.45), (0.14, 0.35), (0.27, 0.95), (0.36, 1.0), (0.44, 0.16), (0.60, 0.14), (0.72, 0.55),
-                        (0.86, 0.35), (1.0, 0.6)],
-               cupula=[(0.62, 0.7, 0.0), (0.80, 0.9, 0.55), (0.92, 1.0, 0.9), (1.0, 0.85, 0.9)])
+P.CROMO.update(brillo=1.7, espejo=0.0, rugosidad=0.15, vaina=(0.64, 0.75),
+               paradas=[(0.0, 0.02), (0.07, 0.06), (0.16, 0.55), (0.24, 1.0), (0.32, 0.9), (0.40, 0.25), (0.47, 0.03),
+                        (0.64, 0.03), (0.76, 0.30), (0.84, 0.55), (0.93, 0.08), (1.0, 0.02)],
+               cupula=[(0.74, 0.5, 0.0), (0.88, 0.85, 0.15), (0.95, 0.2, 0.5), (1.0, 0.0, 0.85)])
 a = P.adaptador(); a.rotation_euler = (0, 0, math.radians(-58))
 P.camara((-0.08, -0.29, 0.235), (0, 0, 0.037), focal=105)
 sc.render.filepath = os.path.join(SAL, 'producto-cargador.png'); bpy.ops.render.render(write_still=True)
-P.CROMO.update(brillo=None, espejo=0.12, rugosidad=0.08, paradas=None, cupula=0.0)
+P.CROMO.update(brillo=None, espejo=0.12, rugosidad=0.08, paradas=None, cupula=0.0, vaina=None)
 
 # cable: los dos conectores USB-C de pie, uno al lado del otro, y el cable trenzado bajando; las fundas de metal en
 # cromo de estudio (plateado claro, como en la caja real)

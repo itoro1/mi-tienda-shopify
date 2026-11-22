@@ -77,7 +77,7 @@ def mat_metal(nombre='metal', rugosidad=0.18, color=(0.78, 0.78, 0.8)):
 # Cromo «de foto de estudio» para las clavijas: el metal real en un estudio blanco refleja manchas sin forma
 # (parecían camuflaje). En la foto de la caja de Apple se ve el cromo clásico: borde brillante, franja oscura y otra
 # luz. Aquí el dibujo sale de hacia dónde mira la superficie respecto a la cámara, más un poco de brillo de verdad.
-CROMO = {'brillo': None, 'contraste': 1.0, 'paradas': None, 'espejo': 0.12, 'rugosidad': 0.08, 'cupula': 0.0}                         # brillo None: metal normal; un número: cromo de estudio
+CROMO = {'brillo': None, 'contraste': 1.0, 'paradas': None, 'espejo': 0.12, 'rugosidad': 0.08, 'cupula': 0.0, 'vaina': None}                         # brillo None: metal normal; un número: cromo de estudio
 
 
 def mat_cromo(nombre='cromo', brillo=1.4, contraste=None):
@@ -330,9 +330,15 @@ def adaptador():
     # clavijas: vaina blanca aislante y punta de metal redondeada
     d, sep, largo = A['clavija']; z0 = (A['largo'] + mh) * s
     metal = mat_metal('clavija', 0.12) if CROMO['brillo'] is None else mat_cromo('clavija', CROMO['brillo'])
+    # 22/11 v6: en la caja real la vaina es blanca mate y opaca, con sombra de un lado; con el plástico brillante salía
+    # blanca plana y parecía un tubo de cristal. CROMO['vaina'] = (gris, rugosidad) la hace mate (solo el dibujo de la caja).
+    vaina = blanco
+    if CROMO['vaina']:
+        vaina, _, pv = _nodos('vaina'); g_, r_ = CROMO['vaina']
+        pv.inputs['Base Color'].default_value = (g_, g_, g_ * 0.995, 1); pv.inputs['Roughness'].default_value = r_
     for x in (-sep / 2, sep / 2):
         bpy.ops.mesh.primitive_cylinder_add(vertices=48, radius=d / 2 * s, depth=10 * s, location=(x * s, 0, z0 + 5 * s))
-        v = bpy.context.object; v.data.materials.append(blanco); v.parent = cuerpo; v.data.shade_smooth()
+        v = bpy.context.object; v.data.materials.append(vaina); v.parent = cuerpo; v.data.shade_smooth()
         bpy.ops.mesh.primitive_cylinder_add(vertices=48, radius=d / 2 * s * 0.98, depth=(largo - 10 - d / 2) * s,
                                             location=(x * s, 0, z0 + (10 + (largo - 10 - d / 2) / 2) * s))
         c = bpy.context.object; c.data.materials.append(metal); c.parent = cuerpo; c.data.shade_smooth()

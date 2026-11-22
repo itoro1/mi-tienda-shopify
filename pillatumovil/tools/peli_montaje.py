@@ -67,7 +67,10 @@ def r_gancho():
     w = max(ancho('¿Su iPhone vino', f), ancho('sin cargador?', f)) + 90 * K
     # 22/11 (2.ª revisión): fondo casi opaco (se veía la pestaña detrás). 3.ª revisión: aún tapaba la hoja del logo
     # en el primer fotograma (la miniatura): letra 64 y pastilla 300-492 (la hoja empieza en y 520)
-    d.rounded_rectangle(((W - w) / 2, 300 * K, (W + w) / 2, 492 * K), radius=40 * K, fill=(11, 15, 26, 240))
+    # 22/11 (5.ª revisión): en los primeros fotogramas el hueco negro de la pestaña asomaba por el lado y por debajo y se
+    # fundía con la pastilla (una mancha negra con «cola»). Igual que r_marca: casi opaca y con un canto claro de 2 px.
+    d.rounded_rectangle(((W - w) / 2, 300 * K, (W + w) / 2, 492 * K), radius=40 * K, fill=(11, 15, 26, 250),
+                        outline=(255, 255, 255, 70), width=2 * K)
     centro(d, 312, '¿Su iPhone vino', f, BLANCO, False); centro(d, 396, 'sin cargador?', f, BLANCO, False)
     return im
 
