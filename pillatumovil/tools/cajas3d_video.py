@@ -19,6 +19,13 @@ PLAN.json:
             "tramos": [{"de": 0, "a": 30, "modo": "frente"}, {"de": 31, "a": 55, "modo": "giro"},
                        {"de": 56, "a": 120, "modo": "trasera"}]}]}
 Las cajas se pintan en el orden de la lista: la que queda delante va la última.
+
+22/11/2026 (v6, solo si el plan trae la clave "v6"; sin ella el resultado es idéntico al de antes): hueco tapado
+por zonas (camiseta o madera/fondo, prolongando el borde de la camiseta), uñas como dedo, mate suave de los dedos
+sin escalones ni mordiscos, fuera los puntos oscuros y los borrones sueltos de la IA, y la caja algo más cálida, con
+un degradado de luz y la sombra suave de los dedos. Ver el bloque «v6» más abajo y cajas/plan3d-*-v6.json.
+Opciones: --solo 10,36 (solo esos fotogramas, a PNG en la carpeta de --depura); variables CAJAS_HILOS (hilos de
+OpenCV), CAJA3D_TEX (carpeta de las texturas) y CAJAS_VOLCADO (carpeta donde guardar las máscaras, para depurar).
 """
 import json, os, subprocess, sys
 import cv2, numpy as np
@@ -28,7 +35,7 @@ from caja3d import Caja, giro_x, giro_y, giro_z, PAPEL
 clip, plan_p, salida = sys.argv[1:4]
 DEP = sys.argv[sys.argv.index('--depura') + 1] if '--depura' in sys.argv else None
 plan = json.load(open(plan_p))
-TEX = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'fotos', 'caja3d')
+TEX = os.environ.get('CAJA3D_TEX') or os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'fotos', 'caja3d')
 info = subprocess.run(['ffprobe', '-v', 'error', '-select_streams', 'v:0', '-show_entries', 'stream=width,height', '-of', 'csv=p=0', clip],
                       capture_output=True, text=True).stdout.strip().split(',')
 W, H = int(info[0]), int(info[1])
@@ -237,14 +244,433 @@ def relleno_basto(R, hoyo, piel):
     return cv2.resize(out, (w_, h), interpolation=cv2.INTER_CUBIC)
 
 
+
+# ======================= v6 (22/11/2026) =======================
+# Solo se usa si el plan trae la clave "v6"; sin ella todo funciona exactamente como antes. Arregla lo que vio la
+# revisión de la v5 (D11):
+#   - el hueco que deja la caja dibujada se tapa con lo que había detrás SEGÚN LA ZONA: camiseta donde había
+#     camiseta y madera/fondo donde había fondo (el borde camiseta|fondo se prolonga en recta desde donde se ve).
+#     Antes todo se tapaba con camiseta y salía una mancha negra escalonada sobre la madera;
+#   - los «restos» de la caja dibujada solo son cartón (gris/blanco neutro), nunca madera;
+#   - las uñas son dedo (antes, al ser claras, contaban como cartón y quedaban puntos negros);
+#   - los dedos van encima con un mate suave que separa el color del dedo del fondo viejo (sin escalones ni
+#     mordiscos en el canto de la caja) y se quitan los puntos oscuros sueltos;
+#   - la caja nueva algo más cálida, con un degradado suave de luz y la sombra suave de los dedos.
+# "v6": {"calido": [1.03, 1.0, 0.95], "sombra": [0.30, 0.12], "desenfoque": 1.0, "degradado": 0.05,
+#        "margen": 15, "motas": true, "crf": 10}
+V6 = plan.get('v6')
+E6 = SH / 3840
+SOLO = [int(x) for x in sys.argv[sys.argv.index('--solo') + 1].split(',')] if '--solo' in sys.argv else None
+if os.environ.get('CAJAS_HILOS'): cv2.setNumThreads(int(os.environ['CAJAS_HILOS']))
+
+
+def k_el(r):
+    r = max(int(round(r)), 1); return cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2 * r + 1, 2 * r + 1))
+
+
+def dil(m, r):
+    """Dilatación circular de radio r (con r grande, por distancia: mucho más rápida)."""
+    m = np.asarray(m).astype(bool)
+    if r <= 6: return cv2.dilate(m.astype(np.uint8), k_el(r)).astype(bool)
+    return cv2.distanceTransform((~m).astype(np.uint8), cv2.DIST_L2, 3) <= r
+
+
+def media_pesada(img, w, s, red=1):
+    """Media de img ponderada por w (convolución normalizada, gaussiana de sigma s). Devuelve (media, peso)."""
+    h, w_ = w.shape
+    if red > 1:
+        ch = (max(w_ // red, 1), max(h // red, 1))
+        wi = cv2.resize(w, ch, interpolation=cv2.INTER_AREA); ii = cv2.resize(img * w[..., None], ch, interpolation=cv2.INTER_AREA)
+        den = cv2.GaussianBlur(wi, (0, 0), s / red); num = cv2.GaussianBlur(ii, (0, 0), s / red)
+        m = num / np.maximum(den, 1e-6)[..., None]
+        return cv2.resize(m, (w_, h), interpolation=cv2.INTER_LINEAR), cv2.resize(den, (w_, h), interpolation=cv2.INTER_LINEAR)
+    den = cv2.GaussianBlur(w, (0, 0), s); num = cv2.GaussianBlur(img * w[..., None], (0, 0), s)
+    return num / np.maximum(den, 1e-6)[..., None], den
+
+
+def rellena_capas(img, w, sigmas, red=1):
+    """Como media_pesada, pero donde cerca no hay muestras usa sigmas cada vez más grandes."""
+    img = img.astype(np.float32); w = w.astype(np.float32)
+    out = np.zeros_like(img); hecho = np.zeros(w.shape, np.float32)
+    for s in sigmas:
+        m, den = media_pesada(img, w, s, red)
+        ok = np.clip(den / 0.08, 0, 1) * (1 - hecho)
+        out += m * ok[..., None]; hecho += ok
+    if hecho.min() < .999:
+        out += (img[w > .5].mean(0) if (w > .5).any() else 0) * (1 - hecho)[..., None]
+    return out
+
+
+def mano6(fr):
+    """Mano (y brazos, cara…): piel, también la muy clara o en sombra, y las uñas; sin motas, con los huecos pequeños
+    rellenos. La madera (más amarilla: g-b alto) y el cartón (poco rojo) no son piel. Las uñas (claras y rosadas,
+    del mismo color que el halo borroso de la yema sobre el cartón) solo cuentan si quedan dentro del dedo."""
+    f = fr.astype(np.float32); r, g, b = f[..., 0], f[..., 1], f[..., 2]
+    piel = (r > 45) & (r - g > .26 * r) & (r - b > .30 * r) & (g - b < .25 * r)   # sin la sombra rosada del dedo en el cartón
+    una = (r > 175) & (r - g > 20) & (r - b > 26) & (g - b < .2 * r)
+    nucleo = cv2.morphologyEx(piel.astype(np.uint8), cv2.MORPH_OPEN, k_el(2 * E6))
+    n, et, st, _ = cv2.connectedComponentsWithStats(nucleo)
+    nucleo = np.isin(et, [k for k in range(1, n) if st[k, 4] >= 14000 * E6 * E6]).astype(np.uint8)   # lo pequeño es kraft
+    una &= cv2.morphologyEx(nucleo, cv2.MORPH_CLOSE, k_el(18 * E6)).astype(bool)
+    m = cv2.morphologyEx(((nucleo > 0) | una).astype(np.uint8), cv2.MORPH_CLOSE, k_el(4 * E6))
+    n, et, st, _ = cv2.connectedComponentsWithStats(1 - m, connectivity=4)
+    hueco = np.isin(et, [k for k in range(1, n) if st[k, 4] < 3000 * E6 * E6])   # brillo de una uña, pliegues
+    m = (m > 0) | hueco
+    m = cv2.morphologyEx(m.astype(np.uint8), cv2.MORPH_OPEN, k_el(5 * E6))           # fuera tiras finas (canto del cartón)
+    n, et, st, _ = cv2.connectedComponentsWithStats(m)
+    return np.isin(et, [k for k in range(1, n) if st[k, 4] >= 14000 * E6 * E6])
+
+
+def alfa_mano6(I, m, zona):
+    """Mate suave de la mano (0-1): 1 dentro, 0 fuera y, en el borde, mezcla de color entre la piel de al lado (F)
+    y el fondo viejo de al lado (B): alfa = (I-B)·(F-B)/|F-B|². Devuelve (alfa, B)."""
+    seg_m = cv2.erode(m.astype(np.uint8), k_el(7 * E6)).astype(np.float32)
+    seg_f = 1 - cv2.dilate(m.astype(np.uint8), k_el(5 * E6)).astype(np.float32)
+    Fm = rellena_capas(I, seg_m, (6 * E6, 20 * E6, 60 * E6), 2)
+    Bm = rellena_capas(I, seg_f, (5 * E6, 16 * E6, 50 * E6), 2)
+    d = Fm - Bm; a = ((I - Bm) * d).sum(2) / np.maximum((d * d).sum(2), 400.0)
+    a = np.where(seg_m > 0, 1.0, np.where(seg_f > 0, 0.0, np.clip(a, 0, 1))).astype(np.float32)
+    a = cv2.GaussianBlur(a, (0, 0), 0.9 * E6)
+    return a * zona, Bm
+
+
+def recta_robusta(y, x):
+    y = np.asarray(y, float); x = np.asarray(x, float); ok = np.ones(len(y), bool)
+    for _ in range(8):
+        a, b = np.polyfit(y[ok], x[ok], 1)
+        res = np.abs(x - (a * y + b)); s = max(3.0 * E6, np.median(res[ok]) * 2.5)
+        nuevo = res < s
+        if nuevo.sum() < 12 or (nuevo == ok).all(): break
+        ok = nuevo
+    return a, b, int(ok.sum())
+
+
+def bordes_camiseta(oscuro, valido, y0, y1, x0, x1):
+    """Puntos del borde de la camiseta con el fondo en el recorte: (ys, xs) del borde derecho (camiseta a la
+    izquierda, fondo a la derecha) y del izquierdo. Se exigen 12 px seguidos de cada lado."""
+    H_, W_ = oscuro.shape; y0, y1, x0, x1 = max(y0, 0), min(y1, H_), max(x0, 0), min(x1, W_)
+    if y1 - y0 < 4 or x1 - x0 < 30: return (np.array([]), np.array([])), (np.array([]), np.array([]))
+    s = (oscuro & valido)[y0:y1, x0:x1].astype(np.uint8); f = (~oscuro & valido)[y0:y1, x0:x1].astype(np.uint8)
+    L = int(round(12 * E6)); k = np.ones((1, L + 1), np.uint8)
+    s_izq = cv2.erode(s, k, anchor=(L, 0), borderType=cv2.BORDER_CONSTANT, borderValue=0)   # camiseta en x-L..x
+    s_der = cv2.erode(s, k, anchor=(0, 0), borderType=cv2.BORDER_CONSTANT, borderValue=0)   # camiseta en x..x+L
+    f_izq = cv2.erode(f, k, anchor=(L, 0), borderType=cv2.BORDER_CONSTANT, borderValue=0)
+    f_der = cv2.erode(f, k, anchor=(0, 0), borderType=cv2.BORDER_CONSTANT, borderValue=0)
+    d = max(int(round(2 * E6)), 1); G = int(round(26 * E6))        # entre camiseta y fondo puede haber unos px de mezcla
+    f_der_g = cv2.dilate(f_der, np.ones((1, G + 1), np.uint8), anchor=(0, 0))     # hay fondo en x..x+G
+    s_der_g = cv2.dilate(s_der, np.ones((1, G + 1), np.uint8), anchor=(0, 0))
+    der = np.zeros_like(s); der[:, :-d] = s_izq[:, :-d] & f_der_g[:, d:] & ~s[:, d:]
+    izq = np.zeros_like(s); izq[:, :-d] = f_izq[:, :-d] & s_der_g[:, d:] & ~f[:, d:]
+    yd, xd = np.where(der); yi, xi = np.where(izq)
+    return (yd + y0, xd + x0 + d), (yi + y0, xi + x0 + d + G / 2)
+
+
+def borde_por_fila(ys, xs, lado):
+    """Un punto de borde por fila: el más exterior (derecho: el de más a la derecha; izquierdo: el de más a la izquierda)."""
+    if not len(ys): return np.array([]), np.array([])
+    o = np.lexsort((xs if lado == 0 else -xs, ys)); ys, xs = ys[o], xs[o]
+    ult = np.r_[ys[1:] != ys[:-1], True]
+    return ys[ult].astype(float), xs[ult].astype(float)
+
+
+def borde_en_filas(fy, fx, filas):
+    """x del borde en cada fila de 'filas': entre dos tramos vistos se interpola; fuera, se prolonga desde las filas
+    vistas más cercanas con poca pendiente (los hombros se van poniendo verticales) y sin alejarse más de 60 px."""
+    out = np.full(len(filas), np.nan)
+    if len(fy) < 20: return out
+    for j, r in enumerate(filas):
+        arr = fy < r; abj = fy > r
+        if arr.sum() >= 8 and abj.sum() >= 8 and (r - fy[arr].max()) + (fy[abj].min() - r) < 400 * E6:
+            ya, xa = fy[arr][-8:].mean(), np.median(fx[arr][-8:]); yb, xb = fy[abj][:8].mean(), np.median(fx[abj][:8])
+            out[j] = xa + (xb - xa) * (r - ya) / max(yb - ya, 1); continue
+        lado = arr if arr.sum() >= 20 else (abj if abj.sum() >= 20 else None)
+        if lado is None: continue
+        y_, x_ = fy[lado], fx[lado]
+        cerca = np.argsort(np.abs(y_ - r))[:int(60 * E6)]
+        if len(cerca) < 15: continue
+        a, b, ok = recta_robusta(y_[cerca], x_[cerca])
+        y0 = y_[cerca][np.argmin(np.abs(y_[cerca] - r))]
+        out[j] = a * y0 + b + np.clip(.4 * np.clip(a, -.4, .4) * (r - y0), -60 * E6, 60 * E6)
+    ok = ~np.isnan(out)
+    if ok.sum() > 5:                                           # sin escalones de una fila a otra
+        v = np.interp(np.arange(len(out)), np.where(ok)[0], out[ok])
+        v = cv2.GaussianBlur(v.reshape(-1, 1).astype(np.float32), (1, 0), 12 * E6).ravel()
+        out = np.where(ok, v, np.nan)
+    return out
+
+
+BORDES = {}
+
+
+def clase_camiseta(oscuro, valido, hueco, fondo_ok):
+    """Dentro del hueco: True donde había camiseta. El borde camiseta|fondo que se ve encima, debajo y al lado del
+    hueco se continúa por dentro (se interpola o se prolonga). Fuera del hueco, lo que se ve."""
+    pred = oscuro.copy()
+    n, et, st, _ = cv2.connectedComponentsWithStats(hueco.astype(np.uint8))
+    banda = int(round(260 * E6)); mx = int(round(90 * E6))
+    ys_, xs_ = np.where(hueco); y0_, y1_ = ys_.min(), ys_.max()
+    centro = np.median(np.where(oscuro[y0_:y1_ + 1:8])[1]) if oscuro[y0_:y1_ + 1:8].any() else SW / 2   # centro del torso
+    for k in range(1, n):
+        x, y, w, h, area = st[k]
+        comp = et[y:y + h, x:x + w] == k
+        filas = np.arange(y, y + h)
+        bordes = []
+        for lado in (0, 1):
+            pts = bordes_camiseta(oscuro, valido & (oscuro | fondo_ok), y - banda, y + h + banda, x - mx, x + w + mx)[lado]
+            fuera = (pts[1] > centro + 150 * E6) if lado == 0 else (pts[1] < centro - 150 * E6)    # solo el contorno de fuera
+            fy, fx = borde_por_fila(pts[0][fuera], pts[1][fuera], lado)
+            xb = borde_en_filas(fy, fx, filas)
+            clave = (lado, int(x + w / 2) // int(300 * E6))
+            prev = BORDES.get(clave)
+            if prev is not None:                                   # suave en el tiempo: el borde no tiembla
+                pv = np.full(len(filas), np.nan); m_ = (filas >= prev[0]) & (filas < prev[0] + len(prev[1]))
+                pv[m_] = prev[1][filas[m_] - prev[0]]
+                ambos = ~np.isnan(xb) & ~np.isnan(pv)
+                xb = np.where(ambos, .6 * pv + .4 * xb, xb)
+            BORDES[clave] = (int(filas[0]), xb.copy())
+            bordes.append((lado, xb))
+        xx = np.arange(x, x + w)[None, :]
+        c = np.ones_like(comp); alguno = False
+        for lado, xb in bordes:
+            ok = ~np.isnan(xb)
+            if ok.sum() < 3: continue
+            alguno = True
+            xb = np.where(ok, xb, np.nan)
+            cond = (xx <= xb[:, None]) if lado == 0 else (xx >= xb[:, None])
+            c &= np.where(ok[:, None], cond, True)
+        if not alguno:                                               # sin borde a la vista: lo que hay alrededor
+            ani = dil(comp, 30 * E6)
+            zz = (slice(y, y + h), slice(x, x + w))
+            v = valido[zz] & ani & ~comp & (oscuro[zz] | fondo_ok[zz])
+            c = np.full_like(comp, (oscuro[zz][v].mean() > .5) if v.any() else True)
+        z = pred[y:y + h, x:x + w]; z[comp] = c[comp]
+    return pred
+
+
+CLON6 = {}
+
+
+def elige_desplaz(objetivo, fuente_ok, cands, n=4):
+    """Los n desplazamientos (dx, dy) de cands con más fuente válida para los píxeles de objetivo."""
+    ys, xs = np.where(objetivo)
+    if len(ys) > 20000:
+        i = np.random.default_rng(0).choice(len(ys), 20000, replace=False); ys, xs = ys[i], xs[i]
+    H_, W_ = fuente_ok.shape; res = []
+    for dx, dy, pena in cands:
+        yy, xx = ys + dy, xs + dx; ok = (yy >= 0) & (yy < H_) & (xx >= 0) & (xx < W_)
+        v = np.zeros(len(ys), bool); v[ok] = fuente_ok[yy[ok], xx[ok]]
+        res.append((v.mean() - pena, (dx, dy)))
+    res.sort(key=lambda r: -r[0])
+    return [d for _, d in res[:n]]
+
+
+def clona(I, objetivo, fuente_ok, desplaz, margen):
+    """Para cada píxel del recorte (objetivo + margen): el primer desplazamiento cuya fuente vale. Devuelve
+    (recorte, S = imagen copiada, asignado)."""
+    H_, W_ = objetivo.shape
+    ys, xs = np.where(objetivo); y0, y1 = max(ys.min() - margen, 0), min(ys.max() + margen + 1, H_)
+    x0, x1 = max(xs.min() - margen, 0), min(xs.max() + margen + 1, W_)
+    yy, xx = np.mgrid[y0:y1, x0:x1]
+    S = np.zeros((y1 - y0, x1 - x0, 3), np.float32); hecho = np.zeros((y1 - y0, x1 - x0), bool)
+    for dx, dy in desplaz:
+        sy, sx = yy + dy, xx + dx; ok = (sy >= 0) & (sy < H_) & (sx >= 0) & (sx < W_) & ~hecho
+        ok[ok] = fuente_ok[sy[ok], sx[ok]]
+        S[ok] = I[sy[ok], sx[ok]]; hecho |= ok
+    return (slice(y0, y1), slice(x0, x1)), S, hecho
+
+
+def rellena6(I, hueco, tapa, valido, oscuro, camiseta, fondo_ok):
+    """Tapa el hueco: donde quedará a la vista ('tapa'), textura copiada de otra zona de la misma clase (camiseta o
+    fondo; el fondo se copia en vertical para seguir la veta de la madera), con el color corregido por el de
+    alrededor (solo frecuencias bajas); el resto del hueco, la media suave de alrededor de su clase."""
+    out = I.copy()
+    m_out = int(round(50 * E6))
+    for clase in (True, False):
+        es = camiseta if clase else ~camiseta
+        hz = hueco & es
+        if not hz.any(): continue
+        fuente_ok = valido & (oscuro if clase else (~oscuro & fondo_ok))
+        # base: media suave de la clase (por si no hay textura que copiar)
+        ys, xs = np.where(hz); y0, y1 = max(ys.min() - 300, 0), min(ys.max() + 301, I.shape[0]); x0, x1 = max(xs.min() - 300, 0), min(xs.max() + 301, I.shape[1])
+        zz = (slice(y0, y1), slice(x0, x1))
+        base = rellena_capas(I[zz], fuente_ok[zz], (8 * E6, 24 * E6, 70 * E6, 200 * E6, 500 * E6), 4)
+        o = out[zz]; o[hz[zz]] = base[hz[zz]]
+        obj = tapa & es
+        n, et, st, cen = cv2.connectedComponentsWithStats(obj.astype(np.uint8))
+        for k in range(1, n):
+            if st[k, 4] < 150 * E6 * E6: continue
+            comp = et == k; x, y, w, h = st[k, :4]
+            # el mismo trozo de un fotograma a otro copia siempre del mismo sitio (si no, la textura salta)
+            clave = next((c_ for c_ in CLON6 if c_[0] == clase and abs(c_[1] - cen[k][0]) + abs(c_[2] - cen[k][1]) < 350 * E6), None)
+            if clave is None:
+                clave = (clase, float(cen[k][0]), float(cen[k][1]))
+                if clase:
+                    cands = [(dx, dy, 4e-5 * (abs(dx) + abs(dy))) for dy in range(-int(2000 * E6), int(2000 * E6), int(40 * E6))
+                             for dx in (0, -int(150 * E6), int(150 * E6), -int(400 * E6), int(400 * E6), -int(800 * E6), int(800 * E6))]
+                else:
+                    cands = [(0, dy, 3e-5 * abs(dy)) for dy in range(-int(1600 * E6), int(1600 * E6), int(20 * E6))] + \
+                            [(dx, dy, 3e-5 * abs(dy) + 2e-4 * abs(dx)) for dx in (-int(60 * E6), int(60 * E6), -int(150 * E6), int(150 * E6))
+                             for dy in range(-int(1600 * E6), int(1600 * E6), int(40 * E6))]
+                cands = [c for c in cands if abs(c[0]) + abs(c[1]) > 8 * E6]
+                CLON6[clave] = elige_desplaz(comp, fuente_ok, cands, 5)
+                print('  clon', 'camiseta' if clase else 'fondo', (round(clave[1]), round(clave[2])), CLON6[clave][:3])
+            Z, S, asig = clona(I, comp, fuente_ok, CLON6[clave], m_out)
+            cz = comp[Z]; hzz = hz[Z]
+            anillo = dil(cz, 40 * E6) & ~hueco[Z] & fuente_ok[Z] & asig
+            if anillo.sum() < 30: continue
+            usa = (cz & asig & hzz)
+            o = out[Z]
+            if clase:
+                # camiseta: la luz y los pliegues grandes salen de alrededor (base suave) y de la copia solo el grano
+                # de la tela; así no se cuelan manchas ni pliegues de otra zona
+                fino = S - cv2.GaussianBlur(S, (0, 0), 6 * E6)
+                o[usa] = (o + fino)[usa]
+            else:
+                corr = rellena_capas(I[Z] - S, anillo, (20 * E6, 60 * E6, 180 * E6), 2)
+                o[usa] = (S + corr)[usa]
+    return out
+
+
+def quita_motas(F, zona):
+    """Puntos oscuros sueltos (unos px) dentro de zona: se cambian por la mediana de alrededor."""
+    ys, xs = np.where(zona)
+    if not len(ys): return
+    y0, y1, x0, x1 = max(ys.min() - 20, 0), min(ys.max() + 21, F.shape[0]), max(xs.min() - 20, 0), min(xs.max() + 21, F.shape[1])
+    Z = F[y0:y1, x0:x1]; L = Z.astype(np.float32).mean(2)
+    med = cv2.medianBlur(Z, 2 * int(round(9 * E6)) + 1); Lm = med.astype(np.float32).mean(2)
+    oscuro = (L < Lm * .62) & (Lm - L > 35) & zona[y0:y1, x0:x1]
+    n, et, st, _ = cv2.connectedComponentsWithStats(oscuro.astype(np.uint8))
+    malo = np.isin(et, [k for k in range(1, n) if st[k, 4] < 260 * E6 * E6])
+    malo = cv2.dilate(malo.astype(np.uint8), k_el(2 * E6)).astype(bool)
+    Z[malo] = med[malo]
+
+
+def compone6(n, F, orig, blanco, etq, pintadas):
+    """El fotograma v6: fuera las cajas dibujadas, hueco tapado por zonas, cajas reales y la mano encima."""
+    if not pintadas: return
+    piel_v5 = piel_gruesa(mascaras(orig)[1])
+    ns, es, st, _ = cv2.connectedComponentsWithStats(piel_v5.astype(np.uint8))
+    kraft = np.isin(es, [k for k in range(1, ns) if st[k, 4] < 14000 * E6 * E6])
+    mano = mano6(orig)
+    nueva = np.zeros((SH, SW), np.float32)
+    for i, x0, y0, rgb, alfa, vis in pintadas:
+        z = nueva[y0:y0 + alfa.shape[0], x0:x0 + alfa.shape[1]]; np.maximum(z, alfa[..., 0], out=z)
+    mg = V6.get('margen', 15)
+    hoyo = np.zeros((SH, SW), bool)
+    o16 = orig.astype(np.int16); omax = o16.max(2); omin = o16.min(2)
+    neutro = (omax > 110) & ((omax - omin < 40) | (o16[..., 2] > o16[..., 0] + 8)) \
+        & ~cv2.dilate(mano.astype(np.uint8), k_el(4 * E6)).astype(bool)                 # cartón gris/blanco o restos azulados (no los brillos de la camiseta)
+    for i, x0, y0, rgb, alfa, vis in pintadas:
+        if vis is None: continue
+        sil = cv2.morphologyEx(vis.astype(np.uint8), cv2.MORPH_CLOSE, np.ones((45, 45), np.uint8))
+        cs, _ = cv2.findContours(sil, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE); cv2.drawContours(sil, cs, -1, 1, -1)
+        sil = cv2.dilate(sil, k_el(mg / 2)).astype(bool)
+        # restos de cartón pegados (pestaña suelta, cantos en sombra): gris o blanco neutro, nunca madera ni piel
+        cerca = dil(sil, 60 * E6)
+        # trozos claros neutros pegados a la silueta, pero no el suelo o una pared clara que toque la caja: solo
+        # trozos pequeños (contados enteros, fuera de la silueta)
+        n3, e3, s3, _ = cv2.connectedComponentsWithStats((neutro & ~sil).astype(np.uint8))
+        toca = np.unique(e3[dil(sil, 2) & (e3 > 0)])
+        resto = np.isin(e3, [k for k in toca if s3[k, 4] < 40000 * E6 * E6]) & cerca
+        resto |= kraft & dil(sil, 20 * E6)                     # el cartón kraft de la tapa dibujada, pegado a la caja
+        hoyo |= cv2.dilate((sil | resto).astype(np.uint8), k_el(4 * E6)).astype(bool)
+    hoyo &= ~mano
+    # manchas claras sueltas junto a la caja dibujada que no son madera ni piel (fallos de la IA, p. ej. un borrón
+    # azulado junto a la pestaña): también fuera
+    suelto = (omax >= 110) & (o16[..., 0] - o16[..., 2] < 45) & ~cv2.dilate(mano.astype(np.uint8), k_el(4 * E6)).astype(bool) & ~hoyo
+    ns_, es_, st_, _ = cv2.connectedComponentsWithStats(suelto.astype(np.uint8))
+    cerca_h = dil(hoyo, 80 * E6); lejos_h = dil(hoyo, 400 * E6)
+    oscuro_ = omax < 80
+    peq = np.zeros_like(hoyo)
+    for k in range(1, ns_):
+        if st_[k, 4] >= 6000 * E6 * E6: continue
+        x_, y_, w_, h_ = st_[k, :4]
+        zz = (slice(max(y_ - 12, 0), y_ + h_ + 12), slice(max(x_ - 12, 0), x_ + w_ + 12))
+        m_ = es_[zz] == k
+        anillo_ = dil(m_, 8 * E6) & ~m_
+        rodeada = oscuro_[zz][anillo_ & ~hoyo[zz]].mean() > .7 if (anillo_ & ~hoyo[zz]).any() else True
+        if cerca_h[zz][m_].any() and rodeada: peq[zz] |= m_; continue
+        anillo_ = anillo_                          # más lejos: solo borrones azulados sueltos sobre la camiseta
+        azul = (o16[zz][m_][:, 2] > o16[zz][m_][:, 0] + 8).mean() > .5
+        if azul and lejos_h[zz][m_].any() and oscuro_[zz][anillo_].mean() > .8: peq[zz] |= m_
+    hoyo |= cv2.dilate(peq.astype(np.uint8), k_el(5 * E6)).astype(bool) & ~mano
+    zona = dil(hoyo | (nueva > 0), 70 * E6)
+    ys, xs = np.where(zona); a0, a1, b0, b1 = ys.min(), ys.max() + 1, xs.min(), xs.max() + 1
+    Z = (slice(a0, a1), slice(b0, b1))
+    I = orig.astype(np.float32)
+    oscuro = omax < 80
+    valido = ~cv2.dilate((hoyo | mano | kraft | cv2.dilate(blanco.astype(np.uint8), k_el(3 * E6)).astype(bool)).astype(np.uint8), k_el(6 * E6)).astype(bool)
+    f_ = orig.astype(np.int16)
+    pielish = (f_[..., 0] > 40) & (f_[..., 0] - f_[..., 1] > .12 * f_[..., 0]) & (f_[..., 1] - f_[..., 2] < .25 * f_[..., 0])
+    fondo_ok = ~cv2.dilate(pielish.astype(np.uint8), k_el(6 * E6)).astype(bool)
+    # fondo de verdad: zonas grandes que llegan al borde izquierdo o derecho del cuadro (no un trozo gris de la caja
+    # dibujada dentro del torso)
+    nf, ef, sf, _ = cv2.connectedComponentsWithStats((fondo_ok & ~oscuro & valido).astype(np.uint8))
+    fondo_ok &= np.isin(ef, [k for k in range(1, nf) if sf[k, 4] >= 20000 * E6 * E6 and (sf[k, 0] <= 2 or sf[k, 0] + sf[k, 2] >= SW - 2)])
+    if os.environ.get('CAJAS_VOLCADO'):
+        np.savez_compressed(f"{os.environ['CAJAS_VOLCADO']}/v{n + INI:03d}.npz", oscuro=oscuro, valido=valido, hoyo=hoyo, fondo_ok=fondo_ok, mano=mano, nueva=nueva)
+    tapa = hoyo & dil(nueva <= .5, 8 * E6)
+    # costura: una banda de 12 px alrededor del hueco también se rellena y se funde poco a poco con lo de verdad
+    # (así no queda la línea del canto ni la sombra de la caja dibujada)
+    dist = cv2.distanceTransform((~hoyo).astype(np.uint8), cv2.DIST_L2, 5)
+    anch = 12 * E6
+    banda = (dist > 0) & (dist <= anch) & ~cv2.dilate((mano | blanco).astype(np.uint8), k_el(3 * E6)).astype(bool)
+    relleno = hoyo | banda
+    valido &= ~dil(banda, 6 * E6)
+    camiseta = clase_camiseta(oscuro, valido, relleno, fondo_ok)
+    G = rellena6(I, relleno, tapa | banda, valido, oscuro, camiseta, fondo_ok)[Z]
+    peso = np.where(hoyo, 1.0, np.where(banda, np.clip(1 - dist / anch, 0, 1), 0.0)).astype(np.float32)[Z]
+    G = G * peso[..., None] + I[Z] * (1 - peso[..., None])
+    # las cajas reales: luz de la escena, algo más cálidas, degradado suave y la sombra de los dedos
+    Iz = I[Z]; mz = mano[Z]
+    cambio = dil(hoyo[Z] | (nueva[Z] > 0), 24 * E6).astype(np.float32)
+    am, Bold = alfa_mano6(Iz, mz, cambio)
+    calido = np.float32(V6.get('calido', [1, 1, 1])); sombra = V6.get('sombra', [0, 0]); deg = V6.get('degradado', 0.0)
+    for i, x0, y0, rgb, alfa, vis in pintadas:
+        h, w_ = alfa.shape[:2]; yy, xx = y0 - a0, x0 - b0
+        Rz = G[yy:yy + h, xx:xx + w_]
+        luz = (blancos[i][n] / PAPEL * 1.04) if not np.isnan(blancos[i][n]).any() else np.float32([.84, .8, .78])
+        cap = np.dstack([rgb * (luz * calido), alfa])
+        if deg:
+            ya = np.where(alfa[..., 0].max(1) > .5)[0]
+            if len(ya):
+                v = np.clip((np.arange(h, dtype=np.float32) - ya[0]) / max(ya[-1] - ya[0], 1), 0, 1)
+                cap[..., :3] *= (1 + deg / 2 - deg * v)[:, None, None]
+        cap = cv2.GaussianBlur(cap, (0, 0), V6.get('desenfoque', 0.8) * E6)
+        az = am[yy:yy + h, xx:xx + w_]
+        s1 = cv2.GaussianBlur(np.roll(az, (int(round(6 * E6)), int(round(4 * E6))), (0, 1)), (0, 0), 6 * E6)
+        s2 = cv2.GaussianBlur(az, (0, 0), 22 * E6)
+        som = np.clip(s1 * sombra[0] + s2 * sombra[1], 0, .6)[..., None]
+        g = np.random.default_rng(n * 7 + i).normal(0, 1.4, (h, w_, 1)).astype(np.float32)
+        G[yy:yy + h, xx:xx + w_] = Rz * (1 - cap[..., 3:]) + np.clip(cap[..., :3] * (1 - som) + g * cap[..., 3:], 0, 255)
+    # la mano encima: donde el borde del dedo mezclaba piel y fondo viejo, se cambia el fondo viejo por el nuevo
+    hz = hoyo[Z]
+    c = np.maximum(nueva[Z], cv2.GaussianBlur(hz.astype(np.float32), (0, 0), 2 * E6))[..., None]
+    NB = c * G + (1 - c) * Bold
+    w = np.clip((am - .04) / .2, 0, 1)[..., None]
+    out = (1 - w) * G + w * (Iz + (1 - am[..., None]) * (NB - Bold))
+    # costura suave del hueco con lo que no cambia
+    borde = np.maximum(cv2.GaussianBlur((hz | (nueva[Z] > 0) | (am > .02)).astype(np.float32), (0, 0), 1.5 * E6), peso)[..., None]
+    out = borde * out + (1 - borde) * Iz
+    out = np.clip(out, 0, 255).round().astype(np.uint8)
+    if V6.get('motas', True):
+        quita_motas(out, (am > .3) & (cambio > 0))
+    F[Z] = out
+    if DEP and SOLO:
+        os.makedirs(DEP, exist_ok=True)
+        cv2.imwrite(f'{DEP}/m{n + INI:03d}.png', np.dstack([mz * 255, (am * 255).astype(np.uint8), hz * 255, camiseta[Z] * 120 + 60]).astype(np.uint8)[..., :3])
+        cv2.imwrite(f'{DEP}/k{n + INI:03d}.png', (camiseta[Z] * 200 + hz * 55).astype(np.uint8))
+
+
 modelos = {}
 for c in cajas:
     if c['modelo'] not in modelos: modelos[c['modelo']] = Caja(c['modelo'], TEX)
 FOTO = salida.lower().endswith('.png')
 DESPL = [None]                                           # de dónde se copia la tela (se decide en el primer fotograma)
-enc = None if FOTO else subprocess.Popen(['ffmpeg', '-y', '-loglevel', 'error', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', f'{SW}x{SH}', '-r', '24', '-i', '-',
-                                          '-an', '-c:v', 'libx264', '-crf', '10', '-preset', 'medium', '-pix_fmt', 'yuv420p', '-r', '24', salida], stdin=subprocess.PIPE)
+enc = None if (FOTO or SOLO) else subprocess.Popen(['ffmpeg', '-y', '-loglevel', 'error', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', f'{SW}x{SH}', '-r', '24', '-i', '-',
+                                          '-an', '-c:v', 'libx264', '-crf', str((V6 or {}).get('crf', 10)), '-preset', 'medium', '-pix_fmt', 'yuv420p', '-r', '24', salida], stdin=subprocess.PIPE)
 for n, fr in enumerate(fotogramas()):
+    if SOLO and n + INI not in SOLO: continue
     F = np.ascontiguousarray(cv2.resize(fr, (AW, SH), interpolation=cv2.INTER_LANCZOS4)[:, OFF:OFF + SW])
     orig = F.copy()
     blanco, piel = mascaras(orig); piel = piel_gruesa(piel)
@@ -265,71 +691,77 @@ for n, fr in enumerate(fotogramas()):
         x0, y0, rgb, alfa = caja_en_zona(caja, R, t)
         vis = componente(etq, a_salida(base[i][n]) - [0, escala[i][n] * .5], 90)
         pintadas.append((i, x0, y0, rgb, alfa, vis))
-    # 2) fuera las cajas dibujadas: relleno basto en toda la silueta y tela de verdad donde va a quedar al aire
-    nueva = np.zeros((SH, SW), np.float32)
-    for i, x0, y0, rgb, alfa, vis in pintadas:
-        z = nueva[y0:y0 + alfa.shape[0], x0:x0 + alfa.shape[1]]; np.maximum(z, alfa[..., 0], out=z)
-    hoyo = np.zeros((SH, SW), bool)
-    for i, x0, y0, rgb, alfa, vis in pintadas:
-        if vis is None: continue
-        sil = cv2.morphologyEx(vis.astype(np.uint8), cv2.MORPH_CLOSE, np.ones((45, 45), np.uint8))
-        cs, _ = cv2.findContours(sil, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE); cv2.drawContours(sil, cs, -1, 1, -1)
-        sil = cv2.dilate(sil, np.ones((41, 41), np.uint8)).astype(bool)
-        # restos claros pegados (pestaña suelta, cantos): también fuera, salvo la piel
-        claro = (orig.max(2) > 62) & ~cv2.dilate(piel.astype(np.uint8), np.ones((9, 9), np.uint8)).astype(bool)
-        cerca = cv2.dilate(sil.astype(np.uint8), np.ones((121, 121), np.uint8)).astype(bool)
-        _, e2 = cv2.connectedComponents((claro & cerca).astype(np.uint8))
-        resto = np.isin(e2, np.unique(e2[sil & claro & (e2 > 0)]))
-        resto |= kraft & cerca                                            # tapa kraft de la caja dibujada
-        hoyo |= cv2.dilate((sil | resto).astype(np.uint8), np.ones((9, 9), np.uint8)).astype(bool)
-    borde_carton = cv2.dilate(blanco.astype(np.uint8), np.ones((13, 13), np.uint8)).astype(bool)
-    hoyo &= ~(pd & ~borde_carton)                                        # la piel se respeta, salvo el filo pegado al cartón
-    if hoyo.any():
-        ys, xs = np.where(hoyo); a0, a1, b0, b1 = max(ys.min() - 260, 0), min(ys.max() + 260, SH), max(xs.min() - 260, 0), min(xs.max() + 260, SW)
-        Rz = F[a0:a1, b0:b1]; hz = hoyo[a0:a1, b0:b1]
-        basto = relleno_basto(Rz, hz, piel[a0:a1, b0:b1])
-        F[a0:a1, b0:b1] = np.where(hz[..., None], np.clip(basto, 0, 255), Rz).astype(np.uint8)
-        # tela de verdad en lo que queda al aire (fuera de la caja nueva), copiada de CLON y fundida con Poisson
-        aire = hoyo & (cv2.erode(nueva, np.ones((25, 25), np.uint8)) < .5)
-        aire = cv2.morphologyEx(aire.astype(np.uint8), cv2.MORPH_OPEN, np.ones((9, 9), np.uint8)).astype(bool)
-        if aire.sum() > 400:
-            # tela válida para copiar: oscura, sin piel, sin cartón y fuera de las cajas dibujadas
-            tela_ok = (orig.max(2) < 105) & ~hoyo & ~cv2.dilate((piel | blanco).astype(np.uint8), np.ones((15, 15), np.uint8)).astype(bool)
-            ys, xs = np.where(aire); y0, y1, x0, x1 = ys.min() - 6, ys.max() + 7, xs.min() - 6, xs.max() + 7
-            if DESPL[0] is None:                                    # se elige una vez, en el primer fotograma, y ya no cambia
-                cands = ([tuple(CLON)] if CLON else []) + [(dx, dy) for dy in range(300, 900, 30) for dx in (0, -80, 80, -160, 160)]
-                mejor = (-1, None)
-                for dx_, dy_ in cands:
-                    dx, dy = int(round(dx_ * SX)), int(round(dy_ * SY))
-                    if not (y0 > 0 and x0 + dx > 0 and y1 + dy < SH and x1 + dx < SW and x0 > 0): continue
-                    v = tela_ok[y0 + dy:y1 + dy, x0 + dx:x1 + dx][aire[y0:y1, x0:x1]].mean()
-                    if v > mejor[0] + .01: mejor = (v, (dx_, dy_))
-                    if v > .985: break
-                DESPL[0] = mejor[1]; print('tela copiada desde', mejor[1], '| válida', round(float(mejor[0]), 3))
-            if DESPL[0] is not None:
-                dx, dy = int(round(DESPL[0][0] * SX)), int(round(DESPL[0][1] * SY))
-                if y0 > 0 and x0 > 0 and y1 + dy < SH and x1 + dx < SW and x0 + dx > 0:
-                    vale = cv2.erode(tela_ok[y0 + dy:y1 + dy, x0 + dx:x1 + dx].astype(np.uint8), np.ones((13, 13), np.uint8)).astype(bool)
-                    mk = ((aire[y0:y1, x0:x1] & vale) * 255).astype(np.uint8)
-                    mk = cv2.morphologyEx(mk, cv2.MORPH_OPEN, np.ones((9, 9), np.uint8)); mk[:3] = 0; mk[-3:] = 0; mk[:, :3] = 0; mk[:, -3:] = 0
-                    if mk.any():
-                        src = np.ascontiguousarray(orig[y0 + dy:y1 + dy, x0 + dx:x1 + dx])
-                        bx, by, bw, bh = cv2.boundingRect(mk)
-                        F[:] = cv2.seamlessClone(src, F, mk, (x0 + bx + bw // 2, y0 + by + bh // 2), cv2.NORMAL_CLONE)
-    # 3) las cajas reales, con la luz de la escena, y los dedos por delante
-    for i, x0, y0, rgb, alfa, vis in pintadas:
-        h, w_ = alfa.shape[:2]; Rz = F[y0:y0 + h, x0:x0 + w_].astype(np.float32)
-        luz = (blancos[i][n] / PAPEL * 1.04) if not np.isnan(blancos[i][n]).any() else np.float32([.84, .8, .78])
-        cap = np.dstack([rgb * luz, alfa]); cap = cv2.GaussianBlur(cap, (0, 0), 0.8)
-        pz = piel[y0:y0 + h, x0:x0 + w_]
-        sombra_dedos = np.clip(cv2.GaussianBlur(pz.astype(np.float32), (0, 0), 12) * 1.6, 0, 1)[..., None] * .22
-        g = np.random.default_rng(n * 7 + i).normal(0, 1.6, (h, w_, 1)).astype(np.float32)
-        out = Rz * (1 - cap[..., 3:]) + np.clip(cap[..., :3] * (1 - sombra_dedos) + g * cap[..., 3:], 0, 255)
-        pm = cv2.GaussianBlur(cv2.dilate(pz.astype(np.uint8), np.ones((3, 3), np.uint8)).astype(np.float32), (0, 0), 1.3)[..., None]
-        out = out * (1 - pm) + orig[y0:y0 + h, x0:x0 + w_].astype(np.float32) * pm          # los dedos, tal como estaban
-        F[y0:y0 + h, x0:x0 + w_] = np.clip(out, 0, 255).round().astype(np.uint8)
+    if V6:
+        compone6(n, F, orig, blanco, etq, pintadas)
+    else:
+        # 2) fuera las cajas dibujadas: relleno basto en toda la silueta y tela de verdad donde va a quedar al aire
+        nueva = np.zeros((SH, SW), np.float32)
+        for i, x0, y0, rgb, alfa, vis in pintadas:
+            z = nueva[y0:y0 + alfa.shape[0], x0:x0 + alfa.shape[1]]; np.maximum(z, alfa[..., 0], out=z)
+        hoyo = np.zeros((SH, SW), bool)
+        for i, x0, y0, rgb, alfa, vis in pintadas:
+            if vis is None: continue
+            sil = cv2.morphologyEx(vis.astype(np.uint8), cv2.MORPH_CLOSE, np.ones((45, 45), np.uint8))
+            cs, _ = cv2.findContours(sil, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE); cv2.drawContours(sil, cs, -1, 1, -1)
+            sil = cv2.dilate(sil, np.ones((41, 41), np.uint8)).astype(bool)
+            # restos claros pegados (pestaña suelta, cantos): también fuera, salvo la piel
+            claro = (orig.max(2) > 62) & ~cv2.dilate(piel.astype(np.uint8), np.ones((9, 9), np.uint8)).astype(bool)
+            cerca = cv2.dilate(sil.astype(np.uint8), np.ones((121, 121), np.uint8)).astype(bool)
+            _, e2 = cv2.connectedComponents((claro & cerca).astype(np.uint8))
+            resto = np.isin(e2, np.unique(e2[sil & claro & (e2 > 0)]))
+            resto |= kraft & cerca                                            # tapa kraft de la caja dibujada
+            hoyo |= cv2.dilate((sil | resto).astype(np.uint8), np.ones((9, 9), np.uint8)).astype(bool)
+        borde_carton = cv2.dilate(blanco.astype(np.uint8), np.ones((13, 13), np.uint8)).astype(bool)
+        hoyo &= ~(pd & ~borde_carton)                                        # la piel se respeta, salvo el filo pegado al cartón
+        if hoyo.any():
+            ys, xs = np.where(hoyo); a0, a1, b0, b1 = max(ys.min() - 260, 0), min(ys.max() + 260, SH), max(xs.min() - 260, 0), min(xs.max() + 260, SW)
+            Rz = F[a0:a1, b0:b1]; hz = hoyo[a0:a1, b0:b1]
+            basto = relleno_basto(Rz, hz, piel[a0:a1, b0:b1])
+            F[a0:a1, b0:b1] = np.where(hz[..., None], np.clip(basto, 0, 255), Rz).astype(np.uint8)
+            # tela de verdad en lo que queda al aire (fuera de la caja nueva), copiada de CLON y fundida con Poisson
+            aire = hoyo & (cv2.erode(nueva, np.ones((25, 25), np.uint8)) < .5)
+            aire = cv2.morphologyEx(aire.astype(np.uint8), cv2.MORPH_OPEN, np.ones((9, 9), np.uint8)).astype(bool)
+            if aire.sum() > 400:
+                # tela válida para copiar: oscura, sin piel, sin cartón y fuera de las cajas dibujadas
+                tela_ok = (orig.max(2) < 105) & ~hoyo & ~cv2.dilate((piel | blanco).astype(np.uint8), np.ones((15, 15), np.uint8)).astype(bool)
+                ys, xs = np.where(aire); y0, y1, x0, x1 = ys.min() - 6, ys.max() + 7, xs.min() - 6, xs.max() + 7
+                if DESPL[0] is None:                                    # se elige una vez, en el primer fotograma, y ya no cambia
+                    cands = ([tuple(CLON)] if CLON else []) + [(dx, dy) for dy in range(300, 900, 30) for dx in (0, -80, 80, -160, 160)]
+                    mejor = (-1, None)
+                    for dx_, dy_ in cands:
+                        dx, dy = int(round(dx_ * SX)), int(round(dy_ * SY))
+                        if not (y0 > 0 and x0 + dx > 0 and y1 + dy < SH and x1 + dx < SW and x0 > 0): continue
+                        v = tela_ok[y0 + dy:y1 + dy, x0 + dx:x1 + dx][aire[y0:y1, x0:x1]].mean()
+                        if v > mejor[0] + .01: mejor = (v, (dx_, dy_))
+                        if v > .985: break
+                    DESPL[0] = mejor[1]; print('tela copiada desde', mejor[1], '| válida', round(float(mejor[0]), 3))
+                if DESPL[0] is not None:
+                    dx, dy = int(round(DESPL[0][0] * SX)), int(round(DESPL[0][1] * SY))
+                    if y0 > 0 and x0 > 0 and y1 + dy < SH and x1 + dx < SW and x0 + dx > 0:
+                        vale = cv2.erode(tela_ok[y0 + dy:y1 + dy, x0 + dx:x1 + dx].astype(np.uint8), np.ones((13, 13), np.uint8)).astype(bool)
+                        mk = ((aire[y0:y1, x0:x1] & vale) * 255).astype(np.uint8)
+                        mk = cv2.morphologyEx(mk, cv2.MORPH_OPEN, np.ones((9, 9), np.uint8)); mk[:3] = 0; mk[-3:] = 0; mk[:, :3] = 0; mk[:, -3:] = 0
+                        if mk.any():
+                            src = np.ascontiguousarray(orig[y0 + dy:y1 + dy, x0 + dx:x1 + dx])
+                            bx, by, bw, bh = cv2.boundingRect(mk)
+                            F[:] = cv2.seamlessClone(src, F, mk, (x0 + bx + bw // 2, y0 + by + bh // 2), cv2.NORMAL_CLONE)
+        # 3) las cajas reales, con la luz de la escena, y los dedos por delante
+        for i, x0, y0, rgb, alfa, vis in pintadas:
+            h, w_ = alfa.shape[:2]; Rz = F[y0:y0 + h, x0:x0 + w_].astype(np.float32)
+            luz = (blancos[i][n] / PAPEL * 1.04) if not np.isnan(blancos[i][n]).any() else np.float32([.84, .8, .78])
+            cap = np.dstack([rgb * luz, alfa]); cap = cv2.GaussianBlur(cap, (0, 0), 0.8)
+            pz = piel[y0:y0 + h, x0:x0 + w_]
+            sombra_dedos = np.clip(cv2.GaussianBlur(pz.astype(np.float32), (0, 0), 12) * 1.6, 0, 1)[..., None] * .22
+            g = np.random.default_rng(n * 7 + i).normal(0, 1.6, (h, w_, 1)).astype(np.float32)
+            out = Rz * (1 - cap[..., 3:]) + np.clip(cap[..., :3] * (1 - sombra_dedos) + g * cap[..., 3:], 0, 255)
+            pm = cv2.GaussianBlur(cv2.dilate(pz.astype(np.uint8), np.ones((3, 3), np.uint8)).astype(np.float32), (0, 0), 1.3)[..., None]
+            out = out * (1 - pm) + orig[y0:y0 + h, x0:x0 + w_].astype(np.float32) * pm          # los dedos, tal como estaban
+            F[y0:y0 + h, x0:x0 + w_] = np.clip(out, 0, 255).round().astype(np.uint8)
     if FOTO:
         cv2.imwrite(salida, cv2.cvtColor(F, cv2.COLOR_RGB2BGR)); break
+    if SOLO:
+        os.makedirs(DEP or '.', exist_ok=True)
+        cv2.imwrite(f'{DEP or "."}/f{n + INI:03d}.png', cv2.cvtColor(F, cv2.COLOR_RGB2BGR)); continue
     enc.stdin.write(F.tobytes())
     if DEP and n % 4 == 0:
         os.makedirs(DEP, exist_ok=True); cv2.imwrite(f'{DEP}/s{n + INI:03d}.jpg', cv2.cvtColor(F, cv2.COLOR_RGB2BGR), [cv2.IMWRITE_JPEG_QUALITY, 90])
