@@ -194,6 +194,21 @@
             "ref_label": "en otros colores"
           }
         },
+        "b17lav": {
+          "type": "iphone",
+          "settings": {
+            "product": "iphone-17-segunda-mano",
+            "variant_id": "58311080247621",
+            "title": "iPhone 17",
+            "specs": "256 GB · Lavanda · Batería 100% · Solo 4 meses de uso",
+            "badge": "Como nuevo",
+            "tone": "azul",
+            "image": "shopify://shop_images/itoro-17-lavanda-256-trasera.jpg",
+            "image2": "shopify://shop_images/itoro-17-lavanda-256-pantalla.jpg",
+            "ref_price": "",
+            "ref_label": "en otros colores"
+          }
+        },
         "b17pm": {
           "type": "iphone",
           "settings": {
@@ -227,6 +242,7 @@
       },
       "block_order": [
         "b18pb",
+        "b17lav",
         "b17pm",
         "b17"
       ],
