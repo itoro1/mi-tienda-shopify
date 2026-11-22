@@ -18,11 +18,15 @@ def estudio():
 
 # adaptador: clavijas arriba, a tres cuartos (girado 32°) y visto desde arriba, como en la caja real; clavijas en
 # cromo de estudio (22/11: con metal normal salían manchas que parecían camuflaje y el ángulo era casi de frente)
-P.limpia(); sc = estudio(); P.CROMO['brillo'] = 1.3
+# 22/11 (revisión): las clavijas salían pálidas con reflejos en rectángulo (las luces de área). En la caja real son de
+# cromo oscuro con un brillo limpio en la punta y el canto claro: rampa más oscura, casi sin reflejo directo y más mate.
+P.limpia(); sc = estudio(); P.CROMO.update(brillo=1.0, espejo=0.03, rugosidad=0.3,
+                                          paradas=[(0.0, 0.30), (0.10, 0.95), (0.20, 0.45), (0.32, 0.10), (0.45, 0.05),
+                                                   (0.58, 0.12), (0.70, 0.55), (0.82, 0.18), (1.0, 0.35)])
 a = P.adaptador(); a.rotation_euler = (0, 0, math.radians(-32))
 P.camara((-0.08, -0.30, 0.21), (0, 0, 0.037), focal=105)
 sc.render.filepath = os.path.join(SAL, 'producto-cargador.png'); bpy.ops.render.render(write_still=True)
-P.CROMO['brillo'] = None
+P.CROMO.update(brillo=None, espejo=0.12, rugosidad=0.08, paradas=None)
 
 # cable: los dos conectores USB-C de pie, uno al lado del otro, y el cable trenzado bajando; las fundas de metal en
 # cromo de estudio (plateado claro, como en la caja real)

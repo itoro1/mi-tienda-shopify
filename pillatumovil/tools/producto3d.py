@@ -14,7 +14,9 @@ from mathutils import Vector, Matrix
 
 MM = 0.001
 MEDIDAS = {'cargador': (67.5, 80.0, 29.5), 'cable': (67.0, 65.5, 23.0)}          # ancho, alto, fondo (mm): fichas de tienda + fotos frontales (21/11)
-PESTANA = {'ancho': 38.0, 'sobre': 14.7, 'bajo': 6.0, 'r': 3.0, 'ranura': (28.8, 4.8, 7.3), 'circulo': 6.8, 'grosor': 0.3}   # mm
+PESTANA = {'ancho': 38.0, 'sobre': 14.7, 'bajo': 2.6, 'r': 3.0, 'ranura': (28.8, 4.8, 7.3), 'circulo': 6.8, 'grosor': 0.3}   # mm
+# 22/11: 'bajo' era 6 mm y la base de la pestaña pasaba por debajo de media pegatina: salía un escalón en L que parecía
+# plástico moldeado. En la caja real la pestaña acaba justo bajo el borde de arriba del precinto, que queda plano.
 
 
 def limpia():
@@ -75,20 +77,20 @@ def mat_metal(nombre='metal', rugosidad=0.18, color=(0.78, 0.78, 0.8)):
 # Cromo «de foto de estudio» para las clavijas: el metal real en un estudio blanco refleja manchas sin forma
 # (parecían camuflaje). En la foto de la caja de Apple se ve el cromo clásico: borde brillante, franja oscura y otra
 # luz. Aquí el dibujo sale de hacia dónde mira la superficie respecto a la cámara, más un poco de brillo de verdad.
-CROMO = {'brillo': None, 'contraste': 1.0}                         # brillo None: metal normal; un número: cromo de estudio
+CROMO = {'brillo': None, 'contraste': 1.0, 'paradas': None, 'espejo': 0.12, 'rugosidad': 0.08}                         # brillo None: metal normal; un número: cromo de estudio
 
 
 def mat_cromo(nombre='cromo', brillo=1.4, contraste=None):
     contraste = CROMO['contraste'] if contraste is None else contraste   # <1: franjas más suaves (fundas USB-C, plateado claro)
     m, nt, p = _nodos(nombre)
     p.inputs['Base Color'].default_value = (0.8, 0.8, 0.82, 1); p.inputs['Metallic'].default_value = 1.0
-    p.inputs['Roughness'].default_value = 0.08
+    p.inputs['Roughness'].default_value = CROMO['rugosidad']
     g = nt.nodes.new('ShaderNodeNewGeometry')
     vt = nt.nodes.new('ShaderNodeVectorTransform'); vt.vector_type = 'NORMAL'; vt.convert_from = 'WORLD'; vt.convert_to = 'CAMERA'
     sx = nt.nodes.new('ShaderNodeSeparateXYZ')
     mr = nt.nodes.new('ShaderNodeMapRange'); mr.inputs['From Min'].default_value = -1.0; mr.inputs['From Max'].default_value = 1.0
     rampa = nt.nodes.new('ShaderNodeValToRGB'); cr = rampa.color_ramp
-    paradas = [(0.0, 0.40), (0.10, 1.0), (0.22, 0.85), (0.32, 0.22), (0.42, 0.05), (0.55, 0.14), (0.70, 0.95), (0.86, 0.55), (1.0, 0.30)]
+    paradas = CROMO['paradas'] or [(0.0, 0.40), (0.10, 1.0), (0.22, 0.85), (0.32, 0.22), (0.42, 0.05), (0.55, 0.14), (0.70, 0.95), (0.86, 0.55), (1.0, 0.30)]
     cr.elements[0].position, cr.elements[0].color = paradas[0][0], (paradas[0][1],) * 3 + (1,)
     cr.elements[1].position, cr.elements[1].color = paradas[-1][0], (paradas[-1][1],) * 3 + (1,)
     paradas = [(p_, 1 - contraste * (1 - v)) for p_, v in paradas]
@@ -96,7 +98,7 @@ def mat_cromo(nombre='cromo', brillo=1.4, contraste=None):
     for pos, v in paradas[1:-1]:
         e = cr.elements.new(pos); e.color = (v, v, v, 1)
     em = nt.nodes.new('ShaderNodeEmission'); em.inputs['Strength'].default_value = brillo
-    mx = nt.nodes.new('ShaderNodeMixShader'); mx.inputs['Fac'].default_value = 0.12
+    mx = nt.nodes.new('ShaderNodeMixShader'); mx.inputs['Fac'].default_value = CROMO['espejo']
     sal = next(n for n in nt.nodes if n.type == 'OUTPUT_MATERIAL')
     nt.links.new(g.outputs['Normal'], vt.inputs['Vector']); nt.links.new(vt.outputs['Vector'], sx.inputs['Vector'])
     nt.links.new(sx.outputs['X'], mr.inputs['Value']); nt.links.new(mr.outputs['Result'], rampa.inputs['Fac'])
@@ -251,7 +253,7 @@ def precinto(nombre, arte, W, H, D, grosor_mm=0.12, levanta_mm=0.22):
 
 
 # ------------------------------------------------------------------ adaptador 20 W (Europa)
-ADAPTADOR = {'ancho': 45.5, 'grueso': 24.6, 'largo': 44.0,       # A2347: techtest 37x45x24 mm; 22/11 alargado a 44 para cuadrar con las fotos de Apple y de la caja       # cuerpo: sección de estadio ancho x grueso; largo = eje de las clavijas
+ADAPTADOR = {'ancho': 45.5, 'grueso': 24.6, 'largo': 38.0,       # A2347: techtest 37x45x24 mm; foto oficial MHJE3: 38,2 mm (con 44 parecía un cargador genérico)       # cuerpo: sección de estadio ancho x grueso; largo = eje de las clavijas
              'meseta': (35.3, 13.7, 19.0),                        # cuello Europlug (EN 50075): 35,3 x 13,7 con los extremos a 45°                         # bloque de las clavijas: ancho, grueso, alto
              'clavija': (4.0, 19.0, 19.0)}                        # diámetro, separación entre centros, largo
 
@@ -305,7 +307,8 @@ def adaptador():
     for i in range(len(a0)): bm.faces.new((a0[i], a0[(i + 1) % len(a0)], a1[(i + 1) % len(a0)], a1[i]))
     bm.to_mesh(me2); bm.free()
     meseta = _objeto('meseta', me2); meseta.parent = cuerpo
-    bv = meseta.modifiers.new('bisel', 'BEVEL'); bv.width = 1.2 * s; bv.segments = 5; bv.limit_method = 'ANGLE'
+    # 22/11: con 1,2 mm de bisel se veían las caras a 45° (bloque «genérico»); la real tiene los lados redondeados
+    bv = meseta.modifiers.new('bisel', 'BEVEL'); bv.width = 2.6 * s; bv.segments = 8; bv.limit_method = 'ANGLE'
     meseta.data.shade_smooth(); meseta.data.materials.append(blanco)
     # clavijas: vaina blanca aislante y punta de metal redondeada
     d, sep, largo = A['clavija']; z0 = (A['largo'] + mh) * s

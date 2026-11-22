@@ -79,13 +79,21 @@ class Lienzo:
             s.d.polygon([(px(punta[0]), px(punta[1])), (px(p1[0] + nx * t * 0.6), px(p1[1] + ny * t * 0.6)),
                          (px(p1[0] - nx * t * 0.6), px(p1[1] - ny * t * 0.6))], fill=col)
 
-    def glifo(s, ch, x, y, alto, col=NEGRO):
-        """Iconos de reciclaje con los glifos de DejaVu (♺ el triángulo de flechas, ♲ el de Möbius)."""
+    def glifo(s, ch, x, y, alto, col=NEGRO, trazo=None):
+        """Iconos de reciclaje con los glifos de DejaVu (♺ el triángulo de flechas, ♲ el de Möbius).
+        trazo (mm): adelgaza el glifo hasta ese grueso de línea (el ♺ de DejaVu es macizo; el de la caja, de trazo fino)."""
         f = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', px(alto) * 2)
         b = s.d.textbbox((0, 0), ch, font=f); e = px(alto) / (b[3] - b[1])
         f = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', max(1, int(px(alto) * 2 * e)))
         b = s.d.textbbox((0, 0), ch, font=f)
-        s.d.text((px(x) - b[0], px(y) - b[1]), ch, font=f, fill=col)
+        if not trazo:
+            s.d.text((px(x) - b[0], px(y) - b[1]), ch, font=f, fill=col); return
+        m = Image.new('L', (b[2] - b[0] + 8, b[3] - b[1] + 8), 0); ImageDraw.Draw(m).text((4 - b[0], 4 - b[1]), ch, font=f, fill=255)
+        import cv2                                                     # grueso real del trazo: 2 x el radio máximo inscrito
+        ancho_trazo = 2 * float(cv2.distanceTransform((np.asarray(m) > 127).astype(np.uint8), cv2.DIST_L2, 5).max())
+        k = int(max(0, ancho_trazo - px(trazo)) / 2) * 2 + 1
+        if k > 1: m = m.filter(ImageFilter.MinFilter(k))
+        s.im.paste(Image.new('RGB', m.size, col), (px(x) - 4, px(y) - 4), m)
 
     def ce(s, x, y, alto, grosor, col=(40, 40, 44)):
         r = alto / 2
@@ -104,11 +112,12 @@ class Lienzo:
         s.d.rounded_rectangle((px(-alto), px(-alto), px(w_mm * 0.92), px(alto)), radius=px(alto * 0.9),
                               outline=(178, 178, 182), width=px(0.12), fill=(250, 250, 249))
 
-    def producto(s, ruta, x, y, w, estira=1.0):
-        """estira: alarga la foto en vertical (la de la caja real está hecha de cerca y el cargador sale más alto)."""
+    def producto(s, ruta, x, y, w, estira=1.0, alto=None):
+        """estira: alarga la foto en vertical (la de la caja real está hecha de cerca y el cargador sale más alto).
+        alto (mm): alto final fijo, sea cual sea el modelo 3D (así la foto ocupa lo mismo que en la caja real)."""
         if not ruta or not os.path.exists(ruta): return
         p = Image.open(ruta).convert('RGBA'); p = p.crop(p.getbbox()); e = px(w) / p.width
-        p = p.resize((px(w), int(p.height * e * estira)), Image.LANCZOS)
+        p = p.resize((px(w), px(alto) if alto else int(p.height * e * estira)), Image.LANCZOS)
         s.im.paste(p, (px(x), px(y)), p)
 
     def guarda(s, nombre):
@@ -133,17 +142,17 @@ c = Lienzo(W, H)
 c.logo(4.7, 2.4, 5.4)
 c.texto(5.1, 13.6, 'USB-C', 3.55, 'SemiBold')
 c.texto(5.1, 17.4, '20W Power Adapter', 3.55, 'Regular', GRIS)
-c.producto(arg('--producto-cargador'), 19.8, 21.5, 26.0, 1.2)     # 22/11: foto a tres cuartos, de 21,5 a 78 mm como en la caja real
+c.producto(arg('--producto-cargador'), 19.8, 21.5, 26.0, alto=56.5)   # 22/11: foto a tres cuartos, de 21,5 a 78 mm como en la caja real
 c.guarda('cargador-frente.png')
 
 c = Lienzo(W, H)                                   # arriba queda el sitio del precinto (pegatina 3D aparte)
 for i, t in enumerate(['20W USB-C Power Adapter', 'Adaptateur secteur USB-C de 20 W', 'Alimentatore USB-C da 20 W',
                        'Adaptador de corriente USB-C de 20 W', '20W USB-C電源アダプタ']):
-    c.texto(5.1, 15.6 + i * 3.3, t, 2.2, 'SemiBold', NEGRO, jp=True)
+    c.texto(5.1, 15.6 + i * 3.3, t, 2.2, 'Regular', NEGRO, jp=True)   # 22/11: la real va en peso normal, no seminegrita
 c.usb_c(53.6, 13.9, 8.4, 2.7, 0.7); c.texto(54.8, 20.2, 'USB-C', 1.85, 'Regular', GRIS_C)
 c.linea(5.1, 32.0, 62.4, 32.0, 0.15)
-c.glifo('♺', 5.1, 34.6, 5.4)
-c.texto(5.1, 43.4, 'Please recycle this box.', 2.2, 'SemiBold')
+c.glifo('♺', 5.1, 34.6, 5.4, trazo=0.5)           # 22/11: el mismo triángulo de flechas, de trazo fino como el de la caja real
+c.texto(5.1, 43.4, 'Please recycle this box.', 2.2, 'Medium')
 for i, t in enumerate(['Please recycle this box. / Veuillez recycler cette boîte. /', 'Ricicla questa confezione. / Recicla esta caja. /',
                        'この箱はリサイクルしてください。']):
     c.texto(5.1, 46.1 + i * 2.1, t, 1.5, 'Regular', GRIS, jp=True)
@@ -165,12 +174,12 @@ c.guarda('cable-frente.png')
 
 c = Lienzo(W, H)
 for i, t in enumerate(['60W USB-C Charge Cable (1 m)', 'Câble de charge USB-C 60 W (1 m)', '60W USB-C Ladekabel (1 m)',
-                       'Cavo di ricarica USB-C de 60 W (1 m)', 'Cable de carga  USB-C de 60 W (1 m)',
-                       'Cabo para Recarga USB-C de 60 W (1 m)', '60W  USB-C充電ケーブル (1 m)']):
-    c.texto(7.3, 14.6 + i * 3.05, t, 2.15, 'Medium', NEGRO, jp=True)
+                       'Cavo di ricarica USB-C da 60 W (1 m)', 'Cable de carga USB-C de 60 W (1 m)',
+                       'Cabo para Recarga USB-C de 60 W (1 m)', '60W USB-C充電ケーブル (1 m)']):
+    c.texto(7.3, 14.6 + i * 3.05, t, 2.15, 'Regular', NEGRO, jp=True)
 c.usb_c(52.6, 13.9, 10.0, 4.0, 0.95); c.texto(54.3, 22.4, 'USB-C', 1.8, 'Regular', GRIS_C)
 c.linea(7.3, 35.6, 64.5, 35.6, 0.16)
-c.texto(7.4, 40.8, 'Please recycle this box.', 2.15, 'SemiBold')
+c.texto(7.4, 40.8, 'Please recycle this box.', 2.15, 'Medium')
 for i, t in enumerate(['Please recycle this box. / Veuillez recycler cette boîte. / Bitte', 'recycle diese Box. / Ricicla questa confezione. / Recicla esta',
                        'caja. / Recicla esta caixa. / この箱はリサイクルしてください。']):
     c.texto(7.4, 43.6 + i * 2.05, t, 1.5, 'Medium', GRIS, jp=True)
