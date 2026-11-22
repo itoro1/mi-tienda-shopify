@@ -1,0 +1,62 @@
+ANUNCIO «UN PACK, TRES PRECIOS» · TEXTOS PARA META Y CÓMO PUBLICARLO
+(Imágenes en esta misma carpeta)
+
+------------------------------------------------------------------
+1) VERSIÓN DE LANZAMIENTO (NOVIEMBRE, 18,99 €)
+   Imágenes: anuncio_4x5.png · anuncio_9x16.png · anuncio_9x16_reels.png
+------------------------------------------------------------------
+Texto principal:
+Cargador de 20 W + cable de 1 m, originales de Apple, nuevos y en su caja precintada.
+1 pack: 18,99 €
+2 packs: 33,99 € (17,00 € cada uno)
+3 packs: 45,99 € (15,33 € cada uno)
+Con 2 packs ahorra 3,99 € y con 3 packs, 10,98 €, frente a comprarlos de uno en uno a 18,99 €.
+En Apple, cargador + cable: 38,00 € (precio del 01/11/2026).
+Cable USB-C o Lightning, mismo precio.
+Envío gratis en 24–48 h laborables. Devolución gratis.
+Precio de lanzamiento hasta el 30/11.
+Precios con IVA incluido. Tienda independiente, no afiliada a Apple Inc.
+
+Titular: Cuantos más packs, menos paga por cada uno
+Descripción: Envío gratis en 24–48 h laborables
+Botón: Comprar
+
+------------------------------------------------------------------
+2) VERSIÓN DE DICIEMBRE (19,99 €)
+   Imágenes: anuncio_4x5_dic.png · anuncio_9x16_dic.png · anuncio_9x16_reels_dic.png
+------------------------------------------------------------------
+Texto principal:
+Cargador de 20 W + cable de 1 m, originales de Apple, nuevos y en su caja precintada.
+1 pack: 19,99 €
+2 packs: 33,99 € (17,00 € cada uno)
+3 packs: 45,99 € (15,33 € cada uno)
+Con 2 packs ahorra 5,99 € y con 3 packs, 13,98 €, frente a comprarlos de uno en uno a 19,99 €.
+En Apple, cargador + cable: 38,00 € (precio del 01/11/2026).
+Cable USB-C o Lightning, mismo precio.
+Envío gratis en 24–48 h laborables. Devolución gratis.
+Precios con IVA incluido. Tienda independiente, no afiliada a Apple Inc.
+
+Titular: Cuantos más packs, menos paga por cada uno
+Descripción: Envío gratis en 24–48 h laborables
+Botón: Comprar
+
+------------------------------------------------------------------
+3) AL PUBLICAR
+------------------------------------------------------------------
+Ubicaciones (sin ubicaciones automáticas sin personalizar):
+  - anuncio_4x5*.png        -> Feed de Facebook e Instagram.
+  - anuncio_9x16*.png       -> SOLO Stories (Instagram y Facebook). Su contenido llega a y 1629,
+                               así que en Reels lo taparían el texto y el botón de Meta.
+  - anuncio_9x16_reels*.png -> SOLO Reels (Instagram y Facebook). Todo queda entre y 279 y 1240
+                               (Meta tapa desde y 1248). Va sin botón propio porque Meta pone
+                               «Comprar» justo debajo.
+
+Calendario:
+  - Versión de noviembre: ad_schedule_end_time = 30/11/2026 a las 23:59 (Europe/Madrid), y
+    añadirla a la lista de pausas de la tarea programada del 30/11 (trig_0173LcPnve9rC4M41Z8hn1hh).
+  - Versiones _dic: inicio el 01/12/2026 a las 00:00 (Europe/Madrid), solo cuando la web ya
+    muestre 19,99 €.
+  - Antes de lanzar las _dic, volver a comprobar los 38,00 € de Apple (la fecha tendrá un mes).
+    Si cambia, se cambia APPLE_PACK / APPLE_FECHA en hacer.py y se vuelve a ejecutar.
+
+Enlace: https://pillatumovil.com/collections/packs (salen los dos packs, USB-C y Lightning, con el selector de 1, 2 o 3 packs), con utm_campaign=packs-imagen-2026-11.
