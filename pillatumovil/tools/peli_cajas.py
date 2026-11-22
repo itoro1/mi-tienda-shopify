@@ -134,7 +134,7 @@ def p_precinto(n):
     fl = centro_flecha(); print('flecha', [round(v, 4) for v in fl])
     camara_animada([(1, (-0.050, -0.215, 0.112)), (n, (-0.036, -0.180, 0.104))],
                    [(1, (-0.006, -0.015, 0.068)), (n, (-0.006, -0.015, 0.068))], focal=85, dof=5.6,
-                   pares_foco=[(1, fl), (int(n * 0.55), fl), (n, (-0.006, -0.016, 0.063))])
+                   pares_foco=[(1, fl), (n, fl)])   # v4: el foco se queda en la flecha (antes se iba al texto)
     return n
 
 
@@ -155,8 +155,10 @@ def p_pack(n):
     c1.location = (-0.036, 0.0, 0); c1.rotation_euler = (0, 0, math.radians(10))
     c2.location = (0.040, 0.012, 0); c2.rotation_euler = (0, 0, math.radians(-12))
     barrido([(int(n * 0.45), -0.30), (int(n * 0.8), 0.30)], z=0.07, y=-0.20, energia=0.45)   # brillo que cruza, sin quemar
-    camara_animada([(1, (-0.006, -0.50, 0.150)), (n, (-0.006, -0.475, 0.140))],         # 22/11: la caja izq. tocaba el borde
-                   [(1, (-0.004, 0.0, 0.075)), (n, (-0.004, 0.0, 0.074))], focal=70, dof=8)
+    # 22/11: la caja izq. tocaba el borde; v4: al moverla se cortaba la del cable por la derecha. Centrada en el par
+    # (x = +0,002) y un 7 % más lejos: las dos con margen de principio a fin.
+    camara_animada([(1, (0.001, -0.535, 0.155)), (n, (0.0005, -0.526, 0.148))],
+                   [(1, (0.001, 0.0, 0.075)), (n, (0.0005, 0.0, 0.074))], focal=70, dof=8)
     return n
 
 
@@ -190,9 +192,14 @@ def p_producto(n):
     enrollado detrás (3 vueltas, como sale de la caja), con el conector USB-C mirando a la cámara.
     22/11: antes el rollo era del tamaño de una pulsera, las clavijas salían negras y el adaptador se cortaba."""
     escena_base(); k, a, b = luces(rim_w=7.0)
-    P.CROMO['brillo'] = 1.2; P.CROMO['contraste'] = 1.0            # clavijas de cromo «de estudio» (22/11: 0,85 parecía plástico gris)
+    # clavijas de cromo «de estudio» (22/11: 0,85 parecía plástico gris; v4: la revisión las vio como vidrio gris con
+    # reflejos en rectángulo: bandas nítidas como el cromo real, punta con anillo oscuro y arriba blanca, sin reflejo directo)
+    # (fondo oscuro: el cromo refleja más negro que en la foto de la caja, con dos franjas blancas nítidas)
+    P.CROMO.update(brillo=1.8, contraste=1.0, espejo=0.03, rugosidad=0.12, cupula=True,
+                   paradas=[(0.0, 0.5), (0.08, 1.0), (0.20, 1.0), (0.25, 0.04), (0.45, 0.04), (0.50, 0.95), (0.62, 0.95),
+                            (0.67, 0.10), (0.82, 0.06), (0.90, 0.6), (1.0, 0.8)])
     ad = P.adaptador(); ad.location = (-0.030, -0.036, 0.0); ad.rotation_euler = (0, 0, math.radians(14))
-    P.CROMO['contraste'] = 0.45
+    P.CROMO.update(brillo=1.2, contraste=0.45, espejo=0.12, rugosidad=0.08, cupula=0.0, paradas=None)   # conector USB-C como en v3
     pts = []
     for i in range(0, 1081, 12):                                  # rollo de 3 vueltas, unos 8 cm de diámetro
         t = math.radians(i); r = 40 - i / 1080 * 5
@@ -201,7 +208,7 @@ def p_producto(n):
     cab = P.cable_usbc(pts, nombre='rollo'); cab.location = (0.014, 0.030, 0.0)
     u1 = P.conector_usbc('usbc-a'); u1.location = (0.014 + 0.008, 0.030 - 0.058, 0.0029)
     u1.rotation_euler = (math.radians(90), 0, math.radians(-33))   # la clavija mira a la cámara, en la dirección del cable
-    P.CROMO['brillo'] = None; P.CROMO['contraste'] = 1.0
+    P.CROMO.update(brillo=None, contraste=1.0)
     base = objetivo('giro', (0.0, 0.0, 0)); ad.parent = base; cab.parent = base; u1.parent = base
     clave(base, 'rotation_euler', [(1, (0, 0, math.radians(-7))), (n, (0, 0, math.radians(7)))], interp='LINEAR')
     camara_animada([(1, (-0.010, -0.45, 0.185)), (n, (-0.010, -0.42, 0.175))],

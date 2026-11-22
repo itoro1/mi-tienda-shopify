@@ -63,17 +63,22 @@ def centro_max(d, y, t, tam, peso=500, col=MARFIL, maximo=950, sombra=True):
 
 
 def r_gancho():
-    im = lienzo(); d = ImageDraw.Draw(im); f = unb(70, 700)
+    im = lienzo(); d = ImageDraw.Draw(im); f = unb(64, 700)
     w = max(ancho('¿Su iPhone vino', f), ancho('sin cargador?', f)) + 90 * K
-    # 22/11 (2.ª revisión): fondo casi opaco (se veía la pestaña detrás) y 20 px menos de alto (tapaba la hoja del logo)
-    d.rounded_rectangle(((W - w) / 2, 322 * K, (W + w) / 2, 553 * K), radius=40 * K, fill=(11, 15, 26, 240))
-    centro(d, 346, '¿Su iPhone vino', f, BLANCO, False); centro(d, 436, 'sin cargador?', f, BLANCO, False)
+    # 22/11 (2.ª revisión): fondo casi opaco (se veía la pestaña detrás). 3.ª revisión: aún tapaba la hoja del logo
+    # en el primer fotograma (la miniatura): letra 64 y pastilla 300-492 (la hoja empieza en y 520)
+    d.rounded_rectangle(((W - w) / 2, 300 * K, (W + w) / 2, 492 * K), radius=40 * K, fill=(11, 15, 26, 240))
+    centro(d, 312, '¿Su iPhone vino', f, BLANCO, False); centro(d, 396, 'sin cargador?', f, BLANCO, False)
     return im
 
 
 def r_marca():
-    im = lienzo(); d = ImageDraw.Draw(im)
-    pastilla(d, 320, 'Cargador + cable ORIGINALES de Apple · 18,99 €', arc(38, 700), fondo=(11, 15, 26, 225), alto=84)
+    # 3.ª revisión: la tienda no salía hasta el segundo 7,7: ahora va desde el 3,2, en una segunda línea
+    im = lienzo(); d = ImageDraw.Draw(im); f = arc(38, 700)
+    l1, l2 = 'Cargador + cable ORIGINALES de Apple', '18,99 € en pillatumovil.com'
+    w = max(ancho(l1, f), ancho(l2, f)) + 76 * K
+    d.rounded_rectangle(((W - w) / 2, 310 * K, (W + w) / 2, 440 * K), radius=36 * K, fill=(11, 15, 26, 230))
+    centro(d, 326, l1, f, MARFIL, False); centro(d, 378, l2, f, ORO, False)
     return im
 
 
@@ -103,8 +108,9 @@ def r_precio_apple():
     d.rounded_rectangle((90 * K, y * K, W - 90 * K, (y + 250) * K), radius=44 * K, fill=(11, 15, 26, 228))
     centro_max(d, y + 24, 'En Apple (adaptador + cable USB-C)', 34, 600, MARFIL, 840, False)
     centro(d, y + 70, '38,00 €', unb(64, 600), MARFIL, False)
-    centro_max(d, y + 160, '(precio del 01/11/2026)', 31, 500, (225, 225, 230), 840, False)
-    centro_max(d, y + 202, 'Tienda independiente, no afiliada a Apple Inc.', 30, 500, (225, 225, 230), 840, False)
+    # 3.ª revisión: la fecha y la aclaración, a 34 px como el resto de la letra pequeña (antes 31 y 30)
+    centro_max(d, y + 156, '(precio del 01/11/2026)', 34, 500, (225, 225, 230), 840, False)
+    centro_max(d, y + 198, 'Tienda independiente, no afiliada a Apple Inc.', 34, 500, (225, 225, 230), 840, False)
     return im
 
 
@@ -123,12 +129,27 @@ def r_porque():
     return im
 
 
+def r_razon():
+    """3.ª revisión: la respuesta al «¿Por qué este precio?» iba de subtítulo abajo, a 38 px y cruzando las letras de
+    las cajas de delante. Ahora, en grande y justo debajo de la pregunta, sobre las filas desenfocadas."""
+    im = lienzo(); d = ImageDraw.Draw(im); f = arc(54, 800)
+    lineas = [[('Compramos', BLANCO), ('por', BLANCO), ('cantidad', ORO)], [('y', BLANCO), ('ganamos', BLANCO), ('menos.', ORO)]]
+    esp = ancho(' ', f); anchos = [sum(ancho(p, f) for p, _ in l) + esp * (len(l) - 1) for l in lineas]
+    w = max(anchos) + 90 * K
+    d.rounded_rectangle(((W - w) / 2, 446 * K, (W + w) / 2, 606 * K), radius=40 * K, fill=(11, 15, 26, 230))
+    for (l, a), y in zip(zip(lineas, anchos), (458, 528)):
+        x = (W - a) / 2
+        for p, c in l:
+            d.text((x, y * K), p, font=f, fill=c); x += ancho(p, f) + esp
+    return im
+
+
 def r_final():
     im = lienzo(); d = ImageDraw.Draw(im)
     centro_max(d, 300, 'Adaptador 20 W + cable · originales de Apple', 36, 700, BLANCO)
     centro(d, 345, '18,99 €', unb(150, 800), ORO)
     centro_max(d, 540, 'En Apple (adaptador + cable USB-C): 38,00 €', 34, 600, BLANCO)
-    centro_max(d, 581, '(precio del 01/11/2026)', 31, 500, BLANCO)
+    centro_max(d, 581, '(precio del 01/11/2026)', 34, 500, BLANCO)
     # 22/11 (2.ª revisión): sin sonido faltaba el verbo; el «2 packs: 33,99 €» competía con el 18,99 € y no daba
     # tiempo a leerlo (se queda en la web); la letra pequeña, a 34 px (antes 31-33).
     centro_max(d, 624, 'Compre en', 34, 700, MARFIL)
@@ -152,6 +173,7 @@ ROT = [
     (tramo(3)[0] - 0.05, CORTES['cantidad'] - 0.04, r_precio_apple, 0.22),
     (tramo(4)[0] + 0.15, CORTES['cantidad'] - 0.04, r_precio_aqui, 0.18),
     (CORTES['cantidad'] + 0.08, CORTES['producto'] - 0.04, r_porque, 0.22),
+    (tramo(5)[0] - 0.05, CORTES['producto'] - 0.04, r_razon, 0.22),
     # 22/11 (2.ª revisión): «laborables» en el mismo rótulo (era una promesa sin condición); fuera «Devolución gratis»
     # (ya en la tarjeta final) y la compatibilidad pasa arriba: la franja de abajo cortaba el adaptador.
     (tramo(6)[0], CORTES['final'] - 0.04, lambda: r_chip(330, 'Envío gratis · 24-48 h laborables'), 0.22),
@@ -214,7 +236,7 @@ SUB_Y = 1130                                                       # 59 % de la 
 sub_cache = {}
 
 
-CON_SUB = {1, 5}           # el resto de frases ya va escrito en un rótulo (gancho, marcas ✓, precio, envío, tarjeta final)
+CON_SUB = {1}              # el resto de frases ya va escrito en un rótulo (gancho, marcas ✓, precio, razón, envío, final)
 
 
 def subtitulo(t):
