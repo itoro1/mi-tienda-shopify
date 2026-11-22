@@ -77,7 +77,10 @@ def r_marca():
     im = lienzo(); d = ImageDraw.Draw(im); f = arc(38, 700)
     l1, l2 = 'Cargador + cable ORIGINALES de Apple', '18,99 € en pillatumovil.com'
     w = max(ancho(l1, f), ancho(l2, f)) + 76 * K
-    d.rounded_rectangle(((W - w) / 2, 310 * K, (W + w) / 2, 440 * K), radius=36 * K, fill=(11, 15, 26, 230))
+    # 4.ª revisión: al subir la cámara, la ranura negra de la pestaña se fundía con la esquina de la pastilla: casi opaca
+    # y con un filo claro, para que conserve su borde sobre el negro
+    d.rounded_rectangle(((W - w) / 2, 310 * K, (W + w) / 2, 440 * K), radius=36 * K, fill=(11, 15, 26, 250),
+                        outline=(255, 255, 255, 70), width=2 * K)
     centro(d, 326, l1, f, MARFIL, False); centro(d, 378, l2, f, ORO, False)
     return im
 

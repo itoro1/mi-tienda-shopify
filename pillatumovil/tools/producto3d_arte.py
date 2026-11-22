@@ -16,18 +16,23 @@ def estudio():
     return sc
 
 
-# adaptador: clavijas arriba, a tres cuartos (girado 32°) y visto desde arriba, como en la caja real; clavijas en
+# adaptador: clavijas arriba, a tres cuartos (girado; v5: 58°) y visto desde arriba, como en la caja real; clavijas en
 # cromo de estudio (22/11: con metal normal salían manchas que parecían camuflaje y el ángulo era casi de frente)
 # 22/11 (revisión): las clavijas salían pálidas con reflejos en rectángulo (las luces de área): casi sin reflejo directo.
 # 22/11 v4: la rampa oscura las dejó color grafito; en la caja real y en la foto MHJE3 son de cromo claro: cantos
 # blancos, una sola banda oscura y un brillo blanco en la punta redondeada (cupula).
 # Además el plástico salía quemado a blanco plano (vista 'Standard'): menos exposición y el cromo con más brillo.
-P.limpia(); sc = estudio(); sc.view_settings.exposure = -1.3
-P.CROMO.update(brillo=2.2, espejo=0.03, rugosidad=0.15, cupula=True,
-               paradas=[(0.0, 0.6), (0.08, 1.0), (0.22, 1.0), (0.26, 0.04), (0.34, 0.04), (0.38, 1.0), (0.62, 0.95),
-                        (0.70, 0.25), (0.76, 0.08), (0.84, 0.6), (1.0, 0.85)])
-a = P.adaptador(); a.rotation_euler = (0, 0, math.radians(-32))
-P.camara((-0.08, -0.30, 0.21), (0, 0, 0.037), focal=105)
+# 22/11 v5 (4.ª revisión): las puntas parecían tubos de cristal de punta plana (anillo negro cerrado bajo la cúpula) y el
+# plástico salía gris (0,87 del blanco de la caja; en la caja real 0,94-0,99). Ahora: punta plateada media con una franja
+# blanca y una banda oscura, cúpula con un brillo suave sin anillo negro, más exposición y la pose de la caja real
+# (girado 58°: la clavija derecha más cerca, en diagonal, y un poco más desde arriba).
+P.limpia(); sc = estudio(); sc.view_settings.exposure = -1.0
+P.CROMO.update(brillo=1.7, espejo=0.03, rugosidad=0.15,
+               paradas=[(0.0, 0.45), (0.14, 0.35), (0.27, 0.95), (0.36, 1.0), (0.44, 0.16), (0.60, 0.14), (0.72, 0.55),
+                        (0.86, 0.35), (1.0, 0.6)],
+               cupula=[(0.62, 0.7, 0.0), (0.80, 0.9, 0.55), (0.92, 1.0, 0.9), (1.0, 0.85, 0.9)])
+a = P.adaptador(); a.rotation_euler = (0, 0, math.radians(-58))
+P.camara((-0.08, -0.29, 0.235), (0, 0, 0.037), focal=105)
 sc.render.filepath = os.path.join(SAL, 'producto-cargador.png'); bpy.ops.render.render(write_still=True)
 P.CROMO.update(brillo=None, espejo=0.12, rugosidad=0.08, paradas=None, cupula=0.0)
 

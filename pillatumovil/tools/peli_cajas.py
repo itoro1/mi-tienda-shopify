@@ -108,8 +108,9 @@ def p_gancho(n):
     # 22/11: antes empezaba gris y borroso (la revisión: «el primer segundo decide si se para el dedo»). Ahora la caja
     # ya se lee en el primer fotograma, en penumbra, y la luz llega entera hacia el segundo 1,2.
     # 22/11 (2.ª revisión): con la clave a 1,6 el primer fotograma era una caja gris y es la miniatura del feed.
-    energia(k, [(1, 4.5), (int(n * 0.40), 6.0)])
-    energia(luces.relleno, [(1, 1.0), (int(n * 0.40), 1.6)])
+    # 22/11 (4.ª revisión): el fotograma 0 (la miniatura) seguía 25 % más oscuro que el resto del anuncio: casi toda la luz desde el principio.
+    energia(k, [(1, 5.6), (int(n * 0.40), 6.0)])
+    energia(luces.relleno, [(1, 1.4), (int(n * 0.40), 1.6)])
     # 22/11: la tira ancha sin panal dejaba la caja gris y plana el primer segundo. Ahora es una cuchilla de luz
     # (panal estrecho) que ya está sobre la manzana en el primer fotograma y cruza «20W Power Adapter» en la oscuridad.
     sw = barrido([(1, -0.05), (int(n * 0.45), 0.09)], z=0.07, y=-0.18, energia=E_BARRIDO, ancho=0.01, abertura=ABERTURA)
@@ -118,6 +119,11 @@ def p_gancho(n):
                    [(1, (-0.010, -0.015, 0.062)), (int(n * 0.45), (-0.004, -0.012, 0.058)), (n, (0.0, 0.0, 0.050))],
                    focal=70, dof=5.6,
                    pares_foco=[(1, (-0.010, -0.017, 0.062)), (int(n * 0.45), (-0.004, -0.016, 0.058)), (n, (0.0, -0.014, 0.050))])
+    # 22/11 (4.ª revisión): a 15 cm y f/5,6 la nitidez era de 1,5 mm y la cara girada 16° tiene 9 mm de fondo en el texto:
+    # el primer fotograma salía blando. Empieza a f/11 y abre a f/8 al alejarse.
+    cam = bpy.context.scene.camera
+    for f, fs in [(1, 11.0), (int(n * 0.45), 8.0)]:
+        cam.data.dof.aperture_fstop = fs; cam.data.dof.keyframe_insert('aperture_fstop', frame=f)
     return n
 
 
