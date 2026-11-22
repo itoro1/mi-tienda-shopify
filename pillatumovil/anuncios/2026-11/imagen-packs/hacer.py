@@ -278,6 +278,27 @@ def recorte_escalado(esc):
     return _rec[key]
 
 
+# 22/11 (dueño): «le quite un pelín de oscuridad a las cajas… le veo mucha sombra». Se aclara la LUZ de las cajas
+# (no la tinta): se estima la iluminación sin la impresión (cierre morfológico + desenfoque) y se le aplica una curva
+# que levanta las sombras (lateral del cargador, base, sombra del cargador sobre el cable); la tinta conserva su contraste.
+ACLARAR_GAMMA = 0.64      # 1 = como estaba; menos = más claro en las sombras
+ACLARAR_MAX = 248.0       # techo del blanco del cartón (sin quemar)
+
+
+def aclarar_cajas(rgb, a, esc):
+    if ACLARAR_GAMMA >= 1:
+        return rgb
+    L = rgb.mean(2)
+    k = max(3, int(round(22 * esc)) | 1)                       # quita trazos de tinta (~5-15 px)
+    cerr = cv2.morphologyEx(L, cv2.MORPH_CLOSE, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (k, k)))
+    s = max(1.0, 6 * esc)
+    num = cv2.GaussianBlur(cerr * a, (0, 0), s); den = cv2.GaussianBlur(a, (0, 0), s)
+    luz = np.clip(num / np.maximum(den, 1e-3), 1, 255)
+    objetivo = np.minimum(255 * (luz / 255) ** ACLARAR_GAMMA, np.maximum(luz, ACLARAR_MAX))
+    gan = (objetivo / luz)[..., None]
+    return np.clip(rgb * gan, 0, 255)
+
+
 def poner_producto(img, ancho_par, cx, y_base):
     """Pega el pack (dos cajas) con el par de ancho `ancho_par` (px lienzo)
     centrado en cx y la línea de apoyo del cargador (esquina del pliegue) en y_base.
@@ -287,6 +308,7 @@ def poner_producto(img, ancho_par, cx, y_base):
     rec, info = recorte_escalado(esc)
     arr = np.asarray(rec).astype(np.float32)
     rgb, a = arr[..., :3], arr[..., 3] / 255
+    rgb = aclarar_cajas(rgb, a, esc)
     h, w = a.shape
     ox = cx - ((X0 + X1) / 2 - info['origen'][0]) * esc
     # apoyo: el punto más bajo de las bases (esquina del pliegue del cable)
