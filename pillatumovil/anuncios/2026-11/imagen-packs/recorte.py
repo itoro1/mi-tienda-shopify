@@ -660,9 +660,21 @@ def _pintar_cara(nombre, dst_q, size, k):
     if SUAVE_IMPRESION > 0:
         Rd = cv2.GaussianBlur(Rd, (0, 0), SUAVE_IMPRESION * k / 2)
     S = _luz_frontal(nombre)
+    if nombre == 'cable' and SOMBRA_CABLE < 1:
+        # 23/11 (dueño): «en la caja del cable veo tonalidades negras oscuras en los laterales; un poquito de sombra
+        # como la caja del enchufe, vale, pero no esos colores negros». La sombra del cargador sobre el cable (borde
+        # izquierdo) se queda en una fracción de su fuerza.
+        Lm = S.mean(2)
+        ref = np.percentile(Lm, 95)
+        S = S + (np.clip(ref - Lm, 0, None) * (1 - SOMBRA_CABLE))[..., None]
     M2 = cv2.getPerspectiveTransform(np.float32([(0, 0), (S.shape[1], 0), (S.shape[1], S.shape[0]), (0, S.shape[0])]), dst_q)
     Sd = cv2.warpPerspective(S, M2, (Ws, Hs), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REPLICATE)
     return Sd * Rd
+
+
+SOMBRA_CABLE = 0.35          # fuerza de la sombra del cargador sobre el frontal del cable (1 = la de la foto)
+LATERAL_CABLE_LISO = True     # lateral del cable liso (sin las vetas oscuras de la foto)
+LATERAL_CABLE_Y = 158.0       # tono del lateral antes del aclarado de hacer.py (queda ~190, más claro que el del cargador)
 
 
 def _caja_cable(escala, fuente_rgb, fuente_alfa, size):
@@ -734,6 +746,13 @@ def _caja_cable(escala, fuente_rgb, fuente_alfa, size):
     M3 = cv2.getPerspectiveTransform(src_l, dst_l)
     lado = cv2.warpPerspective(f_rgb, M3, (Ws, Hs), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REPLICATE)
     Yl = lado @ np.array([0.30, 0.59, 0.11], np.float32)
+    if LATERAL_CABLE_LISO:
+        # 23/11 (dueño): el lateral salía con vetas oscuras (parecía metal). Ahora es cartón blanco liso en sombra
+        # suave, como el lateral del cargador: tono uniforme con un leve degradado vertical y solo el grano fino.
+        d = np.array(P(g['BR']), np.float32) - np.array(P(g['TR']), np.float32)
+        tv = np.clip(((yy - P(g['TR'])[1]) / max(d[1], 1)), 0, 1)
+        grano = Yl - cv2.GaussianBlur(Yl, (0, 0), 1.2 * k)
+        Yl = LATERAL_CABLE_Y * (1.04 - 0.10 * tv) + 0.35 * grano
     lado = np.clip(Yl[..., None] * np.array(TINTE_LATERAL, np.float32), 0, 255)
 
     # ---- composición (pestaña detrás, caja delante)
