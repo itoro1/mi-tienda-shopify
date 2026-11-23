@@ -216,14 +216,14 @@ def postura(caja, p_base, ancho_px, guinada, balanceo, sentido):
     return R, eje - R @ c
 
 
-def caja_en_zona(caja, R, t, margen=30):
-    """Pinta la caja solo en el recorte que ocupa. Devuelve (x0, y0, rgb, alfa)."""
+def caja_en_zona(caja, R, t, margen=30, **luz_kw):
+    """Pinta la caja solo en el recorte que ocupa. Devuelve (x0, y0, rgb, alfa). luz_kw va a Caja.pinta (amb, dif)."""
     esq = np.array([(x, y, z) for x in (-.5, .5) for y in (0, -caja.H - caja.Ht) for z in (0, caja.D)])
     X = (R @ esq.T).T + t; uv = (K @ X.T).T; uv = uv[:, :2] / uv[:, 2:3]
     x0, y0 = np.floor(uv.min(0)).astype(int) - margen; x1, y1 = np.ceil(uv.max(0)).astype(int) + margen
     x0, y0, x1, y1 = max(x0, 0), max(y0, 0), min(x1, SW), min(y1, SH)
     Kz = K.copy(); Kz[0, 2] -= x0; Kz[1, 2] -= y0
-    rgb, alfa = caja.pinta(Kz, R, t, (x1 - x0, y1 - y0))
+    rgb, alfa = caja.pinta(Kz, R, t, (x1 - x0, y1 - y0), **luz_kw)
     return x0, y0, rgb, alfa
 
 
@@ -258,6 +258,13 @@ def relleno_basto(R, hoyo, piel):
 #   - la caja nueva algo más cálida, con un degradado suave de luz y la sombra suave de los dedos.
 # "v6": {"calido": [1.03, 1.0, 0.95], "sombra": [0.30, 0.12], "desenfoque": 1.0, "degradado": 0.05,
 #        "margen": 15, "motas": true, "crf": 10}
+# 22/11 (dueño: «le quite un pelín de oscuridad a las cajas, tanto del enchufe como del cable… le veo mucha sombra»).
+# Dos claves más, opcionales (sin ellas, igual que antes). Aclaran la LUZ de la caja, no la tinta:
+#   "aclarar": [gamma, techo]  la luz de la escena que recibe el frente (la del cartón que dibujó la IA, a 0-255) pasa
+#                              por 255·(L/255)^gamma, sin pasar de 'techo' (gamma 1 = como antes; 0.5 = bastante más
+#                              clara). El color de la luz (cálido/frío) se conserva y la tinta guarda su contraste.
+#   "ambiente": [amb, dif]     luz ambiente y direccional de Caja.pinta (por defecto 0.80 y 0.25): con más ambiente
+#                              los lados y la tapa quedan menos oscuros respecto al frente.
 V6 = plan.get('v6')
 E6 = SH / 3840
 SOLO = [int(x) for x in sys.argv[sys.argv.index('--solo') + 1].split(',')] if '--solo' in sys.argv else None
@@ -630,6 +637,10 @@ def compone6(n, F, orig, blanco, etq, pintadas):
         h, w_ = alfa.shape[:2]; yy, xx = y0 - a0, x0 - b0
         Rz = G[yy:yy + h, xx:xx + w_]
         luz = (blancos[i][n] / PAPEL * 1.04) if not np.isnan(blancos[i][n]).any() else np.float32([.84, .8, .78])
+        if V6.get('aclarar'):
+            gam, techo = V6['aclarar']
+            Lf = float(PAPEL * np.mean(luz * calido))                                   # luz del frente, 0-255
+            luz = luz * (min(255 * (Lf / 255) ** gam, max(techo, Lf)) / Lf)
         cap = np.dstack([rgb * (luz * calido), alfa])
         if deg:
             ya = np.where(alfa[..., 0].max(1) > .5)[0]
@@ -666,6 +677,7 @@ modelos = {}
 for c in cajas:
     if c['modelo'] not in modelos: modelos[c['modelo']] = Caja(c['modelo'], TEX)
 FOTO = salida.lower().endswith('.png')
+LUZ_KW = dict(zip(('amb', 'dif'), V6['ambiente'])) if (V6 and V6.get('ambiente')) else {}
 DESPL = [None]                                           # de dónde se copia la tela (se decide en el primer fotograma)
 enc = None if (FOTO or SOLO) else subprocess.Popen(['ffmpeg', '-y', '-loglevel', 'error', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', f'{SW}x{SH}', '-r', '24', '-i', '-',
                                           '-an', '-c:v', 'libx264', '-crf', str((V6 or {}).get('crf', 10)), '-preset', 'medium', '-pix_fmt', 'yuv420p', '-r', '24', salida], stdin=subprocess.PIPE)
@@ -688,7 +700,7 @@ for n, fr in enumerate(fotogramas()):
         if m is None or np.isnan(base[i][n]).any() or np.isnan(escala[i][n]): continue
         caja = modelos[c['modelo']]
         R, t = postura(caja, a_salida(base[i][n]), escala[i][n], giros[i][n], incl[i][n], c.get('sentido', 1))
-        x0, y0, rgb, alfa = caja_en_zona(caja, R, t)
+        x0, y0, rgb, alfa = caja_en_zona(caja, R, t, **LUZ_KW)
         vis = componente(etq, a_salida(base[i][n]) - [0, escala[i][n] * .5], 90)
         pintadas.append((i, x0, y0, rgb, alfa, vis))
     if V6:

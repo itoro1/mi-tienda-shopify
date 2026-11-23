@@ -1,4 +1,5 @@
 {"ini": 0, "fin": 48, "salida": [2160, 3840],
- "v6": {"calido": [1.02, 1.0, 0.97], "sombra": [0.30, 0.12], "desenfoque": 1.0, "degradado": 0.05, "margen": 15, "motas": true, "crf": 10},
+ "v6": {"calido": [1.01, 1.0, 0.985], "sombra": [0.15, 0.06], "desenfoque": 1.0, "degradado": 0.03, "margen": 15, "motas": true, "crf": 10,
+        "aclarar": [0.55, 230], "ambiente": [0.86, 0.17]},
  "cajas": [{"semilla": [720, 1200], "modelo": "cable", "tramos": [{"de": 0, "a": 47, "modo": "frente"}]},
            {"semilla": [430, 1200], "modelo": "cargador", "tramos": [{"de": 0, "a": 47, "modo": "frente"}]}]}
