@@ -67,9 +67,11 @@
 #     MOSTRADOR=mostrador vuelve a las cajas de antes.
 # 3.ª revisión de la v6 (23/11/2026; TERCERA=0 deja el montaje de la 2.ª):
 #   - R2-tabs-closeup: en el primer plano del 4 (504-527) y en el plano 6 (649-686) asomaban abajo las pestañas de la IA
-#     (anchas, sin el hueco del euro) justo después del plano abierto con las cajas reales. Esos tramos se acercan desde
-#     el borde de arriba (x1,095 y x1,055; las pestañas empiezan en y 1767 y 1835) y el x1,18 (528-583) baja 30 px: ya
-#     no se ve ninguna pestaña en los primeros planos. El corte de 528 sigue siendo un acercamiento (x1,08 y la cara sube).
+#     (anchas, sin el hueco del euro) justo después del plano abierto con las cajas reales. 504-527 se acerca x1,095 desde
+#     el borde de arriba (las pestañas empezaban en y 1767), el x1,18 de 528-583 pasa a x1,22 (asomaba su filo) y el plano 6
+#     va a x1,13 (pestañas desde y 1835), los dos con la línea del subtítulo (y 1110) fija para que la pastilla no tape
+#     más cuello que antes. Ya no se ve ninguna pestaña en los primeros planos; el corte de 528 sigue siendo un acercamiento
+#     (x1,11 y la cara sube).
 #   - R2-2b-turn: el giro de la caja del adaptador en 2b (197-214) tenía fallos de composición en pausa. El barrido
 #     empieza antes (cajas/latigo2b.py -> cajas/2b_latigo.mp4: 0-31, 5 de barrido, la trasera): 197-201 barrido, la
 #     trasera desde 202, repartida hasta 297 a 0,78 -> 0,57 de velocidad (antes 1,0 y luego 0,73), sin tirones.
@@ -133,8 +135,9 @@ P4A = M(1.25, 545, 888, 540, 960)      # plano 4 abierto, 432-503: cabe la tarje
 P4C = M(1.18, 548, 1110, 548, 1110)    # primer plano del 4, 528-583: zoom con la línea del subtítulo fija
 TERCERA = os.environ.get('TERCERA', '1') == '1'   # 3.ª revisión (23/11): sin pestañas de la IA en los primeros planos
 P4B = M(1.095, 548, 0, 548, 0) if TERCERA else None   # 504-527: acercado desde arriba (pestañas desde y 1767 -> fuera)
-if TERCERA: P4C = M(1.18, 548, 1110, 548, 1140)       # 528-583: 30 px más abajo (asomaba el filo de las pestañas)
-P6 = M(1.055, 540, 0, 540, 0) if TERCERA else None    # plano 6: pestañas desde y 1835 -> fuera
+if TERCERA: P4C = M(1.22, 548, 1110, 548, 1110)       # 528-583: x1,22 (asomaba el filo de las pestañas), misma línea
+P6 = M(1.13, 548, 1110, 548, 1110) if TERCERA else None    # plano 6: pestañas desde y 1835 -> fuera; misma línea del
+#   subtítulo fija (1110), así el cuello no baja hacia la pastilla (con el acercamiento desde arriba bajaba 58 px)
 def MR(z, sx, sy, ox, oy, dx=0.0, dy=0.0, gr=0.0):
     """Como M, con un giro de gr grados alrededor del centro de la salida y un desplazamiento (dx, dy) de la salida."""
     c, s_ = np.cos(np.radians(gr)), np.sin(np.radians(gr)); R = np.array([[c, -s_], [s_, c]]) * z

@@ -63,6 +63,8 @@ SUBS_V3 = SUBS_V2[:-3] + [('Dese prisa:', 24.4), ('este precio acaba el 30/11.',
 # tarjeta.y: [t, y del borde de abajo] de la tarjeta del precio; en el plano 4 abierto sigue el acercamiento de la
 #   cámara para tapar el neón sin pisar el pelo (borde de abajo = arranque del pelo - 6 px).
 # packs.kf: [t, x0, x1, y_pestaña] del par USB-C y del par Lightning en el mostrador (plano 4 abierto).
+# chip_fundido (opcional): [t, ...] cortes en los que el chip se va en los 4 fotogramas de antes y vuelve en los 4 de
+#   después (el último antes del corte y el primero, sin chip), para que no salte de sitio (23/11, T3).
 PLAN_V6 = {
     'v4': {
         'planos': [

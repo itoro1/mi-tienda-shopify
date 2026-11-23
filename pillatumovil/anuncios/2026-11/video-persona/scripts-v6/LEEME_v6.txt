@@ -1,0 +1,208 @@
+VÍDEO DE LA DEPENDIENTA · v6 (23/11/2026, con los arreglos de la 3.ª revisión de la v6)
+=====================================================================================
+
+Archivos
+- dependienta_v6_1080.mp4  para Meta: 1080x1920, 24 fps, 766 fotogramas (31,92 s), H.264 High crf 18, yuv420p,
+                           BT.709 etiquetado, AAC 192k 48 kHz estéreo, +faststart.
+- dependienta_v6_4k.mp4    el mismo en 2160x3840 (crf 17), textos dibujados en 4K.
+- miniatura_v6.jpg         miniatura para subir aparte (D44): primer plano sonriendo a cámara (Intone 576) con la tarjeta
+                           «¿Su iPhone vino sin cargador? · 18,99 € · En Apple 38,00 € (precio del 01/11/2026) ·
+                           1 adaptador 20 W + 1 cable (USB-C o Lightning) · Tienda online · escena recreada con IA».
+                           No cambia (es una imagen aparte; no lleva las pestañas de abajo).
+- hoja_v6.jpg              un fotograma cada 0,5 s y los fotogramas de alrededor de cada corte (con el barrido nuevo del 2b).
+- prev/                    la versión de antes de la 2.ª revisión (1080, 4K, hoja y su LEEME) para comparar.
+- datos/                   plan de rótulos y subtítulos usados (copia de rotulos-v6/), resultados de las comprobaciones
+                           (comprobacion_rotulos.json, sincronia.txt) y en datos/scripts los programas que las hacen
+                           (comprobar_v6.py, sincro.py, labios_voz.py, color_cortes.py, hoja_v6.py, miniatura.py,
+                           ventana.py, difprev.py) y los dos nuevos de esta revisión (latigo2b.py, mostrador5.py; se
+                           ejecutan desde dep/v6/cajas).
+
+3.ª revisión de la v6 (23/11) — qué se ha cambiado
+- Pestañas de los primeros planos (21,00-21,96 s y plano 6): ya no asoman abajo las pestañas de la IA (anchas, sin el
+  hueco del euro) justo después del plano abierto con las cajas reales. El primer plano del 4 (504-527) se acerca x1,095
+  desde arriba, el x1,18 de 528-583 pasa a x1,22 y el plano 6 a x1,13, estos dos con la línea del subtítulo fija (el
+  cuello no baja hacia la pastilla). En los primeros planos ya no se ve ninguna pestaña (medido fotograma a fotograma);
+  el corte de 22,0 s sigue siendo un acercamiento (x1,11). Misma nitidez en la cara (4K mejorado), sincronía igual.
+- Plano 5 (24,33-27,04 s): el mostrador ya no está vacío ni es de otra madera. La madera pasa al tono miel del mostrador
+  de Intone (antes L 48 / a 32 / b 41, ahora L 55-65 / a 14-17 / b 20-25; Intone L 74 / a 16 / b 28) y delante asoman
+  las tres cajas que no tiene en la mano (cable USB-C, adaptador y cable Lightning, en el orden de los planos 1 y 4), con
+  los frentes de las fotos reales, pestaña con el ojal del euro y tapa vista desde arriba; las del cable asoman menos por
+  ser más bajas. La cámara de ese plano está quieta (medido), así que las cajas van fijas. Quedan casi todas bajo la
+  interfaz de Reels y fuera del recorte 4:5 (dep/v6/cajas/mostrador5.py -> cajas/5_mostrador.mp4).
+- Giro de la caja del adaptador en 2b (8,21-8,92 s): en pausa tenía el fantasma del pulgar y la «U»/«2» dobles, muescas
+  blancas entre los dedos, una mota oscura pegada a la cara blanca y el canto de la palma en escalera. Ahora el giro es un
+  barrido rápido (8,21-8,38 s, 5 fotogramas, desde el último fotograma limpio de frente hasta la trasera) y la trasera
+  sale desde 8,42 s, repartida hasta el final del plano a 0,78 -> 0,57 de velocidad (antes 1,0 y luego 0,73 de golpe)
+  (dep/v6/cajas/latigo2b.py -> cajas/2b_latigo.mp4). El barrido de antes (9,0 s) ya no hace falta.
+- Subtítulo del plano 1 (0-4,87 s): la pastilla tapaba los dedos, la palma y la parte de abajo del móvil desde el primer
+  fotograma («¿Su iPhone vino»). Ahora va justo debajo de las yemas y encima de las pestañas (y 1154-1238): los dedos y
+  el móvil se ven enteros; los extremos de la pastilla todavía pisan la muñeca y el antebrazo (no hay más sitio entre
+  la mano y las cajas). El rótulo de IA del plano 1 pasa arriba a la izquierda.
+- Plano 4 abierto (14,92-18,0 s): el rótulo de IA ya no pasa por encima de la mano que señala las cajas: va arriba a la
+  izquierda, encima de la tarjeta (como en el plano 3).
+- Corte de 6,88 s (2a -> 2b): el chip dorado del precio ya no salta de abajo a arriba: se va en los 4 últimos fotogramas
+  del 2a y vuelve en los 4 primeros del 2b (6,83 y 6,88 s sin chip).
+- Fechas: las de este LEEME y de los comentarios del código, corregidas: todo se hizo el 23/11/2026.
+- Probado y descartado: retocar las medias lunas grises de las yemas en el giro rápido del plano 5 (24,9-25,1 s). Tres
+  retoques locales (blanco del cartón, piel, aclarar) dejaban un filo blanco, rojo o un anillo hueco alrededor de las
+  yemas, peor que antes; se queda como estaba (ver «Lo que queda»).
+
+2.ª revisión de la v6 (23/11) — qué se ha cambiado
+- R2 (alta): en 2a (4,88-6,83 s) ya no sale la cara grande de la chica de Kling (aros, rizos: otra mujer). 2a pasa a plano
+  de producto x1,76, del cuello para abajo: las dos cajas enteras con las dos manos. En ningún plano de Kling (2a, 2b, 5)
+  se ve una cara ni una boca (el detector no encuentra ninguna en 117-297 ni 584-648).
+- N3 + R2: 2b empieza con un inserto de la caja del adaptador (6,88-7,88 s, «USB-C 20W Power Adapter» entero mientras
+  dice «adaptador de 20 W») y corta, en el arranque del giro y con «y cable.» (7,92 s), a las dos cajas x1,41.
+- R3: las cuatro cajas del mostrador (planos 1 y 4) tienen ya la forma y los frentes reales (adaptador 0,92 y cable 1,03
+  de ancho/alto, pestaña con el hueco del euro, la Lightning sacada de la foto real), como las que tiene en la mano: el
+  producto ya no cambia de forma entre planos. Mismo ancho y misma línea de arriba de la pestaña que antes, apoyadas más
+  atrás en el mostrador; solo se rellena madera del mostrador (v6/mostrador2, cajas_reales.py).
+- N1: en el plano 5 las yemas de las dos manos quedan encima del canto de la caja (sin flecos blancos, sin la línea de 1 px,
+  sin yemas cortadas en recta en la trasera), con sombra de contacto (tools/cajas3d_video.py, opción "dedos").
+- R4: el pulgar derecho de 2a tiene la punta redonda, sin el lado recto ni la mota oscura (opción "espejo").
+- N2: fuera la mota gris-blanca del borde izquierdo de 2b (opción "motas_claras").
+- N4: el escaparate de 2a sigue el canto del montante (sin la tira de calle vieja) y deja fuera las farolas; con el
+  encuadre nuevo de 2a el escaparate ya casi no se ve.
+- N5: la tarjeta final se acerca despacio (x1,000 -> x1,035) durante sus 3,5 s: ya no hay fotogramas idénticos.
+- N6: «el 30 de noviembre.» sale en 25,83 s (fotograma 620), cuando acaba «acaba».
+- Chip y rótulo de IA de 2a debajo de las cajas; subtítulo de 2a y 2b arriba (y 306), por encima del cuello.
+
+Historia anterior
+Qué cambia respecto al v4 publicado (por hallazgo de la revisión)
+Piezas hechas antes y montadas aquí:
+- D1: la chica de los planos de Kling (2a, 2b, 5) tiene ahora la cara de la que habla y el pelo castaño.
+- D8, D9, D10, D11, D15, D18: cajas reales en 3D en sus manos (medidas y textos de verdad, trasera real); los giros
+  rotos se cortan con un barrido. El plano 5 es ella girando la caja (sin datáfono ni mirada fija a cámara).
+- D6/D14: el 2a acaba antes de que la caja dé el tirón.
+- D3, D5 (texto), D7, D12: cajas del mostrador con el texto real, calle del escaparate desenfocada, «a» del neón bien.
+- D17, D23, D41, D42, D43: audio rehecho (frase final igualada en tono y volumen, sala, fondo de tienda, campanita
+  al final), -14 LUFS.
+- Rótulos v6: subtítulos y precio dentro de la zona segura, chip de precio desde 4,9 s, tarjeta en dos tiempos
+  (38,00 € y luego 18,99 €, sin tachar), «Pack USB-C / Pack Lightning», «Tienda online · escena recreada con IA»
+  todo el vídeo, cierre con foto real, IVA y «no afiliada a Apple Inc.» (D13, D16, D22, D25-D28, D30, D32-D35, D39,
+  D42, D46).
+En este montaje:
+- Regla del dueño (revisión legal, punto 1; D24): fuera «Dese prisa:». En la voz se sustituye por el tono de sala y
+  el fondo de la mezcla (sin hueco ni chasquido; 38 dB por debajo de la voz). El subtítulo empieza en «Este precio
+  acaba» / «el 30 de noviembre.». La fecha solo sale como condición del precio.
+- D2/D38 (color): los planos de Kling se igualan a los de Intone con una curva fija por canal (no parpadea). Salto de
+  color de la piel en los cortes Intone/Kling (ΔE Lab): antes 13,1 / 11,8 / 8,4 / 6,6, ahora 1,8 / 1,6 / 2,8 / 1,5.
+  El grano y la nitidez ya coincidían tras el cambio de cara (medidos), no se tocan.
+- D36: el primer segundo entra recortado x1,3 (con el acercamiento de cámara, x1,3 -> x1,5): cara más grande, el
+  móvil y las cajas a la vista; corte al plano abierto en «¡Normal!» (2,33 s).
+- D40: a los 18,0 s («Compramos por cantidad») corte a x1,25 del plano abierto; la tarjeta «¿Por qué tan barato?»
+  pasa encima del pelo y los rótulos «Pack…» encima de las cajas.
+- D4 y D20 (21 s): el primer plano ya no empieza con una carcajada muda: el plano abierto sigue 0,3 s más (sonrisa
+  quieta, sin voz, a cámara lenta) y el corte al primer plano cae justo en el empalme de Intone, donde la boca se
+  cerraba de golpe. El segundo empalme (22,0 s) queda tapado con un corte a x1,18.
+- D20 (12 s): el plano 3 empieza cuando ella dice «En Apple» y no con la carcajada muda; el final del 2b dura 0,6 s
+  más (a cámara lenta, con un acercamiento lento para que no parezca una foto fija, D37).
+- D21: el plano 6 («Toque Comprar») iba 1,5 fotogramas adelantado a la voz; ahora va igual que el resto.
+- D44: miniatura propia (arriba).
+- Pequeños: los subtítulos cambian justo en los cortes; en el primer plano del 3 no hay subtítulo (le tapaba la
+  barbilla y la tarjeta ya dice «En Apple: 38,00 €»); chip y subtítulo del 2a 30 px más abajo (rozaban la barbilla);
+  la tarjeta del precio ya no sale 1 fotograma mal colocada en el corte de 14,92 s.
+
+Revisión de la v6 (23/11, tres revisores; hallazgos altos y medios) — qué se ha cambiado
+- R2 (alta, «no parece la misma chica» en 2b y 5): 2b y 5 pasan a ser planos de producto, del cuello para abajo
+  (manos y cajas): 2b x1,31 -> x1,36 con el borde de arriba bajo el labio (solo asoma la barbilla, bajo la cabecera de
+  Reels); 5 x1,6 desde el cuello hasta el mostrador. Ya no hay dos primeros planos de mujeres distintas pegados
+  (12,42 s, 24,33 s y 27,04 s). 2a (plano abierto, cara pequeña) queda igual (cambiado en la 2.ª revisión, arriba).
+- R9: en 2b ya no quedan ojos bajo la cabecera de Reels ni la cara cortada por el labio en el recorte 4:5.
+- R5 y T4 (2b quieto al principio y al final): acercamiento lento todo el plano y pulso de cámara en mano (±4 px,
+  ±0,2°): 0,3-0,4 px por fotograma de media, como la cámara de Intone en el plano 1 (0,33). Antes 0,03-0,07.
+- T1 (alta, 1,64 s sin voz con el plano 5 quieto): fuera 0,875 s de silencio (audio 24,40-25,275 s, dentro del tono
+  de sala, fundido de 30 ms) y los 21 primeros fotogramas del plano 5. La pausa queda en 0,74 s (24,00-24,74 s), como
+  las demás (0,26-0,99 s). Todo lo de después llega 21 fotogramas antes, imagen y voz juntas; el cierre dura 3,54 s
+  en vez de 2,67 y el vídeo sigue teniendo 766 fotogramas.
+- R1 (alta), T3, T2, R7 (primer plano de «Envío gratis / en 24-48 h»): Intone arrancaba cada frase con los labios
+  cerrados 2 fotogramas después de la voz y la acababa con la boca abierta en silencio. Ahora se ve Intone n+2: los
+  labios se abren en el mismo fotograma en que empieza la voz (505 y 530); la sonrisa de después de «gratis» va a
+  media velocidad (sin la carcajada de 527-528); el x1,18 entra en 528 con Intone 530, el primer fotograma asentado
+  tras el empalme (sin el destello de boca abierta ni el tirón de cabeza); la sonrisa final a 0,8x. No se ha movido
+  4 fotogramas (lo que pedía R1): en medio de las frases la boca ya iba bien (en la derivada, +1 como los planos 1, 3
+  y 6), y con 4 la voz quedaría ~190 ms por detrás de los labios.
+- T1 textos: el subtítulo dice «en 24-48 h laborables.» (cabe a tamaño normal).
+- R6 (escaparate de 2a al anochecer y nítido): cristal desenfocado (sigma 20 px a 4K) y con el color del escaparate
+  de los planos 1 y 4 (calle de día, azulada); su pelo por delante del cristal no se toca (MODNet).
+- R4 (dedos recortados en recta): en 2b y 5 los bordes de las cajas con los dedos quedan fuera del encuadre o se ven
+  bien (5). En 2a: fuera del dedo el cartón blanco que se colaba entre los dedos, y el borde del pulgar que tocaba la
+  caja dibujada tiene las esquinas redondeadas y caída de luz (tools/cajas3d_video.py, opción "restaura").
+
+
+Comprobado (sobre los ficheros de la 3.ª revisión)
+- ffprobe: 766 fotogramas, 24 fps, 31,917 s de imagen y 31,930 s de audio, H.264 High yuv420p, BT.709 (rango limitado),
+  AAC LC 48 kHz estéreo, moov delante (faststart), en el 1080 y en el 4K. El audio es idéntico al de la versión anterior
+  y al del 4K (diferencia 0).
+- Sonoridad: -14,0 LUFS integrados, LRA 2,8 LU, pico real -3,6 dBFS.
+- Sincronía (datos/sincronia.txt): la voz +23,2 ms frente a clip-intone-30nov-chica.mp4 en las 13 frases; planos 1, 3 y
+  4 abierto = Intone n+0 (r 0,997 / 0,996 / 0,997), primer plano del 4 = Intone n+2 (r 0,999 / 0,995), plano 6 = Intone
+  n+9 (r 0,998): igual que antes (los acercamientos nuevos solo cambian el encuadre, nunca el tiempo).
+- Rótulos (datos/comprobacion_rotulos.json, comprobar_v6.py contra el máster limpio en 1080, 681 fotogramas): todo lo
+  dibujado dentro de x 90-991 e y 300-1240; 0 fotogramas tocando cara, boca o cajas en la mano. comprobar_v6.py mira
+  ahora las manos en TODOS los fotogramas (en los planos de Intone, la piel que queda delante de la camiseta, sin el
+  cuello). Lo que queda marcado: los extremos de la pastilla del plano 1 sobre la muñeca y el antebrazo (los dedos y el
+  móvil ya no; antes 582 kpx en 0-55, ahora 324), la punta de los dedos que señalan bajo el borde de «Aquí, 18,99 €.»
+  en 15,2-16,2 s (antes también el rótulo de IA: 264 kpx -> 169), los brazos caídos a los lados bajo los subtítulos del
+  plano 4 abierto x1,25 (igual que antes) y, en los primeros planos, la base del cuello bajo la pastilla (como antes:
+  237 -> 263 kpx en el 4, 25 -> 49 kpx en el plano 6, 3 fotogramas).
+- Primeros planos: ninguna fila blanca de pestaña en 504-583 ni en 649-686 (antes desde y 1767 / 1900 / 1835).
+- Cierre: 84 pares de fotogramas de la tarjeta con cambio medio 0,23 o más por fotograma, ninguno idéntico; textos dentro
+  de x 197-884, y 300-1230 al final del acercamiento.
+- Revisado a ojo al 100 % (1080, y 4K en las cajas): los cortes de 21,0 / 22,0 / 24,33 / 27,04 s, el barrido nuevo del
+  2b (196 limpio, 197-201 barrido, 202-205 trasera), el plano 5 con las cajas del mostrador, el subtítulo del plano 1
+  (fotogramas 0, 10, 24, 40, 55, 56, 62, 85, 100, 110, 116), el plano 4 abierto mientras señala (370-380) y el chip en el
+  corte de 6,88 s (160-169). Imágenes de esta revisión: dep/v6/fix3/ev, ev2 y ev3.
+
+Lo que queda (y por qué)
+- Cajas del mostrador de los planos 1 y 4 (0-4,87 s y 14,92-20,96 s): siguen siendo ~1,5 veces su tamaño real respecto a
+  ella (cada caja casi tan ancha como su cabeza en el x1,25), las del cable igual de anchas que las del adaptador y las
+  cuatro pestañas a la misma altura. Para hacerlas un 30 % más pequeñas habría que inventar lo que hay detrás de su parte
+  de arriba en 343 fotogramas 4K: los antebrazos (el del móvil en el plano 1 baja detrás de la primera caja) y, en el
+  plano 4 (15,7-16,8 s), la mano que señala llega justo a la pestaña de la segunda caja. Rellenar eso con brazos y
+  manos inventados se notaría más que el tamaño; se deja como estaba (ver dep/v6/fix3/ev/escala07.jpg).
+- Giro rápido del plano 5 (24,9-25,1 s): delante de las yemas de la mano izquierda (a la izquierda de la imagen), donde
+  tocan el canto de la caja de perfil, quedan unas medias lunas grises de pocos píxeles. Vienen de la máscara de la mano
+  en tools/cajas3d_video.py (opción "dedos"); arreglarlo bien es rehacer esa máscara y volver a componer el plano 5.
+  Los retoques locales probados quedaban peor (arriba). Solo en pausa al 100 %.
+- Hueco entre la caja 1 y la 2 del mostrador (2,3-4,9 s y 14,9-21,0 s): una tira de ~12-15 px de ancho con bandas de
+  colores en dientes de sierra (el relleno de mostrador2). Solo en 4K al 300 %; arreglarlo es tocar cajas_reales.py y
+  rehacer las piezas 1 y 4.
+- 2a (4,88-6,83 s): pequeños detalles del compuesto (bultitos rosas del dedo sobre el canto derecho de la caja, un anillo
+  claro de 3 px en la esquina de arriba a la derecha, mechones sobre una mancha azulada en la esquina de arriba a la
+  izquierda, bajo la cabecera de Reels). Solo al 300-400 % o en 4K.
+- 2b: de 7,92 a 8,2 s el nombre de la caja del adaptador queda cortado por el borde y el pulgar mientras empieza a girar;
+  y el barrido nuevo hace que su mano izquierda se pierda en el desenfoque esos 5 fotogramas (como en cualquier barrido).
+  La trasera va a 0,57-0,78 de velocidad (con flujo óptico), sin saltos.
+- Plano 5: las cajas nuevas del mostrador son limpias y planas (fotos de los frentes); asoman bajo la interfaz de Reels.
+- Manos y camiseta de Kling más blandas que las cajas (ampliadas x1,76 / x2,27 / x1,41); en el 4K se nota más que en 1080.
+- La miniatura es el fotograma 576 de Intone de una versión anterior del máster: no coincide fotograma a fotograma con el
+  vídeo, a propósito.
+- Ajustes de Meta (D29/D45: desactivar mejoras de Advantage+, casilla de IA, subir la miniatura): los hace el dueño.
+- Los 23 ms de retraso de la voz (relleno del AAC que ya tenía el anuncio publicado) se mantienen; con DESFASE_44K=0 en
+  audio/hacer.sh quedarían en 0.
+
+Cómo rehacerlo (desde pillatumovil/anuncios/2026-11/video-persona; S = carpeta de trabajo con dep/v6/ y k4/)
+  bash $S/dep/v6/cajas/hacer.sh $S/dep/v6/caras/clipA.mp4 $S/dep/v6/caras/clipB.mp4 $S/dep/v6/caras/clipT.mp4
+      (solo si cambian las cajas en la mano; planes cajas/plan3d-*-v6.json; 2a pasa por ventana.py)
+  (cd $S/dep/v6/cajas && python3 latigo2b.py 2b.mp4 2b_latigo.mp4 && python3 mostrador5.py 5.mp4 5_mostrador.mp4)
+      (3.ª revisión: barrido del 2b y cajas/madera del mostrador del plano 5; hay que rehacerlos si cambian 2b.mp4 o 5.mp4)
+  python3 $S/dep/v6/mostrador2/cajas_reales.py 1 $S/k4/1.mp4 $S/dep/v6/mostrador2/1.mp4 --base k4   (y lo mismo con 4;
+      solo si cambian las cajas del mostrador)
+  bash ../../../tools/montaje_dependienta_v6.sh $S/dep/v6 $S/k4 maestro_v6_4k.mp4         (máster limpio, 687 fot.;
+      usa mostrador2/, 2b_latigo.mp4 y 5_mostrador.mp4; TERCERA=0 vuelve al montaje de la 2.ª revisión,
+      MOSTRADOR=mostrador a las cajas del mostrador de antes)
+  SIN_PRISA=1 CORTE=24.40:25.275 PREVIEW=0 bash $S/dep/v6/audio/hacer.sh               (-> audio_v6_sin_prisa_corte.wav)
+  python3 rotulos-v6/plan_v6.py rotulos-v6/plan_v6.json
+  python3 ../../../tools/video_persona.py maestro_v6_4k.mp4 ../../../tools/fuentes rotulos_v6_4k.mp4 v6 0 2 \
+      --montaje rotulos-v6/plan_v6.json --subs rotulos-v6/subs_v6.json --foto $S/dep/v6/rotulos/pack-usbc-recorte.png \
+      --cierre 3.5417 --crf 17 --hilos 3                                                  (687 - 6 + 85 = 766 fotogramas)
+  ffmpeg -i rotulos_v6_4k.mp4 -i audio_v6_sin_prisa_corte.wav -map 0:v -map 1:a -c:v copy -c:a aac -b:a 192k -ar 48000 \
+      -movflags +faststart dependienta_v6_4k.mp4
+  ffmpeg -i dependienta_v6_4k.mp4 -vf scale=1080:1920:flags=lanczos+accurate_rnd+full_chroma_int -c:v libx264 \
+      -profile:v high -preset slow -crf 18 -pix_fmt yuv420p -colorspace bt709 -color_primaries bt709 \
+      -color_trc bt709 -color_range tv -c:a copy -movflags +faststart dependienta_v6_1080.mp4
+  (rotulos-v6/plan_v6.py regenera plan_v6.json y subs_v6.json; el audio NUNCA pasa por video_persona.py.)
+  Comprobación de rótulos: máster limpio a 1080 (scale lanczos, crf 12), caras con datos/scripts/caras.py y
+  python3 comprobar_v6.py dependienta_v6_1080.mp4 limpio_1080.mp4 caras.npz 681; sincronía con
+  (cd datos && python3 scripts/sincro.py ../dependienta_v6_1080.mp4 caras_final.npz).
