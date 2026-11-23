@@ -1,6 +1,6 @@
 {"ini": 0, "fin": 121, "salida": [2160, 3840],
  "v6": {"calido": [1.01, 1.0, 0.985], "sombra": [0.15, 0.06], "desenfoque": 1.0, "degradado": 0.03, "margen": 15, "motas": true, "crf": 10,
-        "aclarar": [0.55, 230], "ambiente": [0.86, 0.17]},
+        "aclarar": [0.55, 230], "ambiente": [0.86, 0.17], "puntas": [0.7, 20]},
  "cajas": [{"semilla": [740, 1200], "modelo": "cable", "tramos": [{"de": 0, "a": 120, "modo": "frente"}]},
            {"semilla": [320, 1200], "modelo": "cargador", "sentido": -1,
             "tramos": [{"de": 0, "a": 28, "modo": "frente"}, {"de": 29, "a": 56, "modo": "giro"}, {"de": 57, "a": 120, "modo": "trasera"}]}]}

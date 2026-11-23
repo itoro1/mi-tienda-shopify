@@ -265,6 +265,13 @@ def relleno_basto(R, hoyo, piel):
 #                              clara). El color de la luz (cálido/frío) se conserva y la tinta guarda su contraste.
 #   "ambiente": [amb, dif]     luz ambiente y direccional de Caja.pinta (por defecto 0.80 y 0.25): con más ambiente
 #                              los lados y la tapa quedan menos oscuros respecto al frente.
+# 23/11: "puntas": [ratio, ancho] (opcional; sin ella, igual que antes). Mientras gira la caja, la yema que tocaba el
+#   canto de la caja dibujada trae pegada la sombra oscura de ese canto; sobre el cartón blanco nuevo salía como una
+#   losa negra en la punta de los dedos y el canto de la mano quedaba mordido. Con la clave, en el borde de la mano
+#   (hasta 'ancho' px a 4K) y SOLO encima de la caja nueva, lo que es bastante más oscuro que la piel de al lado
+#   (canal más alto < ratio × el de la piel de justo al lado, o muy oscuro junto a una yema clara) y toca el exterior
+#   se vuelve transparente (se ve la caja nueva), igual que los picos finos (< 8 px) de ese borde. Valor probado:
+#   [0.7, 20] (plan3d-B-v6 y plan3d-T-v6).
 V6 = plan.get('v6')
 E6 = SH / 3840
 SOLO = [int(x) for x in sys.argv[sys.argv.index('--solo') + 1].split(',')] if '--solo' in sys.argv else None
@@ -339,6 +346,33 @@ def alfa_mano6(I, m, zona):
     a = np.where(seg_m > 0, 1.0, np.where(seg_f > 0, 0.0, np.clip(a, 0, 1))).astype(np.float32)
     a = cv2.GaussianBlur(a, (0, 0), 0.9 * E6)
     return a * zona, Bm
+
+
+def puntas6(mano, orig, nueva, ratio=.7, ancho=20):
+    """Opción "puntas": en el borde de la mano y solo encima de la caja nueva, lo bastante más oscuro que la piel de al
+    lado (canal más alto < ratio × el de la piel de justo al lado, o < 85 y < 0,55 × la yema clara más cercana) y que
+    toca el exterior es la sombra del canto de la caja dibujada pegada a las yemas; también los picos finos (< 8 px)
+    del borde. Devuelve esa máscara (ahí el mate de la mano va a 0 y se ve la caja nueva) o None. La máscara de la
+    mano no cambia (el color del fondo viejo se sigue estimando igual)."""
+    enc = nueva > .5
+    ys, xs = np.where(enc & dil(mano, 4))
+    if not len(ys): return None
+    m_ = int(60 * E6)
+    y0, y1, x0, x1 = max(ys.min() - m_, 0), min(ys.max() + m_, SH), max(xs.min() - m_, 0), min(xs.max() + m_, SW)
+    Z = (slice(y0, y1), slice(x0, x1))
+    m = mano[Z]; e = enc[Z]; V = orig[Z].max(2).astype(np.float32)
+    nucleo = cv2.erode(m.astype(np.uint8), k_el(8 * E6)).astype(np.float32)               # piel de justo al lado: así
+    den = cv2.GaussianBlur(nucleo, (0, 0), 8 * E6); Vmed = cv2.GaussianBlur(V * nucleo, (0, 0), 8 * E6) / np.maximum(den, 1e-6)   # la sombra suave del dedo no cuenta
+    borde = m & ~cv2.erode(m.astype(np.uint8), k_el(ancho * E6)).astype(bool)
+    Vmax = cv2.dilate(V * nucleo, k_el(25 * E6))                                        # y lo muy oscuro junto a una
+    osc = borde & e & (((den > .03) & (V < ratio * Vmed)) | ((V < .55 * Vmax) & (V < 85)))  # yema clara (hueco ancho)
+    n, et, _, _ = cv2.connectedComponentsWithStats(osc.astype(np.uint8))
+    toca = np.unique(et[dil(~m & e, 2) & (et > 0)])
+    m2 = m & ~np.isin(et, toca)
+    abierta = cv2.morphologyEx(m2.astype(np.uint8), cv2.MORPH_OPEN, k_el(4 * E6)).astype(bool)
+    m2 = np.where(dil(e, 2), abierta, m2)
+    q = np.zeros_like(mano); q[Z] = dil(m & ~m2, 6 * E6) & ~m2 & dil(e, 2)                  # y la banda del mate de fuera
+    return q if q.any() else None
 
 
 def recta_robusta(y, x):
@@ -562,6 +596,7 @@ def compone6(n, F, orig, blanco, etq, pintadas):
     nueva = np.zeros((SH, SW), np.float32)
     for i, x0, y0, rgb, alfa, vis in pintadas:
         z = nueva[y0:y0 + alfa.shape[0], x0:x0 + alfa.shape[1]]; np.maximum(z, alfa[..., 0], out=z)
+    quitado = puntas6(mano, orig, nueva, *V6['puntas']) if V6.get('puntas') else None
     mg = V6.get('margen', 15)
     hoyo = np.zeros((SH, SW), bool)
     o16 = orig.astype(np.int16); omax = o16.max(2); omin = o16.min(2)
@@ -632,6 +667,7 @@ def compone6(n, F, orig, blanco, etq, pintadas):
     Iz = I[Z]; mz = mano[Z]
     cambio = dil(hoyo[Z] | (nueva[Z] > 0), 24 * E6).astype(np.float32)
     am, Bold = alfa_mano6(Iz, mz, cambio)
+    if quitado is not None: am *= 1 - np.clip(cv2.GaussianBlur(quitado[Z].astype(np.float32), (0, 0), .8 * E6) * 1.6, 0, 1)
     calido = np.float32(V6.get('calido', [1, 1, 1])); sombra = V6.get('sombra', [0, 0]); deg = V6.get('degradado', 0.0)
     for i, x0, y0, rgb, alfa, vis in pintadas:
         h, w_ = alfa.shape[:2]; yy, xx = y0 - a0, x0 - b0
