@@ -272,13 +272,47 @@ def relleno_basto(R, hoyo, piel):
 #   (canal más alto < ratio × el de la piel de justo al lado, o muy oscuro junto a una yema clara) y toca el exterior
 #   se vuelve transparente (se ve la caja nueva), igual que los picos finos (< 8 px) de ese borde. Valor probado:
 #   [0.7, 20] (plan3d-B-v6 y plan3d-T-v6).
-# 24/11: "restaura": true (opcional; sin ella, igual que antes). (1) El cartón blanco neutro que la máscara de la mano
+# 23/11: "restaura": true (opcional; sin ella, igual que antes). (1) El cartón blanco neutro que la máscara de la mano
 #   metía entre los dedos (huecos rellenos) sale de la mano: ahí se ve la caja nueva o el relleno, no la caja dibujada.
 #   (2) Donde el borde de la mano tocaba la caja dibujada (más alta) y ahora da al relleno, por encima de la caja nueva,
 #   el dedo quedaba cortado en recta (pulgar plano y claro hasta el filo): se redondean las esquinas (apertura de 6 px a
 #   4K, solo en ese borde) y la piel cae de luz en los últimos 7 px, como el canto de un dedo. Probado en plan3d-A-v6.
+# 23/11 (2.ª revisión de la v6: N1, R4, N2). Tres claves más, opcionales (sin ellas, todo igual que antes):
+#   "dedos": {"solape": 18, "max": 30, "radio": 420, "redondea": [12, 22, ["trasera"]], "contacto": 0.2}   (plano 5)
+#     Los dedos que sujetan la caja por un lado quedan ENCIMA del canto de la caja nueva, como en una mano de verdad:
+#     (1) si las yemas no llegan a la caja nueva (la dibujada era más ancha o estaba algo movida) o llegan justo al canto,
+#         la mano se acerca a la caja con una deformación suave (todo lo que hay en el canto se mueve 'd' px y nada a
+#         'radio' px de él, ni fuera de las filas de la mano) hasta que la mediana de las puntas de los dedos entra
+#         'solape' px en la caja; 'd' como mucho 'max' px y suave en el tiempo (se mide antes de pintar, en todos los
+#         fotogramas). Solo se mueven las filas de los dedos que llegan al canto (no la palma, que queda detrás de la
+#         caja). La caja nueva no se mueve.
+#     (2) mate de la mano con dos fondos: detrás del borde de la yema puede haber cartón blanco (la caja dibujada) o
+#         camiseta, y su media no es ninguno de los dos (salían flecos y muescas blancas entre los dedos). Se estiman
+#         por separado y en cada píxel se usa el que mejor explica su color; la yema borrosa sobre el cartón sale
+#         entera, con su borde de verdad. También sale de la mano el cartón blanco metido entre los dedos.
+#     (3) yemas cortadas en recta (la IA las tapaba con el canto de su caja): las esquinas del contorno de la mano que
+#         queda encima de la caja nueva se redondean con una apertura elíptica de semiejes 'redondea' = [x, y] px a 4K
+#         (solo trozos del tamaño de una esquina); con un tercer elemento, solo en esos tramos (p. ej. ["trasera"]: en
+#         "frente" y "giro" las yemas del plano 5 ya están enteras y se estropeaban).
+#     (4) sombra de contacto: la caja nueva se oscurece hasta 'contacto' (0-1) justo alrededor de las yemas.
+#   "puntas" admite un tercer elemento con los tramos en que se usa (p. ej. [0.7, 20, ["giro"]]); el plano 5 ya no la
+#   lleva: con las manos acercadas se comía el borde oscuro natural de las yemas y dejaba muescas blancas.
+#   "espejo": {"ancho": 150, "alto": 30, "abomba": 5, "radio": 12}   (plano 2a, R4)
+#     Dedo vertical cuyo lado tapaba la caja dibujada (más alta) y que ahora da al relleno (el pulgar derecho de 2a, que
+#     salía con el lado izquierdo recto como una regla y un filo claro): ese lado se rehace con canto suave (5 px) y
+#     abombado hacia fuera 'abomba' px en el centro, la esquina de la punta contra el corte redondeada con radio 'radio'
+#     (px a 4K), el color de la propia piel (alargado desde 6 px dentro, sin el canto oscurecido de "restaura") y el
+#     canto algo más oscuro, como el del otro lado; detrás, lo de alrededor (relleno o madera). 'ancho': ancho máximo
+#     del dedo; 'alto': alto mínimo del corte. Además, fuera las motas oscuras pequeñas rodeadas de claro junto al dedo
+#     (la punta del pulgar traía una). Se probó a reflejar el otro lado del dedo: con la punta medio tapada por la caja
+#     dibujada salían «banderitas» de piel y pliegues; no se usa.
+#   "motas_claras": [radio, area]   (plano 2b, N2)
+#     Manchas claras sueltas de la IA (p. ej. una pincelada blanco-azulada junto a la pestaña de la caja dibujada) a
+#     menos de 'radio' px del hueco, de menos de 'area' px (a 4K) y rodeadas de camiseta oscura: se tapan como el hueco.
 V6 = plan.get('v6')
 E6 = SH / 3840
+DEDOS = (V6 or {}).get('dedos')
+ESPEJO = (V6 or {}).get('espejo')
 SOLO = [int(x) for x in sys.argv[sys.argv.index('--solo') + 1].split(',')] if '--solo' in sys.argv else None
 if os.environ.get('CAJAS_HILOS'): cv2.setNumThreads(int(os.environ['CAJAS_HILOS']))
 
@@ -340,13 +374,31 @@ def mano6(fr):
     return np.isin(et, [k for k in range(1, n) if st[k, 4] >= 14000 * E6 * E6])
 
 
-def alfa_mano6(I, m, zona):
+def alfa_mano6(I, m, zona, pares=False):
     """Mate suave de la mano (0-1): 1 dentro, 0 fuera y, en el borde, mezcla de color entre la piel de al lado (F)
-    y el fondo viejo de al lado (B): alfa = (I-B)·(F-B)/|F-B|². Devuelve (alfa, B)."""
+    y el fondo viejo de al lado (B): alfa = (I-B)·(F-B)/|F-B|². Devuelve (alfa, B).
+    pares (opción "dedos"): detrás de la yema puede haber cartón blanco (la caja dibujada) o camiseta oscura, y la
+    media de los dos no es ninguno (salían flecos y muescas blancas). Se estiman los dos fondos por separado y en cada
+    píxel se usa el que mejor explica su color como mezcla de piel y fondo; junto al cartón la franja de borde llega a
+    12 px (la yema borrosa sobre el blanco es más ancha)."""
     seg_m = cv2.erode(m.astype(np.uint8), k_el(7 * E6)).astype(np.float32)
-    seg_f = 1 - cv2.dilate(m.astype(np.uint8), k_el(5 * E6)).astype(np.float32)
+    claro = (I.min(2) > 140) & (I.max(2) - I.min(2) < 45)                                 # cartón (sin la tinta)
+    if not pares:
+        seg_f = 1 - cv2.dilate(m.astype(np.uint8), k_el(5 * E6)).astype(np.float32)
+    else:
+        seg_f = 1 - (dil(m, 5 * E6) | (dil(m, 12 * E6) & dil(claro & ~dil(m, 5 * E6), 14 * E6))).astype(np.float32)
     Fm = rellena_capas(I, seg_m, (6 * E6, 20 * E6, 60 * E6), 2)
-    Bm = rellena_capas(I, seg_f, (5 * E6, 16 * E6, 50 * E6), 2)
+    if not pares:
+        Bm = rellena_capas(I, seg_f, (5 * E6, 16 * E6, 50 * E6), 2)
+    else:
+        Bw = rellena_capas(I, seg_f * claro, (5 * E6, 16 * E6, 50 * E6, 150 * E6), 2)
+        Bd = rellena_capas(I, seg_f * (I.max(2) < 110), (5 * E6, 16 * E6, 50 * E6, 150 * E6), 2)
+        def ajusta(B):
+            d_ = Fm - B; a_ = np.clip(((I - B) * d_).sum(2) / np.maximum((d_ * d_).sum(2), 400.0), 0, 1)
+            return np.sqrt(((I - (a_[..., None] * Fm + (1 - a_[..., None]) * B)) ** 2).sum(2))
+        blanco_ = cv2.GaussianBlur((ajusta(Bw) < ajusta(Bd)).astype(np.float32), (0, 0), 1.0 * E6)[..., None]
+        Bm = blanco_ * Bw + (1 - blanco_) * Bd
+        FONDO_FUERA[0] = Bd
     d = Fm - Bm; a = ((I - Bm) * d).sum(2) / np.maximum((d * d).sum(2), 400.0)
     a = np.where(seg_m > 0, 1.0, np.where(seg_f > 0, 0.0, np.clip(a, 0, 1))).astype(np.float32)
     a = cv2.GaussianBlur(a, (0, 0), 0.9 * E6)
@@ -591,6 +643,182 @@ def quita_motas(F, zona):
     Z[malo] = med[malo]
 
 
+def suave01(t):
+    t = np.clip(t, 0, 1); return t * t * (3 - 2 * t)
+
+
+def mide_lado(bm, mano, lado):
+    """Opción "dedos": cuánto entran en la caja nueva (bm, bool) los dedos que la sujetan por su canto 'lado' (-1 el
+    izquierdo, +1 el derecho). Por fila: hasta dónde llega la mano que viene de fuera (px; > 0 = encima de la caja);
+    las puntas de los dedos son los máximos del perfil y se toma su mediana. Devuelve (alcance, filas, a, b): 'filas'
+    (SH) vale 1 en las filas de los dedos que llegan al canto (no en la palma que queda detrás de la caja, que no se
+    mueve), suave; el canto es x = a·y + b. None si ninguna mano llega cerca del canto."""
+    filas = np.flatnonzero(bm.any(1))
+    if len(filas) < 60: return None
+    P = int(round(60 * E6)); L = int(round(90 * E6)); m_ = int(round(14 * E6))
+    ys, es, ov = [], [], []
+    for y in range(filas[0] + m_, filas[-1] - m_):
+        r = np.flatnonzero(bm[y])
+        if not len(r): continue
+        e = r[0] if lado < 0 else r[-1]
+        ys.append(y); es.append(e)
+        a = e - P if lado < 0 else e + P
+        if a < 0 or a >= SW or not mano[y, a]: ov.append(np.nan); continue
+        seg = mano[y, a:min(e + L, SW)] if lado < 0 else mano[y, max(e - L, 0):a + 1][::-1]
+        ov.append((len(seg) if seg.all() else int(np.argmin(seg))) - P)
+    ys = np.array(ys); es = np.array(es, float); ov = np.array(ov)
+    v = ~np.isnan(ov)
+    if v.sum() < 25 * E6: return None
+    i0, i1 = np.flatnonzero(v)[[0, -1]]
+    from scipy.signal import find_peaks
+    prof = np.where(v, ov, -P - 5.0)[i0:i1 + 1]
+    pk, _ = find_peaks(np.r_[-P - 5.0, prof, -P - 5.0], distance=max(int(28 * E6), 1), prominence=3 * E6)
+    alt = prof[pk - 1] if len(pk) else prof[[int(np.argmax(prof))]]
+    alt = alt[alt > -P + 3]
+    if not len(alt): return None
+    sel = slice(max(i0 - int(120 * E6), 0), i1 + int(120 * E6))
+    a, b, _ = recta_robusta(ys[sel], es[sel])
+    alc = float(np.median(alt))
+    dedo = np.zeros(SH, np.float32); dedo[ys[v & (ov >= alc - 30 * E6)]] = 1
+    g = int(round(40 * E6)) | 1                                                 # sin huecos entre dedo y dedo
+    dedo = cv2.morphologyEx(dedo.reshape(-1, 1), cv2.MORPH_CLOSE, np.ones((g, 1), np.uint8)).ravel()
+    return alc, cv2.GaussianBlur(dedo.reshape(-1, 1), (1, 0), 12 * E6).ravel(), float(a), float(b)
+
+
+FONDO_FUERA = [None]      # opción "dedos": fondo de fuera de la caja dibujada (lo último que calculó alfa_mano6)
+MANOS = {}      # opción "dedos": (caja, lado) -> {'d', 'y0', 'y1', 'a', 'b'}: arrays por fotograma (ya suavizados)
+
+
+def acerca_manos(F, n):
+    """Opción "dedos": acerca cada mano a su caja (deformación horizontal suave; ver el bloque de arriba)."""
+    for (i, lado), p in MANOS.items():
+        d = p['d'][n]
+        if not d >= .5: continue
+        a, b, fil = p['a'][n], p['b'][n], p['filas'][n]
+        R = DEDOS.get('radio', 420) * E6; Din = 50 * E6
+        yy = np.flatnonzero(fil > .01)
+        if len(yy) < 10: continue
+        ya, yb = int(yy[0]), int(yy[-1]) + 1
+        Y = np.arange(ya, yb, dtype=np.float32); e = a * Y + b
+        if lado < 0: xa, xb = int(max(e.min() - R - 4, 0)), int(min(e.max() + 2 * Din + 4, SW))
+        else: xa, xb = int(max(e.min() - 2 * Din - 4, 0)), int(min(e.max() + R + 4, SW))
+        if xb - xa < 10: continue
+        X = np.arange(xa, xb, dtype=np.float32)[None, :]
+        q = lado * (X - e[:, None])                                              # > 0: fuera de la caja (la mano)
+        wx = np.where(q >= 0, 1 - suave01(q / R), 1 - suave01((-q - Din) / Din))
+        wy = fil[ya:yb, None]
+        Dx = (-lado * d) * wx * wy                                               # hacia dentro de la caja
+        mx = (X - Dx).astype(np.float32); my_ = np.repeat(Y[:, None], xb - xa, 1).astype(np.float32)
+        F[ya:yb, xa:xb] = cv2.remap(np.ascontiguousarray(F[ya:yb, xa:xb]), mx - xa, my_ - ya, cv2.INTER_CUBIC, borderMode=cv2.BORDER_REPLICATE)
+    return F
+
+
+def espejo6(out, G, am, Iz, fill, nz, out0):
+    """Opción "espejo": un dedo vertical cuyo lado tapaba la caja dibujada y ahora da al relleno (corte recto, alto, en
+    'fill') se rehace por ese lado: canto suave y algo abombado en vez de recto, esquina de la punta redondeada, color
+    de la propia piel; detrás, lo de alrededor. (Se probó a reflejar el otro lado: con la punta medio tapada salían
+    banderitas y pliegues, ver el informe del 23/11.)"""
+    ancho = ESPEJO.get('ancho', 150) * E6; alto = ESPEJO.get('alto', 30) * E6
+    H_, W_ = am.shape; dentro = am > .5
+    corte = dentro & dil(fill, 3 * E6)
+    n_, e_, s_, _ = cv2.connectedComponentsWithStats(corte.astype(np.uint8))
+    hechos = []
+    for k in range(1, n_):
+        x, y, w, h, _ = s_[k]
+        if h < alto or w > .6 * h: continue
+        comp = e_[y:y + h] == k
+        xc = np.array([np.flatnonzero(r).mean() if r.any() else np.nan for r in comp])
+        if np.isnan(xc).all(): continue
+        xcm = float(np.nanmedian(xc)); ym = y + h // 2
+        lado = 1 if am[ym, int(min(xcm + 10 * E6, W_ - 1))] > .5 else -1
+        c0 = int(max(xcm - (30 * E6 if lado > 0 else ancho), 0)); c1 = int(min(xcm + (ancho if lado > 0 else 30 * E6), W_))
+        filas, izq, der = [], [], []
+        for r in range(y + h - 1, max(y - int(160 * E6), 0) - 1, -1):          # de abajo arriba, hasta la punta
+            fila = dentro[r, c0:c1]
+            if r >= y:
+                x0_ = xc[r - y] if not np.isnan(xc[r - y]) else xcm
+                j = int(round(x0_)) - c0; run = fila[j::lado] if lado > 0 else fila[j::-1]
+                if not len(run) or not run[0]: continue
+                L = len(run) if run.all() else int(np.argmin(run))
+                if L > ancho: continue                                          # aquí el dedo ya es la mano
+                filas.append(r); izq.append(x0_); der.append(x0_ + lado * (L - 1))
+            else:
+                cols = np.flatnonzero(fila)
+                if not len(cols): break
+                filas.append(r); izq.append(c0 + (cols.min() if lado > 0 else cols.max())); der.append(c0 + (cols.max() if lado > 0 else cols.min()))
+        if len(filas) < alto: continue
+        filas = np.array(filas); der = np.array(der, float); izq = np.array(izq, float)
+        ya = filas.min()
+        # forma nueva del lado cortado: sigue el corte pero abombado hacia fuera 'abomba' px en el centro (no recto como
+        # una regla), con canto suave de 5 px, y arriba con el mismo perfil que la punta junto al corte; la esquina de
+        # arriba (donde la punta tocaba el corte) se redondea con radio 'radio'. El otro lado y la punta no se tocan.
+        ra, rb = int(max(ya - 8 * E6, 0)), int(filas.max()) + 1
+        R_ = np.arange(ra, rb, dtype=np.float32)
+        xcf = np.interp(R_, np.arange(y, y + h)[~np.isnan(xc)], xc[~np.isnan(xc)])
+        rad = ESPEJO.get('radio', 12) * E6; ab = ESPEJO.get('abomba', 5) * E6
+        xa0 = int(max(np.floor((xcf.min() - ab - 12 * E6) if lado > 0 else (xcf.min() - 3 * rad)), 0))
+        xb0 = int(min(np.ceil((xcf.max() + 3 * rad) if lado > 0 else (xcf.max() + ab + 12 * E6)), W_))
+        X = np.arange(xa0, xb0, dtype=np.float32)[None, :]
+        Z_ = (slice(ra, rb), slice(xa0, xb0))
+        n2, e2 = cv2.connectedComponents((am > .25).astype(np.uint8))           # solo el propio dedo
+        ks2 = np.unique(e2[y:y + h][comp & (e2[y:y + h] > 0)])
+        a_vis = (am * dil(np.isin(e2, ks2), 2 * E6))[Z_].astype(np.float32)
+        t_ = np.clip((R_ - y) / max(rb - y, 1), 0, 1)
+        borde = xcf - lado * ab * np.sin(np.pi * t_) ** .7
+        a_lado = suave01((lado * (X - borde[:, None]) + 2.5 * E6) / (5 * E6))
+        cin = np.clip(np.round(xcf + lado * 4 * E6).astype(int) - xa0, 0, xb0 - xa0 - 1)
+        perfil = a_vis[np.arange(rb - ra), cin]                                   # la punta junto al corte, por filas
+        fuera = lado * (X - xcf[:, None]) < 4 * E6
+        a_r = np.where(fuera, a_lado * perfil[:, None], a_vis)
+        esq = (R_[:, None] < ya + 2.5 * rad) & (lado * (X - xcf[:, None]) < 2.5 * rad)
+        op = cv2.morphologyEx((a_r > .5).astype(np.uint8), cv2.MORPH_OPEN, k_el(rad)).astype(np.float32)
+        a_r = np.where(esq, np.minimum(a_r, cv2.GaussianBlur(op, (0, 0), 1.5 * E6)), a_r)
+        # color: el de la propia piel (out0: antes del canto oscurecido de "restaura"); hasta 6 px dentro del corte
+        # viejo y más allá, el de la piel a 6 px del corte, alargado en horizontal (la piel es lisa: sin bandas); el canto
+        # nuevo algo más oscuro en sus últimos 7 px, como el del otro lado
+        xs6 = np.clip(np.round(xcf + lado * 6 * E6).astype(int), 0, W_ - 1)
+        piel6 = out0[np.arange(ra, rb), xs6]
+        dentro_viejo = lado * (X - xcf[:, None]) >= 6 * E6
+        C_r = np.where(dentro_viejo[..., None], out0[Z_], piel6[:, None, :])
+        d_in = cv2.distanceTransform((a_r > .5).astype(np.uint8), cv2.DIST_L2, 3)
+        C_r = C_r * (0.88 + 0.12 * suave01(d_in / (7 * E6)))[..., None]
+        # detrás: lo de alrededor que no es mano (el relleno de camiseta o la madera)
+        fondo_ok = ~dil(am > .03, 3 * E6)
+        bg = rellena_capas(G[Z_], fondo_ok[Z_].astype(np.float32), (3 * E6, 10 * E6, 30 * E6))
+        bg = np.where(fondo_ok[Z_][..., None], G[Z_], bg)
+        nuevo = a_r[..., None] * C_r + (1 - a_r[..., None]) * bg
+        wt = (fuera | esq).astype(np.float32)
+        wt = cv2.GaussianBlur(wt, (0, 0), 1.5 * E6) * (1 - np.clip(nz[Z_] * 2, 0, 1))   # la caja nueva no se toca
+        wt *= np.clip((rb - 1 - R_[:, None]) / (14 * E6), 0, 1)                   # abajo, donde empieza la mano, se funde
+        out[Z_] = out[Z_] * (1 - wt[..., None]) + nuevo * wt[..., None]
+        hechos.append((int(ya), int(y), int(rb), int(lado)))
+        cambio_ = np.zeros(am.shape, bool); cambio_[Z_] = wt > .01
+        ESPEJO_ZONA.append(cambio_)
+        # motas oscuras junto al dedo nuevo que no son la camiseta del relleno (la punta del pulgar traía una: el
+        # final de la franja de camiseta que se veía entre la caja dibujada y la madera): fuera, con el fondo de al lado
+        Zm = (slice(max(ra - int(20 * E6), 0), rb), slice(max(xa0 - int(10 * E6), 0), min(xb0 + int(30 * E6), W_)))
+        ozz = out[Zm]; a_now = np.zeros(am.shape, np.float32); a_now[Z_] = a_r * wt + am[Z_] * (1 - wt)
+        dedo_ = np.maximum(a_now, am)[Zm] > .3
+        osc_ = (ozz.max(2) < 95) & ~fill[Zm] & ~dedo_
+        n_o, e_o, s_o, _ = cv2.connectedComponentsWithStats(osc_.astype(np.uint8))
+        cerca_ = dil(dedo_, 10 * E6); claro_ = ozz.max(2) >= 95; osc_[:] = False
+        for k_ in range(1, n_o):                    # solo motas: pequeñas, junto al dedo y rodeadas de claro (madera, piel)
+            if s_o[k_, 4] > 220 * E6 * E6: continue
+            m_ = e_o == k_
+            if not (m_ & cerca_).any(): continue
+            ani_ = dil(m_, 3 * E6) & ~m_
+            if claro_[ani_].mean() > .6: osc_ |= m_
+        if osc_.any():
+            ok_ = ~dedo_ & ~fill[Zm] & (ozz.max(2) >= 95) & ~dil(osc_, 2 * E6)
+            rep_ = rellena_capas(ozz, ok_.astype(np.float32), (3 * E6, 8 * E6, 20 * E6))
+            w_ = cv2.GaussianBlur(dil(osc_, 1.5 * E6).astype(np.float32), (0, 0), 1.0 * E6)[..., None]
+            out[Zm] = ozz * (1 - w_) + rep_ * w_
+    return hechos
+
+
+ESPEJO_ZONA = []
+
+
 def compone6(n, F, orig, blanco, etq, pintadas):
     """El fotograma v6: fuera las cajas dibujadas, hueco tapado por zonas, cajas reales y la mano encima."""
     if not pintadas: return
@@ -599,14 +827,18 @@ def compone6(n, F, orig, blanco, etq, pintadas):
     kraft = np.isin(es, [k for k in range(1, ns) if st[k, 4] < 14000 * E6 * E6])
     mano = mano6(orig)
     RESTAURA = V6.get('restaura')
-    if RESTAURA:      # 24/11 (R4): fuera de la mano el cartón blanco que se colaba entre los dedos (huecos rellenos)
+    if RESTAURA or DEDOS:      # 23/11 (R4): fuera de la mano el cartón blanco que se colaba entre los dedos (huecos rellenos)
         o16_ = orig.astype(np.int16); carton_ = (o16_.min(2) > 135) & (o16_.max(2) - o16_.min(2) < 25)
         mano &= ~dil(carton_, 2 * E6)
         mano = cv2.morphologyEx(mano.astype(np.uint8), cv2.MORPH_OPEN, k_el(2 * E6)).astype(bool)
     nueva = np.zeros((SH, SW), np.float32)
     for i, x0, y0, rgb, alfa, vis in pintadas:
         z = nueva[y0:y0 + alfa.shape[0], x0:x0 + alfa.shape[1]]; np.maximum(z, alfa[..., 0], out=z)
-    quitado = puntas6(mano, orig, nueva, *V6['puntas']) if V6.get('puntas') else None
+    pt = V6.get('puntas')       # [ratio, ancho] o [ratio, ancho, modos] o [ratio, ancho, modos, [de, a]]: con modos (p. ej.
+    #                             ["giro"]), solo en esos tramos; con [de, a], solo en esos fotogramas del clip
+    if pt and len(pt) > 2 and not any(modo(cajas[i_], n) in pt[2] for i_, *_ in pintadas): pt = None
+    if pt and len(pt) > 3 and not (pt[3][0] <= n + INI <= pt[3][1]): pt = None
+    quitado = puntas6(mano, orig, nueva, pt[0], pt[1]) if pt else None
     mg = V6.get('margen', 15)
     hoyo = np.zeros((SH, SW), bool)
     o16 = orig.astype(np.int16); omax = o16.max(2); omin = o16.min(2)
@@ -646,6 +878,21 @@ def compone6(n, F, orig, blanco, etq, pintadas):
         azul = (o16[zz][m_][:, 2] > o16[zz][m_][:, 0] + 8).mean() > .5
         if azul and lejos_h[zz][m_].any() and oscuro_[zz][anillo_].mean() > .8: peq[zz] |= m_
     hoyo |= cv2.dilate(peq.astype(np.uint8), k_el(5 * E6)).astype(bool) & ~mano
+    if V6.get('motas_claras'):      # 23/11 (N2): pinceladas claras sueltas de la IA, algo más lejos de la caja
+        rad, area_max = V6['motas_claras']
+        n_, e_, s_, _ = cv2.connectedComponentsWithStats(((omax >= 60) & ~dil(mano, 10 * E6) & ~hoyo).astype(np.uint8))
+        cerca_ = dil(hoyo, rad * E6); claras = np.zeros_like(hoyo)
+        for k in range(1, n_):
+            if s_[k, 4] > area_max * E6 * E6 or s_[k, 4] < 20 * E6 * E6: continue
+            x_, y_, w_, h_ = s_[k, :4]; r_ = int(16 * E6)
+            zz = (slice(max(y_ - r_, 0), y_ + h_ + r_), slice(max(x_ - r_, 0), x_ + w_ + r_))
+            m_ = e_[zz] == k
+            if not cerca_[zz][m_].any(): continue
+            ani_ = dil(m_, 12 * E6) & ~dil(m_, 4 * E6)
+            if ani_.any() and (omax[zz][ani_] < 70).mean() > .85: claras[zz] |= m_
+        if claras.any():
+            print(f'  motas claras {n + INI}:', int(claras.sum()), 'px')
+            hoyo |= dil(claras, 8 * E6) & ~mano
     zona = dil(hoyo | (nueva > 0), 70 * E6)
     ys, xs = np.where(zona); a0, a1, b0, b1 = ys.min(), ys.max() + 1, xs.min(), xs.max() + 1
     Z = (slice(a0, a1), slice(b0, b1))
@@ -676,8 +923,24 @@ def compone6(n, F, orig, blanco, etq, pintadas):
     # las cajas reales: luz de la escena, algo más cálidas, degradado suave y la sombra de los dedos
     Iz = I[Z]; mz = mano[Z]
     cambio = dil(hoyo[Z] | (nueva[Z] > 0), 24 * E6).astype(np.float32)
-    am, Bold = alfa_mano6(Iz, mz, cambio)
+    am, Bold = alfa_mano6(Iz, mz, cambio, bool(DEDOS))
     if quitado is not None: am *= 1 - np.clip(cv2.GaussianBlur(quitado[Z].astype(np.float32), (0, 0), .8 * E6) * 1.6, 0, 1)
+    corte = np.zeros(am.shape, np.float32)                  # opción "dedos" (3): lo que se quita de las yemas cortadas
+    rd = DEDOS.get('redondea') if DEDOS else None     # [x, y] o [x, y, modos]: con modos, solo en esos tramos
+    if rd and len(rd) > 2 and not any(modo(cajas[i_], n) in rd[2] for i_, *_ in pintadas): rd = None
+    if rd:
+        rx, ry = rd[:2]; hb = (am > .5).astype(np.uint8)
+        ker = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2 * int(round(rx * E6)) + 1, 2 * int(round(ry * E6)) + 1))
+        op = cv2.morphologyEx(hb, cv2.MORPH_OPEN, ker).astype(bool)
+        # solo el contorno de la mano que queda encima de la caja nueva (o a 6 px de su canto): las yemas
+        sobre = dil(nueva[Z] > .5, 6 * E6)
+        filo = hb.astype(bool) & ~cv2.erode(hb, k_el(1.5 * E6)).astype(bool) & sobre
+        quita = hb.astype(bool) & ~op & dil(filo, 22 * E6) & sobre
+        n_, e_, s_, _ = cv2.connectedComponentsWithStats(quita.astype(np.uint8))
+        # solo esquinas (ni el polvo del borde ni trozos grandes: donde el óvalo no cabe en un dedo fino, no se toca)
+        quita = np.isin(e_, [k for k in range(1, n_) if 12 * E6 * E6 <= s_[k, 4] <= rx * ry * E6 * E6])
+        corte = np.clip(cv2.GaussianBlur(quita.astype(np.float32), (0, 0), 1.6 * E6) * 1.25, 0, 1) * (am > .02)
+    am_s = am * (1 - corte)                                  # la mano que hace sombra
     calido = np.float32(V6.get('calido', [1, 1, 1])); sombra = V6.get('sombra', [0, 0]); deg = V6.get('degradado', 0.0)
     for i, x0, y0, rgb, alfa, vis in pintadas:
         h, w_ = alfa.shape[:2]; yy, xx = y0 - a0, x0 - b0
@@ -694,10 +957,11 @@ def compone6(n, F, orig, blanco, etq, pintadas):
                 v = np.clip((np.arange(h, dtype=np.float32) - ya[0]) / max(ya[-1] - ya[0], 1), 0, 1)
                 cap[..., :3] *= (1 + deg / 2 - deg * v)[:, None, None]
         cap = cv2.GaussianBlur(cap, (0, 0), V6.get('desenfoque', 0.8) * E6)
-        az = am[yy:yy + h, xx:xx + w_]
+        az = am_s[yy:yy + h, xx:xx + w_]
         s1 = cv2.GaussianBlur(np.roll(az, (int(round(6 * E6)), int(round(4 * E6))), (0, 1)), (0, 0), 6 * E6)
         s2 = cv2.GaussianBlur(az, (0, 0), 22 * E6)
-        som = np.clip(s1 * sombra[0] + s2 * sombra[1], 0, .6)[..., None]
+        s0 = cv2.GaussianBlur(az, (0, 0), 2.5 * E6) * DEDOS.get('contacto', 0) if DEDOS else 0
+        som = np.clip(s1 * sombra[0] + s2 * sombra[1] + s0, 0, .6)[..., None]
         g = np.random.default_rng(n * 7 + i).normal(0, 1.4, (h, w_, 1)).astype(np.float32)
         G[yy:yy + h, xx:xx + w_] = Rz * (1 - cap[..., 3:]) + np.clip(cap[..., :3] * (1 - som) + g * cap[..., 3:], 0, 255)
     # la mano encima: donde el borde del dedo mezclaba piel y fondo viejo, se cambia el fondo viejo por el nuevo
@@ -709,8 +973,12 @@ def compone6(n, F, orig, blanco, etq, pintadas):
     # costura suave del hueco con lo que no cambia
     borde = np.maximum(cv2.GaussianBlur((hz | (nueva[Z] > 0) | (am > .02)).astype(np.float32), (0, 0), 1.5 * E6), peso)[..., None]
     out = borde * out + (1 - borde) * Iz
+    out_pre = out.copy() if ESPEJO else None
+    if DEDOS:     # (3) las yemas cortadas en recta, redondeadas: ahí se ve la caja nueva, el relleno o la camiseta
+        c_ = np.maximum(nueva[Z], cv2.GaussianBlur(hz.astype(np.float32), (0, 0), 2 * E6))[..., None]
+        out = out * (1 - corte[..., None]) + (c_ * G + (1 - c_) * FONDO_FUERA[0]) * corte[..., None]
     if RESTAURA:
-        # 24/11 (R4): el borde de la mano que tocaba la caja dibujada y ahora da al relleno (por encima de la caja nueva,
+        # 23/11 (R4): el borde de la mano que tocaba la caja dibujada y ahora da al relleno (por encima de la caja nueva,
         # que es más baja) era un corte recto: dedo plano y claro hasta el filo. Se redondean las esquinas (apertura de
         # 6 px a 4K, solo en ese borde) y la piel cae de luz en los últimos 7 px, como el canto de un dedo de verdad.
         fill_ = (hoyo[Z] & (nueva[Z] < .05)).astype(np.uint8)
@@ -721,6 +989,10 @@ def compone6(n, F, orig, blanco, etq, pintadas):
         cae = np.where(dentro & (d_ < 7 * E6), 0.74 + 0.26 * np.clip(d_ / (7 * E6), 0, 1) ** 0.8, 1.0).astype(np.float32)
         cae = cv2.GaussianBlur(cae, (0, 0), 1.0 * E6)[..., None]
         out = (out * cae) * (1 - corta) + G * corta
+    if ESPEJO:
+        ESPEJO_ZONA.clear()
+        hechos = espejo6(out, G, am, Iz, hoyo[Z] & (nueva[Z] < .05), nueva[Z], out_pre)
+        if hechos: print(f'  espejo {n + INI}: (punta, corte, abajo, lado)', hechos)
     out = np.clip(out, 0, 255).round().astype(np.uint8)
     if V6.get('motas', True):
         quita_motas(out, (am > .3) & (cambio > 0))
@@ -729,6 +1001,11 @@ def compone6(n, F, orig, blanco, etq, pintadas):
         os.makedirs(DEP, exist_ok=True)
         cv2.imwrite(f'{DEP}/m{n + INI:03d}.png', np.dstack([mz * 255, (am * 255).astype(np.uint8), hz * 255, camiseta[Z] * 120 + 60]).astype(np.uint8)[..., :3])
         cv2.imwrite(f'{DEP}/k{n + INI:03d}.png', (camiseta[Z] * 200 + hz * 55).astype(np.uint8))
+        if DEDOS or ESPEJO:
+            cv2.imwrite(f'{DEP}/o{n + INI:03d}.png', cv2.cvtColor(orig, cv2.COLOR_RGB2BGR))
+            np.savez_compressed(f'{DEP}/d{n + INI:03d}.npz', a0=a0, b0=b0, am=am, corte=corte, mz=mz, hz=hz,
+                                nueva=nueva[Z],
+                                quitado=quitado[Z] if quitado is not None else 0)
 
 
 modelos = {}
@@ -737,11 +1014,52 @@ for c in cajas:
 FOTO = salida.lower().endswith('.png')
 LUZ_KW = dict(zip(('amb', 'dif'), V6['ambiente'])) if (V6 and V6.get('ambiente')) else {}
 DESPL = [None]                                           # de dónde se copia la tela (se decide en el primer fotograma)
+if DEDOS:
+    # opción "dedos" (1): cuánto hay que acercar cada mano a su caja; se mide en todos los fotogramas antes de pintar
+    # (con --solo, solo en los de alrededor) para que el movimiento sea suave en el tiempo
+    from scipy.ndimage import gaussian_filter1d, maximum_filter1d
+    med = {}; med_n = {}
+    for n, fr in enumerate(fotogramas()):
+        if SOLO and not any(abs(n + INI - s_) <= 8 for s_ in SOLO): continue
+        F0 = np.ascontiguousarray(cv2.resize(fr, (AW, SH), interpolation=cv2.INTER_LANCZOS4)[:, OFF:OFF + SW])
+        mano0 = mano6(F0); o16_ = F0.astype(np.int16)
+        mano0 &= ~dil((o16_.min(2) > 135) & (o16_.max(2) - o16_.min(2) < 25), 2 * E6)
+        mano0 = cv2.morphologyEx(mano0.astype(np.uint8), cv2.MORPH_OPEN, k_el(2 * E6)).astype(bool)
+        for i, c in enumerate(cajas):
+            if modo(c, n) is None or np.isnan(base[i][n]).any() or np.isnan(escala[i][n]): continue
+            caja = modelos[c['modelo']]
+            R, t = postura(caja, a_salida(base[i][n]), escala[i][n], giros[i][n], incl[i][n], c.get('sentido', 1))
+            x0, y0, rgb, alfa = caja_en_zona(caja, R, t, **LUZ_KW)
+            bm = np.zeros((SH, SW), bool); bm[y0:y0 + alfa.shape[0], x0:x0 + alfa.shape[1]] = alfa[..., 0] > .5
+            for lado in (-1, 1):
+                r = mide_lado(bm, mano0, lado)
+                if r is not None: med[(i, lado, n)] = r; med_n.setdefault((i, lado), set()).add(n)
+    sol, dmax = DEDOS.get('solape', 14) * E6, DEDOS.get('max', 30) * E6
+    for i in range(len(cajas)):
+        for lado in (-1, 1):
+            ks = [n for n in range(N) if (i, lado, n) in med]
+            if not ks: continue
+            need = np.zeros(N); arr = np.full((N, 2), np.nan); fil = np.zeros((N, SH), np.float32)
+            for n in ks:
+                al, f_, a_, b_ = med[(i, lado, n)]
+                need[n] = np.clip(sol - al, 0, dmax); arr[n] = (a_, b_); fil[n] = f_
+            idx = np.array(ks)
+            for n in range(N):                       # sin medida: las filas del fotograma medido más cercano
+                if n not in med_n.get((i, lado), ()): fil[n] = fil[idx[np.argmin(np.abs(idx - n))]]
+            print('dedos: caja', i, 'lado', lado, '| alcance de las puntas (px):',
+                  ' '.join(f'{n + INI}:{med[(i, lado, n)][0]:.0f}' for n in ks))
+            if need.max() < .5: continue
+            d = gaussian_filter1d(maximum_filter1d(need, 5, mode='nearest'), 1.5, mode='nearest')
+            for k in range(2): arr[:, k] = gaussian_filter1d(np.interp(np.arange(N), idx, arr[idx, k]), 1.5, mode='nearest')
+            fil = gaussian_filter1d(fil, 1.5, axis=0, mode='nearest')
+            MANOS[(i, lado)] = {'d': d, 'a': arr[:, 0], 'b': arr[:, 1], 'filas': fil}
+            print('   acercar (px):', ' '.join(f'{n + INI}:{d[n]:.0f}' for n in range(N) if d[n] >= .5))
 enc = None if (FOTO or SOLO) else subprocess.Popen(['ffmpeg', '-y', '-loglevel', 'error', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', f'{SW}x{SH}', '-r', '24', '-i', '-',
                                           '-an', '-c:v', 'libx264', '-crf', str((V6 or {}).get('crf', 10)), '-preset', 'medium', '-pix_fmt', 'yuv420p', '-r', '24', salida], stdin=subprocess.PIPE)
 for n, fr in enumerate(fotogramas()):
     if SOLO and n + INI not in SOLO: continue
     F = np.ascontiguousarray(cv2.resize(fr, (AW, SH), interpolation=cv2.INTER_LANCZOS4)[:, OFF:OFF + SW])
+    if MANOS: F = acerca_manos(F, n)                    # opción "dedos" (1)
     orig = F.copy()
     blanco, piel = mascaras(orig); piel = piel_gruesa(piel)
     _, etq = cv2.connectedComponents(blanco.astype(np.uint8))

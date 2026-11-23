@@ -8,18 +8,26 @@ f = lambda n: round(n / 24 - 0.001, 4)          # borde de plano un pelo antes d
 P4A = dict(z=1.25, sx=545, sy=888, ox=540, oy=960)
 def tr(P, x, y): return P['z'] * (x - P['sx']) + P['ox'], P['z'] * (y - P['sy']) + P['oy']
 C3 = 298 if EXT2B else 283          # primer fotograma del plano 3
+import os
+SUB1A = int(os.environ.get('SUB1A', '1154'))   # plano 1 abierto: borde de arriba del subtítulo (T1)
 # rótulo IA: la pastilla mide 38 px; arriba en y 300 y abajo en 1202, así va entera dentro de y 300-1240.
 planos = [
-    {'de': 0.0,      'a': f(56),  'sub': 1110, 'ia': ['centro', 1202]},                 # 1 recortado x1,3 (móvil y cajas)
-    {'de': f(56),    'a': f(117), 'sub': 1098, 'ia': ['izq', 300]},                     # 1 abierto
-    {'de': f(117),   'a': f(165), 'sub': 892, 'chip': 830, 'ia': ['der', 300]},         # 2a (30 px más abajo que en v4: el chip rozaba la barbilla)
-    {'de': f(165),   'a': f(C3),  'sub': 618, 'chip': 556, 'ia': ['der2', 300]},        # 2b de producto (24/11, R2): las cajas desde y 737
+    # 23/11 (3.ª revisión, T1): la pastilla del subtítulo tapaba la mano del móvil (dedos y palma, y 1110-1194) en todo el
+    # plano 1. Ahora va debajo de las yemas y encima de las pestañas de las cajas (y 1154-1238) y el rótulo IA arriba.
+    {'de': 0.0,      'a': f(56),  'sub': 1154, 'ia': ['izq', 300]},                     # 1 recortado x1,3 (móvil y cajas)
+    {'de': f(56),    'a': f(117), 'sub': SUB1A, 'ia': ['izq', 300]},                    # 1 abierto
+    # 2a y 2b de producto (2.ª revisión, R2/N3): el subtítulo arriba del todo en los dos (no salta en el corte de 165,
+    # a mitad de «adaptador de 20 W»). 2a x1,76: pestañas desde y 429, cajas hasta 1045 -> chip debajo, sobre la camiseta,
+    # e IA abajo. 2b: inserto con la pestaña en y 530 y, desde 190, las dos cajas con las pestañas en y 663 -> chip y
+    # rótulo IA debajo del subtítulo, encima de la caja.
+    {'de': f(117),   'a': f(165), 'sub': 306, 'chip': 1070, 'ia': ['centro', 1200]},    # 2a de producto x1,76
+    {'de': f(165),   'a': f(C3),  'sub': 306, 'chip': 398, 'ia': ['centro', 460]},      # 2b inserto + dos cajas x1,41 (cuello hasta y 302)
     {'de': f(C3),    'a': f(358), 'sub': 1156, 'ia': ['izq', 300], 'neon': [380, 420]}, # 3
-    {'de': f(358),   'a': f(432), 'sub': 860, 'ia': ['centro', 956]},                   # 4 abierto
+    {'de': f(358),   'a': f(432), 'sub': 860, 'ia': ['izq', 300]},                      # 4 abierto (T2: IA arriba, no sobre la mano que señala)
     {'de': f(432),   'a': f(504), 'sub': 900, 'ia': ['centro', 996]},                   # 4 abierto recortado x1,25
     {'de': f(504),   'a': f(528), 'sub': 1110, 'ia': ['centro', 1202]},                 # 4 primer plano
     {'de': f(528),   'a': f(584), 'sub': 1110, 'ia': ['centro', 1202]},                 # 4 primer plano x1,18
-    {'de': f(584),   'a': f(649), 'sub': 306, 'ia': ['centro', 1202]},                  # 5 de producto (24/11): caja en y 411-1115
+    {'de': f(584),   'a': f(649), 'sub': 306, 'ia': ['centro', 1202]},                  # 5 de producto (23/11): caja en y 411-1115
     {'de': f(649),   'a': 999,    'sub': 1110, 'ia': ['centro', 1202]},                 # 6 (21 fotogramas antes: corte T1)
 ]
 # tarjeta: borde de abajo (cambio de altura justo en el corte 3 -> 4, fotograma 358: en v4/v5 iba 1 fotograma tarde).
@@ -45,14 +53,21 @@ def recorte(t):
 pk = [k for k in kf if k[0] < 17.99] + [[f(432)] + interp(f(432))[:]]
 pk += [recorte(18.0), recorte(19.45), recorte(20.45), recorte(21.0)]
 packs = {'de': 16.95, 'a': f(504), 'kf': pk}
-json.dump({'planos': planos, 'chip': [4.9, f(C3)], 'tarjeta': tarjeta, 'packs': packs}, open(OUT, 'w'), indent=1, ensure_ascii=False)
+# 23/11 (3.ª revisión, T3): el chip dorado salta de debajo de las cajas (y 1070, 2a) a debajo del subtítulo (398, 2b) en el
+# corte de 165: se va en los 4 últimos fotogramas de 2a y vuelve en los 4 primeros de 2b (164 y 165 sin chip).
+json.dump({'planos': planos, 'chip': [4.9, f(C3)], 'chip_fundido': [round(165 / 24, 4)], 'tarjeta': tarjeta, 'packs': packs},
+          open(OUT, 'w'), indent=1, ensure_ascii=False)
 # cambios de subtítulo en los cortes (4,87 / 18,0 / 24,33 / 27,9 s), no 1-2 fotogramas antes o después.
 # plano 3 (12,42-15,2 s): sin subtítulo; en ese primer plano la barbilla llega a y 1150-1200 y la pastilla la tapaba,
 # y la tarjeta ya dice lo mismo («En Apple: 38,00 €»).
 # subtítulos: los de v6 (SUBS_V3 con «¡Normal!», «y ganamos menos.» a 19,45 s y el precio en oro) sin «Dese prisa:»;
 # «Este precio acaba» / «el 30 de noviembre.» con los tiempos de la voz (faster-whisper sobre voz-frase-30nov.mp3:
 # «Este» 25,53 s, «el» 26,51 s en la línea de clip-intone-30nov-chica).
-# 24/11 (revisión): «laborables» en el subtítulo del plazo (como en el cierre: «llega a su casa en 24-48 h
+# 23/11 (2.ª revisión, N6): «el 30 de noviembre.» salía a 25,625 s, con ella aún diciendo «acaba». Medido en
+# audio_v6_sin_prisa_corte.wav (energía en ventanas de 20 ms): «-ca-» 25,58-25,68 s, «-ba» + «el» 25,74-25,90 s (vocales
+# seguidas, sin hueco), la oclusión de la «t» de «treinta» 25,92-25,98 s y su golpe en 26,00 s; «acaba» acaba hacia
+# 25,82 s -> cambia en el fotograma 620 (25,833 s).
+# 23/11 (revisión): «laborables» en el subtítulo del plazo (como en el cierre: «llega a su casa en 24-48 h
 # laborables»); y el corte T1: el audio quita 24,40-25,275 s (0,875 s sin voz) y el montaje los 21 primeros
 # fotogramas del plano 5, así que lo de después de 24,4 s va 0,875 s antes.
 CORTE = 0.875
@@ -60,7 +75,7 @@ subs = [['¿Su iPhone vino', 0.0], ['sin cargador?', 1.0], ['¡Normal!', 2.3], [
         ['Aquí tiene los dos:', 4.87], ['adaptador de 20 W', 6.3], ['y cable.', 7.9], ['Originales de Apple,', 8.9],
         ['en su caja sin abrir.', 10.3], ['', 12.4], ['Aquí, *18,99 €*.', 15.2], ['Compramos por cantidad', 18.0],
         ['y ganamos menos.', 19.45], ['Envío gratis', 21.0], ['en 24-48 h laborables.', 22.0], ['', 24.33],
-        ['Este precio acaba', 25.55 - CORTE], ['el 30 de noviembre.', 26.5 - CORTE], ['', f(649)],
+        ['Este precio acaba', 25.55 - CORTE], ['el 30 de noviembre.', 25.83], ['', f(649)],
         ['Toque «Comprar».', 28.28 - CORTE]]
 json.dump(subs, open(OUT.replace('plan', 'subs'), 'w'), indent=0, ensure_ascii=False)
 print('ok', OUT)

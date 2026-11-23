@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Montaje v6 del vídeo con dependienta (24/11/2026), 24 fps, 2160x3840, SIN textos ni audio (máster limpio).
+# Montaje v6 del vídeo con dependienta (23/11/2026), 24 fps, 2160x3840, SIN textos ni audio (máster limpio).
 # Igual que la v5 (tools/montaje_dependienta_v5.sh): orden 1, 2a, 2b, 3, 4, 5, 6 y los mismos fotogramas en el
-# mismo sitio hasta el plano 5 (desde la revisión del 24/11: 687 fotogramas hablados + 79 del cierre de video_persona.py = 766),
+# mismo sitio hasta el plano 5 (desde la revisión del 23/11: 687 fotogramas hablados + 79 del cierre de video_persona.py = 766),
 # así la voz sigue cuadrando con los labios. Cambios, según la revisión independiente (D2, D4, D20, D21, D36, D38, D40):
 #   - Piezas nuevas: planos 1 y 4 con las cajas del mostrador con texto real, la calle desenfocada y la «a» del neón
 #     arreglada (v6/mostrador); 2a, 2b y 5 con la cara de la chica que habla y las cajas reales en 3D (v6/cajas, ya con
@@ -28,7 +28,7 @@
 #     en vez de con la carcajada muda de 12,04-12,42 s. Para que ese final no parezca una foto fija (D37), desde el
 #     látigo (fotograma 218) la cámara se acerca despacio, x1,00 -> x1,06. EXT2B=0 deja el corte de la v5 (2b de 118).
 #     El plan de rótulos de video_persona.py tiene que llevar el mismo corte (2b hasta 12,417 s).
-# Revisión independiente de la v6 (24/11/2026):
+# Revisión independiente de la v6 (23/11/2026):
 #   - R2/R9/R5/T4: en 2b y 5 la chica de Kling (aun con la cara cambiada) no parece la misma que la de Intone (cara más
 #     ancha, rizos, aros gruesos). Esos planos pasan a ser de producto, del cuello para abajo (las manos y las cajas):
 #     2b x1,31 -> x1,36 con el borde de arriba fijo bajo el labio (y 445 de 1920; labio inferior en 428, barbilla 529,
@@ -48,13 +48,40 @@
 #     Intone 530 (el primer fotograma asentado tras el empalme, sin el tirón de 528-529); 528-573 -> 530-575; y la
 #     sonrisa final 576-583 a 0,8 de velocidad (574-583). En medio de las frases los labios van 2 fotogramas por
 #     delante de antes (83 ms; la voz sigue dentro de lo que no se nota, <125 ms de retraso). El audio no se toca.
+# 2.ª revisión de la v6 (23/11/2026):
+#   - R2 (alta): en 2a (117-164) la chica de Kling salía con la cara grande (257-277 px, aros gruesos, rizos: otra mujer).
+#     2a pasa también a plano de producto: x1,76 desde y 825 (barbilla como mucho en 809, fotograma 27, cuando asiente),
+#     las dos cajas enteras de lado a lado con las manos. Ninguna boca a la vista mientras la voz habla sobre los planos de
+#     Kling (2a, 2b y 5).
+#   - N3 + R2 (que el 2a -> 2b no sea un salto en el mismo encuadre): 2b empieza con un inserto de la caja del adaptador
+#     (x2,27 -> x2,31, el frente y «USB-C 20W Power Adapter» enteros mientras dice «adaptador de 20 W», 165-189) y corta,
+#     en el arranque del giro y con «y cable.» (190), a las dos cajas x1,41 con los dos nombres enteros; ahí se queda,
+#     acercándose un 1 % con el pulso de cámara en mano, mientras gira la caja y enseña la trasera. El borde izquierdo
+#     queda entre el canto de la caja (x 140 en 1080, donde el compuesto deja las yemas recortadas en recta) y la «U»
+#     (x 159); el inserto acaba a la izquierda de la caja del cable (x 631) para no cortarle el nombre.
+#   - R3: las cuatro cajas del mostrador de los planos 1 y 4 tenían la forma de la IA (altas, todas iguales, pestañas
+#     enormes) y cambiaban de forma al pasar a sus manos. v6/mostrador2 (mostrador2/cajas_reales.py) las cambia por las
+#     cajas con las proporciones y los frentes reales (adaptador 0,92, cable 1,03 de ancho/alto, pestaña con el hueco del
+#     euro), con el mismo ancho y la misma línea de arriba de la pestaña, más atrás en el mostrador (la base más alta;
+#     solo se rellena madera del mostrador). El primer plano del 4 (139-225) es idéntico al de v6/mostrador.
+#     MOSTRADOR=mostrador vuelve a las cajas de antes.
+# 3.ª revisión de la v6 (23/11/2026; TERCERA=0 deja el montaje de la 2.ª):
+#   - R2-tabs-closeup: en el primer plano del 4 (504-527) y en el plano 6 (649-686) asomaban abajo las pestañas de la IA
+#     (anchas, sin el hueco del euro) justo después del plano abierto con las cajas reales. Esos tramos se acercan desde
+#     el borde de arriba (x1,095 y x1,055; las pestañas empiezan en y 1767 y 1835) y el x1,18 (528-583) baja 30 px: ya
+#     no se ve ninguna pestaña en los primeros planos. El corte de 528 sigue siendo un acercamiento (x1,08 y la cara sube).
+#   - R2-2b-turn: el giro de la caja del adaptador en 2b (197-214) tenía fallos de composición en pausa. El barrido
+#     empieza antes (cajas/latigo2b.py -> cajas/2b_latigo.mp4: 0-31, 5 de barrido, la trasera): 197-201 barrido, la
+#     trasera desde 202, repartida hasta 297 a 0,78 -> 0,57 de velocidad (antes 1,0 y luego 0,73), sin tirones.
+#   - R2-s5-counter: el plano 5 sale de cajas/5_mostrador.mp4 (cajas/mostrador5.py): madera del mostrador con el tono de
+#     Intone y, delante, las tres cajas que no tiene en la mano (solo asoman pestañas y tapas, como en Intone).
 # Mientras habla, cada fotograma de los planos 1, 3 y 4 abierto es el mismo fotograma de Intone que en la v5 (los recortes solo
 # cambian el encuadre, nunca el tiempo) y el 6 va uno más tarde (D21): con el audio v6 la voz llega 23 ms (0,56
 # fotogramas) después que en el clip de Intone en todos los planos hablados.
 #
 # Uso (desde pillatumovil/anuncios/2026-11/video-persona):
 #   bash ../../../tools/montaje_dependienta_v6.sh CARPETA_V6 CARPETA_4K [SALIDA]   -> clip-dependienta-v6-4k.mp4
-#     CARPETA_V6: con mostrador/1.mp4, mostrador/4.mp4, cajas/2a.mp4, cajas/2b.mp4, cajas/5.mp4
+#     CARPETA_V6: con mostrador2/1.mp4, mostrador2/4.mp4 (o mostrador/ con MOSTRADOR=mostrador), cajas/2a.mp4, cajas/2b.mp4, cajas/5.mp4
 #     CARPETA_4K: con 3.mp4 y 6.mp4 (los de la v4)
 #   ESCALA=0.5 da un máster de 1080x1920 para revisar deprisa; HILOS (3), CRF (12) y PRESET (fast) son los de x264.
 #   (cajas/2a.mp4 ya lleva el escaparate desenfocado de día, R6: cajas/ventana.py)
@@ -104,30 +131,54 @@ def M(z, sx, sy, ox, oy):
 P1 = M(1.30, 530, 966, 540, 960)       # plano 1, 0-55: cara en el tercio de arriba, el móvil y las cajas debajo
 P4A = M(1.25, 545, 888, 540, 960)      # plano 4 abierto, 432-503: cabe la tarjeta encima del pelo y las cajas debajo
 P4C = M(1.18, 548, 1110, 548, 1110)    # primer plano del 4, 528-583: zoom con la línea del subtítulo fija
+TERCERA = os.environ.get('TERCERA', '1') == '1'   # 3.ª revisión (23/11): sin pestañas de la IA en los primeros planos
+P4B = M(1.095, 548, 0, 548, 0) if TERCERA else None   # 504-527: acercado desde arriba (pestañas desde y 1767 -> fuera)
+if TERCERA: P4C = M(1.18, 548, 1110, 548, 1140)       # 528-583: 30 px más abajo (asomaba el filo de las pestañas)
+P6 = M(1.055, 540, 0, 540, 0) if TERCERA else None    # plano 6: pestañas desde y 1835 -> fuera
 def MR(z, sx, sy, ox, oy, dx=0.0, dy=0.0, gr=0.0):
     """Como M, con un giro de gr grados alrededor del centro de la salida y un desplazamiento (dx, dy) de la salida."""
     c, s_ = np.cos(np.radians(gr)), np.sin(np.radians(gr)); R = np.array([[c, -s_], [s_, c]]) * z
     t = np.array([ox + dx, oy + dy]) - R @ np.array([sx, sy])
     return np.hstack([R, (t * E)[:, None]]).astype(np.float64)
-def P2B(o):
-    """2b de producto (R2/R5/T4): del cuello para abajo, acercándose despacio, con pulso de cámara en mano."""
-    u = np.clip((o - 165) / 132, 0, 1); u = u * u * (3 - 2 * u)
-    z = 1.31 + 0.05 * u; t = (o - 165) / 24
-    dx = 3.4 * np.sin(2 * np.pi * 0.4 * t + 0.7) + 1.5 * np.sin(2 * np.pi * 0.9 * t + 2.1)
+P2A = M(1.76, 579, 825 + 960 / 1.76, 540, 960)   # 2a de producto (2.ª revisión, R2): de y 825 (barbilla <= 809) abajo
+def pulso(o, ax=1.0):
+    """Pulso de cámara en mano (dos senos de 0,4 y 0,9 Hz; ax escala el horizontal): (dx, dy) en px de salida y giro."""
+    t = (o - 165) / 24
+    dx = ax * (3.4 * np.sin(2 * np.pi * 0.4 * t + 0.7) + 1.5 * np.sin(2 * np.pi * 0.9 * t + 2.1))
     dy = 3.0 * np.sin(2 * np.pi * 0.37 * t + 1.9) + 1.3 * np.sin(2 * np.pi * 0.83 * t + 0.4)
-    gr = 0.2 * np.sin(2 * np.pi * 0.31 * t + 1.2)
-    return MR(z, 580, 445 + 960 / z, 540, 960, dx, dy, gr)   # borde de arriba en y 445 (bajo el labio, en 428)
+    return dx, dy, 0.2 * np.sin(2 * np.pi * 0.31 * t + 1.2)
+def P2B(o):
+    """2b (2.ª revisión, R2/N3): 165-189 inserto de la caja del adaptador (x2,27 -> x2,31, el frente entero mientras dice
+    «adaptador de 20 W»); corte en el arranque del giro (190, «y cable.») a las dos cajas x1,41 (los dos nombres enteros),
+    que se acerca un 1 % hasta el final. Borde izquierdo en x 144-146, entre el canto de la caja (140, con las yemas
+    recortadas del compuesto) y la «U» de «USB-C» (159); en el inserto, el derecho antes de la caja del cable (631)."""
+    dx, dy, gr = pulso(o, 0.5)
+    if o < 190:
+        u = (o - 165) / 24; u = u * u * (3 - 2 * u); z = 2.27 + 0.04 * u
+        return MR(z, 146 + 540 / z, 1017 + (960 - 530) / z, 540, 960, dx, dy, gr)   # pestaña (y 1017) en y 530
+    u = np.clip((o - 190) / 107, 0, 1); u = u * u * (3 - 2 * u)
+    xl, xr = 144 + 1 * u, 910 - 7 * u; z = 1080 / (xr - xl)          # «USB-C» desde 159, «...Cable (1 m)» hasta 890
+    return MR(z, (xl + xr) / 2, 547 + 960 / 1.41, 540, 960, dx, dy, gr)   # arriba en y 547 (barbilla en 529)
 P5 = M(1.60, 530, 1920 - 960 / 1.60, 540, 960)   # plano 5 de producto: de y 720 (barbilla <= 688) al mostrador
 
 # ---- de qué fotograma de qué plano sale cada fotograma de salida: (pieza, posición, curva, encuadre)
-PIEZAS = {'1': f'{V6}/mostrador/1.mp4', '2a': f'{V6}/cajas/2a.mp4', '2b': f'{V6}/cajas/2b.mp4', '3': f'{K4}/3.mp4',
-          '4': f'{V6}/mostrador/4.mp4', '5': f'{V6}/cajas/5.mp4', '6': f'{K4}/6.mp4'}
+MOS = os.environ.get('MOSTRADOR', 'mostrador2')   # R3 (2.ª revisión): cajas del mostrador con la forma real (mostrador2)
+PIEZAS = {'1': f'{V6}/{MOS}/1.mp4', '2a': f'{V6}/cajas/2a.mp4', '2b': f'{V6}/cajas/2b.mp4', '3': f'{K4}/3.mp4',
+          '4': f'{V6}/{MOS}/4.mp4', '5': f'{V6}/cajas/5.mp4', '6': f'{K4}/6.mp4'}
+if TERCERA:   # 2b con el barrido antes (cajas/latigo2b.py) y el plano 5 con las cajas en el mostrador (cajas/mostrador5.py)
+    PIEZAS['2b'] = f'{V6}/cajas/2b_latigo.mp4'; PIEZAS['5'] = f'{V6}/cajas/5_mostrador.mp4'
 LARGO = {'1': 117, '2a': 48, '2b': 118, '3': 75, '4': 226, '5': 86, '6': 38}
 mapa = []
 for n in range(117): mapa.append(('1', n, None, P1 if n < 56 else None))
-for n in range(48): mapa.append(('2a', n, 'k1', None))
+for n in range(48): mapa.append(('2a', n, 'k1', P2A))
 if EXT2B:   # 2b: 0-77 igual; 78-117 (final quieto) a 40/55 de velocidad -> 133 fotogramas; el 3 desde su fotograma 15
     pos2b = list(range(78)) + [78 + k * 39 / 54 for k in range(55)]
+    if TERCERA:   # 2b_latigo.mp4: 0-31 igual, 32-36 barrido (197-201), trasera 37-101 en 202-297 (96 fotogramas): la
+        # velocidad baja poco a poco de 0,78 a 0,57 (suma 64), en vez de 1,0 y luego 0,73 con un cambio brusco en 243
+        v = np.linspace(0.78, 0.78 - 2 * (0.78 - 64 / 95), 95)
+        pos2b = list(range(37)) + [float(x) for x in 37 + np.concatenate([[0.0], np.cumsum(v)])]
+        pos2b[-1] = 101.0
+        assert len(pos2b) == 133 and abs(pos2b[-1] - 101) < 1e-9, (len(pos2b), pos2b[-1])
     for o, p in enumerate(pos2b, 165):   # 2b de producto (R2): ver P2B
         mapa.append(('2b', p, 'k1', P2B(o)))
     for n in range(15, 75): mapa.append(('3', n, None, None))
@@ -140,12 +191,12 @@ for n in range(226):
     elif o < 491: mapa.append(('4', n, None, P4A))
     elif o < 504: mapa.append(('4', 133 + (o - 491) * 5 / 12, None, P4A))   # 133..138 en 13 fotogramas (sin voz)
     # primer plano (R1/T3/T2/R7): Intone n+2 (índice del plano 4 = Intone - 358)
-    elif o < 522: mapa.append(('4', o + 2 - 358, None, None))               # 504-521 -> Intone 506-523
-    elif o < 528: mapa.append(('4', 166 + (o - 522) * 0.4, None, None))     # 522-527 -> sonrisa 524-526 a media velocidad
+    elif o < 522: mapa.append(('4', o + 2 - 358, None, P4B))                # 504-521 -> Intone 506-523
+    elif o < 528: mapa.append(('4', 166 + (o - 522) * 0.4, None, P4B))      # 522-527 -> sonrisa 524-526 a media velocidad
     elif o < 574: mapa.append(('4', o + 2 - 358, None, P4C))                # x1,18 desde 528 = Intone 530 (asentado)
     else: mapa.append(('4', 218 + (o - 574) * 7 / 9, None, P4C))            # 574-583 -> sonrisa final 576-583 (0,8x)
 for n in range(21, 86): mapa.append(('5', n, 'k5', P5))                     # T1: desde el 21 (antes, casi quieto)
-for n in range(38): mapa.append(('6', max(0, n - 1), None, None))
+for n in range(38): mapa.append(('6', max(0, n - 1), None, P6))
 assert len(mapa) == 687, len(mapa)
 
 # ---- lectura (RGB de 16 bits, BT.709, redondeo exacto) y escritura

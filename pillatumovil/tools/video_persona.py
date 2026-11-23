@@ -18,6 +18,7 @@ v6 (23/11/2026, tras la revisión independiente D7, D13, D16, D22, D25-D28, D30-
   --audio FICHERO         audio que se pone (por defecto el del CLIP); se alarga con silencio bajo el cierre
   --foto PNG              foto real del producto para el cierre (con transparencia; si no la tiene, se recorta)
   --cierre 2.75           segundos de tarjeta final (incluye el fundido de 6 fotogramas)
+  --empuje 0.035          acercamiento lento de la tarjeta final (0 = fija); limitado a la zona segura de los textos
   --fotos t1,t2,...       solo fotogramas sueltos (JPG en la carpeta SALIDA), para revisar sin renderizar
   --crf 16 --preset medium --hilos 2   ajustes de x264 de la salida (por defecto los de siempre: crf 16 en 4K, 18 en 1080)
   Todo el texto queda entre y 300 y 1240 y entre x 90 y 990 (coordenadas 1080x1920): Reels tapa arriba ~250 px,
@@ -299,7 +300,7 @@ def v6(argv):
         cm(y + 212, 'Precios con IVA incluido', 23, 500, GRIS)
         cm(y + 242, 'Tienda online independiente, no afiliada a Apple Inc.', 23, 500, GRIS)
         bg.alpha_composite(sombra(capa, 8, 140, 2))
-        return np.asarray(bg.convert('RGB')).copy()
+        return np.asarray(bg.convert('RGB')).copy(), capa.getbbox()   # y la caja de los textos (px de salida)
 
     # ---- tiempos y posiciones
     def lerp_kf(kf, t, cols):
@@ -339,6 +340,9 @@ def v6(argv):
                 capa = capa_sub(txt); pegar(fr, capa, (W - capa[1].shape[1]) / 2, p['sub'] * K)
         if CH and p.get('chip') is not None and CH[0] + R <= t < CH[1]:
             capa = capa_chip(); op = suave((t - CH[0] - R) / 0.25)
+            for tc in PLAN.get('chip_fundido', []):        # 23/11 (T3): en esos cortes el chip se va y vuelve (4 fotogramas
+                d = (t - tc - R) * FPS                      # a cada lado; el último antes del corte y el primero, sin chip)
+                if -5 < d < 5: op *= suave((abs(d + 0.5) - 0.5) / 4)
             pegar(fr, capa, (W - capa[1].shape[1]) / 2, (p['chip'] + 8 * (1 - op)) * K, op)
         if TJ['de'] <= t < TJ['a']:                        # tarjeta del precio en dos tiempos + la pregunta
             b2, pq = TJ['beat2'] + R, TJ['pregunta'] + R; D = 0.38
@@ -379,15 +383,40 @@ def v6(argv):
     N = int(pr.stdout.strip().split(',')[0])
     ult = None; pr = lector(['-sseof', '-0.5'])
     while (f := leer(pr)) is not None: ult = f
-    CARD = cierre(ult)
+    CARD, CAJA_TXT = cierre(ult)
     n_fin = N - FUNDIDO                                     # primer fotograma del fundido a la tarjeta
     total = N - FUNDIDO + round(float(opt.get('cierre', 2.75)) * FPS)
 
+    # 23/11 (2.ª revisión, N5): la tarjeta final ya no es una foto fija: toda ella (fondo, foto y textos) se acerca despacio
+    # (--empuje, 3,5 % por defecto) desde el primer fotograma del fundido hasta el último, con arranque y llegada suaves
+    # (mitad smoothstep, mitad lineal: nunca se para del todo). El centro del acercamiento es el punto más cercano al centro
+    # de la foto del producto con el que ningún texto sale de x 90-990, y 300-1240 (si no lo hay, se acerca menos).
+    tx0, ty0, tx1, ty1 = [v / K for v in CAJA_TXT]
+    def centro(s, a0, a1, lo, hi, pref):
+        # punto c que deja [c + s(a0 - c), c + s(a1 - c)] dentro de [lo, hi], lo más cerca posible de pref (None si no hay)
+        c_lo, c_hi = (s * a1 - hi) / (s - 1), (s * a0 - lo) / (s - 1)
+        return None if c_lo > c_hi else min(c_hi, max(c_lo, pref))
+    SMAX = 1 + float(opt.get('empuje', 0.035))
+    while SMAX > 1.0005:
+        ccx = centro(SMAX, tx0, tx1, 90, 990, W / 2 / K); ccy = centro(SMAX, ty0, ty1, 300, 1240, 572)   # foto: y 422-722
+        if ccx is not None and ccy is not None: break
+        SMAX -= 0.0005
+    else: SMAX, ccx, ccy = 1.0, W / 2 / K, 572
+    print(f'cierre: textos en x {tx0:.0f}-{tx1:.0f}, y {ty0:.0f}-{ty1:.0f}; acercamiento x1,000 -> x{SMAX:.4f} '
+          f'hacia ({ccx:.0f}, {ccy:.0f}); al final, textos en x {ccx + SMAX * (tx0 - ccx):.0f}-{ccx + SMAX * (tx1 - ccx):.0f}, '
+          f'y {ccy + SMAX * (ty0 - ccy):.0f}-{ccy + SMAX * (ty1 - ccy):.0f}')
+    def tarjeta(n):
+        u = min(1.0, max(0.0, (n - n_fin) / max(1, total - 1 - n_fin)))
+        s = 1 + (SMAX - 1) * (0.5 * suave(u) + 0.5 * u)
+        if s <= 1.00001: return CARD
+        Mx = np.array([[s, 0, (1 - s) * ccx * K], [0, s, (1 - s) * ccy * K]], np.float64)
+        return cv2.warpAffine(CARD, Mx, (W, H), flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REFLECT)
+
     def mezclar(fr, n):
         if n < n_fin: return fr
-        if n >= N: return CARD
+        if n >= N: return tarjeta(n)
         a = (n - n_fin + 1) / FUNDIDO
-        return (fr.astype(np.float32) * (1 - a) + CARD.astype(np.float32) * a + .5).astype(np.uint8)
+        return (fr.astype(np.float32) * (1 - a) + tarjeta(n).astype(np.float32) * a + .5).astype(np.uint8)
 
     if 'fotos' in opt:                                      # solo fotogramas sueltos
         os.makedirs(salida, exist_ok=True)
@@ -396,7 +425,7 @@ def v6(argv):
             if n < N:
                 pr = lector(['-ss', f'{t:.4f}'], ''); fr = leer(pr); pr.kill()
                 fr = mezclar(componer(fr, t, n, n_fin), n)
-            else: fr = CARD
+            else: fr = tarjeta(n)
             Image.fromarray(fr).save(f'{salida}/t{float(ts):05.2f}.jpg', quality=92)
         print('ok', salida); return
 
@@ -411,7 +440,7 @@ def v6(argv):
     pr = lector([])
     for n in range(total):
         fr = leer(pr) if n < N else None
-        out = mezclar(componer(fr, n / FPS, n, n_fin), n) if fr is not None else CARD
+        out = mezclar(componer(fr, n / FPS, n, n_fin), n) if fr is not None else tarjeta(n)
         enc.stdin.write(out.tobytes())
     enc.stdin.close(); enc.wait(); pr.kill()
     print('ok', salida, f'{total} fotogramas')
