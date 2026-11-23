@@ -19,6 +19,7 @@ v6 (23/11/2026, tras la revisión independiente D7, D13, D16, D22, D25-D28, D30-
   --foto PNG              foto real del producto para el cierre (con transparencia; si no la tiene, se recorta)
   --cierre 2.75           segundos de tarjeta final (incluye el fundido de 6 fotogramas)
   --fotos t1,t2,...       solo fotogramas sueltos (JPG en la carpeta SALIDA), para revisar sin renderizar
+  --crf 16 --preset medium --hilos 2   ajustes de x264 de la salida (por defecto los de siempre: crf 16 en 4K, 18 en 1080)
   Todo el texto queda entre y 300 y 1240 y entre x 90 y 990 (coordenadas 1080x1920): Reels tapa arriba ~250 px,
   abajo ~670 px y la columna de iconos de la derecha; el feed 4:5 solo deja y 285-1635.
   Salida en BT.709 etiquetado (el vídeo de entrada se lee como BT.709, así la imagen no cambia de color).
@@ -403,7 +404,7 @@ def v6(argv):
     enc = subprocess.Popen(['ffmpeg', '-y', '-loglevel', 'error', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', f'{W}x{H}',
                             '-r', str(FPS), '-i', '-', '-i', audio, '-map', '0:v', '-map', '1:a?',
                             '-vf', 'scale=out_color_matrix=bt709:out_range=tv:flags=accurate_rnd+full_chroma_int,format=yuv420p',
-                            '-c:v', 'libx264', '-preset', 'medium', '-crf', '16' if K > 1 else '18', '-threads', '2',
+                            '-c:v', 'libx264', '-preset', opt.get('preset', 'medium'), '-crf', opt.get('crf', '16' if K > 1 else '18'), '-threads', opt.get('hilos', '2'),
                             '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-color_range', 'tv',
                             '-af', 'apad', '-t', f'{total / FPS:.4f}', '-c:a', 'aac', '-b:a', '160k', '-ar', '44100', '-ac', '2',
                             '-movflags', '+faststart', salida], stdin=subprocess.PIPE)

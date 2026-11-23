@@ -272,6 +272,11 @@ def relleno_basto(R, hoyo, piel):
 #   (canal más alto < ratio × el de la piel de justo al lado, o muy oscuro junto a una yema clara) y toca el exterior
 #   se vuelve transparente (se ve la caja nueva), igual que los picos finos (< 8 px) de ese borde. Valor probado:
 #   [0.7, 20] (plan3d-B-v6 y plan3d-T-v6).
+# 24/11: "restaura": true (opcional; sin ella, igual que antes). (1) El cartón blanco neutro que la máscara de la mano
+#   metía entre los dedos (huecos rellenos) sale de la mano: ahí se ve la caja nueva o el relleno, no la caja dibujada.
+#   (2) Donde el borde de la mano tocaba la caja dibujada (más alta) y ahora da al relleno, por encima de la caja nueva,
+#   el dedo quedaba cortado en recta (pulgar plano y claro hasta el filo): se redondean las esquinas (apertura de 6 px a
+#   4K, solo en ese borde) y la piel cae de luz en los últimos 7 px, como el canto de un dedo. Probado en plan3d-A-v6.
 V6 = plan.get('v6')
 E6 = SH / 3840
 SOLO = [int(x) for x in sys.argv[sys.argv.index('--solo') + 1].split(',')] if '--solo' in sys.argv else None
@@ -593,6 +598,11 @@ def compone6(n, F, orig, blanco, etq, pintadas):
     ns, es, st, _ = cv2.connectedComponentsWithStats(piel_v5.astype(np.uint8))
     kraft = np.isin(es, [k for k in range(1, ns) if st[k, 4] < 14000 * E6 * E6])
     mano = mano6(orig)
+    RESTAURA = V6.get('restaura')
+    if RESTAURA:      # 24/11 (R4): fuera de la mano el cartón blanco que se colaba entre los dedos (huecos rellenos)
+        o16_ = orig.astype(np.int16); carton_ = (o16_.min(2) > 135) & (o16_.max(2) - o16_.min(2) < 25)
+        mano &= ~dil(carton_, 2 * E6)
+        mano = cv2.morphologyEx(mano.astype(np.uint8), cv2.MORPH_OPEN, k_el(2 * E6)).astype(bool)
     nueva = np.zeros((SH, SW), np.float32)
     for i, x0, y0, rgb, alfa, vis in pintadas:
         z = nueva[y0:y0 + alfa.shape[0], x0:x0 + alfa.shape[1]]; np.maximum(z, alfa[..., 0], out=z)
@@ -699,6 +709,18 @@ def compone6(n, F, orig, blanco, etq, pintadas):
     # costura suave del hueco con lo que no cambia
     borde = np.maximum(cv2.GaussianBlur((hz | (nueva[Z] > 0) | (am > .02)).astype(np.float32), (0, 0), 1.5 * E6), peso)[..., None]
     out = borde * out + (1 - borde) * Iz
+    if RESTAURA:
+        # 24/11 (R4): el borde de la mano que tocaba la caja dibujada y ahora da al relleno (por encima de la caja nueva,
+        # que es más baja) era un corte recto: dedo plano y claro hasta el filo. Se redondean las esquinas (apertura de
+        # 6 px a 4K, solo en ese borde) y la piel cae de luz en los últimos 7 px, como el canto de un dedo de verdad.
+        fill_ = (hoyo[Z] & (nueva[Z] < .05)).astype(np.uint8)
+        cerca_ = dil(fill_, 10 * E6); dentro = am > .5
+        ab = cv2.morphologyEx(dentro.astype(np.uint8), cv2.MORPH_OPEN, k_el(6 * E6)).astype(bool)
+        corta = cv2.GaussianBlur((dentro & ~ab & cerca_).astype(np.float32), (0, 0), 1.0 * E6)[..., None]
+        d_ = cv2.distanceTransform((1 - fill_).astype(np.uint8), cv2.DIST_L2, 5)
+        cae = np.where(dentro & (d_ < 7 * E6), 0.74 + 0.26 * np.clip(d_ / (7 * E6), 0, 1) ** 0.8, 1.0).astype(np.float32)
+        cae = cv2.GaussianBlur(cae, (0, 0), 1.0 * E6)[..., None]
+        out = (out * cae) * (1 - corta) + G * corta
     out = np.clip(out, 0, 255).round().astype(np.uint8)
     if V6.get('motas', True):
         quita_motas(out, (am > .3) & (cambio > 0))
