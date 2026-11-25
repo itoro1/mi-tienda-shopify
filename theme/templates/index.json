@@ -251,12 +251,46 @@
         "title": "iPhone destacados",
         "subtitle": "Unidades reales, fotografiadas por nosotros. Envío gratis con seguimiento."
       }
+    },
+    "it_unboxing_cl7Vd2": {
+      "type": "it-unboxing",
+      "name": "Vídeos de clientes",
+      "blocks": {
+        "v1": {
+          "type": "video",
+          "settings": {
+            "video": "shopify://files/videos/itoro-cliente-unboxing-1.mp4",
+            "badge": "Precintado",
+            "caption": "iPhone 17 Pro Max",
+            "detail": "Desprecintado en directo"
+          }
+        },
+        "v2": {
+          "type": "video",
+          "settings": {
+            "video": "shopify://files/videos/itoro-cliente-unboxing-2.mp4",
+            "badge": "Cliente real",
+            "caption": "iPhone 17 Pro Max",
+            "detail": "Recién llegado a casa del cliente"
+          }
+        }
+      },
+      "block_order": [
+        "v1",
+        "v2"
+      ],
+      "settings": {
+        "eyebrow": "Clientes reales",
+        "title": "Así llegan a casa de nuestros clientes",
+        "subtitle": "Precintado de fábrica, original y con garantía. Míralo tú mismo."
+      }
     }
   },
   "order": [
     "it_slider_kXp2Mw",
     "it_hero_aX9kQm",
     "it_destacados_q7Lm2x",
+    "it_unboxing_cl7Vd2",
     "it_trust_strip_jK3mXw",
     "it_categorias_nQ4xZr",
     "it_finder_pX8mNq",

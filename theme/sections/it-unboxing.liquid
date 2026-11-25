@@ -1,0 +1,113 @@
+{%- comment -%}
+  ASI LLEGAN A CASA - videos reales de clientes desprecintando su iPhone.
+
+  Cada bloque es un video subido a Shopify (Contenido > Archivos). Se ven en
+  fila, en vertical, y se reproducen solos y sin sonido cuando entran en
+  pantalla. Al tocar uno se le activa el sonido (y se silencian los demas).
+  Para anadir un video: editor de temas > esta seccion > "Anadir video".
+{%- endcomment -%}
+{%- if section.blocks.size > 0 -%}
+<section class="itub" aria-labelledby="itub-t-{{ section.id }}">
+  <div class="itub__in">
+    <div class="itub__head">
+      {%- if section.settings.eyebrow != blank -%}<p class="itub__eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+      <h2 class="itub__title" id="itub-t-{{ section.id }}">{{ section.settings.title }}</h2>
+      {%- if section.settings.subtitle != blank -%}<p class="itub__sub">{{ section.settings.subtitle }}</p>{%- endif -%}
+    </div>
+
+    <div class="itub__row{% if section.blocks.size == 1 %} itub__row--one{% endif %}">
+      {%- for block in section.blocks -%}
+        {%- if block.settings.video != blank -%}
+          <figure class="itub__card" {{ block.shopify_attributes }}>
+            <div class="itub__media">
+              {{ block.settings.video | video_tag: muted: true, loop: true, playsinline: true, preload: 'metadata', class: 'itub__video', image_size: '720x' }}
+              <button type="button" class="itub__sound" aria-label="Activar sonido" aria-pressed="false">
+                <svg class="itub__ic-off" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="m23 9-6 6M17 9l6 6"/></svg>
+                <svg class="itub__ic-on" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>
+              </button>
+              {%- if block.settings.badge != blank -%}<span class="itub__badge">{{ block.settings.badge }}</span>{%- endif -%}
+            </div>
+            {%- if block.settings.caption != blank or block.settings.detail != blank -%}
+              <figcaption class="itub__cap">
+                {%- if block.settings.caption != blank -%}<b>{{ block.settings.caption }}</b>{%- endif -%}
+                {%- if block.settings.detail != blank -%}<span>{{ block.settings.detail }}</span>{%- endif -%}
+              </figcaption>
+            {%- endif -%}
+          </figure>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+<style>
+.itub{background:#0e0e10;color:#f3f1eb}
+.itub__in{max-width:1180px;margin:0 auto;padding:64px 24px}
+.itub__head{text-align:center;max-width:620px;margin:0 auto 32px}
+.itub__eyebrow{margin:0 0 10px;font-size:13px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#c9a227}
+.itub__title{margin:0;font-size:clamp(26px,2vw + 16px,40px);line-height:1.1;letter-spacing:-.02em;font-weight:700;color:#f3f1eb;text-wrap:balance}
+.itub__sub{margin:12px 0 0;font-size:15px;line-height:1.6;color:#a09c92}
+.itub__row{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:8px;justify-content:center;scrollbar-width:none}
+.itub__row::-webkit-scrollbar{display:none}
+.itub__card{flex:0 0 min(300px,72vw);margin:0;scroll-snap-align:center}
+.itub__row--one .itub__card{flex-basis:min(340px,82vw)}
+.itub__media{position:relative;aspect-ratio:9/16;border-radius:20px;overflow:hidden;background:#000;border:1px solid rgba(255,255,255,.08)}
+.itub__media video{width:100%;height:100%;object-fit:cover;display:block}
+.itub__sound{position:absolute;right:12px;bottom:12px;width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.25);background:rgba(14,14,16,.6);color:#fff;display:grid;place-items:center;cursor:pointer;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.itub__sound:focus-visible{outline:2px solid #e3c566;outline-offset:2px}
+.itub__ic-on{display:none}
+.itub__sound[aria-pressed="true"] .itub__ic-on{display:block}
+.itub__sound[aria-pressed="true"] .itub__ic-off{display:none}
+.itub__badge{position:absolute;left:12px;top:12px;padding:6px 11px;border-radius:999px;background:rgba(14,14,16,.7);border:1px solid rgba(201,162,39,.5);color:#e3c566;font-size:12px;font-weight:700}
+.itub__cap{display:flex;flex-direction:column;gap:2px;padding:12px 4px 0;text-align:center}
+.itub__cap b{font-size:15px;color:#f3f1eb}
+.itub__cap span{font-size:13px;color:#a09c92}
+@media(max-width:749px){.itub__in{padding:48px 0}.itub__head{padding:0 18px}.itub__row{justify-content:flex-start;padding-left:18px;padding-right:18px;scroll-padding:0 18px}.itub__row--one{justify-content:center}}
+</style>
+
+<script>
+(function(){
+  var root=document.getElementById('shopify-section-{{ section.id }}'); if(!root) return;
+  var vids=[].slice.call(root.querySelectorAll('video'));
+  vids.forEach(function(v){ v.muted=true; v.setAttribute('muted',''); v.removeAttribute('controls'); });
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){
+      if(e.isIntersecting){var p=e.target.play(); if(p&&p.catch)p.catch(function(){});} else e.target.pause();
+    });},{threshold:.5});
+    vids.forEach(function(v){io.observe(v);});
+  }
+  root.querySelectorAll('.itub__sound').forEach(function(b){
+    b.addEventListener('click',function(){
+      var v=b.parentNode.querySelector('video'); var on=v.muted;
+      vids.forEach(function(o){o.muted=true;});
+      root.querySelectorAll('.itub__sound').forEach(function(x){x.setAttribute('aria-pressed','false');x.setAttribute('aria-label','Activar sonido');});
+      if(on){v.muted=false;v.play();b.setAttribute('aria-pressed','true');b.setAttribute('aria-label','Quitar sonido');}
+    });
+  });
+})();
+</script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Videos de clientes",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Texto pequeño", "default": "Clientes reales" },
+    { "type": "text", "id": "title", "label": "Título", "default": "Así llegan a casa de nuestros clientes" },
+    { "type": "text", "id": "subtitle", "label": "Subtítulo", "default": "Precintado de fábrica, original y con garantía. Míralo tú mismo." }
+  ],
+  "blocks": [
+    {
+      "type": "video",
+      "name": "Vídeo",
+      "settings": [
+        { "type": "video", "id": "video", "label": "Vídeo (vertical)" },
+        { "type": "text", "id": "badge", "label": "Etiqueta sobre el vídeo", "default": "Precintado" },
+        { "type": "text", "id": "caption", "label": "Modelo", "default": "iPhone 17 Pro Max" },
+        { "type": "text", "id": "detail", "label": "Detalle (opcional)" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Videos de clientes" }]
+}
+{% endschema %}
