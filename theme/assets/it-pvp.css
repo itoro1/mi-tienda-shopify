@@ -71,3 +71,8 @@ a.it-cheap:hover{border-color:#d4af37}
 /* Etiqueta en el boton del color mas barato (it-cheap.js). */
 .it-cheap-pill{display:inline-block;margin-left:7px;padding:1px 7px;border-radius:999px;background:#d4af37;color:#0b0c0f;
   font-size:11px;font-weight:800;letter-spacing:0;vertical-align:1px}
+/* Segunda mano: sello "Original, no reacondicionado" junto al precio */
+.it-orig{margin:12px 0 4px;padding:11px 14px;border-radius:12px;background:#ecfdf3;border:1px solid #abefc6;max-width:440px}
+.it-orig__t{margin:0;font-size:15px;font-weight:700;color:#067647;display:flex;align-items:center;gap:7px}
+.it-orig__d{margin:3px 0 0;font-size:13px;line-height:1.4;color:#085d3a}
+@media (prefers-color-scheme:dark){.it-orig{background:rgba(6,118,71,.16);border-color:rgba(171,239,198,.35)}.it-orig__t{color:#75e0a7}.it-orig__d{color:#a6f4c5}}
