@@ -273,11 +273,21 @@
             "caption": "iPhone 17 Pro Max",
             "detail": "Recién llegado a casa del cliente"
           }
+        },
+        "v3": {
+          "type": "video",
+          "settings": {
+            "video": "shopify://files/videos/itoro-cliente-unboxing-3.mp4",
+            "badge": "Precintado",
+            "caption": "iPhone 17 Pro",
+            "detail": "Naranja Cósmico · desprecintado en casa"
+          }
         }
       },
       "block_order": [
         "v1",
-        "v2"
+        "v2",
+        "v3"
       ],
       "settings": {
         "eyebrow": "Clientes reales",
