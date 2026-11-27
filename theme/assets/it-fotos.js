@@ -31,9 +31,17 @@
     var mine = map[vid] || [], all = [];
     Object.keys(map).forEach(function (k) { all = all.concat(map[k]); });
     var firstShown = null;
+    // Los videos que no estan en ninguna lista son de todo el producto
+    // (p. ej. un video del modelo precintado): se ven con cualquier color,
+    // tambien con los que tienen fotos reales propias.
+    var shared = {};
+    document.querySelectorAll('media-gallery [data-media-id]').forEach(function (el) {
+      var id = mediaOf(el);
+      if (id && all.indexOf(id) === -1 && el.querySelector('video, deferred-media, iframe')) shared[id] = true;
+    });
     document.querySelectorAll('media-gallery [data-media-id], media-gallery [data-target], product-modal [data-media-id]').forEach(function (el) {
       var id = mediaOf(el); if (!id) return;
-      var hide = mine.length ? mine.indexOf(id) === -1 : all.indexOf(id) !== -1;
+      var hide = shared[id] ? false : (mine.length ? mine.indexOf(id) === -1 : all.indexOf(id) !== -1);
       el.classList.toggle('it-foto-off', hide);
       if (!hide && !firstShown && el.matches('media-gallery [data-media-id]')) firstShown = el;
     });
