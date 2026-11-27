@@ -241,15 +241,23 @@
     {%- comment -%}
       ITORO - Segunda mano: se deja claro, junto al precio, que no es un
       reacondicionado. Fernando solo vende unidades sin reparar y con todas
-      las piezas originales. Sale en cualquier producto cuyo handle lleve
-      "segunda-mano" y solo en la ficha (use_variant).
+      las piezas originales. Sale en cualquier producto con la etiqueta
+      "segunda-mano" (o cuyo handle la lleve) y solo en la ficha (use_variant).
     {%- endcomment -%}
-    {%- if use_variant and product.handle contains 'segunda-mano' -%}
+    {%- if use_variant and product.tags contains 'segunda-mano' or use_variant and product.handle contains 'segunda-mano' -%}
       {{ 'it-pvp.css' | asset_url | stylesheet_tag }}
       <div class="it-orig">
         <p class="it-orig__t"><span aria-hidden="true">&#10003;</span> Original, no reacondicionado</p>
         <p class="it-orig__d">Nunca reparado &middot; Sin piezas cambiadas &middot; Todo original de Apple</p>
       </div>
+    {%- endif -%}
+
+    {%- comment -%}
+      ITORO - Videos en la galeria de la ficha: mismo marco 3:4 que las fotos,
+      recortado al centro, para que no salga un recuadro mas alto que el resto.
+    {%- endcomment -%}
+    {%- if use_variant -%}
+      <style>.product__media-list .product-media-container.media-type-video,.product-media-modal .product-media-container.media-type-video{--ratio:.75!important;--preview-ratio:.75!important}.product-media-container.media-type-video .media img,.product-media-container.media-type-video video{object-fit:cover!important;width:100%;height:100%}</style>
     {%- endif -%}
 
     {%- if show_badges -%}
