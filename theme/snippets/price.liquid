@@ -258,6 +258,7 @@
     {%- endcomment -%}
     {%- if use_variant -%}
       <style>.product__media-list .product-media-container.media-type-video,.product-media-modal .product-media-container.media-type-video{--ratio:.75!important;--preview-ratio:.75!important}.product-media-container.media-type-video .media img,.product-media-container.media-type-video video{object-fit:cover!important;width:100%;height:100%}</style>
+      <script src="{{ 'it-video-auto.js' | asset_url }}" defer="defer"></script>
     {%- endif -%}
 
     {%- if show_badges -%}
