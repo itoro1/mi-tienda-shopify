@@ -300,6 +300,15 @@
             "caption": "iPhone 18 Pro",
             "detail": "Burdeos · entregado en mano"
           }
+        },
+        "v6": {
+          "type": "video",
+          "settings": {
+            "video": "shopify://files/videos/itoro-18pro-burdeos-precintado-2.mp4",
+            "badge": "Precintado",
+            "caption": "iPhone 18 Pro",
+            "detail": "Burdeos · nuevo, precintado de fábrica"
+          }
         }
       },
       "block_order": [
@@ -307,7 +316,8 @@
         "v2",
         "v3",
         "v4",
-        "v5"
+        "v5",
+        "v6"
       ],
       "settings": {
         "eyebrow": "Clientes reales",
