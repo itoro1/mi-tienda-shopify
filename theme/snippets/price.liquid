@@ -257,9 +257,12 @@
       comision de pasarela). El checkout de Shopify no puede descontar segun
       el metodo de pago, asi que el cliente lo pide por WhatsApp con el
       modelo ya escrito y Fernando le pasa el pedido con el descuento.
-      Solo en iPhones (tipo de producto Smartphone) y en la ficha.
+      Solo en iPhones (tipo de producto Smartphone) de 700 EUR o mas y en la
+      ficha: por debajo, la comision de la tarjeta es menor de 15 EUR y el
+      descuento no compensa. Al cambiar de variante Dawn repinta el bloque, asi
+      que aparece o desaparece segun la capacidad elegida.
     {%- endcomment -%}
-    {%- if use_variant and product.type == 'Smartphone' -%}
+    {%- if use_variant and product.type == 'Smartphone' and target.price >= 70000 -%}
       {%- capture it_bz_msg -%}Hola, quiero el {{ product.title }} ({{ target.title }}) pagando con Bizum o transferencia, con los 15 € de descuento.{%- endcapture -%}
       <a class="it-bz" href="https://wa.me/34624150603?text={{ it_bz_msg | url_encode }}" target="_blank" rel="noopener">
         <span class="it-bz__i" aria-hidden="true">&minus;15&nbsp;&euro;</span>
