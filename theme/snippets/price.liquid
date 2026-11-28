@@ -253,6 +253,22 @@
     {%- endif -%}
 
     {%- comment -%}
+      ITORO - Descuento de 15 EUR por pagar con Bizum o transferencia (sin
+      comision de pasarela). El checkout de Shopify no puede descontar segun
+      el metodo de pago, asi que el cliente lo pide por WhatsApp con el
+      modelo ya escrito y Fernando le pasa el pedido con el descuento.
+      Solo en iPhones (tipo de producto Smartphone) y en la ficha.
+    {%- endcomment -%}
+    {%- if use_variant and product.type == 'Smartphone' -%}
+      {%- capture it_bz_msg -%}Hola, quiero el {{ product.title }} ({{ target.title }}) pagando con Bizum o transferencia, con los 15 € de descuento.{%- endcapture -%}
+      <a class="it-bz" href="https://wa.me/34624150603?text={{ it_bz_msg | url_encode }}" target="_blank" rel="noopener">
+        <span class="it-bz__i" aria-hidden="true">&minus;15&nbsp;&euro;</span>
+        <span class="it-bz__t"><strong>Paga con Bizum o transferencia y ahórrate 15&nbsp;&euro;</strong><span>Pídelo por WhatsApp y te lo dejamos en {{ target.price | minus: 1500 | money_without_trailing_zeros }}</span></span>
+      </a>
+      <style>.it-bz{display:flex;align-items:center;gap:12px;margin:10px 0 4px;padding:10px 14px;border-radius:12px;border:1px dashed rgba(201,162,39,.7);background:rgba(201,162,39,.08);text-decoration:none;color:inherit;max-width:440px}.it-bz__i{flex:none;font-weight:800;font-size:14px;color:#151208;background:#c9a227;border-radius:8px;padding:6px 8px;white-space:nowrap}.it-bz__t{display:flex;flex-direction:column;gap:2px;font-size:13px;line-height:1.35}.it-bz__t strong{font-size:14px}.it-bz__t span{opacity:.75}</style>
+    {%- endif -%}
+
+    {%- comment -%}
       ITORO - Videos en la galeria de la ficha: mismo marco 3:4 que las fotos,
       recortado al centro, para que no salga un recuadro mas alto que el resto.
     {%- endcomment -%}
