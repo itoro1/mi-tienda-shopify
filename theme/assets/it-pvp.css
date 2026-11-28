@@ -74,8 +74,11 @@ a.it-cheap:hover{border-color:#d4af37}
 /* Segunda mano: sello "Original, no reacondicionado" junto al precio */
 .it-orig{margin:12px 0 4px;padding:11px 14px;border-radius:12px;background:#ecfdf3;border:1px solid #abefc6;max-width:440px}
 .it-orig__t{margin:0;font-size:15px;font-weight:700;color:#067647;display:flex;align-items:center;gap:7px}
-.it-orig__d{margin:3px 0 0;font-size:13px;line-height:1.4;color:#085d3a}
-@media (prefers-color-scheme:dark){.it-orig{background:rgba(6,118,71,.16);border-color:rgba(171,239,198,.35)}.it-orig__t{color:#75e0a7}.it-orig__d{color:#a6f4c5}}
+.it-orig__d{margin:3px 0 0;font-size:13px;line-height:1.4;color:#05472b;font-weight:500}
+/* Oscuro solo cuando la TIENDA esta en modo oscuro (boton sol/luna), no
+   segun el modo del movil: si no, en un movil oscuro con la tienda clara
+   salia texto verde claro sobre fondo claro. */
+html[data-theme="dark"] .it-orig{background:rgba(6,118,71,.18);border-color:rgba(117,224,167,.45)}html[data-theme="dark"] .it-orig__t{color:#75e0a7}html[data-theme="dark"] .it-orig__d{color:#c7f9dc}
 
 /* Videos de la galeria de la ficha: marco 3:4 como las fotos */
 .product__media-list .product-media-container.media-type-video,.product-media-modal .product-media-container.media-type-video{--ratio:.75!important;--preview-ratio:.75!important}.product-media-container.media-type-video .media img,.product-media-container.media-type-video video{object-fit:cover!important;width:100%;height:100%}
